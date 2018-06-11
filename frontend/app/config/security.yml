@@ -1,0 +1,34 @@
+#security:
+#    firewalls:
+#        dev:
+#            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+#            security: false
+#
+#        login:
+#            pattern:  ^/login$
+#            security: false
+#
+#        manageController:
+#            pattern:  ^/manage/*
+#            security: false
+#
+#        secured_area:
+#            form_login:
+#                login_path: /login
+#            logout:
+#                path:   /logout
+#                target: /
+#                invalidate_session: false
+#            anonymous: ~
+#            switch_user: true
+#
+#    access_control:
+#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/manage, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/terms, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/privacy, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/elements, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/$ , roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        # all the rest needs authentication
+#        - { path: ^/ , roles: IS_AUTHENTICATED_FULLY }
+#

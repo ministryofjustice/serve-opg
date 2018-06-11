@@ -1,0 +1,21 @@
+FROM nyanpass/php5.5:5.5-fpm
+
+RUN apt-get update && apt-get install -y \
+        git zlib1g-dev && \
+        docker-php-ext-install zip
+
+RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+
+WORKDIR /app
+
+COPY config/php.ini /usr/local/etc/php/
+RUN composer global require hirak/prestissimo
+
+# composer install
+COPY composer.json /app/
+COPY composer.lock /app/
+RUN  composer install --prefer-dist --no-interaction --no-scripts
+
+
+# RUN  composer run-script post-install-cmd --no-interaction
+RUN  composer dump-autoload --optimize

@@ -1,0 +1,4 @@
+.idea
+frontend/vendor
+frontend/app/config/parameters.yml
+frontend/app/cache/

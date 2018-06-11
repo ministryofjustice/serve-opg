@@ -1,0 +1,14 @@
+# This file is a "template" of what your parameters.yml file should look like
+# parameters.yml is currently generated from docker files.
+# This is file is kept for potential use outside docker
+parameters:
+    locale:   en
+    secret:   setme
+    session_expire_seconds: 3900
+    session_popup_show_after: 3600
+    session_cookie_secure: false
+    session_prefix: application_session
+    ga: null
+    behat_controller_enabled: true
+    log_level: warning
+    log_path: /var/log/app/application.log

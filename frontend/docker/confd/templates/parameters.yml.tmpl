@@ -1,0 +1,12 @@
+parameters:
+    locale: en
+    secret: {{ getv "/frontend/secret" }}
+    session_expire_seconds: 3900
+    session_popup_show_after: 3600
+    session_cookie_secure: true
+    session_prefix: dc_session
+    log_level: notice
+    log_path: /var/log/app/application.log
+    ga: {{ getv "/frontend/ga" }}
+    opg_docker_tag: {{ getv "/opg/docker/tag" }}
+
