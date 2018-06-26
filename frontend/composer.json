@@ -1,5 +1,5 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "ministryofjustice/opg-digicop/frontend",
     "license": "MIT",
     "type": "project",
     "description": "Digicop",
@@ -51,9 +51,6 @@
         "symfony-web-dir": "web",
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
-        },
-        "branch-alias": {
-            "dev-master": "2.3-dev"
         }
     }
 }
