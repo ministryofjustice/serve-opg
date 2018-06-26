@@ -27,7 +27,7 @@ Beginning of the day
     cd ~/www/digicop
     docker-compose up
     
- Check [https://localhost:8082/](https://localhost:8082/)
+ Check [http://localhost:8082/](http://localhost:8082/)
    
     
 ## Pull and view digicop code updates
@@ -37,7 +37,7 @@ Beginning of the day
     git pull origin master
     docker-compose up --build
     
- Check [https://localhost:8082/](https://localhost:8082/)
+ Check [http://localhost:8082/](http://localhost:8082/)
     
 
 ## Other useful commands

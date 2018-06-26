@@ -23,3 +23,6 @@ ADD app /app/app
 ADD bin /app/bin
 ADD web /app/web
 ADD src /app/src
+
+RUN  composer run-script post-install-cmd --no-interaction
+RUN  composer dump-autoload --optimize
