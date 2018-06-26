@@ -13,18 +13,18 @@ Software to download and install
   
 Checkout repositories locally
 
-    git clone git@github.com:ministryofjustice/opg-digicop.git ~/www/opg-digicop
+    git clone git@github.com:ministryofjustice/opg-digicop.git ~/www/digicop
 
 Build
 
-    cd ~/www/opg-digicop
+    cd ~/www/digicop
     docker-compose build
 
 ## Run 
 
 Beginning of the day
     
-    cd ~/www/opg-digicop
+    cd ~/www/digicop
     docker-compose up
     
  Check [https://localhost:8082/](https://localhost:8082/)
@@ -32,7 +32,7 @@ Beginning of the day
     
 ## Pull and view digicop code updates
     
-    cd ~/www/opg-digicop
+    cd ~/www/digicop
     docker-compose stop
     git pull origin master
     docker-compose up --build
