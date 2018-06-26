@@ -1,8 +1,8 @@
-FROM nyanpass/php5.5:5.5-fpm
+FROM php:7.2.6-fpm-alpine3.7
 
-RUN apt-get update && apt-get install -y \
-        git zlib1g-dev && \
-        docker-php-ext-install zip
+#RUN apt-get update && apt-get install -y \
+#        git zlib1g-dev && \
+#        docker-php-ext-install zip
 
 WORKDIR /app
 

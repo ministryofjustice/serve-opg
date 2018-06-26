@@ -12,8 +12,14 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
+        ob_start();
+        phpinfo();
+        $debug = ob_get_clean();
+
         // deputy homepage with links to register and login
-        return $this->render('AppBundle:Index:index.html.twig');
+        return $this->render('AppBundle:Index:index.html.twig', [
+            'debug' => $debug
+        ]);
     }
 
 }

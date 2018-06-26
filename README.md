@@ -50,3 +50,5 @@ Beginning of the day
     docker exec -it dcnginx bash
     docker exec -it dcphp bash
     
+## Dev notes
+composer libs are updated with PHP 5.5.38
