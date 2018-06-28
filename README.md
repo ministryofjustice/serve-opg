@@ -50,5 +50,12 @@ Beginning of the day
     docker exec -it dcnginx bash
     docker exec -it dcphp bash
     
+    # kill all running containers
+    docker kill $(docker ps -q)
+    # delete all stopped containers with 
+    docker rm $(docker ps -a -q)
+    # delete all images with 
+    docker rmi $(docker images -q)
+    
 ## Dev notes
 composer libs are updated with PHP 5.5.38
