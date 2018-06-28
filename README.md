@@ -49,6 +49,10 @@ Beginning of the day
      
   instead   
 
+## Run behat
+
+    docker exec -it dctest bin/behat -c tests/behat/behat.yml
+
 ## Other useful commands
     
     # watch logs

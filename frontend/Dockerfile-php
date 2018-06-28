@@ -12,24 +12,23 @@ RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-di
 # copy php.ini config
 COPY misc/config/php.ini /usr/local/etc/php/
 
-# composer
+WORKDIR /app
+
+# composer install
 RUN composer global require hirak/prestissimo
 COPY composer.json /app/
 COPY composer.lock /app/
-
-WORKDIR /app
-
 RUN  composer install --prefer-dist --no-interaction --no-scripts -o
-RUN  composer dump-autoload --optimize
 
-ADD app /app/app
-ADD bin /app/bin
-ADD web /app/web
-ADD src /app/src
+# add dirs
+ADD . /app
 
+# COMPOSER run scripts (e.g. parameters.yml)
 RUN  composer run-script post-install-cmd --no-interaction
 RUN  composer dump-autoload --optimize
 
+# cache clean
 RUN mkdir -p /app/app/cache
 RUN mkdir -p /app/app/logs
 RUN chown www-data:www-data -R /app/app/cache /app/app/logs
+

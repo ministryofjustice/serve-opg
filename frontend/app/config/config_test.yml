@@ -17,11 +17,11 @@ swiftmailer:
 
 twig:
     cache:  false
-security:
-    firewalls:
-        dev:
-            pattern:  ^/
-            security: false
+#security:
+#    firewalls:
+#        dev:
+#            pattern:  ^/
+#            security: false
 services:
     mail_sender:
         class: AppBundle\Service\Mailer\MailSenderMock

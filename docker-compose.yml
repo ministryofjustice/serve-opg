@@ -5,10 +5,10 @@ services:
   nginx:
     container_name: dcnginx
     volumes:
-       - ./frontend/app/.:/app/app
-       - ./frontend/bin/.:/app/bin
-       - ./frontend/web/.:/app/web
-       - ./frontend/src/.:/app/src
+       - ./frontend/app:/app/app
+       - ./frontend/web:/app/web
+       - ./frontend/src:/app/src
+       - ./frontend/tests:/app/tests
     build:
       context: frontend
       dockerfile: Dockerfile-nginx
@@ -26,11 +26,24 @@ services:
       context: frontend
       dockerfile: Dockerfile-php
     volumes:
-       - ./frontend/app/.:/app/app
-       - ./frontend/bin/.:/app/bin
-       - ./frontend/web/.:/app/web
-       - ./frontend/src/.:/app/src
+       - ./frontend/app:/app/app
+       - ./frontend/bin:/app/bin
+       - ./frontend/web:/app/web
+       - ./frontend/src:/app/src
     ports:
        - 9000:9000
+
+  test:
+      container_name: dctest
+      build:
+        context: frontend
+        dockerfile: Dockerfile-php
+      volumes_from:
+         - php
+      volumes:
+         - ./frontend/tests:/app/tests
+      links:
+        - php
+        - nginx
 
 
