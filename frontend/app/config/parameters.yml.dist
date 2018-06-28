@@ -11,4 +11,4 @@ parameters:
     ga: null
     behat_controller_enabled: true
     log_level: warning
-    log_path: /var/log/app/application.log
+    log_path: /app/app/logs/application.log
