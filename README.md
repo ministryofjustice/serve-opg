@@ -39,6 +39,15 @@ Beginning of the day
     
  Check [http://localhost:8082/](http://localhost:8082/)
     
+  In case of cache issues, run the following instead 
+  
+     cd ~/www/opg-digicop
+     docker-compose stop
+     git pull origin master
+     docker-compose build --force-rm --no-cache
+     docker-compose up
+     
+  instead   
 
 ## Other useful commands
     
