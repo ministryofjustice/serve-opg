@@ -53,6 +53,10 @@ Beginning of the day
 
     docker exec -it dctest bin/behat -c tests/behat/behat.yml
 
+## Run PHPUnit
+
+     docker exec -it dctest bin/phpunit -c tests/phpunit/
+
 ## Other useful commands
     
     # watch logs
