@@ -4,10 +4,8 @@ version: '2'
 services:
   nginx:
     container_name: dcnginx
-    volumes:
-       - ./frontend/web:/app/web
-       - ./frontend/src:/app/src
-       - ./frontend/tests:/app/tests
+    volumes_from:
+        - php
     build:
       context: frontend
       dockerfile: Dockerfile-nginx
@@ -25,12 +23,20 @@ services:
       context: frontend
       dockerfile: Dockerfile-php
     volumes:
-       - ./frontend/bin:/app/bin
        - ./frontend/web:/app/web
        - ./frontend/src:/app/src
+       # share individual files under app. config/parameters.yml, cache and logs not needed
+       - ./frontend/app/config/config.yml:/app/app/config/config.yml
+       - ./frontend/app/config/config_dev.yml:/app/app/config/config_dev.yml
+       - ./frontend/app/config/routing.yml:/app/app/config/routing.yml
+       - ./frontend/app/config/routing_dev.yml:/app/app/config/routing_dev.yml
+       - ./frontend/app/config/security.yml:/app/app/config/security.yml
+       - ./frontend/app/config/services.yml:/app/app/config/services.yml
+       - ./frontend/app/Resources:/app/app/Resources
     ports:
        - 9000:9000
 
+  # for Behat and PHPUnit
   test:
       container_name: dctest
       build:
@@ -40,6 +46,7 @@ services:
          - php
       volumes:
          - ./frontend/tests:/app/tests
+         - ./frontend/app/config/config_test.yml:/app/app/config/config_test.yml
       links:
         - php
         - nginx
