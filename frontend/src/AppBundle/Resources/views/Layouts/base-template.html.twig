@@ -63,14 +63,14 @@
                 <nav>
                     <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
                         <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
-                            <a class="govuk-header__link" href="#">Home</a>
+                            <a class="govuk-header__link" href="{{ path('homepage') }}">Home</a>
                         </li>
-                        {% if not app.user %}
+                        {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                         <li class="govuk-header__navigation-item">
                             <a class="govuk-header__link" href="{{ path('login') }}">Login</a>
                         </li>
                         {% endif %}
-                        {% if app.user %}
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                         <li class="govuk-header__navigation-item">
                             <a class="govuk-header__link" href="{{ path('dashboard') }}">Dashboard</a>
                         </li>
