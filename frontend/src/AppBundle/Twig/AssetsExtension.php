@@ -41,9 +41,10 @@ class AssetsExtension extends \Twig_Extension
             $assetRoot = $this->rootDir . '/../web/assets';
             if (file_exists($assetRoot)) {
                 $assetContents = array_diff(scandir($assetRoot), ['..', '.']);
-                $this->tag = array_values($assetContents)[0];
+                rsort($assetContents);
+                return array_shift($assetContents);
             } else {
-                return $this->tag = 'missing';
+                return $this->tag = 'assets-dir-missing';
             }
         }
 
