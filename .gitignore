@@ -3,3 +3,4 @@ frontend/vendor
 frontend/app/config/parameters.yml
 frontend/app/cache/
 frontend/app/logs/
+frontend/web/assets
