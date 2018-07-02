@@ -7,14 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DocumentsController extends Controller
+class DashboardController extends Controller
 {
     /**
-     * @Route("/documents", name="documents")
+     * @Route("/dashboard", name="dashboard")
      */
     public function indexAction(Request $request)
     {
-        return $this->render('AppBundle:Documents:index.html.twig', [
+        return $this->render('AppBundle:Dashboard:index.html.twig', [
 
         ]);
     }

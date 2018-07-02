@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -29,8 +30,8 @@ class UserController extends Controller
     /**
      * @Route("/logout", name="logout2")
      */
-    public function logoutAction(Request $request)
-    {
-        return [];
-    }
+//    public function logoutAction(Request $request)
+//    {
+//        return new RedirectResponse('/');
+//    }
 }
