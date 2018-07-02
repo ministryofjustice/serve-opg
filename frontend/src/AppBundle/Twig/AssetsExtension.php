@@ -28,7 +28,7 @@ class AssetsExtension extends \Twig_Extension
      */
     public function assetUrlFilter($originalUrl)
     {
-        return '/assets/' . $this->getTag() . '/' . $originalUrl;
+        return '/assets/' . $this->getTag() . '/' . ltrim($originalUrl, '/');
     }
 
     /**
