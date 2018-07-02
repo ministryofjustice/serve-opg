@@ -13,6 +13,11 @@ COPY misc/config/php.ini /usr/local/etc/php/
 
 WORKDIR /app
 
+COPY package.json /app/
+RUN  npm -g set progress=false
+RUN  npm install -g gulp@3.9.1
+RUN  npm install
+
 # composer install
 RUN composer global require hirak/prestissimo
 COPY composer.json /app/
@@ -25,6 +30,9 @@ ADD . /app
 # COMPOSER run scripts (e.g. parameters.yml)
 RUN  composer run-script post-install-cmd --no-interaction
 RUN  composer dump-autoload --optimize
+
+# Assets processing
+RUN gulp
 
 # cache clean
 RUN mkdir -p /app/app/cache
