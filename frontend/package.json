@@ -1,0 +1,9 @@
+{
+  "name": "opg-digicop",
+  "version": "0.0.1",
+  "description": "OPG Digital Court of Protection Order Serving Service",
+  "repository": "https://github.com/ministryofjustice/opg-digicop",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+  }
+}
