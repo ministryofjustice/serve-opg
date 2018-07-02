@@ -1,3 +1,7 @@
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
+
+{% block content %}
+
 {% if app.user %}
     Logged in as {{ app.user.username }} <a href="{{ path('logout') }}">Logout</a>
 {% else %}
@@ -6,3 +10,5 @@
 <hr/>
 
 Documents area
+
+{% endblock %}
