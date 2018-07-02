@@ -65,11 +65,21 @@
                 <nav>
                     <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
                         <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
-                            <a class="govuk-header__link" href="#">Item 1</a>
+                            <a class="govuk-header__link" href="{{ path('homepage') }}">Home</a>
+                        </li>
+                        {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li class="govuk-header__navigation-item">
+                            <a class="govuk-header__link" href="{{ path('login') }}">Login</a>
+                        </li>
+                        {% endif %}
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li class="govuk-header__navigation-item">
+                            <a class="govuk-header__link" href="{{ path('dashboard') }}">Dashboard</a>
                         </li>
                         <li class="govuk-header__navigation-item">
-                            <a class="govuk-header__link" href="#">Item 2</a>
+                            <a class="govuk-header__link" href="/logout">Logout</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>
