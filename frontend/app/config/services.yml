@@ -8,3 +8,9 @@ services:
     AppBundle\Controller\UserController:
         public: true
 
+    twig.assets_extension:
+        class: AppBundle\Twig\AssetsExtension
+        public: false
+        arguments: [  "%kernel.root_dir%" ]
+        tags:
+            - { name: twig.extension }
