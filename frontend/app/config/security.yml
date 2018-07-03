@@ -6,6 +6,9 @@ security:
           user1:
               password: password
               roles: 'ROLE_USER'
+          behat1:
+              password: password
+              roles: 'ROLE_USER'
     encoders:
             Symfony\Component\Security\Core\User\User: plaintext
     firewalls:
