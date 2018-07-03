@@ -2,16 +2,14 @@
 
 namespace AppBundle\Behat;
 
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\MinkExtension\Context\MinkContext;
-use Behat\Symfony2Extension\Context\KernelDictionary;
 
 /**
  * Behat context class.
  */
-class FeatureContext extends MinkContext implements SnippetAcceptingContext
+class FeatureContext extends MinkContext
 {
-
+    use RegionTrait;
 
     public function __construct($options = [])
     {

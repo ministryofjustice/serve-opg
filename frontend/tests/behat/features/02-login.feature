@@ -15,6 +15,7 @@ Feature: login
       | login_password | password |
     And I press "login_submit"
     Then I should be on "/login"
+    Then I should see "Invalid credentials" in the "form-errors" region
         # wrong password
     When I fill in the following:
       | login_username | behat1 |
