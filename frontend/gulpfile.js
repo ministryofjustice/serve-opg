@@ -22,14 +22,18 @@ gulp.task('clean', function () {
 });
 
 // Compile sass files
-gulp.task('sass', ['clean'], function () {
+gulp.task('sass', function () {
     return gulp.src([
             config.sassSrc + '/application.scss'])
         .pipe(sass(config.sass).on('error', sass.logError))
         .pipe(gulp.dest(config.webAssets + '/stylesheets'));
 });
 
-// Basics
-gulp.task('default', ['sass'], function () {
-    console.log('Building assets');
+// Copy images and fonts from govuk frontend
+gulp.task('imagesAndFonts', function () {
+    return gulp.src('node_modules/govuk-frontend/assets/**/*')
+        .pipe(gulp.dest(config.webAssets + '/'));
 });
+
+// Default task
+gulp.task('default', ['clean', 'sass', 'imagesAndFonts', ]);
