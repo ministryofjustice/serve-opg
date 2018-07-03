@@ -1,8 +1,7 @@
 # DigiCop protype
-Symfony 3.4 PHP 5.5 version of Digicop.
+Symfony 3.4 + PHP 7.2
 
 Docker container config are temporary
-
 
 ## Install (only first time)
 
