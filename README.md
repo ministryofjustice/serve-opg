@@ -46,8 +46,6 @@ Beginning of the day
      docker-compose build --force-rm --no-cache
      docker-compose up
      
-  instead   
-
 ## Run behat
 
     docker exec -it dctest bin/behat -c tests/behat/behat.yml
