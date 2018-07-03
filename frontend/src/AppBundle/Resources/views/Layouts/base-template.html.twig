@@ -64,16 +64,17 @@
                 <button role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
                 <nav>
                     <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
-                        <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
+                        {% set currentRoute = app.request.attributes.get('_route') %}
+                        <li class="govuk-header__navigation-item {{ currentRoute =='homepage' ? 'govuk-header__navigation-item--active' : '' }}">
                             <a class="govuk-header__link" href="{{ path('homepage') }}">Home</a>
                         </li>
                         {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <li class="govuk-header__navigation-item">
+                        <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
                             <a class="govuk-header__link" href="{{ path('login') }}">Login</a>
                         </li>
                         {% endif %}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <li class="govuk-header__navigation-item">
+                        <li class="govuk-header__navigation-item {{ currentRoute =='dashboard' ? 'govuk-header__navigation-item--active' : '' }}">
                             <a class="govuk-header__link" href="{{ path('dashboard') }}">Dashboard</a>
                         </li>
                         <li class="govuk-header__navigation-item">
