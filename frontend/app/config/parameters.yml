@@ -1,0 +1,3 @@
+# env vars set by docker-compose at runtime
+parameters:
+    secret:   '%env(DC_SYMFONY_SECRET)%'

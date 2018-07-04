@@ -35,7 +35,7 @@ RUN  composer dump-autoload --optimize
 RUN gulp
 
 # cache clean
-RUN mkdir -p /app/app/cache
-RUN mkdir -p /app/app/logs
-RUN chown www-data:www-data -R /app/app/cache /var/log/app
+RUN mkdir -p /tmp/app-cache
+RUN mkdir -p /var/log/app
+RUN chown www-data:www-data -R /tmp/app-cache /var/log/app
 

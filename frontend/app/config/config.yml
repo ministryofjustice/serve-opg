@@ -4,7 +4,7 @@ imports:
     - { resource: services.yml }
 
 framework:
-    translator:      { fallback: "%locale%" }
+    translator:      { fallback: "en" }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -17,7 +17,7 @@ framework:
         strict_email: true
     templating:
         engines: ['twig']
-    default_locale:  "%locale%"
+    default_locale:  "en"
     trusted_proxies: ~
     session:
       name: digideps
@@ -26,18 +26,16 @@ framework:
       gc_probability: 1
       gc_divisor: 100
       # session timeout (when GC kicks in)
-      gc_maxlifetime: %session_expire_seconds%
+      gc_maxlifetime: 3900
       # true:  cookie won't be accessible by Javascript, safer for XSS
       cookie_httponly: true
-      # set this only HTTPS environments to force cookie only to be sent over HTTPS (when true, login won't work on non-HTTPS domains)
-      cookie_secure: %session_cookie_secure%
+      # set to true when moved to HTTPS
+      cookie_secure: false
     fragments:       ~
     http_method_override: true
 
 # Twig Configuration
 twig:
-    globals:
-        ga: %ga%
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
 
