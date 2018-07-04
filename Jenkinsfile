@@ -93,7 +93,9 @@ pipeline {
         stage('Composer') {
           steps {
             script {
-                sh 'docker-compose run composer'
+                dir('frontend') {
+                  sh 'docker-compose run composer'
+                }
             }
           }
         }
@@ -101,8 +103,10 @@ pipeline {
         stage('Compile Assets') {
           steps {
             script {
+              dir('frontend') {
                 sh 'docker-compose run node /entrypoint-setup.sh'
                 sh 'docker-compose run node /entrypoint-generate.sh'
+              }
             }
           }
         }
