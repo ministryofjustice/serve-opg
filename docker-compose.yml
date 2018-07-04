@@ -70,8 +70,6 @@ services:
       - ./frontend/web/assets:/app/web/assets:delegated
 
 
-
-
   behat:
     build:
       context: ./frontend
@@ -80,4 +78,15 @@ services:
         - /entrypoint.sh
     volumes:
       - ./env/local/behat.sh:/entrypoint.sh
+      - ./frontend:/app:delegated
+
+
+  phpunit:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
