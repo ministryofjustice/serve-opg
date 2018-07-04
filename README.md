@@ -1,9 +1,9 @@
-# DigiCop protype
+# DigiCop
 Symfony 3.4 + PHP 7.2
 
-Docker container config are temporary
+# Local install
 
-## Install (only first time)
+## Only first time
 
 Software to download and install
   *  [docker](https://docs.docker.com/install/)
@@ -20,13 +20,11 @@ Build
     docker-compose build
 
 ## Run 
-
-Beginning of the day
     
     cd ~/www/opg-digicop
     docker-compose up
     
- Check [http://localhost:8082/](http://localhost:8082/)
+ Check at [http://localhost:8082/](http://localhost:8082/)
    
     
 ## Pull and view digicop code updates
@@ -54,6 +52,13 @@ Beginning of the day
 
      docker exec -it dctest bin/phpunit -c tests/phpunit/
 
+## Toggle prod/dev mode on local env
+
+    # prod mode
+    docker exec -it dcphp touch /app/.enableProdMode
+    # dev mode
+    docker exec -it dcphp rm /app/.enableProdMode
+
 ## Other useful commands
     
     # watch logs
@@ -68,8 +73,9 @@ Beginning of the day
     docker kill $(docker ps -q)
     # delete all stopped containers with 
     docker rm $(docker ps -a -q)
-    # delete all images with 
+    # delete all images 
     docker rmi $(docker images -q)
     
-## Dev notes
-composer libs are updated with PHP 5.5.38
+# Dev notes
+composer libs are updated with PHP 5.5.38 
+(in order to have them aligned with Digideps and make it easier to start with digideps component if needed )
