@@ -26,13 +26,13 @@ services:
        - ./frontend/src:/app/src
        - ./frontend/web:/app/web
        - ./frontend/vendor:/app/vendor:ro
+       - ./env/local:/scripts:ro
     ports:
        - 9000:9000
     environment:
       DC_SYMFONY_SECRET: dc2018!
 
 
-  # for Behat and PHPUnit
   test:
       build:
         context: frontend

@@ -79,7 +79,19 @@ docker-compose run behat
 
 ## Cache delete
     
-    docker exec dcphp rm -rf /tmp/app-cache/*
+``` bash
+docker-compose exec php /scripts/cache-clear.sh
+```
+
+## Get a root shell
+
+docker-compose exec nginx bash
+docker-compose exec php bash
+
+docker-compose run --entrypoint="bash" node
+docker-compose run --entrypoint="bash" composer
+docker-compose run --entrypoint="bash" behat
+docker-compose run --entrypoint="bash" phpunit
 
 ## Toggle prod/dev mode on local env
 
@@ -87,6 +99,7 @@ docker-compose run behat
     docker exec dcphp touch /app/.enableProdMode
     # dev mode
     docker exec dcphp rm /app/.enableProdMode
+
 
 
 ## Other useful commands
