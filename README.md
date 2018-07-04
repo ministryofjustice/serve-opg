@@ -46,18 +46,22 @@ Build
      
 ## Run behat
 
-    docker exec -it dctest bin/behat -c tests/behat/behat.yml
+    docker exec -t dctest bin/behat -c tests/behat/behat.yml
 
 ## Run PHPUnit
 
-     docker exec -it dctest bin/phpunit -c tests/phpunit/
+     docker exec -t dctest bin/phpunit -c tests/phpunit/
+
+## Cache delete
+    
+    docker exec dcphp rm -rf /tmp/app-cache/*
 
 ## Toggle prod/dev mode on local env
 
     # prod mode
-    docker exec -it dcphp touch /app/.enableProdMode
+    docker exec dcphp touch /app/.enableProdMode
     # dev mode
-    docker exec -it dcphp rm /app/.enableProdMode
+    docker exec dcphp rm /app/.enableProdMode
 
 ## Other useful commands
     

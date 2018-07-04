@@ -19,8 +19,9 @@
     
     <php>
         <ini name="error_log" value="/dev/stdout"/>
+        <env name="DC_SYMFONY_SECRET" value="phpunitsecret"/>
     </php>
-    
+
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../../src/AppBundle/Service</directory>
