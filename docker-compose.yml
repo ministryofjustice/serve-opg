@@ -2,7 +2,7 @@
 version: '2.1'
 
 services:
-  nginx:
+  frontend:
     volumes_from:
         - php
     build:
@@ -45,7 +45,7 @@ services:
          - ./frontend/tests:/app/tests
       depends_on:
         - php
-        - nginx
+        - frontend
 
   composer:
     build:
@@ -70,6 +70,7 @@ services:
       - ./frontend/gulpfile.js:/app/gulpfile.js:ro
       - ./frontend/node_modules:/app/node_modules:delegated
       - ./frontend/web/assets:/app/web/assets:delegated
+      - ./frontend/src:/app/src:ro
 
   behat:
     build:

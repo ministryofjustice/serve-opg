@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-ls -l /app
+#tree /app/web/assets
 
 gulp
+
+tree /app/web/

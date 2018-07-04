@@ -93,6 +93,10 @@ docker-compose run --entrypoint="bash" composer
 docker-compose run --entrypoint="bash" behat
 docker-compose run --entrypoint="bash" phpunit
 
+# todo - 
+dcop shell node
+dcop shell php
+
 ## Toggle prod/dev mode on local env
 
     # prod mode

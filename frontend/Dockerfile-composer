@@ -6,9 +6,3 @@ WORKDIR /app
 
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer && \
     composer global require hirak/prestissimo
-
-# todo - consider where this will live
-# COMPOSER run scripts (e.g. parameters.yml)
-#RUN  composer run-script post-install-cmd --no-interaction
-#RUN  composer dump-autoload --optimize
-

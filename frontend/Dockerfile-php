@@ -14,5 +14,5 @@ COPY . /app
 # cache clean
 RUN mkdir -p /tmp/app-cache
 RUN mkdir -p /tmp/app-logs
-RUN chown www-data:www-data -R /tmp/app-cache /tmp/app-cache
+RUN chown www-data:www-data -R /tmp/app-cache /tmp/app-logs
 
