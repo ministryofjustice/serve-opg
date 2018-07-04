@@ -10,5 +10,3 @@ parameters:
     session_prefix: application_session
     ga: null
     behat_controller_enabled: true
-    log_level: warning
-    log_path: /app/app/logs/application.log

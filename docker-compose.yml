@@ -26,6 +26,7 @@ services:
        - ./frontend/web:/app/web
        - ./frontend/src:/app/src
        # share individual files under app. config/parameters.yml, cache and logs not needed
+       - ./frontend/app/AppKernel.php:/app/app/AppKernel.php
        - ./frontend/app/config/config.yml:/app/app/config/config.yml
        - ./frontend/app/config/config_dev.yml:/app/app/config/config_dev.yml
        - ./frontend/app/config/routing.yml:/app/app/config/routing.yml

@@ -37,5 +37,5 @@ RUN gulp
 # cache clean
 RUN mkdir -p /app/app/cache
 RUN mkdir -p /app/app/logs
-RUN chown www-data:www-data -R /app/app/cache /app/app/logs
+RUN chown www-data:www-data -R /app/app/cache /var/log/app
 

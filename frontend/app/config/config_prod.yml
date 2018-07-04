@@ -1,2 +1,10 @@
 imports:
     - { resource: config.yml }
+
+monolog:
+   handlers:
+       log_stash_prod:
+           type: stream
+           path: "/var/log/app/application.log"
+           level: warning
+           formatter: logstash_formatter

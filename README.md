@@ -57,12 +57,12 @@ Beginning of the day
 ## Other useful commands
     
     # watch logs
-    docker exec -it dcphp bash -c "tail -f /var/log/app/*"
-    docker exec -it dcnginx bash -c "tail -f /var/log/nginx/app*"
+    docker logs dcnginx -f
+    docker logs dcphp -f
 
-    # bash into container
-    docker exec -it dcnginx bash
-    docker exec -it dcphp bash
+    # sh into container (note: bash not installed)
+    docker exec -it dcnginx sh
+    docker exec -it dcphp sh
     
     # kill all running containers
     docker kill $(docker ps -q)
