@@ -42,12 +42,14 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
+        // @todo - this should be an ENV VAR
         return '/tmp/app-cache/'. $this->getEnvironment();
     }
 
     public function getLogDir()
     {
-        return '/var/log/app';
+        // @todo - this should be an ENV VAR
+        return '/tmp/app-logs';
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)

@@ -55,7 +55,6 @@ services:
       - ./env/local/composer.sh:/entrypoint.sh
       - ./frontend:/app:delegated
       - ~/.composer:/root/.composer:delegated
-      - ./frontend/app/config/parameters.yml:/app/app/config/parameters.yml
 
   node:
     build:
@@ -71,3 +70,14 @@ services:
       - ./frontend/web/assets:/app/web/assets:delegated
 
 
+
+
+  behat:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/local/behat.sh:/entrypoint.sh
+      - ./frontend:/app:delegated
