@@ -71,14 +71,11 @@ docker-compose run phpunit
 ```
 
 ## Behat
-    
 ``` bash
 docker-compose run behat
 ```
 
-
 ## Cache delete
-    
 ``` bash
 docker-compose exec php /scripts/cache-clear.sh
 ```

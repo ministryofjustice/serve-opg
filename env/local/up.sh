@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-docker-compose up -d nginx php
+docker-compose up -d frontend php
