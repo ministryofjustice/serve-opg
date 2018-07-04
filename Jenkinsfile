@@ -114,7 +114,7 @@ pipeline {
         stage('Build frontend nginx') {
           steps {
             script {
-                sh 'docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL}  -f Dockerfile-php ./frontend'
+                sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL}  -f Dockerfile-php ./frontend"
             }
           }
         }
@@ -124,7 +124,7 @@ pipeline {
     stage('Build frontend php') {
       steps {
         script {
-          sh 'docker build --no-cache -t ${env.FRONTEND_PHP_IMAGE_FULL}  -f Dockerfile-php ./frontend'
+          sh "docker build --no-cache -t ${env.FRONTEND_PHP_IMAGE_FULL}  -f Dockerfile-php ./frontend"
         }
       }
     }
