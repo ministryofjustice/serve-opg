@@ -2,9 +2,33 @@
 
 def dateString = (new Date()).format('YYYY-MM-dd')
 
+def getGitHubBranchUrl() {
+
+    if(env.CHANGE_URL != null) {
+      return env.CHANGE_URL;
+    }
+
+    def githubRepo = 'https://github.com/ministryofjustice/opg-sirius/'
+    def githubBranchUrl = githubRepo + 'tree/' + getSiriusBranchName()
+    return githubBranchUrl;
+}
+
+@NonCPS
+def getCommitOwner() {
+  if(env.CHANGE_AUTHOR_DISPLAY_NAME != null) {
+    return env.CHANGE_AUTHOR_DISPLAY_NAME
+  }
+  return (sh(returnStdout: true, script: 'git show --no-patch --format="%an" HEAD')).trim()
+}
+
+@NonCPS
+def getLastCommitMessage() {
+    return sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+}
+
 // Because we can build both branches and pull requests, we don't want the release tag to container PR-95
 // as it's not descriptive, instead we want the originating branch name i.e: SW-50. env.CHANGE_BRANCH contains this value if it's a PR being built.
-def getSiriusBranchName() {
+def getBranchName() {
     if(env.CHANGE_BRANCH != null) {
         return env.CHANGE_BRANCH
     }
@@ -15,7 +39,7 @@ def getBaseSlackContent(currentResult) {
     // Slave: ${getSlaveHostname()}
     def blueOceanUrl = env.RUN_DISPLAY_URL
     def slackContent = """BUILD ${currentResult}
-Branch: <${getGitHubBranchUrl()}|${getSiriusBranchName()}>
+Branch: <${getGitHubBranchUrl()}|${getBranchName()}>
 Build Number: <${env.BUILD_URL}|${env.BUILD_NUMBER}>
 Urls: <${env.BUILD_URL}|Jenkins Classic> || <${blueOceanUrl}|Blue Ocean>
 Commit Author: ${getCommitOwner()}
