@@ -53,7 +53,6 @@
                         </svg>
                         <span class="govuk-header__logotype-text">GOV.UK</span>
                     </span>
-                    <span class="govuk-header__product-name">Product name</span>
                 </a>
             </div>
 
@@ -89,7 +88,19 @@
 
     <div class="govuk-width-container">
 
-        <main class="govuk-main-wrapper" id="main-content" role="main" style="padding: 100px 0;">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag ">alpha</strong>
+                <span class="govuk-phase-banner__text">
+                    This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+                </span>
+            </p>
+        </div>
+
+        {# <a href="#" class="govuk-back-link">Back</a> #}
+
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            <h1 class="govuk-heading-xl">Sign in</h1>
             {% block content %}{% endblock %}
         </main>
 

@@ -6,21 +6,32 @@
     <div class="behat-region-form-errors">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
-<form action="{{ path('login') }}" method="post">
-    Login with user1/password<br/>
-    <label for="username">Username:</label>
-    <input type="text" id="login_username" name="_username" value="" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form action="{{ path('login') }}" method="post">
 
-    <label for="password">Password:</label>
-    <input type="password" id="login_password" name="_password" />
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="" role="group">
 
-    {#
-        If you want to control the URL the user
-        is redirected to on success (more details below)
-        <input type="hidden" name="_target_path" value="/account" />
-    #}
+                    <div class="govuk-form-group">
 
-    <button type="submit" id="login_submit">login</button>
-</form>
+                    <label for="username" class="govuk-label">Username:</label>
+                    <input type="text" id="login_username" name="_username" value="" class="govuk-input" />
+                </div>
+
+                <div class="govuk-form-group">
+
+                    <label for="password" class="govuk-label">Password:</label>
+                    <input type="password" id="login_password" name="_password" class="govuk-input" />
+                </div>
+
+                </fieldset>
+            </div>
+
+            <button type="submit" id="login_submit" class="govuk-button">Sign in</button>
+
+        </form>
+    </div>
+</div>
 
 {% endblock %}
