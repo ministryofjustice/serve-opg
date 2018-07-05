@@ -31,6 +31,8 @@ services:
        - ./env/local:/scripts:ro
     ports:
        - 9000:9000
+    links:
+      - dynamodb
     environment:
       DC_SYMFONY_SECRET: dc2018!
 
@@ -82,7 +84,6 @@ services:
       - ./env/local/behat.sh:/entrypoint.sh
       - ./frontend:/app:delegated
 
-
   phpunit:
     build:
       context: ./frontend
@@ -92,3 +93,8 @@ services:
     volumes:
       - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
+
+  dynamodb:
+    image: dwmkerr/dynamodb
+    ports:
+       - 8000:8000

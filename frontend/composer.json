@@ -9,21 +9,22 @@
     "require": {
         "php": ">=5.5.9",
         "symfony/symfony": "3.4.*",
-        "twig/extensions": "1.*",
+        "twig/extensions": "1.5.*",
         "symfony/swiftmailer-bundle": "2.3.*",
         "symfony/monolog-bundle": "2.8.*",
-        "sensio/framework-extra-bundle": "3.*",
-        "sensio/distribution-bundle": "5.*",
+        "sensio/framework-extra-bundle": "3.0.*",
+        "sensio/distribution-bundle": "5.0.*",
         "behat/behat": "3.3.1",
-        "behat/common-contexts": "*",
-        "behat/mink": "*",
-        "behat/mink-goutte-driver": "*",
-        "behat/mink-extension": "*",
-        "behat/mink-browserkit-driver": "*",
-        "behat/mink-selenium2-driver": "*",
-        "behat/symfony2-extension": "*",
+        "behat/common-contexts": "1.2.*",
+        "behat/mink": "1.7.*",
+        "behat/mink-goutte-driver": "1.2.*",
+        "behat/mink-extension": "2.3.*",
+        "behat/mink-browserkit-driver": "1.3.*",
+        "behat/mink-selenium2-driver": "1.3.*",
+        "behat/symfony2-extension": "2.1.*",
+        "gwk/dynamo-session-bundle": "1.*",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.8.0"
+        "phpunit/phpunit": "4.8.*"
     },
     "scripts": {
         "post-install-cmd": [
