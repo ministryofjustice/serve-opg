@@ -43,18 +43,56 @@ Build
      git pull origin master
      docker-compose build --force-rm --no-cache
      docker-compose up
-     
-## Run behat
 
-    docker exec -t dctest bin/behat -c tests/behat/behat.yml
+
+## Composer
+``` bash
+docker-compose run composer
+```
+
+## Compile Assets
+
+##### Set up node. 
+You'll only need to do this once, or when you change package.json
+
+``` bash
+docker-compose run node /entrypoint-setup.sh
+```
+
+##### Compile Assets
+``` bash
+docker-compose run node /entrypoint-generate.sh
+```
 
 ## Run PHPUnit
 
-     docker exec -t dctest bin/phpunit -c tests/phpunit/
+``` bash
+docker-compose run phpunit
+```
+
+## Behat
+``` bash
+docker-compose run behat
+```
 
 ## Cache delete
-    
-    docker exec dcphp rm -rf /tmp/app-cache/*
+``` bash
+docker-compose exec php /scripts/cache-clear.sh
+```
+
+## Get a root shell
+
+docker-compose exec nginx bash
+docker-compose exec php bash
+
+docker-compose run --entrypoint="bash" node
+docker-compose run --entrypoint="bash" composer
+docker-compose run --entrypoint="bash" behat
+docker-compose run --entrypoint="bash" phpunit
+
+# todo - 
+dcop shell node
+dcop shell php
 
 ## Toggle prod/dev mode on local env
 
@@ -62,6 +100,8 @@ Build
     docker exec dcphp touch /app/.enableProdMode
     # dev mode
     docker exec dcphp rm /app/.enableProdMode
+
+
 
 ## Other useful commands
     

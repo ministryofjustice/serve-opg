@@ -3,3 +3,4 @@ frontend/vendor
 frontend/app/cache/
 frontend/app/logs/
 frontend/web/assets
+frontend/node_modules

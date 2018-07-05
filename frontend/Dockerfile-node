@@ -1,0 +1,10 @@
+FROM alpine:latest
+
+RUN apk --no-cache add \
+  nodejs bash tree nano
+
+WORKDIR /app
+
+COPY package.json /app/
+RUN  npm -g set progress=false && \
+     npm install -g gulp@3.9.1

@@ -1,9 +1,8 @@
 # https://docs.docker.com/compose/compose-file/compose-file-v2/#environment
-version: '2'
+version: '2.1'
 
 services:
-  nginx:
-    container_name: dcnginx
+  frontend:
     volumes_from:
         - php
     build:
@@ -11,14 +10,16 @@ services:
       dockerfile: Dockerfile-nginx
     ports:
         - 8082:80
-    links:
+    depends_on:
+    # todo - healthcheck - wait for FPM to give a 9000 out
         - php
     environment:
       SYMFONY_ALLOW_DEV: 1
+    volumes:
+       - ./frontend/misc/config/app.conf:/etc/nginx/conf.d/app.conf
 
 
   php:
-    container_name: dcphp
     build:
       context: frontend
       dockerfile: Dockerfile-php
@@ -26,16 +27,15 @@ services:
        - ./frontend/app:/app/app
        - ./frontend/src:/app/src
        - ./frontend/web:/app/web
+       - ./frontend/vendor:/app/vendor:ro
+       - ./env/local:/scripts:ro
     ports:
        - 9000:9000
     environment:
       DC_SYMFONY_SECRET: dc2018!
 
 
-
-  # for Behat and PHPUnit
   test:
-      container_name: dctest
       build:
         context: frontend
         dockerfile: Dockerfile-php
@@ -43,8 +43,52 @@ services:
          - php
       volumes:
          - ./frontend/tests:/app/tests
-      links:
+      depends_on:
         - php
-        - nginx
+        - frontend
+
+  composer:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-composer
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/local/composer.sh:/entrypoint.sh
+      - ./frontend:/app:delegated
+      - ~/.composer:/root/.composer:delegated
+
+  node:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-node
+    volumes:
+      - ./env/local/frontend-setup.sh:/entrypoint-setup.sh:ro
+      - ./env/local/frontend-generate.sh:/entrypoint-generate.sh:ro
+      - ./frontend/package.json:/app/package.json:ro
+      - ./frontend/package-lock.json:/app/package-lock.json:delegated
+      - ./frontend/gulpfile.js:/app/gulpfile.js:ro
+      - ./frontend/node_modules:/app/node_modules:delegated
+      - ./frontend/web/assets:/app/web/assets:delegated
+      - ./frontend/src:/app/src:ro
+
+  behat:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/local/behat.sh:/entrypoint.sh
+      - ./frontend:/app:delegated
 
 
+  phpunit:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/local/phpunit.sh:/entrypoint.sh
+      - ./frontend:/app:delegated
