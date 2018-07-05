@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Aws\DynamoDb\DynamoDbClient;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -20,6 +21,16 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
+        $errors = [];
+
+        $dynamoDb = $this->get('aws.dynamodb'); /* @var $dynamoDb DynamoDbClient*/
+        //TODO ping
+        // use https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.PHP.html
+
+        if ($errors) {
+            return new Response(implode('<br/>', $errors), 500);
+        }
+
         return new Response('OK', 200);
     }
 

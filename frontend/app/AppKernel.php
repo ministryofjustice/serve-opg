@@ -24,7 +24,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            //new GWK\DynamoSessionBundle\GWKDynamoSessionBundle(),
+            new Aws\Symfony\AwsBundle(),
             new AppBundle\AppBundle(),
         ];
 

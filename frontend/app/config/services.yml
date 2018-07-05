@@ -1,8 +1,8 @@
 services:
 
     _defaults:
-        autowire: true
-        autoconfigure: true
+        autowire: false
+        autoconfigure: false
         public: true
 
     AppBundle\Controller\UserController:
@@ -14,3 +14,33 @@ services:
         arguments: [  "%kernel.root_dir%" ]
         tags:
             - { name: twig.extension }
+
+# https://github.com/symfony/symfony/issues/15259
+    aws_dynamo.client:
+        class: Aws\DynamoDb\DynamoDbClient
+        factory_class: Aws\DynamoDb\DynamoDbClient
+        factory_method: 'factory'
+        arguments:
+            -
+#              credentials:
+#                  key: %dynamodb_aws_key%
+#                  secret: %dynamodb_aws_secret%
+              region: 'us-east-1'
+              version: 'latest'
+#              version: '2012-08-10'
+
+    # https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/service_dynamodb-session-handler.html
+    aws_dynamo.session:
+       class: Aws\DynamoDb\LockingSessionConnection
+       arguments:
+           - "@aws_dynamo.client"
+           -
+            table_name: 'sessions'
+            hash_key: 'id'
+            max_lock_wait_time: 10
+            min_lock_retry_microtime: 500
+            max_lock_retry_microtime: 5000
+
+    dynamo_session_handler:
+      class: Aws\DynamoDb\SessionHandler
+      arguments: [ "@aws_dynamo.session" ]
