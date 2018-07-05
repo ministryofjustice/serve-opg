@@ -95,6 +95,9 @@ services:
       - ./frontend:/app:delegated
 
   dynamodb:
+    # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
+#    image: deangiberson/aws-dynamodb-local
+#    image: cnadiminti/dynamodb-local
     image: dwmkerr/dynamodb
     ports:
        - 8000:8000

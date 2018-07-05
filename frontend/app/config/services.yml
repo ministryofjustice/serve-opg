@@ -27,6 +27,8 @@ services:
 #                  secret: %dynamodb_aws_secret%
               region: 'us-east-1'
               version: 'latest'
+              endpoint: 'http://dynamodb:8000'
+              validate: false
 #              version: '2012-08-10'
 
     # https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/service_dynamodb-session-handler.html
