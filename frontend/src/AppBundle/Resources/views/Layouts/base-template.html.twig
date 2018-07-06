@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>{% block htmlTitle %}Digicop{% endblock %}</title>
+    <title>{% block htmlTitle %}Digicop{% endblock %}Digicop - GOV.UK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="shortcut icon" href="{{ 'images/favicon.ico' | assetUrl }}" type="image/x-icon" />
@@ -100,6 +100,7 @@
         {# <a href="#" class="govuk-back-link">Back</a> #}
 
         <main class="govuk-main-wrapper" id="main-content" role="main">
+            {% block validationSummary %}{% endblock %}
             <h1 class="govuk-heading-xl">{% block pageTitle %}Page title{% endblock %}</h1>
             {% block content %}{% endblock %}
         </main>
