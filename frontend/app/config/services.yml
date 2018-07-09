@@ -2,7 +2,7 @@ services:
 
     _defaults:
         autowire: true
-        autoconfigure: false
+        autoconfigure: true
         public: true
 
     AppBundle\Controller\UserController:
@@ -22,14 +22,15 @@ services:
         factory_method: 'factory'
         arguments:
             -
-#              credentials:
-#                  key: %dynamodb_aws_key%
-#                  secret: %dynamodb_aws_secret%
-              region: 'us-east-1'
+              credentials:
+                  key: "%dynamodb_key%"
+                  secret: "%dynamodb_secret%"
+              region: 'us-west-2'
               version: 'latest'
-              endpoint: 'http://dynamodb:8000'
               validate: false
-#              version: '2012-08-10'
+              #scheme: 'https'
+              endpoint: 'http://dynamodb:8000'
+              debug: false
 
     # https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/service_dynamodb-session-handler.html
     aws_dynamo.session:

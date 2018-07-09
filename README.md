@@ -90,6 +90,13 @@ docker-compose run --entrypoint="bash" composer
 docker-compose run --entrypoint="bash" behat
 docker-compose run --entrypoint="bash" phpunit
 
+## Dynamodb shell
+Open the [web interface](http://localhost:8000/shell/) and run query. E.g. select data from session table
+
+        {
+            TableName: 'sessions'
+        }
+
 # todo - 
 dcop shell node
 dcop shell php

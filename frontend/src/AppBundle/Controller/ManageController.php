@@ -23,10 +23,6 @@ class ManageController extends Controller
     {
         $errors = [];
 
-        $dynamoDb = $this->get('aws.dynamodb'); /* @var $dynamoDb DynamoDbClient*/
-        //TODO ping
-        // use https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.PHP.html
-
         if ($errors) {
             return new Response(implode('<br/>', $errors), 500);
         }
