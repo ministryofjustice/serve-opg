@@ -95,16 +95,6 @@ docker-compose run --entrypoint="bash" composer
 docker-compose run --entrypoint="bash" behat
 docker-compose run --entrypoint="bash" phpunit
 
-## Dynamodb shell
-Open the [web interface](http://localhost:8000/shell/) and run query. E.g. select data from session table
-
-        {
-            TableName: 'sessions'
-        }
-
-## Install Dynamodb tables
-
-    docker-compose exec php php app/console dc:setup
 
 # todo - 
 dcop shell node
@@ -118,16 +108,13 @@ dcop shell php
     docker-compose exec php rm /app/.enableProdMode
 
 
+## Watch logs
+Use the main window where `docker-compose up` was launched
 
 ## Other useful commands
     
     # watch logs
-    docker logs dcnginx -f
-    docker logs dcphp -f
-
-    # sh into container (note: bash not installed)
-    docker exec -it dcnginx sh
-    docker exec -it dcphp sh
+    watch the main window
     
     # kill all running containers
     docker kill $(docker ps -q)
@@ -135,6 +122,14 @@ dcop shell php
     docker rm $(docker ps -a -q)
     # delete all images 
     docker rmi $(docker images -q)
+    
+## Dynamodb shell
+Open the [web interface](http://localhost:8000/shell/) and run query. E.g. select data from session table
+
+        {
+            TableName: 'sessions'
+        }
+    
     
 # Dev notes
 composer libs are updated with PHP 5.5.38 
