@@ -18,8 +18,6 @@ services:
 # https://github.com/symfony/symfony/issues/15259
     aws_dynamo.client:
         class: Aws\DynamoDb\DynamoDbClient
-        factory_class: Aws\DynamoDb\DynamoDbClient
-        factory_method: 'factory'
         arguments:
             -
               credentials:
@@ -28,13 +26,11 @@ services:
               region: 'us-west-2'
               version: 'latest'
               validate: false
-              #scheme: 'https'
               endpoint: 'http://dynamodb:8000'
               debug: false
 
-    # https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/service_dynamodb-session-handler.html
     aws_dynamo.session:
-       class: Aws\DynamoDb\LockingSessionConnection
+       class: Common\SessionConnectionCreatingTable
        arguments:
            - "@aws_dynamo.client"
            -
