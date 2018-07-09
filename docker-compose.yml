@@ -80,6 +80,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile-php
+    links:
+        - frontend
     entrypoint:
         - /entrypoint.sh
     volumes:

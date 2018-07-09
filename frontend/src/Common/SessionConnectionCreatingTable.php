@@ -24,7 +24,6 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
                     [
                         'AttributeName' => 'id',
                         'KeyType' => 'HASH',  //Partition key
-
                     ]
                 ],
                 'AttributeDefinitions' => [
@@ -40,7 +39,5 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
             ];
             $client->createTable($params);
         }
-
-
     }
 }
