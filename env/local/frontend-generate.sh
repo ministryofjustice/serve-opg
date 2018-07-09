@@ -3,5 +3,3 @@
 #tree /app/web/assets
 
 gulp
-
-tree /app/web/

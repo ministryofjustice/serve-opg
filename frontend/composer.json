@@ -4,7 +4,10 @@
     "type": "project",
     "description": "Digicop",
     "autoload": {
-        "psr-0": { "": "src/" }
+      "psr-4": {
+          "AppBundle\\": "src/AppBundle"
+      },
+      "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
     "require": {
         "php": ">=5.5.9",
@@ -45,5 +48,8 @@
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
         }
+    },
+    "require-dev": {
+        "phpstan/phpstan-symfony": "^0.10.0"
     }
 }
