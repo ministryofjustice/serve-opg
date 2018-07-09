@@ -5,6 +5,6 @@ monolog:
    handlers:
        log_stash_prod:
            type: stream
-           path: "/var/log/app/application.log"
+           path: "//tmp/app-logs/application.log"
            level: warning
            formatter: logstash_formatter

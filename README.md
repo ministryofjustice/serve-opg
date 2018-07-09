@@ -80,6 +80,11 @@ docker-compose run behat
 docker-compose exec php /scripts/cache-clear.sh
 ```
 
+alternative to delete cache and logs:
+``` bash
+docker-compose exec rm -rf /tmp/app-cache/* /tmp/app-logs/*
+```
+
 ## Get a root shell
 
 docker-compose exec nginx bash
@@ -97,6 +102,10 @@ Open the [web interface](http://localhost:8000/shell/) and run query. E.g. selec
             TableName: 'sessions'
         }
 
+## Install Dynamodb tables
+
+    docker-compose exec php php app/console dc:setup
+
 # todo - 
 dcop shell node
 dcop shell php
@@ -104,9 +113,9 @@ dcop shell php
 ## Toggle prod/dev mode on local env
 
     # prod mode
-    docker exec dcphp touch /app/.enableProdMode
+    docker-compose exec php touch /app/.enableProdMode
     # dev mode
-    docker exec dcphp rm /app/.enableProdMode
+    docker-compose exec php rm /app/.enableProdMode
 
 
 
