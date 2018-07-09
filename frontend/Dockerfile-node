@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 RUN apk --no-cache add \
-  nodejs bash tree nano
+  nodejs npm bash tree nano
 
 WORKDIR /app
 
