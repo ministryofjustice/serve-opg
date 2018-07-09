@@ -15,4 +15,4 @@ default:
               goutte:
                   guzzle_parameters:
                     verify: false
-              base_url: http://nginx
+              base_url: http://frontend

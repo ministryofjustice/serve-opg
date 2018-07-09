@@ -64,7 +64,7 @@ function backupExistingOPGEnv() {
 function setupRepo() {
   if [ ! -d "$DC_PATH" ]; then
     cd ${OPG_PATH}
-    git clone -b ${DEVKIT_TARGET_BRANCH} git@github.com:ministryofjustice/opg-digicops.git
+    git clone -b master git@github.com:ministryofjustice/opg-digicop.git
   else
     cd ${DC_PATH}
     git checkout master
@@ -86,11 +86,11 @@ mkdir -p ${DC_PATH}
 unlink `which dc` || true
 
 # make the new "opg" binary
-sudo ln -sf "${DC_PATH}/frontend/bin/console" /usr/local/bin/dc
-sudo chown $UID /usr/local/bin/dc
+sudo ln -sf "${DC_PATH}/devkit/bin/console" /usr/local/bin/dcop
+sudo chown $UID /usr/local/bin/dcop
 
 # test the new "opg" binary
-dc > /dev/null 2>&1 || (echo "Unable to invoke the opg command" && exit 1)
+dcop > /dev/null 2>&1 || (echo "Unable to invoke the opg command" && exit 1)
 
 # install composer for each subProject
 docker-compose run --rm composer
@@ -104,11 +104,8 @@ docker-compose run --rm node /entrypoint-generate.sh
 # dcop frontend:generate
 
 # spin up the environment - this will run injest
-docker-compose up nginx php
+docker-compose up frontend php
 #dc up
 
 echo "SUCCESS! Browse to https://localhost:8082"
 echo ""
-
-
-
