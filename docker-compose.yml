@@ -29,8 +29,6 @@ services:
        - ./frontend/web:/app/web
        - ./frontend/vendor:/app/vendor:ro
        - ./env/local:/scripts:ro
-    ports:
-       - 9000:9000
     depends_on:
       - dynamodb
       - composer
@@ -90,8 +88,7 @@ services:
   dynamodb:
     # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
     image: dwmkerr/dynamodb
-    ports:
-       - 8000:8000
+
   qa:
     image: jakzal/phpqa:alpine
     working_dir: /app
@@ -106,8 +103,6 @@ services:
         dockerfile: Dockerfile-nginx
       ports:
           - 8083:80
-      links:
-          - api_php
       depends_on:
           # todo - healthcheck - wait for FPM to give a 9001 out
           - api_php
@@ -126,10 +121,6 @@ services:
          - ./api/web:/app/web
          - ./api/vendor:/app/vendor:ro
          - ./env/local:/scripts:ro
-      ports:
-         - 9001:9000
-      depends_on:
-         - api_composer
       environment:
         DC_SYMFONY_SECRET: dcapi2018!
 
