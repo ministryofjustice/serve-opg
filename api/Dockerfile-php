@@ -1,0 +1,18 @@
+FROM php:7.2.7-fpm-alpine3.7
+
+WORKDIR /app
+
+# https://github.com/gliderlabs/docker-alpine/blob/master/docs/usage.md
+RUN apk --no-cache add bash nano tree
+
+# copy php.ini config
+COPY misc/config/php.ini /usr/local/etc/php/
+
+# add dirs
+COPY . /app
+
+# cache clean
+RUN mkdir -p /tmp/app-cache
+RUN mkdir -p /tmp/app-logs
+RUN chown www-data:www-data -R /tmp/app-cache /tmp/app-logs
+
