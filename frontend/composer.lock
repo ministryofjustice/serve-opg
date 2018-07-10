@@ -4,12 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "697152855201f8eddd80e3aca102b95e",
-=======
     "hash": "9039498bae8367233da2b52041376260",
     "content-hash": "1dec2cb70054f9851e6ae98446a72fcf",
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -898,11 +894,7 @@
                 "docblock",
                 "parser"
             ],
-<<<<<<< HEAD
-            "time": "2017-12-06T07:11:42+00:00"
-=======
             "time": "2015-08-31 12:32:49"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "doctrine/cache",
@@ -976,11 +968,7 @@
                 "cache",
                 "caching"
             ],
-<<<<<<< HEAD
-            "time": "2017-08-25T07:02:50+00:00"
-=======
             "time": "2017-07-22 12:49:21"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "doctrine/collections",
@@ -1047,11 +1035,7 @@
                 "collections",
                 "iterator"
             ],
-<<<<<<< HEAD
-            "time": "2017-07-22T10:37:32+00:00"
-=======
             "time": "2015-04-14 22:21:58"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "doctrine/common",
@@ -1124,11 +1108,7 @@
                 "persistence",
                 "spl"
             ],
-<<<<<<< HEAD
-            "time": "2017-08-31T08:43:38+00:00"
-=======
             "time": "2016-11-30 16:50:46"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "doctrine/inflector",
@@ -1195,11 +1175,7 @@
                 "singularize",
                 "string"
             ],
-<<<<<<< HEAD
-            "time": "2018-01-09T20:05:19+00:00"
-=======
             "time": "2015-11-06 14:35:42"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "doctrine/instantiator",
@@ -1253,11 +1229,7 @@
                 "constructor",
                 "instantiate"
             ],
-<<<<<<< HEAD
-            "time": "2017-07-22T11:58:36+00:00"
-=======
             "time": "2015-06-14 21:17:01"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "doctrine/lexer",
@@ -1366,11 +1338,7 @@
             "keywords": [
                 "scraper"
             ],
-<<<<<<< HEAD
-            "time": "2018-06-29T15:13:57+00:00"
-=======
             "time": "2017-11-19 08:45:40"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "fig/link-util",
@@ -1650,11 +1618,7 @@
             "keywords": [
                 "test"
             ],
-<<<<<<< HEAD
-            "time": "2015-05-11T14:41:42+00:00"
-=======
             "time": "2015-05-11 14:41:42"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "instaclick/php-webdriver",
@@ -1960,11 +1924,7 @@
                 "pseudorandom",
                 "random"
             ],
-<<<<<<< HEAD
-            "time": "2018-07-04T16:31:37+00:00"
-=======
             "time": "2018-06-08 15:26:40"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2069,11 +2029,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-<<<<<<< HEAD
-            "time": "2017-11-30T07:14:17+00:00"
-=======
             "time": "2017-08-08 06:39:58"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -2120,11 +2076,7 @@
                     "email": "me@mikevanriel.com"
                 }
             ],
-<<<<<<< HEAD
-            "time": "2017-07-14T14:27:02+00:00"
-=======
             "time": "2017-06-03 08:32:36"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "phpspec/prophecy",
@@ -4233,11 +4185,7 @@
             "keywords": [
                 "templating"
             ],
-<<<<<<< HEAD
-            "time": "2018-04-02T09:24:19+00:00"
-=======
             "time": "2018-03-20 04:25:58"
->>>>>>> 72417776902916cc8c2ea40994caff1c4b49816e
         },
         {
             "name": "webmozart/assert",

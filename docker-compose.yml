@@ -13,6 +13,8 @@ services:
     depends_on:
     # todo - healthcheck - wait for FPM to give a 9000 out
         - php
+    links:
+        - php
     environment:
       SYMFONY_ALLOW_DEV: 1
     volumes:
@@ -33,6 +35,9 @@ services:
        - 9000:9000
     links:
       - dynamodb
+    depends_on:
+      - dynamodb
+      - composer
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DYNAMODB_KEY: key
@@ -41,6 +46,7 @@ services:
   composer:
     build:
       context: ./frontend
+      #TODO use a common one for front and api ?
       dockerfile: Dockerfile-composer
     entrypoint:
         - /entrypoint.sh
@@ -89,8 +95,6 @@ services:
 
   dynamodb:
     # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
-#    image: deangiberson/aws-dynamodb-local
-#    image: cnadiminti/dynamodb-local
     image: dwmkerr/dynamodb
     ports:
        - 8000:8000

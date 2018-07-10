@@ -2,8 +2,15 @@
 # ignore bin as created by composer
 frontend/bin
 frontend/vendor
-frontend/app/cache/
-frontend/app/logs/
 frontend/web/assets
 frontend/node_modules
 frontend/bin/jp.php
+
+api/bin
+api/vendor
+api/web/assets
+api/node_modules
+api/bin/jp.php
+api/app/check.php
+api/app/console
+api/app/SymfonyRequirements.php
