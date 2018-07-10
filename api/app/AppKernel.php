@@ -48,7 +48,7 @@ class AppKernel extends Kernel
         // @todo - this should be an ENV VAR
         return '/tmp/app-logs';
     }
-//
+
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(function (ContainerBuilder $container) {
