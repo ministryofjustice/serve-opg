@@ -18,7 +18,7 @@ class RoboFile extends \Robo\Tasks
 
     public function up()
     {
-        $this->_exec('cd ' . $this->getProjectPath() . ' && docker-compose up --force-recreate -d');
+        $this->_exec('cd ' . $this->getProjectPath() . ' && docker-compose up --force-recreate -d frontend');
     }
 
     public function down()
@@ -54,6 +54,18 @@ class RoboFile extends \Robo\Tasks
 
     public function frontend_gen()
     {
+        $this->_exec('cd ' . $this->getProjectPath() . ' && docker-compose run --rm node /entrypoint-generate.sh');
+    }
+
+    public function shell($service)
+    {
+      docker-compose exec nginx bash
+      docker-compose exec php bash
+
+      docker-compose run --entrypoint="bash" node
+      docker-compose run --entrypoint="bash" composer
+      docker-compose run --entrypoint="bash" behat
+      docker-compose run --entrypoint="bash" phpunit
         $this->_exec('cd ' . $this->getProjectPath() . ' && docker-compose run --rm node /entrypoint-generate.sh');
     }
 
