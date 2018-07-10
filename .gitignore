@@ -1,4 +1,6 @@
 .idea
+# ignore bin as created by composer
+frontend/bin
 frontend/vendor
 frontend/app/cache/
 frontend/app/logs/

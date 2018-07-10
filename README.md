@@ -80,6 +80,11 @@ docker-compose run behat
 docker-compose exec php /scripts/cache-clear.sh
 ```
 
+alternative to delete cache and logs:
+``` bash
+docker-compose exec rm -rf /tmp/app-cache/* /tmp/app-logs/*
+```
+
 ## Get a root shell
 
 docker-compose exec nginx bash
@@ -90,6 +95,7 @@ docker-compose run --entrypoint="bash" composer
 docker-compose run --entrypoint="bash" behat
 docker-compose run --entrypoint="bash" phpunit
 
+
 # todo - 
 dcop shell node
 dcop shell php
@@ -97,21 +103,18 @@ dcop shell php
 ## Toggle prod/dev mode on local env
 
     # prod mode
-    docker exec dcphp touch /app/.enableProdMode
+    docker-compose exec php touch /app/.enableProdMode
     # dev mode
-    docker exec dcphp rm /app/.enableProdMode
+    docker-compose exec php rm /app/.enableProdMode
 
 
+## Watch logs
+Use the main window where `docker-compose up` was launched
 
 ## Other useful commands
     
     # watch logs
-    docker logs dcnginx -f
-    docker logs dcphp -f
-
-    # sh into container (note: bash not installed)
-    docker exec -it dcnginx sh
-    docker exec -it dcphp sh
+    watch the main window
     
     # kill all running containers
     docker kill $(docker ps -q)
@@ -119,6 +122,14 @@ dcop shell php
     docker rm $(docker ps -a -q)
     # delete all images 
     docker rmi $(docker images -q)
+    
+## Dynamodb shell
+Open the [web interface](http://localhost:8000/shell/) and run query. E.g. select data from session table
+
+        {
+            TableName: 'sessions'
+        }
+    
     
 # Dev notes
 composer libs are updated with PHP 5.5.38 

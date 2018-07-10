@@ -31,8 +31,12 @@ services:
        - ./env/local:/scripts:ro
     ports:
        - 9000:9000
+    links:
+      - dynamodb
     environment:
       DC_SYMFONY_SECRET: dc2018!
+      DC_DYNAMODB_KEY: key
+      DC_DYNAMODB_SECRET: secret
 
   composer:
     build:
@@ -63,6 +67,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile-php
+    links:
+        - frontend
     depends_on:
       - frontend
     entrypoint:
@@ -70,7 +76,6 @@ services:
     volumes:
       - ./env/local/behat.sh:/entrypoint.sh
       - ./frontend:/app:delegated
-
 
   phpunit:
     build:
@@ -82,6 +87,13 @@ services:
       - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
 
+  dynamodb:
+    # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
+#    image: deangiberson/aws-dynamodb-local
+#    image: cnadiminti/dynamodb-local
+    image: dwmkerr/dynamodb
+    ports:
+       - 8000:8000
   qa:
     image: jakzal/phpqa:alpine
     working_dir: /app
