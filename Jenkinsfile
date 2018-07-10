@@ -1,15 +1,21 @@
 #!/usr/bin/env groovy
 
+// ###############################################################################
+// This file is owned by WebOps. Do not merge to master without WebOps input first
+// ###############################################################################
+
 def dateString = (new Date()).format('YYYY-MM-dd')
+def enablePushDockerImages = true
+def slackChannel = '#opg-digicop-builds'
+def githubUserPassCredentialsId = '9fb2f9f6-657a-463c-bc1d-2da04b886e41'
 
 def getGitHubBranchUrl() {
 
     if(env.CHANGE_URL != null) {
       return env.CHANGE_URL;
     }
-
-    def githubRepo = 'https://github.com/ministryofjustice/opg-sirius/'
-    def githubBranchUrl = githubRepo + 'tree/' + getSiriusBranchName()
+    def githubRepo = 'https://github.com/ministryofjustice/opg-digicop/'
+    def githubBranchUrl = githubRepo + 'tree/' + getBranchName()
     return githubBranchUrl;
 }
 
@@ -48,14 +54,26 @@ Commit Message: ${getLastCommitMessage()}
     return slackContent
 }
 
+def getSlackColorCodeFromBuildResult(buildResult) {
+  // SLACK STUFF
+  colorCode = 'danger'
+  if(buildResult == 'SUCCESS') {
+    colorCode = 'good'
+  } else if(buildResult == 'ABORTED') {
+    colorCode = '#808080'
+  }
+  return colorCode;
+}
+
 
 pipeline {
 
-  agent { label '!master' } // run on slaves only
+  agent { label 'digicop_slave' } // run on slaves only
 
   environment {
     IS_CI = "true"
     DOCKER_REGISTRY = 'registry.service.opg.digital'
+
     FRONTEND_NGINX_IMAGE_NAME = 'opguk/digicop-frontend-nginx'
     FRONTEND_PHP_IMAGE = 'opguk/digicop-frontend-php'
 
@@ -75,27 +93,24 @@ pipeline {
       }
     }
 
-    stage('Init')  {
-
+    stage('Setup') {
       parallel {
+        stage('Composer') {
+          steps {
+            script {
+                sh 'docker-compose -f docker-compose.ci.yml build --no-cache composer'
+                sh "docker-compose -f docker-compose.ci.yml run --rm composer"
+            }
+          }
+        }
+
         stage('Notify Slack') {
           steps {
             script {
               slackContent = getBaseSlackContent('STARTED')
               echo slackContent
-              // @todo - make this a variable
-              slackSend(message: slackContent, color: '#FFCC00', channel: '#opg-digicop-builds')
-              currentBuild.description = "Tag: ${SIRIUS_NEW_TAG}"
-            }
-          }
-        }
-
-        stage('Composer') {
-          steps {
-            script {
-                dir('frontend') {
-                  sh 'docker-compose run composer'
-                }
+              slackSend(message: slackContent, color: '#FFCC00', channel: slackChannel)
+              currentBuild.description = "Tag: ${DIGICOP_TAG}"
             }
           }
         }
@@ -103,102 +118,162 @@ pipeline {
         stage('Compile Assets') {
           steps {
             script {
-              dir('frontend') {
-                sh 'docker-compose run node /entrypoint-setup.sh'
-                sh 'docker-compose run node /entrypoint-generate.sh'
+              sh 'docker-compose -f docker-compose.ci.yml build --no-cache node'
+              sh "docker-compose -f docker-compose.ci.yml run --rm -e CI_USER_ID=`id -u` node /entrypoint-setup.sh"
+              sh "docker-compose -f docker-compose.ci.yml run --rm -e CI_USER_ID=`id -u` node /entrypoint-generate.sh"
+            }
+          }
+        }
+      } // parallel
+    } // Phase 1
+
+    stage('Static Analysis') {
+      parallel {
+        stage('PHPCS') {
+          steps {
+            script {
+              try {
+                sh 'docker-compose run --rm --name=phpcs qa phpcs src'
+              } catch(e) {
+                // Do Nothing. Let the build pass.
               }
             }
           }
         }
 
-        stage('Build frontend nginx') {
+        stage('PHPStan') {
           steps {
             script {
-                sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL}  -f Dockerfile-php ./frontend"
+              // todo - https://github.com/phpstan/phpstan-symfony
+              try {
+                sh 'docker-compose run --rm --name=phpstan qa phpstan analyse -l 4 src'
+              } catch(e) {
+                // Do Nothing. Let the build pass.
+              }
             }
           }
         }
-      } // parallel
-    } // Stage('Init')
 
-    stage('Build frontend php') {
-      steps {
-        script {
-          sh "docker build --no-cache -t ${env.FRONTEND_PHP_IMAGE_FULL}  -f Dockerfile-php ./frontend"
+        stage('PHP Lint') {
+          steps {
+            script {
+              try {
+                sh 'docker-compose run --rm --name=phplint qa parallel-lint src web app tests'
+              } catch(e) {
+                // Do Nothing. Let the build pass.
+              }
+            }
+          }
+        }
+
+        stage('PHP Security Checks') {
+          steps {
+            script {
+              sh 'docker-compose run --rm --name=phpseccheck qa security-checker security:check'
+            }
+          }
         }
       }
     }
 
+    stage('Build')  {
+      parallel {
+        stage('Build frontend nginx') {
+          steps {
+            script {
+              dir('frontend') {
+                sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL} -f Dockerfile-nginx ."
+              }
+            }
+          }
+        }
+
+        stage('Build frontend php') {
+          steps {
+            script {
+              dir('frontend') {
+                sh "docker build --no-cache -t ${env.FRONTEND_PHP_IMAGE_FULL}  -f Dockerfile-php ."
+              }
+            }
+          }
+        }
+      } // parallel
+    } // Stage('Build')
+
+    stage('Test') {
+      parallel {
+        stage('behat') {
+          steps {
+            script {
+              sh 'docker-compose up -d frontend'
+              sh 'sleep 5 && docker-compose -f docker-compose.ci.yml run --rm behat'
+            }
+          }
+        }
+
+        stage('phpunit') {
+          steps {
+            script {
+              sh "docker-compose -f docker-compose.ci.yml run --rm --user=www-data phpunit"
+            }
+          }
+        }
+      }
+    } // Stage ('Test')
+
   } // stages
 
-  // post {
-  //   always {
-  //       slackContent = getBaseSlackContent(currentBuild.currentResult)
-  //
-  //       // If it's an aborted build, we don't wnat to push anything.
-  //       if(currentBuild.currentResult != 'ABORTED') {
-  //
-  //             slackContent = """ ${slackContent}
-  //             Deploy Tag: ${SIRIUS_NEW_TAG}"""
-  //
-  //             if(enablePushDockerImages) {
-  //               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: githubUserPassCredentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-  //                   sh '''
-  //
-  //                   if ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${FRONTEND_NGINX_IMAGE_FULL} && ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${FRONTEND_PHP_IMAGE_FULL}; then
-  //
-  //                       echo "FOUND DOCKER IMAGES - TAGGING AND PUSHING"
-  //                       # git config tweak is due to a limitation on the jenkins branch sources (github) plugin
-  //                       git config url."https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/".insteadOf "https://github.com/"
-  //                       git tag ${DIGICOP_TAG}
-  //                       git push origin ${DIGICOP_TAG}
-  //
-  //                       docker push ${FRONTEND_NGINX_IMAGE_FULL}
-  //                       docker push ${FRONTEND_PHP_IMAGE_FULL}
-  //                   else
-  //                       echo "DOCKER IMAGES NOT FOUND - NO IMAGES TO PUSH"
-  //                   fi
-  //                   '''
-  //               }
-  //
-  //             }
-  //
-  //           // Only when it's a successfull pipeline run, we clean it up. This means bad builds can be debugged on the CI box
-  //           echo "SUCESSFUL PIPELINE - REMOVING IMAGES"
-  //           dir(env.CI_WORKSPACE_DIR) {
-  //               // Clean up docker images
-  //               sh '''
-  //               docker rmi -f ${FRONTEND_NGINX_IMAGE_FULL}
-  //               docker rmi -f ${FRONTEND_PHP_IMAGE_FULL}
-  //               docker-compose down || true
-  //               docker-compose rm -fv || true
-  //               '''
-  //               // Clean up docker networks
-  //               sh 'docker network prune -f'
-  //               sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
-  //           }
-  //
-  //           // SLACK STUFF
-  //           // @todo - make this a variable
-  //           slackChannel = '#opg-digicops-builds'
-  //
-  //           colorCode = 'danger'
-  //           if(currentBuild.currentResult == 'SUCCESS') {
-  //             colorCode = 'good'
-  //           } else if(currentBuild.currentResult == 'ABORTED') {
-  //             colorCode = '#808080'
-  //           }
-  //
-  //           echo slackContent
-  //           slackSend(message: slackContent, color: colorCode, channel: slackChannel)
-  //
-  //
-  //       }
-  //
-  //
-  //   }
-  // }
+  post {
+    always {
 
+      echo "BUILD RESULT: ${currentBuild.currentResult}"
 
+      script {
 
+        slackContent = getBaseSlackContent(currentBuild.currentResult)
+
+        // If it's an aborted build, we don't wnat to push anything.
+        if(currentBuild.currentResult != 'ABORTED') {
+
+              slackContent = """ ${slackContent}
+Deploy Tag: ${DIGICOP_TAG}"""
+
+            if(enablePushDockerImages) {
+              withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: githubUserPassCredentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+                sh '''
+                  if ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${FRONTEND_NGINX_IMAGE_FULL} && ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${FRONTEND_PHP_IMAGE_FULL}; then
+                    echo "FOUND DOCKER IMAGES - TAGGING AND PUSHING"
+                    # git config tweak is due to a limitation on the jenkins branch sources (github) plugin
+                    git config url."https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/".insteadOf "https://github.com/"
+                    git tag ${DIGICOP_TAG}
+                    git push origin ${DIGICOP_TAG}
+
+                    docker push ${FRONTEND_NGINX_IMAGE_FULL}
+                    docker push ${FRONTEND_PHP_IMAGE_FULL}
+                  else
+                    echo "DOCKER IMAGES NOT FOUND - NO IMAGES TO PUSH"
+                  fi
+                  '''
+              }
+            }
+
+            echo "SUCESSFUL PIPELINE - REMOVING IMAGES"
+
+            // Clean up docker images
+            sh '''
+            docker rmi -f ${FRONTEND_NGINX_IMAGE_FULL} || true
+            docker rmi -f ${FRONTEND_PHP_IMAGE_FULL} || true
+            docker-compose stop || true
+            docker-compose rm -fv || true
+            '''
+
+            // Clean up docker networks
+            sh 'docker network prune -f'
+
+            echo slackContent
+            slackSend(message: slackContent, color: getSlackColorCodeFromBuildResult(currentBuild.currentResult), channel: slackChannel)
+        }
+      } // script
+    } // always
+  } // post
 } // Pipeline

@@ -8,8 +8,6 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile-nginx
-    ports:
-        - 8082:80
     depends_on:
     # todo - healthcheck - wait for FPM to give a 9000 out
         - php
@@ -17,7 +15,6 @@ services:
       SYMFONY_ALLOW_DEV: 1
     volumes:
        - ./frontend/misc/config/app.conf:/etc/nginx/conf.d/app.conf
-
 
   php:
     build:
@@ -29,14 +26,8 @@ services:
        - ./frontend/web:/app/web
        - ./frontend/vendor:/app/vendor:ro
        - ./env/local:/scripts:ro
-    ports:
-       - 9000:9000
-    links:
-      - dynamodb
     environment:
       DC_SYMFONY_SECRET: dc2018!
-      DC_DYNAMODB_KEY: key
-      DC_DYNAMODB_SECRET: secret
 
   composer:
     build:
@@ -45,17 +36,16 @@ services:
     entrypoint:
         - /entrypoint.sh
     volumes:
-      - ./env/local/composer.sh:/entrypoint.sh
-      - ./frontend:/app:delegated
-      - ~/.composer:/root/.composer:delegated
+      - ./env/ci/composer.sh:/entrypoint.sh
+      - ./frontend:/app
 
   node:
     build:
       context: ./frontend
       dockerfile: Dockerfile-node
     volumes:
-      - ./env/local/frontend-setup.sh:/entrypoint-setup.sh:ro
-      - ./env/local/frontend-generate.sh:/entrypoint-generate.sh:ro
+      - ./env/ci/frontend-setup.sh:/entrypoint-setup.sh:ro
+      - ./env/ci/frontend-generate.sh:/entrypoint-generate.sh:ro
       - ./frontend/package.json:/app/package.json:ro
       - ./frontend/package-lock.json:/app/package-lock.json:delegated
       - ./frontend/gulpfile.js:/app/gulpfile.js:ro
@@ -67,10 +57,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile-php
-    links:
-        - frontend
-    depends_on:
-      - frontend
     entrypoint:
         - /entrypoint.sh
     volumes:
@@ -87,15 +73,17 @@ services:
       - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
 
-  dynamodb:
-    # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
-#    image: deangiberson/aws-dynamodb-local
-#    image: cnadiminti/dynamodb-local
-    image: dwmkerr/dynamodb
-    ports:
-       - 8000:8000
-  qa:
-    image: jakzal/phpqa:alpine
-    working_dir: /app
+  phpstan:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+        - /entrypoint.sh
     volumes:
+      - ./env/ci/phpstan.sh:/entrypoint.sh
       - ./frontend:/app:delegated
+
+  qa:
+    image: jakzal/phpqa
+    volumes:
+      - ./frontend:/app:ro

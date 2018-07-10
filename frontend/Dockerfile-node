@@ -1,10 +1,12 @@
-FROM alpine:latest
+FROM alpine:3.8
 
-RUN apk --no-cache add \
-  nodejs bash tree nano
+RUN apk --update --no-cache add \
+  nodejs-npm bash tree nano
 
 WORKDIR /app
 
-COPY package.json /app/
-RUN  npm -g set progress=false && \
-     npm install -g gulp@3.9.1
+USER root
+
+RUN npm config set unsafe-perm true && \
+    npm -g set progress=false && \
+    npm install -g gulp@3.9.1

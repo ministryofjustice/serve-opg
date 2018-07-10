@@ -2,17 +2,27 @@ FROM php:7.2.7-fpm-alpine3.7
 
 WORKDIR /app
 
+# @todo - we need supplied UID/GID's and throw a hard error if not supplied.
+#         This works locally because we have a 'dcop' tool that lets you do the docker build first
+# consider that your typical context/build keys on docker-compose will no longer work on local, and you'll need a
+# specified image name on the .yml, and as such a 'dcop' command will need made to rebuild this to provide the ID's
+# @todo - document other gotcha's to consider before deciding on technical approach
+
 # https://github.com/gliderlabs/docker-alpine/blob/master/docs/usage.md
-RUN apk --no-cache add bash nano tree
+RUN apk --no-cache add bash nano tree shadow
 
 # copy php.ini config
 COPY misc/config/php.ini /usr/local/etc/php/
 
 # add dirs
-COPY . /app
+COPY --chown=www-data:www-data . /app
+
+RUN groupmod -g 1000 www-data && \
+    usermod -u 1000 -g 1000 www-data
 
 # cache clean
-RUN mkdir -p /tmp/app-cache
-RUN mkdir -p /tmp/app-logs
-RUN chown www-data:www-data -R /tmp/app-cache /tmp/app-logs
+RUN mkdir -p /tmp/app-cache && \
+    mkdir -p /tmp/app-logs && \
+    chown www-data:www-data -R /tmp/app-cache /tmp/app-logs
 
+# Do not do USER www-data here has FPM has to boot as root, then drop to www-data to spin up workers
