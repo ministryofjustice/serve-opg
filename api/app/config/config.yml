@@ -1,0 +1,75 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+framework:
+    translator:      { fallback: "en" }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:
+        enabled: true
+        enable_annotations: true
+        strict_email: true
+    templating:
+        engines: ['twig']
+    default_locale:  "en"
+    trusted_proxies: ~
+    session:
+      name: digideps
+      handler_id: dynamo_session_handler
+      # force session usage, no cookie (we want to logout when the browser closes)
+      cookie_lifetime: 0
+      gc_probability: 1
+      gc_divisor: 100
+      # session timeout (when GC kicks in)
+      gc_maxlifetime: 3900
+      # true:  cookie won't be accessible by Javascript, safer for XSS
+      cookie_httponly: true
+      # set to true when moved to HTTPS
+      cookie_secure: false
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: smtp
+    host:      localhost
+    username:  ~
+    password:  ~
+    spool:     { type: memory }
+
+services:
+    # Logtash formatter for Kibana
+    logstash_formatter:
+        class: Monolog\Formatter\LogstashFormatter
+        arguments: [ "application.client", null, null, "", 1 ]
+    line_formatter:
+        class: Monolog\Formatter\LineFormatter
+
+monolog:
+   handlers:
+       php_stderr:
+           type: stream
+           path: php://stderr
+           # change on the fly as needed during development
+           level: warning
+           # change on the fly as needed during development
+           # channels: [ "!translation" ]
+
+
+# https://github.com/aws/aws-sdk-php-symfony#sample-yml-configuration
+aws:
+    version: latest
+    region: eu-west-1
+    DynamoDb:
+        region: eu-west-1
