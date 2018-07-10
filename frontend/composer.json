@@ -5,7 +5,8 @@
     "description": "Digicop",
     "autoload": {
       "psr-4": {
-          "AppBundle\\": "src/AppBundle"
+          "AppBundle\\": "src/AppBundle",
+          "Common\\": "src/Common"
       },
       "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
