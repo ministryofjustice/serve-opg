@@ -45,10 +45,7 @@
     "minimum-stability": "stable",
     "extra": {
         "symfony-app-dir": "app",
-        "symfony-web-dir": "web",
-        "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
-        }
+        "symfony-web-dir": "web"
     },
     "require-dev": {
         "phpstan/phpstan-symfony": "^0.10.0"
