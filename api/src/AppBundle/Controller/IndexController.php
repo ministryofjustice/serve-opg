@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends Controller
 {
@@ -12,7 +14,9 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        return [];
+        return new JsonResponse([
+            'success' => true
+        ]);
     }
 
 }

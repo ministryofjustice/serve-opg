@@ -8,9 +8,4 @@ framework:
     profiler: { only_exceptions: false }
     ide: 'phpstorm://open?file=%%f&line=%%l'
 
-web_profiler:
-    toolbar: true
-    intercept_redirects: false
-
-
 

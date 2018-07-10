@@ -1,45 +1,10 @@
 services:
 
     _defaults:
-        autowire: true
-        autoconfigure: true
+        autowire: false
+        autoconfigure: false
         public: true
 
     AppBundle\Controller\UserController:
         public: true
 
-    twig.assets_extension:
-        class: AppBundle\Twig\AssetsExtension
-        public: false
-        arguments: [  "%kernel.root_dir%" ]
-        tags:
-            - { name: twig.extension }
-
-# https://github.com/symfony/symfony/issues/15259
-    aws_dynamo.client:
-        class: Aws\DynamoDb\DynamoDbClient
-        arguments:
-            -
-              credentials:
-                  key: "%dynamodb_key%"
-                  secret: "%dynamodb_secret%"
-              region: 'eu-west-1'
-              version: 'latest'
-              validate: false
-              endpoint: 'http://dynamodb:8000'
-              debug: false
-
-    aws_dynamo.session:
-       class: Common\SessionConnectionCreatingTable
-       arguments:
-           - "@aws_dynamo.client"
-           -
-            table_name: 'sessions'
-            hash_key: 'id'
-            max_lock_wait_time: 10
-            min_lock_retry_microtime: 500
-            max_lock_retry_microtime: 5000
-
-    dynamo_session_handler:
-      class: Aws\DynamoDb\SessionHandler
-      arguments: [ "@aws_dynamo.session" ]
