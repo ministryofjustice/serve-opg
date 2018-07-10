@@ -14,3 +14,5 @@ api/bin/jp.php
 api/app/check.php
 api/app/console
 api/app/SymfonyRequirements.php
+
+dcop_toolkit/vendor
