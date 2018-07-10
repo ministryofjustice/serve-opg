@@ -31,7 +31,6 @@ services:
        - ./env/local:/scripts:ro
     depends_on:
       - dynamodb
-      - composer
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DYNAMODB_KEY: key
