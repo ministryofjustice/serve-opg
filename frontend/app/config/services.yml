@@ -23,7 +23,7 @@ services:
               credentials:
                   key: "%dynamodb_key%"
                   secret: "%dynamodb_secret%"
-              region: 'us-west-2'
+              region: 'eu-west-1'
               version: 'latest'
               validate: false
               endpoint: 'http://dynamodb:8000'

@@ -70,6 +70,6 @@ monolog:
 # https://github.com/aws/aws-sdk-php-symfony#sample-yml-configuration
 aws:
     version: latest
-    region: us-east-1
+    region: eu-west-1
     DynamoDb:
-        region: us-east-1
+        region: eu-west-1
