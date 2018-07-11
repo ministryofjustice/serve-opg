@@ -326,6 +326,8 @@ Deploy Tag: ${DIGICOP_TAG}"""
 
                     docker push ${FRONTEND_NGINX_IMAGE_FULL}
                     docker push ${FRONTEND_PHP_IMAGE_FULL}
+                    docker push ${API_NGINX_IMAGE_FULL}
+                    docker push ${API_PHP_IMAGE_FULL}
                   else
                     echo "DOCKER IMAGES NOT FOUND - NO IMAGES TO PUSH"
                   fi
@@ -339,6 +341,10 @@ Deploy Tag: ${DIGICOP_TAG}"""
             sh '''
             docker rmi -f ${FRONTEND_NGINX_IMAGE_FULL} || true
             docker rmi -f ${FRONTEND_PHP_IMAGE_FULL} || true
+
+            docker rmi -f ${API_NGINX_IMAGE_FULL} || true
+            docker rmi -f ${API_PHP_IMAGE_FULL} || true
+
             docker-compose stop || true
             docker-compose rm -fv || true
             '''
