@@ -7,7 +7,7 @@ services:
         - php
     build:
       context: frontend
-      dockerfile: Dockerfile-nginx
+      dockerfile: ./docker/Dockerfile-nginx
     ports:
         - 8082:80
     depends_on:
@@ -17,7 +17,6 @@ services:
       SYMFONY_ALLOW_DEV: 1
     volumes:
        - ./frontend/misc/config/app.conf:/etc/nginx/conf.d/app.conf
-
 
   php:
     build:
@@ -40,7 +39,7 @@ services:
     build:
       context: ./frontend
       #TODO use a common one for front and api ?
-      dockerfile: Dockerfile-composer
+      dockerfile: ../docker/Dockerfile-composer
     entrypoint:
         - /entrypoint.sh
     volumes:
@@ -94,16 +93,22 @@ services:
     volumes:
       - ./frontend:/app:delegated
 
+  api_qa:
+    image: jakzal/phpqa:alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app:delegated
+
   api:
       volumes_from:
           - api_php
       build:
         context: api
-        dockerfile: Dockerfile-nginx
+        dockerfile: ./docker/Dockerfile-nginx
       ports:
           - 8083:80
       depends_on:
-          # todo - healthcheck - wait for FPM to give a 9001 out
+          # todo - healthcheck - wait for FPM to give a 9000 out
           - api_php
       environment:
         SYMFONY_ALLOW_DEV: 1
@@ -127,7 +132,7 @@ services:
       build:
         context: ./api
         #TODO use a common one for front and api ?
-        dockerfile: Dockerfile-composer
+        dockerfile: ../docker/Dockerfile-composer
       entrypoint:
           - /entrypoint.sh
       volumes:

@@ -29,15 +29,38 @@ services:
     environment:
       DC_SYMFONY_SECRET: dc2018!
 
+  api_php:
+      build:
+        context: ./api
+        dockerfile: Dockerfile-php
+      volumes:
+         - ./api/app:/app/app
+         - ./api/src:/app/src
+         - ./api/web:/app/web
+         - ./api/vendor:/app/vendor:ro
+         - ./env/local:/scripts:ro
+      environment:
+        DC_SYMFONY_SECRET: dcapi2018!
+
   composer:
     build:
       context: ./frontend
-      dockerfile: Dockerfile-composer
+      dockerfile: ../docker/Dockerfile-composer
     entrypoint:
         - /entrypoint.sh
     volumes:
       - ./env/ci/composer.sh:/entrypoint.sh
       - ./frontend:/app
+
+  api_composer:
+    build:
+      context: ./api
+      dockerfile: ../docker/Dockerfile-composer
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/ci/composer.sh:/entrypoint.sh
+      - ./api:/app
 
   node:
     build:
@@ -83,7 +106,22 @@ services:
       - ./env/ci/phpstan.sh:/entrypoint.sh
       - ./frontend:/app:delegated
 
+  api_phpstan:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+        - /entrypoint.sh
+    volumes:
+      - ./env/ci/phpstan.sh:/entrypoint.sh
+      - ./api:/app:delegated
+
   qa:
     image: jakzal/phpqa
     volumes:
       - ./frontend:/app:ro
+
+  api_qa:
+    image: jakzal/phpqa
+    volumes:
+      - ./api:/app:ro
