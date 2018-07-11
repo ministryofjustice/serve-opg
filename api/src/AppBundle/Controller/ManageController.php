@@ -21,10 +21,6 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
-        //TODO use the client when implemented
-        // TODO move "api" into variable and yml file
-        // echo "API status" . file_get_contents('http://api');die;
-
         $errors = [];
 
         if ($errors) {
@@ -34,24 +30,6 @@ class ManageController extends Controller
         return new Response('OK', 200);
     }
 
-    /**
-     * @Route("/availability/pingdom")
-     * @Method({"GET"})
-     */
-    public function healthCheckXmlAction()
-    {
-        $healthy = true;
-        $time = 100;
-
-        $response = $this->render('AppBundle:Manage:health-check.xml.twig', [
-            'status' => $healthy ? 'OK' : 'ERRORS: ',
-            'time' => $time * 1000,
-        ]);
-        $response->setStatusCode($healthy ? 200 : 500);
-        $response->headers->set('Content-Type', 'text/xml');
-
-        return $response;
-    }
 
     /**
      * @Route("/elb", name="manage-elb")

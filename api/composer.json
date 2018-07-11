@@ -1,0 +1,43 @@
+{
+    "name": "ministryofjustice/opg-digicop/frontend",
+    "license": "MIT",
+    "type": "project",
+    "description": "Digicop",
+    "autoload": {
+        "psr-4": {
+            "AppBundle\\": "src/AppBundle",
+            "Common\\": "src/Common"
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/symfony": "3.4.*",
+        "symfony/monolog-bundle": "2.8.*",
+        "sensio/framework-extra-bundle": "3.0.*",
+        "sensio/distribution-bundle": "5.0.*",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "4.8.*"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ],
+        "post-update-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        }
+    }
+}

@@ -1,0 +1,38 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+framework:
+    translator:      { fallback: "en" }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    validation:
+        enabled: true
+        enable_annotations: true
+    trusted_proxies: ~
+    session: ~
+    fragments:       ~
+    http_method_override: true
+
+services:
+    # Logtash formatter for Kibana
+    logstash_formatter:
+        class: Monolog\Formatter\LogstashFormatter
+        arguments: [ "digicop.api", null, null, "", 1 ]
+    line_formatter:
+        class: Monolog\Formatter\LineFormatter
+
+monolog:
+   handlers:
+       php_stderr:
+           type: stream
+           path: php://stderr
+           # change on the fly as needed during development
+           level: warning
+           # change on the fly as needed during development
+           # channels: [ "!translation" ]
+

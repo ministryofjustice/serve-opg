@@ -76,11 +76,16 @@ pipeline {
 
     FRONTEND_NGINX_IMAGE_NAME = 'opguk/digicop-frontend-nginx'
     FRONTEND_PHP_IMAGE = 'opguk/digicop-frontend-php'
+    API_NGINX_IMAGE_NAME = 'opguk/digicop-api-nginx'
+    API_PHP_IMAGE = 'opguk/digicop-api-php'
 
     DIGICOP_TAG = "${getBranchName()}__${dateString}__${env.BUILD_NUMBER}"
 
     FRONTEND_NGINX_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.FRONTEND_NGINX_IMAGE_NAME}:${env.DIGICOP_TAG}"
     FRONTEND_PHP_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.FRONTEND_PHP_IMAGE}:${env.DIGICOP_TAG}"
+
+    API_NGINX_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.FRONTEND_NGINX_IMAGE_NAME}:${env.DIGICOP_TAG}"
+    API_PHP_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.FRONTEND_PHP_IMAGE}:${env.DIGICOP_TAG}"
   }
 
   stages {
@@ -95,11 +100,20 @@ pipeline {
 
     stage('Setup') {
       parallel {
-        stage('Composer') {
+        stage('Frontend Composer') {
           steps {
             script {
                 sh 'docker-compose -f docker-compose.ci.yml build --no-cache composer'
                 sh "docker-compose -f docker-compose.ci.yml run --rm composer"
+            }
+          }
+        }
+
+        stage('API Composer') {
+          steps {
+            script {
+                sh 'docker-compose -f docker-compose.ci.yml build --no-cache api_composer'
+                sh "docker-compose -f docker-compose.ci.yml run --rm api_composer"
             }
           }
         }
@@ -129,7 +143,7 @@ pipeline {
 
     stage('Static Analysis') {
       parallel {
-        stage('PHPCS') {
+        stage('Frontend PHPCS') {
           steps {
             script {
               try {
@@ -141,7 +155,7 @@ pipeline {
           }
         }
 
-        stage('PHPStan') {
+        stage('Frontend PHPStan') {
           steps {
             script {
               // todo - https://github.com/phpstan/phpstan-symfony
@@ -154,7 +168,7 @@ pipeline {
           }
         }
 
-        stage('PHP Lint') {
+        stage('Frontend PHP Lint') {
           steps {
             script {
               try {
@@ -166,24 +180,67 @@ pipeline {
           }
         }
 
-        stage('PHP Security Checks') {
+        stage('Frontend PHP Security Checks') {
           steps {
             script {
               sh 'docker-compose run --rm --name=phpseccheck qa security-checker security:check'
             }
           }
         }
-      }
-    }
+
+        stage('API PHPCS') {
+          steps {
+            script {
+              try {
+                sh 'docker-compose run --rm --name=api_phpcs api_qa phpcs src'
+              } catch(e) {
+                // Do Nothing. Let the build pass.
+              }
+            }
+          }
+        }
+
+        stage('API PHPStan') {
+          steps {
+            script {
+              // todo - https://github.com/phpstan/phpstan-symfony
+              try {
+                sh 'docker-compose run --rm --name=api_phpstan api_qa phpstan analyse -l 4 src'
+              } catch(e) {
+                // Do Nothing. Let the build pass.
+              }
+            }
+          }
+        }
+
+        stage('API PHP Lint') {
+          steps {
+            script {
+              try {
+                sh 'docker-compose run --rm --name=api_phplint api_qa parallel-lint src web app tests'
+              } catch(e) {
+                // Do Nothing. Let the build pass.
+              }
+            }
+          }
+        }
+
+        stage('API PHP Security Checks') {
+          steps {
+            script {
+              sh 'docker-compose run --rm --name=api_phpseccheck api_qa security-checker security:check'
+            }
+          }
+        }
+      } // parallel
+    } // Stage
 
     stage('Build')  {
       parallel {
         stage('Build frontend nginx') {
           steps {
             script {
-              dir('frontend') {
-                sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL} -f Dockerfile-nginx ."
-              }
+              sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL} -f ./docker/Dockerfile-nginx frontend"
             }
           }
         }
@@ -197,6 +254,25 @@ pipeline {
             }
           }
         }
+
+        stage('Build api nginx') {
+          steps {
+            script {
+              sh "docker build --no-cache -t ${env.API_NGINX_IMAGE_FULL} -f ./docker/Dockerfile-nginx frontend"
+            }
+          }
+        }
+
+        stage('Build api php') {
+          steps {
+            script {
+              dir('frontend') {
+                sh "docker build --no-cache -t ${env.API_PHP_IMAGE_FULL}  -f Dockerfile-php ."
+              }
+            }
+          }
+        }
+
       } // parallel
     } // Stage('Build')
 
@@ -205,8 +281,8 @@ pipeline {
         stage('behat') {
           steps {
             script {
-              sh 'docker-compose up -d frontend'
-              sh 'sleep 5 && docker-compose -f docker-compose.ci.yml run --rm behat'
+              sh 'docker-compose up -d frontend api'
+              sh 'sleep 5 && docker-compose -f docker-compose.ci.yml run --rm --user=www-data behat'
             }
           }
         }
@@ -250,6 +326,8 @@ Deploy Tag: ${DIGICOP_TAG}"""
 
                     docker push ${FRONTEND_NGINX_IMAGE_FULL}
                     docker push ${FRONTEND_PHP_IMAGE_FULL}
+                    docker push ${API_NGINX_IMAGE_FULL}
+                    docker push ${API_PHP_IMAGE_FULL}
                   else
                     echo "DOCKER IMAGES NOT FOUND - NO IMAGES TO PUSH"
                   fi
@@ -263,6 +341,10 @@ Deploy Tag: ${DIGICOP_TAG}"""
             sh '''
             docker rmi -f ${FRONTEND_NGINX_IMAGE_FULL} || true
             docker rmi -f ${FRONTEND_PHP_IMAGE_FULL} || true
+
+            docker rmi -f ${API_NGINX_IMAGE_FULL} || true
+            docker rmi -f ${API_PHP_IMAGE_FULL} || true
+
             docker-compose stop || true
             docker-compose rm -fv || true
             '''

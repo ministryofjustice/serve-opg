@@ -52,7 +52,7 @@ services:
     # Logtash formatter for Kibana
     logstash_formatter:
         class: Monolog\Formatter\LogstashFormatter
-        arguments: [ "application.client", null, null, "", 1 ]
+        arguments: [ "digicop.frontend", null, null, "", 1 ]
     line_formatter:
         class: Monolog\Formatter\LineFormatter
 
