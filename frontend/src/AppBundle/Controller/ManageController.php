@@ -23,7 +23,7 @@ class ManageController extends Controller
     {
         //TODO use the client when implemented
         // TODO move "api" into variable and yml file
-        echo "API status" . file_get_contents('http://api');die;
+        // echo "API status" . file_get_contents('http://api');die;
 
         $errors = [];
 

@@ -9,7 +9,7 @@ services:
       context: frontend
       dockerfile: ../docker/Dockerfile-nginx
     ports:
-        - 8082:80
+        - 8888:80
     depends_on:
     # todo - healthcheck - wait for FPM to give a 9000 out
         - php
@@ -106,7 +106,7 @@ services:
         context: api
         dockerfile: ../docker/Dockerfile-nginx
       ports:
-          - 8083:80
+          - 8889:80
       depends_on:
           # todo - healthcheck - wait for FPM to give a 9000 out
           - api_php
