@@ -240,9 +240,7 @@ pipeline {
         stage('Build frontend nginx') {
           steps {
             script {
-              dir('frontend') {
-                sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL} -f ./docker/Dockerfile-nginx ."
-              }
+              sh "docker build --no-cache -t ${env.FRONTEND_NGINX_IMAGE_FULL} -f ./docker/Dockerfile-nginx frontend"
             }
           }
         }
@@ -260,9 +258,7 @@ pipeline {
         stage('Build api nginx') {
           steps {
             script {
-              dir('frontend') {
-                sh "docker build --no-cache -t ${env.API_NGINX_IMAGE_FULL} -f ./docker/Dockerfile-nginx ."
-              }
+              sh "docker build --no-cache -t ${env.API_NGINX_IMAGE_FULL} -f ./docker/Dockerfile-nginx frontend"
             }
           }
         }
