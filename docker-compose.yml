@@ -131,11 +131,9 @@ services:
   api_composer:
       build:
         context: ./api
-        #TODO use a common one for front and api ?
         dockerfile: ../docker/Dockerfile-composer
       entrypoint:
           - /entrypoint.sh
       volumes:
         - ./env/local/composer.sh:/entrypoint.sh
         - ./api:/app:delegated
-        - ~/.composer:/root/.composer:delegated

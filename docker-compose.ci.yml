@@ -1,4 +1,7 @@
-# https://docs.docker.com/compose/compose-file/compose-file-v2/#environment
+# ###############################################################################
+# This file is owned by WebOps. Do not merge to master without WebOps input first
+# ###############################################################################
+
 version: '2.1'
 
 services:

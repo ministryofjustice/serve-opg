@@ -1,32 +1,61 @@
 #!/usr/bin/env bash
-set -ex
+set -e
+# this was added to try and resolve aliases set from ~/.bash_profile, but it didn't make a difference.
+# Getting this working would mean we don't need to do ${DCOP_COMMAND} and can just run 'dcop'
+shopt -s expand_aliases
 
 PROJECT="$HOME/OPG/opg-digicop"
+DCOP_COMMAND="${PROJECT}/env/local/run_dcop.sh"
+SOURCE_COMMAND_TO_RUN=""
 
-function install_dcop() {
-  cd $PROJECT/dcop_toolkit && composer install
+function setup_dcop_project() {
+  ${DCOP_COMMAND} env_setup
 }
 
 function install_frontend() {
-  dcop composer
+  ${DCOP_COMMAND} composer
+  ${DCOP_COMMAND} frontend_node_setup
+  ${DCOP_COMMAND} frontend_node_gen
+}
+
+function install_api() {
+  ${DCOP_COMMAND} api_composer
 }
 
 function setup_dcop_command() {
-  # make the new "dcop" binary
-  sudo ln -sf "${PROJECT}/dcop_toolkit/vendor/bin/robo" /usr/local/bin/dcop
-  sudo chown $UID /usr/local/bin/dcop
+    if [[ "$SHELL" == *"zsh"* ]]; then
+    echo "alias dcop='${PROJECT}/env/local/run_dcop.sh'" >> ~/.zshrc
+    SOURCE_COMMAND_TO_RUN="source ~/.zshrc"
+  else
+    echo "alias dcop='${PROJECT}/env/local/run_dcop.sh'" >> ~/.bash_profile
+    SOURCE_COMMAND_TO_RUN="source ~/.bash_profile"
+  fi
 }
 
 function env_up() {
-  dcop up
-  sleep 3
-  echo "Project up! Browse to http://localhost:8082"
+  ${DCOP_COMMAND} up
 }
 
-which dcop || install_dcop
+function env_down() {
+  ${DCOP_COMMAND} down
+}
 
 setup_dcop_command
 
+setup_dcop_project
+
+install_api
+
 install_frontend
 
+env_down
 env_up
+
+# this warms the app
+curl -s http://localhost:8888 > /dev/null
+
+echo "To begin using dcop toolkit, reopen your terminal or run this:"
+echo "${SOURCE_COMMAND_TO_RUN}"
+echo ""
+echo "Project up! Browse to http://localhost:8888"
+echo ""
