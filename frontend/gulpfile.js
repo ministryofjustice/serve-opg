@@ -1,9 +1,10 @@
 'use strict';
 
 var gulp = require('gulp'),
-    sass = require('gulp-sass'),
+    now = new Date().getTime(),
     clean = require('gulp-clean'),
-    now = new Date().getTime();
+    sass = require('gulp-sass'),
+    concat = require('gulp-concat');
 
 var config = {
     sass: {
@@ -13,6 +14,7 @@ var config = {
     },
     sassSrc: 'src/AppBundle/Resources/assets/scss',
     webAssets: 'web/assets/' + now,
+    jsSrc: 'src/AppBundle/Resources/assets/javascript'
 }
 
 // Clean out old assets
@@ -35,5 +37,14 @@ gulp.task('imagesAndFonts', function () {
         .pipe(gulp.dest(config.webAssets + '/'));
 });
 
+// Concats js into application.js
+gulp.task('js', function () {
+    return gulp.src([
+            'node_modules/govuk-frontend/all.js',
+            config.jsSrc + '/main.js'])
+        .pipe(concat('application.js'))
+        .pipe(gulp.dest(config.webAssets + '/js'));
+});
+
 // Default task
-gulp.task('default', ['clean', 'sass', 'imagesAndFonts', ]);
+gulp.task('default', ['clean', 'sass', 'imagesAndFonts', 'js' ]);

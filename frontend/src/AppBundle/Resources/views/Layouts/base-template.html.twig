@@ -163,6 +163,10 @@
         </footer>
     {% endblock %}
 
+    {% block javascripts %}
+        <script src="{{ 'js/application.js'| assetUrl }}"></script>
+    {% endblock %}
+
     {# TODO: Add build tag to footer #}
 
     {% block bodyEnd %}{% endblock %}
