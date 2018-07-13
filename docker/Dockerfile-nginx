@@ -1,3 +1,7 @@
+# ###############################################################################
+# This file is owned by WebOps. Do not merge to master without WebOps input first
+# ###############################################################################
+
 FROM nginx:latest
 # todo - move to alpine
 # todo - make sure paths for default.conf and app.conf are the same

@@ -10,11 +10,6 @@ Software to download and install
   *  [docker-compose](https://docs.docker.com/compose/install/)
   *  [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-Checkout repositories locally
-
-    git clone git@github.com:ministryofjustice/opg-digicop.git ~/OPG/opg-digicop
-
-
 # Installing digicop project
 
 ``` bash
@@ -23,13 +18,18 @@ cd ~/OPG/opg-digicop
 ./setup.sh
 ```
 
-## DCOP Toolkit Commands
+Frontend [http://localhost:8888/](http://localhost:8888/)
+
+API [http://localhost:8889/](http://localhost:8889/)
+
+# DCOP Toolkit Commands
 
 ##### Setup
-This will be running
-- frontend_setup
-- frontend_gen
-- composer
+Under the hood, env_setup will run:
+- dcop frontend_setup
+- dcop frontend_gen
+- dcop composer
+- dcop api_composer
 
 ``` bash
 dcop env_setup
@@ -38,6 +38,7 @@ dcop env_setup
 ## Composer
 ``` bash
 dcop composer
+dcop api_composer
 ```
 
 ## Compile Assets
@@ -46,11 +47,16 @@ dcop composer
 You'll only need to do this once, or when you change package.json
 
 ``` bash
-docker-compose run node /entrypoint-setup.sh
+dcop frontend_node_setup
+```
+
+##### Generate node Assets
+When you change the .scss content then re-run this
+``` bash
+dcop frontend_node_gen
 ```
 
 ## Run PHPUnit
-
 ``` bash
 dcop phpunit
 ```
@@ -60,13 +66,27 @@ dcop phpunit
 dcop behat
 ```
 
+# Handy dcop commands
+``` bash
+dcop ps
+```
+
+## Get a shell in a container
+``` bash
+dcop shell frontend
+dcop shell frontend_php
+dcop shell api
+dcop shell api_php
+dcop shell frontend_composer
+dcop shell api_composer
+dcop shell node
+dcop shell behat
+```
+
 ## Cache delete
 ``` bash
 docker-compose exec php /scripts/cache-clear.sh
 ```
-
-
- Check at [http://localhost:8082/](http://localhost:8082/)
 
 
 ## Pull and view digicop code updates
@@ -86,18 +106,7 @@ docker-compose exec php /scripts/cache-clear.sh
      docker-compose build --force-rm --no-cache
      docker-compose up
 
-## Get a root shell
 
-``` bash
-dcop shell frontend
-dcop shell frontend_php
-dcop shell api
-dcop shell api_php
-dcop shell frontend_composer
-dcop shell api_composer
-dcop shell node
-dcop shell behat
-```
 
 ## Toggle prod/dev mode on local env
 

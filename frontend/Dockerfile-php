@@ -1,3 +1,7 @@
+# ###############################################################################
+# This file is owned by WebOps. Do not merge to master without WebOps input first
+# ###############################################################################
+
 FROM php:7.2.7-fpm-alpine3.7
 
 WORKDIR /app
