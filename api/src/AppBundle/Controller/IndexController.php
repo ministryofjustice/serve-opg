@@ -2,10 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Serializer;
+
 
 class IndexController extends Controller
 {
@@ -14,9 +17,17 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        return new JsonResponse([
-            'success' => true
-        ]);
+        $user = new User('user1');
+
+        return $user;
+    }
+
+    /**
+     * @Route("/exception")
+     */
+    public function exceptionAction()
+    {
+        throw new \RuntimeException('custom exception');
     }
 
 }

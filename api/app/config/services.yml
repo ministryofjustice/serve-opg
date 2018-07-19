@@ -8,3 +8,13 @@ services:
     AppBundle\Controller\UserController:
         public: true
 
+
+    kernel.listener.jsonResponseConverter:
+        class: AppBundle\EventListener\JsonResponseConverter
+        arguments: [ "@serializer" ]
+        public: false
+        tags:
+            - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+
