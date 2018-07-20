@@ -17,6 +17,8 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
+        $this->get('em')->getConnection();
+
         $user = new User('user1');
 
         return $user;
