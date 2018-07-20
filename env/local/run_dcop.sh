@@ -21,6 +21,8 @@ then
 
     dcop logs - Stream logs for all digicop containers
 
+    dcop db_migrate - Migrate database
+
     dcop shell - Gives you a shell into the container
 
         dcop shell frontend - Frontend container for nginx
@@ -107,7 +109,8 @@ shell)
         esac
 
     ;;
-
+db_migrate) docker-compose run api_php php app/console doctrine:schema:update
+    ;;
 *) echo "Comand not found"
    ;;
 esac
