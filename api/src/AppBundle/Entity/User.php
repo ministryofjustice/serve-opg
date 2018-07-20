@@ -1,25 +1,29 @@
 <?php
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="dd_user")
+ */
 class User
 {
-    private $name;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\SequenceGenerator(sequenceName="user_id_seq", allocationSize=1, initialValue=1)
+     */
+    private $id;
 
     /**
-     * User constructor.
-     * @param $name
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=60, nullable=false, unique=true)
      */
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
+    private $email;
 
 }

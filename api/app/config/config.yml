@@ -54,6 +54,8 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        mappings:
+          AppBundle: ~
 #        metadata_cache_driver: apcu
 #        proxy_dir:                    "%kernel.cache_dir%/doctrine/orm/Proxies"
-        #auto_generate_proxy_classes:  false
+        auto_generate_proxy_classes:  true
