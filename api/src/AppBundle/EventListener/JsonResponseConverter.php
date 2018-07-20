@@ -25,7 +25,6 @@ class JsonResponseConverter
         $data = [
             'success' => true,
             'data' => $event->getControllerResult(),
-            'message' => '',
         ];
 
         $serializedData = $this->serializer->serialize($data, 'json');
