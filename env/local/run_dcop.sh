@@ -109,7 +109,7 @@ shell)
         esac
 
     ;;
-db_migrate) docker-compose run api_php php app/console doctrine:schema:update
+db_migrate) docker-compose run api_php php app/console doctrine:schema:update --force
     ;;
 *) echo "Comand not found"
    ;;
