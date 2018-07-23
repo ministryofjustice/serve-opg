@@ -151,5 +151,7 @@ services:
 #      ports:
 #        - 5432:5432
       environment:
+        POSTGRES_HOST: postgres
+        POSTGRES_DB: digicop
         POSTGRES_USER: digicop
         POSTGRES_PASSWORD: dcdb2018!

@@ -106,6 +106,8 @@ shell)
             ;;
           api_qa) docker-compose run --entrypoint="sh" api_qa
             ;;
+          postgres)
+            docker-compose exec postgres psql -U digicop
         esac
 
     ;;
