@@ -1,13 +1,12 @@
 services:
 
     _defaults:
-        autowire: false
-        autoconfigure: false
-        public: true
+        autowire: true
+        autoconfigure: true
+        public: false
 
-    AppBundle\Controller\UserController:
-        public: true
-
+#    AppBundle\Controller\UserController:
+#        public: true
 
     kernel.listener.jsonResponseConverter:
         class: AppBundle\EventListener\JsonResponseConverter
@@ -20,3 +19,7 @@ services:
     em:
         alias: doctrine.orm.entity_manager
         public: true
+
+    AppBundle\DataFixtures\DefaultFixtures: ~
+
+

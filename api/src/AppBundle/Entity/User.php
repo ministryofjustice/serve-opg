@@ -2,12 +2,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="dd_user")
+ * @ORM\Table(name="`user`")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int
@@ -27,13 +28,18 @@ class User
     private $email;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=60, nullable=false)
+     */
+    private $password;
+
+    /**
      * User constructor.
-     * @param int $id
      * @param string $email
      */
-    public function __construct($id, $email)
+    public function __construct($email)
     {
-        $this->id = $id;
         $this->email = $email;
     }
 
@@ -51,6 +57,39 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getPassword()
+    {
+        $this->password;
+    }
+
+    public function getSalt()
+    {
+        return 'dd2018';
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+       $this->password = ''; //?
     }
 
 
