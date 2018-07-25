@@ -60,6 +60,10 @@ up) docker-compose up -d frontend api
     ;;
 down) docker-compose down
     ;;
+restart)
+    docker-compose down;
+    docker-compose up -d frontend api
+    ;;
 phpunit) docker-compose run --rm phpunit
     ;;
 behat)
@@ -106,12 +110,20 @@ shell)
             ;;
           api_qa) docker-compose run --entrypoint="sh" api_qa
             ;;
-          postgres)
+          db)
             docker-compose exec postgres psql -U digicop
         esac
 
     ;;
-db_migrate) docker-compose run api_php php app/console doctrine:schema:update --force
+db)
+    docker-compose run api_php php app/console doctrine:schema:update --force;
+    docker-compose run api_php php app/console doctrine:fixtures:load --append
+    ;;
+db-migrate)
+        docker-compose run api_php php app/console doctrine:schema:update --force
+    ;;
+db-fixtures)
+        docker-compose run api_php php app/console doctrine:fixtures:load --append
     ;;
 *) echo "Comand not found"
    ;;
