@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Service\RouteSelfDocumentor;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,9 +18,9 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        $user = new User('user1');
+        $d = new RouteSelfDocumentor($this->get('router'));
 
-        return $user;
+        return new Response($d->getHtml());
     }
 
     /**

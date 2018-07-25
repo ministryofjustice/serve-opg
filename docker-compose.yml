@@ -35,6 +35,7 @@ services:
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
 
+
   composer:
     build:
       context: ./frontend
@@ -125,8 +126,20 @@ services:
          - ./api/web:/app/web
          - ./api/vendor:/app/vendor:ro
          - ./env/local:/scripts:ro
+      depends_on:
+         - postgres
       environment:
         DC_SYMFONY_SECRET: dcapi2018!
+        DC_DB_HOST: postgres
+        DC_DB_PORT: 5432
+        DC_DB_NAME: digicop
+        DC_DB_USER: digicop
+        DC_DB_PASS: dcdb2018!
+        DC_FIXURES_USERS: |
+          email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
+          email=sean.privett@digital.justice.gov.uk&password=Abcd1234
+          email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
+          email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
 
   api_composer:
       build:
@@ -137,3 +150,13 @@ services:
       volumes:
         - ./env/local/composer.sh:/entrypoint.sh
         - ./api:/app:delegated
+
+  postgres:
+      image: postgres:9.6
+#      ports:
+#        - 5432:5432
+      environment:
+        POSTGRES_HOST: postgres
+        POSTGRES_DB: digicop
+        POSTGRES_USER: digicop
+        POSTGRES_PASSWORD: dcdb2018!

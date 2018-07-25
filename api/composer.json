@@ -17,7 +17,10 @@
         "sensio/framework-extra-bundle": "3.0.*",
         "sensio/distribution-bundle": "5.0.*",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "4.8.*"
+        "phpunit/phpunit": "4.8.*",
+        "doctrine/doctrine-bundle": "^1.9",
+        "doctrine/orm": "^2.6",
+        "doctrine/doctrine-fixtures-bundle": "^3.0"
     },
     "scripts": {
         "post-install-cmd": [

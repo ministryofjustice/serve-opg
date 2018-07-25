@@ -21,6 +21,8 @@ then
 
     dcop logs - Stream logs for all digicop containers
 
+    dcop db_migrate - Migrate database
+
     dcop shell - Gives you a shell into the container
 
         dcop shell frontend - Frontend container for nginx
@@ -57,6 +59,10 @@ env_setup) docker-compose build
 up) docker-compose up -d frontend api
     ;;
 down) docker-compose down
+    ;;
+restart)
+    docker-compose down;
+    docker-compose up -d frontend api
     ;;
 phpunit) docker-compose run --rm phpunit
     ;;
@@ -104,10 +110,21 @@ shell)
             ;;
           api_qa) docker-compose run --entrypoint="sh" api_qa
             ;;
+          db)
+            docker-compose exec postgres psql -U digicop
         esac
 
     ;;
-
+db)
+    docker-compose run api_php php app/console doctrine:schema:update --force;
+    docker-compose run api_php php app/console doctrine:fixtures:load --append
+    ;;
+db-migrate)
+        docker-compose run api_php php app/console doctrine:schema:update --force
+    ;;
+db-fixtures)
+        docker-compose run api_php php app/console doctrine:fixtures:load --append
+    ;;
 *) echo "Comand not found"
    ;;
 esac
