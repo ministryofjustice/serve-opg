@@ -3,10 +3,20 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: true
+        public: false
 
     AppBundle\Controller\UserController:
         public: true
+
+    AppBundle\Controller\UserController:
+
+    GuzzleHttp\Client:
+      arguments:
+        $config:
+          base_uri: "%api_base_url%"
+
+    AppBundle\Service\ApiClient\Client:
+      public: true
 
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension

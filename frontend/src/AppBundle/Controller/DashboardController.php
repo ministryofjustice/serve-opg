@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DashboardController extends Controller
 {
+    use ApiTrait;
+    
     /**
      * @Route("/dashboard", name="dashboard")
      */

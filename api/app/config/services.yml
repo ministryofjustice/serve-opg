@@ -5,9 +5,6 @@ services:
         autoconfigure: true
         public: false
 
-#    AppBundle\Controller\UserController:
-#        public: true
-
     kernel.listener.jsonResponseConverter:
         class: AppBundle\EventListener\JsonResponseConverter
         arguments: [ "@serializer" ]

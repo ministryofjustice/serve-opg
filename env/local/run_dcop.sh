@@ -21,7 +21,11 @@ then
 
     dcop logs - Stream logs for all digicop containers
 
-    dcop db_migrate - Migrate database
+    dcop db-migrate - Update db schema
+
+    dcop db-fixtures - Add fixtures (users)
+
+    dcop db - Update db schema and add fixtures
 
     dcop shell - Gives you a shell into the container
 
@@ -40,6 +44,8 @@ then
 
         dcop shell qa - Frontend container for QA tool
         dcop shell api_qa - API container for QA tool
+
+        dcop shell db - Postgres shell
 
 USAGE
     exit
@@ -120,11 +126,15 @@ db)
     docker-compose run api_php php app/console doctrine:fixtures:load --append
     ;;
 db-migrate)
-        docker-compose run api_php php app/console doctrine:schema:update --force
+    docker-compose run api_php php app/console doctrine:schema:update --force
     ;;
 db-fixtures)
-        docker-compose run api_php php app/console doctrine:fixtures:load --append
+    docker-compose run api_php php app/console doctrine:fixtures:load --append
     ;;
+cache)
+    docker-compose exec php /scripts/cache-clear.sh;
+    docker-compose exec api_php /scripts/cache-clear.sh
+;;
 *) echo "Comand not found"
    ;;
 esac

@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use Aws\DynamoDb\DynamoDbClient;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -14,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ManageController extends Controller
 {
+    use ApiTrait;
+
     /**
      * @Route("/availability")
      * @Method({"GET"})
@@ -23,10 +24,10 @@ class ManageController extends Controller
     {
         $errors = [];
 
-        $apiStatus =  @file_get_contents('http://api/manage/availability');
-
-        if (!$apiStatus) {
-            $errors[] = 'Api not responding';
+        try {
+            $this->apiRequest('GET', 'manage/availability');
+        } catch(\Exception $e) {
+            $errors[] ='API:' . $e->getMessage();
         }
 
         if ($errors) {

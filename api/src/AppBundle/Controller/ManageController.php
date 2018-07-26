@@ -27,7 +27,6 @@ class ManageController extends Controller
         if (!$this->get('em')->getRepository(User::class)->findBy([], [], 1)) {
             $errors [] = 'Users table not found';
         }
-        $errors[] = 'test';
         if ($errors) {
             throw new \RuntimeException(implode("\n", $errors), 500);
         }

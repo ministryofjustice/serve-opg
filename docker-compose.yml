@@ -34,6 +34,7 @@ services:
       DC_SYMFONY_SECRET: dc2018!
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
+      DC_API_BASE_URL: "http://api"
 
 
   composer:

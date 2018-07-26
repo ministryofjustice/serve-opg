@@ -3,3 +3,4 @@ parameters:
     secret:   '%env(DC_SYMFONY_SECRET)%'
     dynamodb_key:  '%env(DC_DYNAMODB_KEY)%'
     dynamodb_secret:  '%env(DC_DYNAMODB_SECRET)%'
+    api_base_url:  '%env(DC_API_BASE_URL)%'

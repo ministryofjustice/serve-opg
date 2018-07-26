@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class IndexController extends Controller
 {
+    use ApiTrait;
+
     /**
      * @Route("/", name="homepage")
      */

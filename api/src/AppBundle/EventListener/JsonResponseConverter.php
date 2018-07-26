@@ -44,7 +44,6 @@ class JsonResponseConverter
                 'code' => $e->getCode(),
                 'trace' => substr($e->getTraceAsString(), 0, 10000)
             ],
-            'exception' => $event->getException()->getMessage(),
             'message' => '',
         ];
 
