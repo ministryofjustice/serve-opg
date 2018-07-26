@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Aws\DynamoDb\DynamoDbClient;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -23,11 +24,15 @@ class ManageController extends Controller
     {
         $errors = [];
 
+        if (!$this->get('em')->getRepository(User::class)->findBy([], [], 1)) {
+            $errors [] = 'Users table not found';
+        }
+        $errors[] = 'test';
         if ($errors) {
-            return new Response(implode('<br/>', $errors), 500);
+            throw new \RuntimeException(implode("\n", $errors), 500);
         }
 
-        return new Response('OK', 200);
+        return [];
     }
 
 

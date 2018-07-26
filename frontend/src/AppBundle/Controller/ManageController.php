@@ -21,14 +21,16 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
-        //TODO use the client when implemented
-        // TODO move "api" into variable and yml file
-        // echo "API status" . file_get_contents('http://api');die;
-
         $errors = [];
 
+        $apiStatus =  @file_get_contents('http://api/manage/availability');
+
+        if (!$apiStatus) {
+            $errors[] = 'Api not responding';
+        }
+
         if ($errors) {
-            return new Response(implode('<br/>', $errors), 500);
+            return new Response('<h1>ERRORS</h1><li>'.implode('</li><li>', $errors).'</li></ul> ', 500);
         }
 
         return new Response('OK', 200);
