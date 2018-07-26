@@ -18,6 +18,8 @@ services:
     AppBundle\Service\ApiClient\Client:
       public: true
 
+    AppBundle\Service\ApiClient\ApiUserProvider: ~
+
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension
         public: false
