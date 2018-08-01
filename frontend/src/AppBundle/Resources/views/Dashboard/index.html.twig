@@ -3,5 +3,8 @@
 {% block content %}
 
 dashboard (only logged user)
-{{ dump(app.user) }}
+Session: {{ dump(user) }}
+	<hr/>
+	Api user-by-id:
+{{ dump(user) }}
 {% endblock %}

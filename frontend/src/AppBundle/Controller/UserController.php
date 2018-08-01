@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\ApiClient\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,7 +11,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class UserController extends Controller
 {
-    use ApiTrait;
+    /**
+     * @var Client
+     */
+    private $apiClient;
+
+    /**
+     * @param Client $apiCllient
+     */
+    public function __construct(Client $apiClient)
+    {
+        $this->apiClient = $apiClient;
+    }
 
     /**
      * @Route("/login", name="login")

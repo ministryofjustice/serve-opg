@@ -23,6 +23,13 @@ class User implements UserInterface, EquatableInterface
      */
     private $password;
 
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return int

@@ -2,13 +2,24 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\User;
+use AppBundle\Service\ApiClient\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class IndexController extends Controller
 {
-    use ApiTrait;
+    /**
+     * @var Client
+     */
+    private $apiClient;
+
+    /**
+     * @param Client $apiCllient
+     */
+    public function __construct(Client $apiClient)
+    {
+        $this->apiClient = $apiClient;
+    }
 
     /**
      * @Route("/", name="homepage")

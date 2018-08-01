@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\ApiClient\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -13,7 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ManageController extends Controller
 {
-    use ApiTrait;
+    /**
+     * @var Client
+     */
+    private $apiClient;
+
+    /**
+     * @param Client $apiCllient
+     */
+    public function __construct(Client $apiClient)
+    {
+        $this->apiClient = $apiClient;
+    }
 
     /**
      * @Route("/availability")
@@ -25,7 +37,7 @@ class ManageController extends Controller
         $errors = [];
 
         try {
-            $this->apiRequest('GET', 'manage/availability');
+            $this->apiClient->request('GET', 'manage/availability');
         } catch(\Exception $e) {
             $errors[] ='API:' . $e->getMessage();
         }
