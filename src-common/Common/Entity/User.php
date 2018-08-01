@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Entity;
+namespace Common\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;

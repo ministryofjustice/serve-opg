@@ -4,7 +4,7 @@ security:
       webservice:
           id: AppBundle\Service\ApiClient\ApiUserProvider
     encoders:
-          AppBundle\Entity\User: plaintext
+          Common\Entity\User: plaintext
     firewalls:
       main:
         anonymous: ~
