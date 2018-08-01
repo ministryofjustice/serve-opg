@@ -28,7 +28,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/by-email/{email}", name="user_by_email", requirements={"email":"\w+"})
+     * @Route("/by-email/{email}", name="user_by_email", requirements={"email":"[\w@.]+"})
      */
     public function oneByEmail($email)
     {
