@@ -11,7 +11,7 @@ services:
         public: false
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+#            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     em:
         alias: doctrine.orm.entity_manager

@@ -9,7 +9,6 @@ class User implements UserInterface, EquatableInterface
 {
     /**
      * @var int
-     *
      */
     private $id;
 

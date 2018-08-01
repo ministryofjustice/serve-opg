@@ -53,9 +53,13 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        auto_mapping: true
+        auto_mapping: false
         mappings:
-          AppBundle: ~
+          commonEntities:
+            type: yml
+            dir: "%kernel.root_dir%/config/doctrine"
+            prefix: Common\Entity
+            is_bundle: false
 #        metadata_cache_driver: apcu
 #        proxy_dir:                    "%kernel.cache_dir%/doctrine/orm/Proxies"
         auto_generate_proxy_classes:  true
