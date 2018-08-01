@@ -64,7 +64,10 @@ logs) docker-compose logs -f
     ;;
 env_setup) docker-compose build
     ;;
-up) docker-compose up -d frontend api
+# TODO add this to env_setup ? or api startup
+up) docker-compose up -d frontend api;
+    docker-compose run api_php php app/console doctrine:schema:update --force --quiet;
+    docker-compose run api_php php app/console doctrine:fixtures:load --append
     ;;
 down) docker-compose down
     ;;

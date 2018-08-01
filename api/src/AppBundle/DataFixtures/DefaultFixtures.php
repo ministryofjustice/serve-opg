@@ -12,7 +12,7 @@ class DefaultFixtures extends Fixture
         $users = array_filter(explode("\n", getenv('DC_FIXURES_USERS')));
         foreach($users as $userStr) {
             parse_str($userStr, $user);
-            print_r($user);
+            echo "Added {$user['email']}\n";
             if (!$manager->getRepository(User::class)->findOneBy(['email'=>$user['email']])) {
                 $u = new User($user['email']);
                 $u->setPassword($user['password']);

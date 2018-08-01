@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use AppBundle\Service\ApiClient\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,8 +27,13 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
+        $data = $this->apiClient->request('GET', '/user/by-email/elvis.ciotti@digital.justice.gov.uk', [
+            'deserialise_type' => User::class
+        ]);
+
         // deputy homepage with links to register and login
         return $this->render('AppBundle:Index:index.html.twig', [
+            'debug'=>$data
         ]);
     }
 

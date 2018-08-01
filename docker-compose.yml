@@ -23,9 +23,10 @@ services:
       context: frontend
       dockerfile: Dockerfile-php
     volumes:
-       - ./frontend/app:/app/app
-       - ./frontend/src:/app/src
-       - ./frontend/web:/app/web
+       - ./frontend/app:/app/app:ro
+       - ./src-common:/app/common:ro
+       - ./frontend/src:/app/src:ro
+       - ./frontend/web:/app/web:ro
        - ./frontend/vendor:/app/vendor:ro
        - ./env/local:/scripts:ro
     depends_on:
@@ -122,9 +123,10 @@ services:
         context: api
         dockerfile: Dockerfile-php
       volumes:
-         - ./api/app:/app/app
-         - ./api/src:/app/src
-         - ./api/web:/app/web
+         - ./api/app:/app/app:ro
+         - ./src-common:/app/common:ro
+         - ./api/src:/app/src:ro
+         - ./api/web:/app/web:ro
          - ./api/vendor:/app/vendor:ro
          - ./env/local:/scripts:ro
       depends_on:
@@ -156,6 +158,8 @@ services:
       image: postgres:9.6
 #      ports:
 #        - 5432:5432
+      volumes:
+        - .postgres-data:/var/lib/postgresql/data
       environment:
         POSTGRES_HOST: postgres
         POSTGRES_DB: digicop

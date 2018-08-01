@@ -5,6 +5,7 @@ services:
         autoconfigure: true
         public: false
 
+    AppBundle\Controller\IndexController: ~
     AppBundle\Controller\UserController: ~
     AppBundle\Controller\DashboardController: ~
     AppBundle\Controller\ManageController: ~
