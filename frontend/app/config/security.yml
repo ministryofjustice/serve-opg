@@ -1,11 +1,11 @@
+# https://symfony.com/doc/current/security.html
 security:
     providers:
       webservice:
           id: AppBundle\Service\ApiClient\ApiUserProvider
     encoders:
-            Symfony\Component\Security\Core\User\User: plaintext
+          AppBundle\Entity\User: plaintext
     firewalls:
-      # https://symfony.com/doc/current/security.html
       main:
         anonymous: ~
         form_login:

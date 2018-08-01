@@ -23,14 +23,6 @@ class User implements UserInterface, EquatableInterface
      */
     private $password;
 
-    /**
-     * User constructor.
-     * @param string $email
-     */
-    public function __construct($email)
-    {
-        $this->email = $email;
-    }
 
     /**
      * @return int
@@ -38,6 +30,14 @@ class User implements UserInterface, EquatableInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
     /**
@@ -63,12 +63,12 @@ class User implements UserInterface, EquatableInterface
 
     public function getPassword()
     {
-        $this->password;
+        return $this->password;
     }
 
     public function getSalt()
     {
-        return 'dd2018';
+        return '';
     }
 
     public function getUsername()

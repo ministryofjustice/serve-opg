@@ -8,7 +8,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
-
+/**
+ * User provider using API client
+ * username=email
+ */
 class ApiUserProvider implements UserProviderInterface
 {
     /**
@@ -50,19 +53,14 @@ class ApiUserProvider implements UserProviderInterface
 
     private function fetchUser($username)
     {
-        $user = new User($username);
-        return $user;
-
-//        $ret = $this->apiClient->request('GET', '/user/by-email/' . $username);
-//        echo "<pre>"; \Doctrine\Common\Util\Debug::dump($ret);die;
-
-
-
-
-        throw new UsernameNotFoundException(
-            sprintf('Username "%s" does not exist.', $username)
-        );
+        try {
+            $user = $this->apiClient->request('GET', '/user/by-email/' . $username, [
+                'deserialise_type' => User::class
+            ]);
+            return $user;
+        } catch (\Exception $e ){
+            throw new UsernameNotFoundException($e->getMessage());
+        }
     }
-
 
 }

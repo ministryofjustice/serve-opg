@@ -27,6 +27,8 @@ then
 
     dcop db - Update db schema and add fixtures
 
+    dcop cache - Clear cache
+
     dcop shell - Gives you a shell into the container
 
         dcop shell frontend - Frontend container for nginx
