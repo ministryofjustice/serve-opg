@@ -28,11 +28,21 @@ class ApiUserProvider implements UserProviderInterface
         $this->apiClient = $apiClient;
     }
 
+    /**
+     * Called the first time when login
+     */
     public function loadUserByUsername($username)
     {
-        return $this->fetchUser($username);
+        try {
+            return $this->apiClient->loginAndStoreToken( $username);
+        } catch (\Exception $e ){
+            throw new UsernameNotFoundException($e->getMessage());
+        }
     }
 
+    /**
+     * Called each time the page is loaded
+     */
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {
@@ -41,26 +51,19 @@ class ApiUserProvider implements UserProviderInterface
             );
         }
 
-        $username = $user->getUsername();
-
-        return $this->fetchUser($username);
-    }
-
-    public function supportsClass($class)
-    {
-        return User::class === $class;
-    }
-
-    private function fetchUser($username)
-    {
         try {
-            $user = $this->apiClient->request('GET', '/user/by-email/' . $username, [
+            $user = $this->apiClient->request('GET', '/user/by-id/' . $user->getId().'?from=user-provider', [
                 'deserialise_type' => User::class
             ]);
             return $user;
         } catch (\Exception $e ){
             throw new UsernameNotFoundException($e->getMessage());
         }
+    }
+
+    public function supportsClass($class)
+    {
+        return User::class === $class;
     }
 
 }

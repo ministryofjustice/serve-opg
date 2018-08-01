@@ -2,6 +2,8 @@
 
 namespace AppBundle\Service\ApiClient;
 
+use Aws\DynamoDb\SessionConnectionInterface;
+use Common\SessionConnectionCreatingTable;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ServerException;
 use Symfony\Component\Serializer\Serializer;
@@ -20,15 +22,39 @@ class Client
     private $serializer;
 
     /**
+     * @var SessionConnectionInterface
+     */
+    private $session;
+
+    /**
      * ApiClient constructor.
      * @param Client $guzzleClient
      * @param Serializer $serializer
      */
-    public function __construct(GuzzleClient $guzzleClient, SerializerInterface $serializer)
+    public function __construct(GuzzleClient $guzzleClient, SerializerInterface $serializer, SessionConnectionInterface $session)
     {
         $this->guzzleClient = $guzzleClient;
         $this->serializer = $serializer;
+        $this->session = $session;
     }
+
+    /**
+     * @param $username
+     * @return stdClass|string
+     * @throws ApiException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function loginAndStoreToken($username)
+    {
+        // stores into the session and re-use it later
+        return $this->request('GET', '/user/by-email/' . $username.'?from=user-provider', [
+            'deserialise_type' => User::class
+        ]);
+
+        //save here
+        $this->session;
+    }
+
 
     /**
      * @param $method

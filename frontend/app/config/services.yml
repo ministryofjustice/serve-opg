@@ -57,3 +57,8 @@ services:
     dynamo_session_handler:
       class: Aws\DynamoDb\SessionHandler
       arguments: [ "@aws_dynamo.session" ]
+
+
+    Aws\DynamoDb\SessionConnectionInterface:
+       alias: aws_dynamo.session
+       public: true
