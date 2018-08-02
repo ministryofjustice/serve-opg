@@ -46,5 +46,16 @@ gulp.task('js', function () {
         .pipe(gulp.dest(config.webAssets + '/js'));
 });
 
+// Watch sass
+gulp.task('watch', function () {
+    gulp.watch([
+        config.sassSrc + '/**/*.scss',
+        config.sassSrc + '/*.scss',
+        config.jsSrc + '/**/*.js',
+        config.jsSrc + '/*.js'],
+        { interval: 1000 },
+        ['default']);
+});
+
 // Default task
 gulp.task('default', ['clean', 'sass', 'imagesAndFonts', 'js' ]);
