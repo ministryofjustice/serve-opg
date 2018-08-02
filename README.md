@@ -83,49 +83,29 @@ dcop shell node
 dcop shell behat
 ```
 
-## Cache delete
-``` bash
-docker-compose exec php /scripts/cache-clear.sh
-```
-
 
 ## Pull and view digicop code updates
 
     cd ~/www/opg-digicop
-    docker-compose stop
+    dcop down
     git pull origin master
-    docker-compose up --build
+    dcop env_setup
+    dcop up
 
- Check [http://localhost:8082/](http://localhost:8082/)
-
-  In case of cache issues, run the following instead
-
-     cd ~/www/opg-digicop
-     docker-compose stop
-     git pull origin master
-     docker-compose build --force-rm --no-cache
-     docker-compose up
-
-
-
-## Toggle prod/dev mode on local env
-
-    # prod mode
-    docker exec dcphp touch /app/.enableProdMode
-    # dev mode
-    docker exec dcphp rm /app/.enableProdMode
-
-
+ Check [http://localhost:8088](http://localhost:8088/)
 
 ## Other useful commands
-
+    
+    # delete cache
+    dcop cache 
+    
+    # toggle prod mode (to update, might not work)
+    docker exec dcphp touch /app/.enableProdMode
+    # dev mode  (to update, might not work)
+    docker exec dcphp rm /app/.enableProdMode  
+    
     # watch logs
-    docker logs dcnginx -f
-    docker logs dcphp -f
-
-    # sh into container (note: bash not installed)
-    docker exec -it dcnginx sh
-    docker exec -it dcphp sh
+    dcop logs
 
     # kill all running containers
     docker kill $(docker ps -q)
