@@ -17,4 +17,14 @@ class IndexController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/design", name="design")
+     */
+    public function designAction()
+    {
+        // design stuff
+        return $this->render('AppBundle:Index:design.html.twig', [
+        ]);
+    }
+
 }
