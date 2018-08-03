@@ -27,5 +27,38 @@
         &:focus {
             outline: 3px solid $govuk-focus-colour;
         }
+
+        .govuk-icon {
+            float: left;
+            @include govuk-responsive-margin(2, "right");
+        }
+    }
+
+    .govuk-alert--notice {
+        background-color: rgba($govuk-border-colour, .1);
+    }
+
+    .govuk-alert--success {
+        border-color: govuk-colour("turquoise");
+        background-color: rgba(govuk-colour("turquoise"), .1);
+    }
+
+    .govuk-alert--error {
+        border-color: $govuk-error-colour;
+        background-color: rgba($govuk-error-colour, .1);
+    }
+
+    .govuk-alert--info {
+        border-color: govuk-colour("light-blue");
+        background-color: rgba(govuk-colour("light-blue"), .1);
+    }
+
+    .govuk-alert--important {
+        border-color: govuk-colour("black");
+        background-color: rgba(govuk-colour("grey-3"), .1);
+    }
+
+    .govuk-alert__message {
+        overflow: hidden;
     }
 }
