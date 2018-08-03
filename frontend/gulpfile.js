@@ -14,7 +14,8 @@ var config = {
     },
     sassSrc: 'src/AppBundle/Resources/assets/scss',
     webAssets: 'web/assets/' + now,
-    jsSrc: 'src/AppBundle/Resources/assets/javascript'
+    jsSrc: 'src/AppBundle/Resources/assets/javascript',
+    imgSrc: 'src/AppBundle/Resources/assets/images'
 }
 
 // Clean out old assets
@@ -32,9 +33,15 @@ gulp.task('sass', function () {
 });
 
 // Copy images and fonts from govuk frontend
-gulp.task('imagesAndFonts', function () {
+gulp.task('govukImagesAndFonts', function () {
     return gulp.src('node_modules/govuk-frontend/assets/**/*')
         .pipe(gulp.dest(config.webAssets + '/'));
+});
+
+// Copy images
+gulp.task('images', function () {
+    return gulp.src(config.imgSrc + '/**/*')
+        .pipe(gulp.dest(config.webAssets + '/images'));
 });
 
 // Concats js into application.js
@@ -58,4 +65,4 @@ gulp.task('watch', function () {
 });
 
 // Default task
-gulp.task('default', ['clean', 'sass', 'imagesAndFonts', 'js' ]);
+gulp.task('default', ['clean','sass','govukImagesAndFonts','images','js']);
