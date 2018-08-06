@@ -92,20 +92,19 @@
         <div class="govuk-width-container">
 
             {% block beforeContent %}
-                <div class="govuk-phase-banner">
-                    <p class="govuk-phase-banner__content">
-                        <strong class="govuk-tag govuk-phase-banner__content__tag ">alpha</strong>
-                        <span class="govuk-phase-banner__text">
-                            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-                        </span>
-                    </p>
-                </div>
-
                 {# <a href="#" class="govuk-back-link">Back</a> #}
             {% endblock %}
 
             <main class="govuk-main-wrapper" id="main-content" role="main">
                 {% block validationSummary %}{% endblock %}
+                {% block notifications %}
+                    {# <div class="govuk-alert govuk-alert--notification">
+                        <span class="govuk-icon govuk-icon--notification"></span>
+                        <div class="govuk-alert__message">
+                            <p>Nobis at eos odit. In totam cupiditate corrupti aut reprehenderit ea repudiandae. Aut enim assumenda molestiae.</p>
+                        </div>
+                    </div> #}
+                {% endblock %}
                 <h1 class="govuk-heading-xl">{% block pageTitle %}Page title{% endblock %}</h1>
                 {% block content %}{% endblock %}
             </main>
