@@ -1,3 +1,7 @@
 // Import GOVUK Frontend
 $govuk-assets-path: '../';
 @import "all";
+
+// Custom components
+@import "components/alerts";
+@import "components/icons";

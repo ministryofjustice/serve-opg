@@ -1,9 +1,10 @@
 'use strict';
 
 var gulp = require('gulp'),
-    sass = require('gulp-sass'),
+    now = new Date().getTime(),
     clean = require('gulp-clean'),
-    now = new Date().getTime();
+    sass = require('gulp-sass'),
+    concat = require('gulp-concat');
 
 var config = {
     sass: {
@@ -13,6 +14,8 @@ var config = {
     },
     sassSrc: 'src/AppBundle/Resources/assets/scss',
     webAssets: 'web/assets/' + now,
+    jsSrc: 'src/AppBundle/Resources/assets/javascript',
+    imgSrc: 'src/AppBundle/Resources/assets/images'
 }
 
 // Clean out old assets
@@ -30,10 +33,36 @@ gulp.task('sass', function () {
 });
 
 // Copy images and fonts from govuk frontend
-gulp.task('imagesAndFonts', function () {
+gulp.task('govukImagesAndFonts', function () {
     return gulp.src('node_modules/govuk-frontend/assets/**/*')
         .pipe(gulp.dest(config.webAssets + '/'));
 });
 
+// Copy images
+gulp.task('images', function () {
+    return gulp.src(config.imgSrc + '/**/*')
+        .pipe(gulp.dest(config.webAssets + '/images'));
+});
+
+// Concats js into application.js
+gulp.task('js', function () {
+    return gulp.src([
+            'node_modules/govuk-frontend/all.js',
+            config.jsSrc + '/main.js'])
+        .pipe(concat('application.js'))
+        .pipe(gulp.dest(config.webAssets + '/js'));
+});
+
+// Watch sass
+gulp.task('watch', function () {
+    gulp.watch([
+        config.sassSrc + '/**/*.scss',
+        config.sassSrc + '/*.scss',
+        config.jsSrc + '/**/*.js',
+        config.jsSrc + '/*.js'],
+        { interval: 1000 },
+        ['default']);
+});
+
 // Default task
-gulp.task('default', ['clean', 'sass', 'imagesAndFonts', ]);
+gulp.task('default', ['clean','sass','govukImagesAndFonts','images','js']);
