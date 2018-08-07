@@ -51,7 +51,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @param string $email
      */
-    public function setEmail(string $email): void
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
