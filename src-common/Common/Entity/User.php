@@ -23,6 +23,16 @@ class User implements UserInterface, EquatableInterface
     private $password;
 
     /**
+     * User constructor.
+     * @param string $email
+     */
+    public function __construct(string $email)
+    {
+        $this->email = $email;
+    }
+
+
+    /**
      * @param int $id
      */
     public function setId($id)

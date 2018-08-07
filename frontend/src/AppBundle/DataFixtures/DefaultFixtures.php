@@ -9,14 +9,15 @@ class DefaultFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        $repo = $manager->getRepository(User::class);
         $users = array_filter(explode("\n", getenv('DC_FIXURES_USERS')));
         foreach($users as $userStr) {
             parse_str($userStr, $user);
-            echo "Added {$user['email']}\n";
-            if (!$manager->getRepository(User::class)->findOneBy(['email'=>$user['email']])) {
+            if (!empty($user['email']) && !$repo->findOneBy(['email'=>$user['email']])) {
                 $u = new User($user['email']);
                 $u->setPassword($user['password']);
                 $manager->persist($u);
+                echo "Added {$user['email']}\n";
             }
         }
         $manager->flush();
