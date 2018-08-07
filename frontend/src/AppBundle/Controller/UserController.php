@@ -12,19 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class UserController extends Controller
 {
     /**
-     * @var Client
-     */
-    private $apiClient;
-
-    /**
-     * @param Client $apiCllient
-     */
-    public function __construct(Client $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
-
-    /**
      * @Route("/login", name="login")
      */
     public function loginAction(Request $request, AuthenticationUtils $authenticationUtils)

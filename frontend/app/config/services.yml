@@ -5,22 +5,15 @@ services:
         autoconfigure: true
         public: false
 
+    em:
+      alias: doctrine.orm.entity_manager
+      public: true
+
+    AppBundle\DataFixtures\DefaultFixtures: ~
     AppBundle\Controller\IndexController: ~
     AppBundle\Controller\UserController: ~
     AppBundle\Controller\DashboardController: ~
     AppBundle\Controller\ManageController: ~
-    AppBundle\Controller\UserController: ~
-
-    GuzzleHttp\Client:
-      arguments:
-        $config:
-          base_uri: "%api_base_url%"
-
-    AppBundle\Service\ApiClient\Client:
-      public: true
-
-    AppBundle\Service\ApiClient\ApiUserProvider:
-      public: true
 
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension

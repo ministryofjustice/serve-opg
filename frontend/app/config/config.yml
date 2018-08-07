@@ -69,6 +69,34 @@ monolog:
            # channels: [ "!translation" ]
 
 
+# http://symfony.com/doc/master/bundles/DoctrineBundle/configuration.html
+doctrine:
+  dbal:
+    driver:   pdo_pgsql
+    host:     "%database_host%"
+    port:     "%database_port%"
+    dbname:   "%database_name%"
+    user:     "%database_user%"
+    password: "%database_password%"
+    charset:  UTF8
+      #options:
+    #sslmode: require
+
+  orm:
+    auto_generate_proxy_classes: "%kernel.debug%"
+    auto_mapping: false
+    mappings:
+      commonEntities:
+        type: yml
+        dir: "%kernel.root_dir%/config/doctrine"
+        prefix: Common\Entity
+        is_bundle: false
+    #        metadata_cache_driver: apcu
+    #        proxy_dir:                    "%kernel.cache_dir%/doctrine/orm/Proxies"
+    auto_generate_proxy_classes:  true
+
+
+# needed for dynamodb
 # https://github.com/aws/aws-sdk-php-symfony#sample-yml-configuration
 aws:
     version: latest

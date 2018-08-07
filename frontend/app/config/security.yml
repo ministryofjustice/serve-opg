@@ -1,8 +1,15 @@
 # https://symfony.com/doc/current/security.html
 security:
     providers:
-      webservice:
-          id: AppBundle\Service\ApiClient\ApiUserProvider
+      in_memory:
+        memory:
+          users:
+            user1:
+              password: password
+              roles: 'ROLE_USER'
+            behat1:
+              password: password
+              roles: 'ROLE_USER'
     encoders:
           Common\Entity\User: plaintext
     firewalls:

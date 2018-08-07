@@ -10,26 +10,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class IndexController extends Controller
 {
     /**
-     * @var Client
-     */
-    private $apiClient;
-
-    /**
-     * @param Client $apiCllient
-     */
-    public function __construct(Client $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
-
-    /**
      * @Route("/", name="homepage")
      */
     public function indexAction()
     {
         // deputy homepage with links to register and login
         return $this->render('AppBundle:Index:index.html.twig', [
-            'debug'=>[]
+            'debug'=>[
+                $this->get('em')->getRepository(User::class)->findAll()
+            ]
         ]);
     }
 

@@ -15,19 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 class ManageController extends Controller
 {
     /**
-     * @var Client
-     */
-    private $apiClient;
-
-    /**
-     * @param Client $apiCllient
-     */
-    public function __construct(Client $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
-
-    /**
      * @Route("/availability")
      * @Method({"GET"})
      * @Template
@@ -35,12 +22,6 @@ class ManageController extends Controller
     public function availabilityAction()
     {
         $errors = [];
-
-        try {
-            $this->apiClient->request('GET', 'manage/availability');
-        } catch(\Exception $e) {
-            $errors[] ='API:' . $e->getMessage();
-        }
 
         if ($errors) {
             return new Response('<h1>ERRORS</h1><li>'.implode('</li><li>', $errors).'</li></ul> ', 500);

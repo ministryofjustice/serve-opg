@@ -31,11 +31,22 @@ services:
        - ./env/local:/scripts:ro
     depends_on:
       - dynamodb
+      - postgres
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
       DC_API_BASE_URL: "http://api"
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
+      DC_FIXURES_USERS: |
+        email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
+        email=sean.privett@digital.justice.gov.uk&password=Abcd1234
+        email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
+        email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
 
 
   composer:
@@ -95,64 +106,6 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app:delegated
-
-  api_qa:
-    image: jakzal/phpqa:alpine
-    working_dir: /app
-    volumes:
-      - ./frontend:/app:delegated
-
-  api:
-      volumes_from:
-          - api_php
-      build:
-        context: api
-        dockerfile: ../docker/Dockerfile-nginx
-      ports:
-          - 8889:80
-      depends_on:
-          # todo - healthcheck - wait for FPM to give a 9000 out
-          - api_php
-      environment:
-        SYMFONY_ALLOW_DEV: 1
-      volumes:
-         - ./api/misc/config/app.conf:/etc/nginx/conf.d/app.conf
-
-  api_php:
-      build:
-        context: api
-        dockerfile: Dockerfile-php
-      volumes:
-         - ./api/app:/app/app:ro
-         - ./src-common:/app/common:ro
-         - ./api/src:/app/src:ro
-         - ./api/web:/app/web:ro
-         - ./api/vendor:/app/vendor:ro
-         - ./env/local:/scripts:ro
-      depends_on:
-         - postgres
-      environment:
-        DC_SYMFONY_SECRET: dcapi2018!
-        DC_DB_HOST: postgres
-        DC_DB_PORT: 5432
-        DC_DB_NAME: digicop
-        DC_DB_USER: digicop
-        DC_DB_PASS: dcdb2018!
-        DC_FIXURES_USERS: |
-          email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
-          email=sean.privett@digital.justice.gov.uk&password=Abcd1234
-          email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
-          email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
-
-  api_composer:
-      build:
-        context: ./api
-        dockerfile: ../docker/Dockerfile-composer
-      entrypoint:
-          - /entrypoint.sh
-      volumes:
-        - ./env/local/composer.sh:/entrypoint.sh
-        - ./api:/app:delegated
 
   postgres:
       image: postgres:9.6

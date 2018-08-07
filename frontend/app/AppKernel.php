@@ -26,6 +26,8 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Aws\Symfony\AwsBundle(),
             new AppBundle\AppBundle(),
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'])) {
