@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use Common\Entity\User;
+use AppBundle\Entity\User;
 use AppBundle\Service\ApiClient\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

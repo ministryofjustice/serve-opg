@@ -1,4 +1,4 @@
-Common\Entity\User:
+AppBundle\Entity\User:
     type: entity
     schema: public
     table: "`user`"

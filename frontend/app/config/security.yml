@@ -1,17 +1,21 @@
 # https://symfony.com/doc/current/security.html
 security:
     providers:
-      in_memory:
-        memory:
-          users:
-            user1:
-              password: password
-              roles: 'ROLE_USER'
-            behat1:
-              password: password
-              roles: 'ROLE_USER'
+      our_db_provider:
+        entity:
+          class: AppBundle\Entity\User
+          property: username
+#      in_memory:
+#        memory:
+#          users:
+#            user1:
+#              password: password
+#              roles: 'ROLE_USER'
+#            behat1:
+#              password: password
+#              roles: 'ROLE_USER'
     encoders:
-          Common\Entity\User: plaintext
+          AppBundle\Entity\User: plaintext
     firewalls:
       main:
         anonymous: ~

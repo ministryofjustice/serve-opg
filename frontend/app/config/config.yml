@@ -89,7 +89,7 @@ doctrine:
       commonEntities:
         type: yml
         dir: "%kernel.root_dir%/config/doctrine"
-        prefix: Common\Entity
+        prefix: AppBundle\Entity
         is_bundle: false
     #        metadata_cache_driver: apcu
     #        proxy_dir:                    "%kernel.cache_dir%/doctrine/orm/Proxies"

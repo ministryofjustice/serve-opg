@@ -2,7 +2,7 @@
 
 namespace AppBundle\Twig;
 
-use Common\Entity\User;
+use AppBundle\Entity\User;
 use Mockery as m;
 
 class ComponentsExtensionTest extends \PHPUnit_Framework_TestCase

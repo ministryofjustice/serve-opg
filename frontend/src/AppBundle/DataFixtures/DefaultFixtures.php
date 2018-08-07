@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\DataFixtures;
 
-use Common\Entity\User;
+use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
