@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use AppBundle\Service\ApiClient\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,9 @@ class UserController extends Controller
 
         return $this->render('AppBundle:User:login.html.twig', array(
             'error'         => $error,
+            'users'=>[
+                $this->get('em')->getRepository(User::class)->findAll()
+            ]
         ));
     }
 

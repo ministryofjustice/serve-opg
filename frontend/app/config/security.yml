@@ -5,17 +5,10 @@ security:
         entity:
           class: AppBundle\Entity\User
           property: email
-#      in_memory:
-#        memory:
-#          users:
-#            user1:
-#              password: password
-#              roles: 'ROLE_USER'
-#            behat1:
-#              password: password
-#              roles: 'ROLE_USER'
     encoders:
-          AppBundle\Entity\User: plaintext
+          AppBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 12
     firewalls:
       main:
         anonymous: ~

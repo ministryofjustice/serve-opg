@@ -58,8 +58,7 @@ logs) docker-compose logs -f
     ;;
 env_setup) docker-compose build
     ;;
-# TODO add this to env_setup ? or frontend startup script ?
-up) docker-compose up -d frontend;
+up) docker-compose up --remove-orphan -d frontend
     #docker-compose run php php app/console doctrine:schema:update --force --quiet;
     #docker-compose run php php app/console doctrine:fixtures:load --append
     ;;

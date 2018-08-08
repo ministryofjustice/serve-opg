@@ -30,4 +30,7 @@ RUN mkdir -p /tmp/app-cache && \
     mkdir -p /tmp/app-logs && \
     chown www-data:www-data -R /tmp/app-cache /tmp/app-logs
 
-# Do not do USER www-data here has FPM has to boot as root, then drop to www-data to spin up workers
+
+RUN php /app/app/console doctrine:schema:update --force --quiet;
+RUN php /app/app/console doctrine:fixtures:load --append
+

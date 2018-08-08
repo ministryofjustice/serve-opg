@@ -1,7 +1,6 @@
 AppBundle\Entity\User:
     type: entity
-    schema: public
-    table: "`user`"
+    table: "dc_user"
     id:
       id:
         type: integer

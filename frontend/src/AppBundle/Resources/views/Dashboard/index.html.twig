@@ -1,10 +1,7 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
-{% block content %}
+{% block htmlTitle %}Dashboard{% endblock %}
 
-dashboard (only logged user)
-Session: {{ dump(user) }}
-	<hr/>
-	Api user-by-id:
-{{ dump(user) }}
+{% block content %}
+	Logged in user: {{ app.user.email }}
 {% endblock %}

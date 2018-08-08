@@ -52,6 +52,7 @@
         "symfony-web-dir": "web"
     },
     "require-dev": {
-        "phpstan/phpstan-symfony": "^0.10.0"
+        "phpstan/phpstan-symfony": "^0.10.0",
+        "symfony/var-dumper": "^4.1"
     }
 }
