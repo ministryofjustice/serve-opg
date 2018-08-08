@@ -5,15 +5,6 @@ frontend/vendor
 frontend/web/assets
 frontend/node_modules
 frontend/bin/jp.php
-
-api/bin
-api/vendor
-api/web/assets
-api/node_modules
-api/bin/jp.php
-api/app/check.php
-api/app/console
-api/app/SymfonyRequirements.php
-
 dcop_toolkit/vendor
 .postgres-data/
+frontend/app/bootstrap.php.cache
