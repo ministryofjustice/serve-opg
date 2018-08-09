@@ -3,10 +3,17 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: true
+        public: false
 
-    AppBundle\Controller\UserController:
-        public: true
+    em:
+      alias: doctrine.orm.entity_manager
+      public: true
+
+    AppBundle\DataFixtures\DefaultFixtures: ~
+    AppBundle\Controller\IndexController: ~
+    AppBundle\Controller\UserController: ~
+    AppBundle\Controller\DashboardController: ~
+    AppBundle\Controller\ManageController: ~
 
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension
@@ -43,3 +50,8 @@ services:
     dynamo_session_handler:
       class: Aws\DynamoDb\SessionHandler
       arguments: [ "@aws_dynamo.session" ]
+
+
+    Aws\DynamoDb\SessionConnectionInterface:
+       alias: aws_dynamo.session
+       public: true

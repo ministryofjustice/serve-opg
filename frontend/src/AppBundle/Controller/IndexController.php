@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -14,6 +15,7 @@ class IndexController extends Controller
     {
         // deputy homepage with links to register and login
         return $this->render('AppBundle:Index:index.html.twig', [
+
         ]);
     }
 

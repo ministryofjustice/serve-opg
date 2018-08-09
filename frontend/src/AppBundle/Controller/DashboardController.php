@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,8 +15,10 @@ class DashboardController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->render('AppBundle:Dashboard:index.html.twig', [
+        $user = $this->getUser();
 
+        return $this->render('AppBundle:Dashboard:index.html.twig', [
+            'user' => $user
         ]);
     }
 }

@@ -1,0 +1,18 @@
+AppBundle\Entity\User:
+    type: entity
+    table: "dc_user"
+    id:
+      id:
+        type: integer
+        generator:
+          strategy: AUTO
+    fields:
+      email:
+        type: string
+        length: 60
+        nullable: false
+        unique: true
+      password:
+        type: string
+        length: 60
+        nullable: false

@@ -1,18 +1,15 @@
+# https://symfony.com/doc/current/security.html
 security:
     providers:
-      in_memory:
-        memory:
-         users:
-          user1:
-              password: password
-              roles: 'ROLE_USER'
-          behat1:
-              password: password
-              roles: 'ROLE_USER'
+      our_db_provider:
+        entity:
+          class: AppBundle\Entity\User
+          property: email
     encoders:
-            Symfony\Component\Security\Core\User\User: plaintext
+          AppBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 12
     firewalls:
-      # https://symfony.com/doc/current/security.html
       main:
         anonymous: ~
         form_login:

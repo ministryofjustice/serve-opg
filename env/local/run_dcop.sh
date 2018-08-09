@@ -8,7 +8,6 @@ then
     dcop env_setup - Build all docker containers
 
     dcop composer - Composer install for the frontend
-    dcop api_composer - Composer install for the api
 
     dcop frontend_node_setup - Npm install for the frontend
     dcop frontend_node_gen - Gulp for the frontend
@@ -21,7 +20,13 @@ then
 
     dcop logs - Stream logs for all digicop containers
 
-    dcop db_migrate - Migrate database
+    dcop db-migrate - Update db schema
+
+    dcop db-fixtures - Add fixtures (users)
+
+    dcop db - Update db schema and add fixtures
+
+    dcop cache - Clear cache
 
     dcop shell - Gives you a shell into the container
 
@@ -33,13 +38,10 @@ then
         dcop shell phpunit - Frontend container for phpunit
 
         dcop shell composer - Frontend container for composer_runner
-        dcop shell api_composer - API container for composer_runner
-
-        dcop shell api - API Container for nginx
-        dcop shell api_php - API container for PHP-FPM
 
         dcop shell qa - Frontend container for QA tool
-        dcop shell api_qa - API container for QA tool
+
+        dcop shell db - Postgres shell
 
 USAGE
     exit
@@ -56,13 +58,15 @@ logs) docker-compose logs -f
     ;;
 env_setup) docker-compose build
     ;;
-up) docker-compose up -d frontend api
+up) docker-compose up --remove-orphan -d frontend
+    #docker-compose run php php app/console doctrine:schema:update --force --quiet;
+    #docker-compose run php php app/console doctrine:fixtures:load --append
     ;;
 down) docker-compose down
     ;;
 restart)
     docker-compose down;
-    docker-compose up -d frontend api
+    docker-compose up -d frontend
     ;;
 phpunit) docker-compose run --rm phpunit
     ;;
@@ -72,8 +76,6 @@ behat)
     ;;
 composer) docker-compose run --rm composer
     ;;
-api_composer) docker-compose run --rm api_composer
-    ;;
 frontend_node_setup) docker-compose run --rm node /entrypoint-setup.sh
     ;;
 frontend_node_gen) docker-compose run --rm node /entrypoint-generate.sh
@@ -82,7 +84,7 @@ shell)
 
         if [ $# -lt 2 ]
         then
-                echo "Usage : $0 shell <frontend|php|node|behat|phpunit|composer|api|api_php|api_composer|qa|api_qa>"
+                echo "Usage : $0 shell <frontend|php|node|behat|phpunit|composer|qa>"
                 exit
         fi
 
@@ -96,19 +98,11 @@ shell)
             ;;
           composer) docker-compose run --entrypoint="bash" composer
             ;;
-          api_composer) docker-compose run --entrypoint="bash" api_composer
-            ;;
           behat) docker-compose run --entrypoint="bash" behat
             ;;
           phpunit) docker-compose run --entrypoint="bash" phpunit
             ;;
-          api) docker-compose exec api bash
-            ;;
-          api_php) docker-compose exec api_php bash
-            ;;
           qa) docker-compose run --entrypoint="sh" qa
-            ;;
-          api_qa) docker-compose run --entrypoint="sh" api_qa
             ;;
           db)
             docker-compose exec postgres psql -U digicop
@@ -116,15 +110,18 @@ shell)
 
     ;;
 db)
-    docker-compose run api_php php app/console doctrine:schema:update --force;
-    docker-compose run api_php php app/console doctrine:fixtures:load --append
+    docker-compose run php php app/console doctrine:schema:update --force;
+    docker-compose run php php app/console doctrine:fixtures:load --append
     ;;
 db-migrate)
-        docker-compose run api_php php app/console doctrine:schema:update --force
+    docker-compose run php php app/console doctrine:schema:update --force
     ;;
 db-fixtures)
-        docker-compose run api_php php app/console doctrine:fixtures:load --append
+    docker-compose run php php app/console doctrine:fixtures:load --append
     ;;
+cache)
+    docker-compose exec php /scripts/cache-clear.sh
+;;
 *) echo "Comand not found"
    ;;
 esac
