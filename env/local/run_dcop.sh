@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+#   ###############################################################################
+#   This file is owned by WebOps. Do not merge to master without WebOps input first
+#   ###############################################################################
+
 set -e
 
 if [ $# -lt 1 ]
