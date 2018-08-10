@@ -13,8 +13,8 @@ WORKDIR /app
 # @todo - document other gotcha's to consider before deciding on technical approach
 
 # https://github.com/gliderlabs/docker-alpine/blob/master/docs/usage.md
-RUN apk --no-cache add bash nano tree shadow postgresql-dev
-RUN docker-php-ext-install pdo pdo_pgsql
+RUN apk --no-cache add bash nano tree shadow postgresql-dev && \
+    docker-php-ext-install pdo pdo_pgsql
 
 # copy php.ini config
 COPY misc/config/php.ini /usr/local/etc/php/
@@ -33,4 +33,3 @@ RUN mkdir -p /tmp/app-cache && \
 
 #RUN php /app/app/console doctrine:schema:update --force --quiet;
 #RUN php /app/app/console doctrine:fixtures:load --append
-

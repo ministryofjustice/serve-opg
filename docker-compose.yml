@@ -1,4 +1,9 @@
 # https://docs.docker.com/compose/compose-file/compose-file-v2/#environment
+
+# ###############################################################################
+# This file is owned by WebOps. Do not merge to master without WebOps input first
+# ###############################################################################
+
 version: '2.1'
 
 services:
@@ -85,6 +90,21 @@ services:
     volumes:
       - ./env/local/behat.sh:/entrypoint.sh
       - ./frontend:/app:delegated
+    environment:
+      DC_SYMFONY_SECRET: dc2018!
+      DC_DYNAMODB_KEY: key
+      DC_DYNAMODB_SECRET: secret
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
+      DC_FIXURES_USERS: |
+        email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
+        email=sean.privett@digital.justice.gov.uk&password=Abcd1234
+        email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
+        email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
+        email=robert.ford@digital.justice.gov.uk&password=Abcd1234
 
   phpunit:
     build:
