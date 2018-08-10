@@ -24,26 +24,31 @@ services:
       context: frontend
       dockerfile: Dockerfile-php
     volumes:
-       - ./frontend/app:/app/app
-       - ./frontend/src:/app/src
-       - ./frontend/web:/app/web
+       - ./frontend/app:/app/app:ro
+       - ./frontend/src:/app/src:ro
+       - ./frontend/web:/app/web:ro
        - ./frontend/vendor:/app/vendor:ro
        - ./env/local:/scripts:ro
+    depends_on:
+      - dynamodb
+      - postgres
     environment:
       DC_SYMFONY_SECRET: dc2018!
+      DC_DYNAMODB_KEY: key
+      DC_DYNAMODB_SECRET: secret
+      DC_API_BASE_URL: "http://api"
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
+      DC_FIXURES_USERS: |
+        email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
+        email=sean.privett@digital.justice.gov.uk&password=Abcd1234
+        email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
+        email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
+        email=robert.ford@digital.justice.gov.uk&password=Abcd1234
 
-  api_php:
-      build:
-        context: ./api
-        dockerfile: Dockerfile-php
-      volumes:
-         - ./api/app:/app/app
-         - ./api/src:/app/src
-         - ./api/web:/app/web
-         - ./api/vendor:/app/vendor:ro
-         - ./env/local:/scripts:ro
-      environment:
-        DC_SYMFONY_SECRET: dcapi2018!
 
   composer:
     build:
@@ -55,15 +60,6 @@ services:
       - ./env/ci/composer.sh:/entrypoint.sh
       - ./frontend:/app
 
-  api_composer:
-    build:
-      context: ./api
-      dockerfile: ../docker/Dockerfile-composer
-    entrypoint:
-        - /entrypoint.sh
-    volumes:
-      - ./env/ci/composer.sh:/entrypoint.sh
-      - ./api:/app
 
   node:
     build:
@@ -99,32 +95,33 @@ services:
       - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
 
-  phpstan:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-php
-    entrypoint:
-        - /entrypoint.sh
-    volumes:
-      - ./env/ci/phpstan.sh:/entrypoint.sh
-      - ./frontend:/app:delegated
+  dynamodb:
+    # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
+    image: dwmkerr/dynamodb
 
-  api_phpstan:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-php
-    entrypoint:
-        - /entrypoint.sh
+  postgres:
+    image: postgres:9.6
+    #      ports:
+    #        - 5432:5432
     volumes:
-      - ./env/ci/phpstan.sh:/entrypoint.sh
-      - ./api:/app:delegated
+    - .postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: digicop
+      POSTGRES_USER: digicop
+      POSTGRES_PASSWORD: dcdb2018!
 
   qa:
     image: jakzal/phpqa
     volumes:
       - ./frontend:/app:ro
 
-  api_qa:
-    image: jakzal/phpqa
+  phpstan:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-php
+    entrypoint:
+    - /entrypoint.sh
     volumes:
-      - ./api:/app:ro
+    - ./env/ci/phpstan.sh:/entrypoint.sh
+    - ./frontend:/app:delegated
