@@ -24,8 +24,8 @@ Feature: login
     Then I should be on "/login"
     # correct
     When I fill in the following:
-      | login_username | behat1 |
-      | login_password | password |
+      | login_username | behat@digital.justice.gov.uk |
+      | login_password | Abcd1234 |
     And I press "login_submit"
     Then I should be on "/dashboard"
     And the response status code should be 200
