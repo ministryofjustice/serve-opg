@@ -1,8 +1,62 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
+{% block htmlTitle %}Design stuff{% endblock %}
 {% block pageTitle %}Design stuff{% endblock %}
 
 {% block content %}
+
+<h2 class="govuk-heading-l">Pagination</h2>
+
+<h3 class="govuk-heading-m">First item</h3>
+
+<div class="govuk-pagination">
+    <div class="govuk-pagination__controls">
+        <ul class="govuk-pagination__controls-items govuk-list">
+            <li>1</li>
+            <li><a href="#" class="govuk-link">2</a></li>
+            <li><a href="#" class="govuk-link">3</a></li>
+            <li><a href="#" class="govuk-link">4</a></li>
+            <li><a href="#" class="govuk-link">5</a></li>
+        </ul>
+        <a href="#" class="govuk-pagination__controls-next govuk-link">Next</a>
+    </div>
+    <div class="govuk-pagination__summary">Showing 1 – 15 of 112 report submissions</div>
+</div>
+
+<h3 class="govuk-heading-m govuk-!-margin-top-6">Middle items</h3>
+
+<div class="govuk-pagination">
+    <div class="govuk-pagination__controls">
+        <a href="#" class="govuk-pagination__controls-prev govuk-link">Prev</a>
+        <ul class="govuk-pagination__controls-items govuk-list">
+            <li><a href="#" class="govuk-link">34</a></li>
+            <li><a href="#" class="govuk-link">35</a></li>
+            <li>36</li>
+            <li><a href="#" class="govuk-link">37</a></li>
+            <li><a href="#" class="govuk-link">38</a></li>
+        </ul>
+        <a href="#" class="govuk-pagination__controls-next govuk-link">Next</a>
+    </div>
+    <div class="govuk-pagination__summary">Showing 25 – 50 of 112 report submissions</div>
+</div>
+
+<h3 class="govuk-heading-m govuk-!-margin-top-6">Last item</h3>
+
+<div class="govuk-pagination">
+    <div class="govuk-pagination__controls">
+        <a href="#" class="govuk-pagination__controls-prev govuk-link">Prev</a>
+        <ul class="govuk-pagination__controls-items govuk-list">
+            <li><a href="#" class="govuk-link">47</a></li>
+            <li><a href="#" class="govuk-link">48</a></li>
+            <li><a href="#" class="govuk-link">49</a></li>
+            <li><a href="#" class="govuk-link">50</a></li>
+            <li>51</li>
+        </ul>
+    </div>
+    <div class="govuk-pagination__summary">Showing 90 – 112 of 112 report submissions</div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
 <h2 class="govuk-heading-l">Search bar</h2>
 
@@ -16,7 +70,6 @@
         </fieldset>
     </form>
 </div>
-
 
 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
