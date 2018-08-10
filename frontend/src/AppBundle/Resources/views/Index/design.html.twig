@@ -5,6 +5,86 @@
 
 {% block content %}
 
+<div class="govuk-tabs" data-module="tabs">
+    <h2 class="govuk-tabs__title">
+        Contents
+    </h2>
+
+    <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#past-day">
+                Pending (9)
+            </a>
+        </li>
+        <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#past-week">
+                Served (45)
+            </a>
+        </li>
+    </ul>
+
+    <section class="govuk-tabs__panel" id="past-day">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Case number</th>
+                    <th class="govuk-table__header" scope="col">Client</th>
+                    <th class="govuk-table__header" scope="col">Upload date</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">62345676</td>
+                    <td class="govuk-table__cell ">Lia Shelton</td>
+                    <td class="govuk-table__cell ">10/01/2017</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">72345677</td>
+                    <td class="govuk-table__cell ">Abdullah Lang</td>
+                    <td class="govuk-table__cell ">17/07/2017</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">52345675</td>
+                    <td class="govuk-table__cell ">Angela Walker</td>
+                    <td class="govuk-table__cell ">06/04/2017</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </section>
+    <section class="govuk-tabs__panel" id="past-week">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">Case number</th>
+                    <th class="govuk-table__header" scope="col">Client</th>
+                    <th class="govuk-table__header" scope="col">Upload date</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">72345677</td>
+                    <td class="govuk-table__cell ">Abdullah Lang</td>
+                    <td class="govuk-table__cell ">17/07/2017</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">52345675</td>
+                    <td class="govuk-table__cell ">Angela Walker</td>
+                    <td class="govuk-table__cell ">06/04/2017</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">62345676</td>
+                    <td class="govuk-table__cell ">Lia Shelton</td>
+                    <td class="govuk-table__cell ">10/01/2017</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </section>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
 <h2 class="govuk-heading-l">Pagination</h2>
 
 <h3 class="govuk-heading-m">First item</h3>
