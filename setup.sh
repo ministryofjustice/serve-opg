@@ -18,10 +18,6 @@ function install_frontend() {
   ${DCOP_COMMAND} frontend_node_gen
 }
 
-function install_api() {
-  ${DCOP_COMMAND} api_composer
-}
-
 function setup_dcop_command() {
     if [[ "$SHELL" == *"zsh"* ]]; then
     echo "alias dcop='${PROJECT}/env/local/run_dcop.sh'" >> ~/.zshrc
@@ -43,8 +39,6 @@ function env_down() {
 setup_dcop_command
 
 setup_dcop_project
-
-install_api
 
 install_frontend
 
