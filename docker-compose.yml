@@ -36,7 +36,6 @@ services:
       DC_SYMFONY_SECRET: dc2018!
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
-      DC_API_BASE_URL: "http://api"
       DC_DB_HOST: postgres
       DC_DB_PORT: 5432
       DC_DB_NAME: digicop
