@@ -1,0 +1,10 @@
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
+
+{% block htmlTitle %}Create Order{% endblock %}
+{% block pageTitle %}Create Order{% endblock %}
+
+{% block content %}
+	{{ dump(client) }}
+
+	<a href="{{ path('deputy-add', {'orderId': 1}) }}">add deputy</a>
+{% endblock %}

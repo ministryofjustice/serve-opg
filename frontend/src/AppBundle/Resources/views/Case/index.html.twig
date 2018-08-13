@@ -1,0 +1,12 @@
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
+
+{% block htmlTitle %}Cases{% endblock %}
+{% block pageTitle %}Cases{% endblock %}
+
+{% block content %}
+	{% for client in clients %}
+		<a href="{{ path('order-add', {'clientId': client.id}) }}">
+		{{ client.caseNumber }} |
+		{{ client.clientName }}</a><hr/>
+	{% endfor %}
+{% endblock %}
