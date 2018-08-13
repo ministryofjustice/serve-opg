@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,8 +19,13 @@ class Order
     const SUBTYPE_VARIATION = 'variation';
     const SUBTYPE_DIRECTION = 'direction';
 
+    const HAS_ASSETS_YES = 'yes';
+    const HAS_ASSETS_NO = 'no';
+    const HAS_ASSETS_NA = 'na';
+
+
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
@@ -29,17 +35,17 @@ class Order
     private $client;
 
     /**
-     * @var string see TYPE_* values
+     * @var string|null see TYPE_* values
      */
     private $type;
 
     /**
-     * @var string see SUBTYPE_* values
+     * @var string|null see SUBTYPE_* values
      */
     private $subType;
 
     /**
-     * @var string yes/no/na/null
+     * @var string|null yes/no/na/null
      */
     private $hasAssetsAboveThreshold;
 
@@ -50,20 +56,27 @@ class Order
      * @param string $subType
      * @param string $hasAssetsAboveThreshold
      */
-    public function __construct(Client $client, string $type, string $subType, string $hasAssetsAboveThreshold)
+    public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->type = $type;
-        $this->subType = $subType;
-        $this->hasAssetsAboveThreshold = hasAssetsAboveThreshold;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Order
+     */
+    public function setId(?int $id): Order
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -75,28 +88,72 @@ class Order
     }
 
     /**
-     * @return string
+     * @param Client $client
+     * @return Order
      */
-    public function getType(): string
+    public function setClient(Client $client): Order
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType(): ?string
     {
         return $this->type;
     }
 
     /**
-     * @return string
+     * @param null|string $type
+     * @return Order
      */
-    public function getSubType(): string
+    public function setType(?string $type): Order
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSubType(): ?string
     {
         return $this->subType;
     }
 
     /**
-     * @return string
+     * @param null|string $subType
+     * @return Order
      */
-    public function hasAssetsAboveThreshold(): string
+    public function setSubType(?string $subType): Order
+    {
+        $this->subType = $subType;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getHasAssetsAboveThreshold(): ?string
     {
         return $this->hasAssetsAboveThreshold;
     }
+
+    /**
+     * @param null|string $hasAssetsAboveThreshold
+     * @return Order
+     */
+    public function setHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): Order
+    {
+        $this->hasAssetsAboveThreshold = $hasAssetsAboveThreshold;
+        return $this;
+    }
+
+
+
+
 
 
 }

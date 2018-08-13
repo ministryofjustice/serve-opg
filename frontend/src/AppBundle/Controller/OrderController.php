@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
+use AppBundle\Form\OrderType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,11 +33,21 @@ class OrderController extends Controller
      */
     public function addAction(Request $request, $clientId)
     {
-        //TODO
-//        return $this->redirectToRoute('deputy-add', ['orderId'=>1]);
+        $client = $this->em->getRepository(Client::class)->find($clientId);
+        $order = new Order($client);
+        $form = $this->createForm(OrderType::class, $order);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($order);
+            $this->em->flush($order);
+
+            return $this->redirectToRoute('deputy-add', ['orderId'=>$order->getId()]);
+        }
 
         return $this->render('AppBundle:Order:add.html.twig', [
-            'client' => $this->em->getRepository(Client::class)->find($clientId)
+            'client' => $this->em->getRepository(Client::class)->find($clientId),
+            'form'=>$form->createView()
         ]);
 
 

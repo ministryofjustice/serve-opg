@@ -1,7 +1,7 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
 AppBundle\Entity\Order:
     type: entity
-    table: "order"
+    table: "dc_order"
     id:
       id:
         type: integer

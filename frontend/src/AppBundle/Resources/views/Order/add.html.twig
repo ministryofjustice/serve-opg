@@ -7,5 +7,7 @@
     {{ client.caseNumber }} |
     {{ client.clientName }}
 
-	<a href="{{ path('deputy-add', {'orderId': 1}) }}">add deputy</a>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
 {% endblock %}
