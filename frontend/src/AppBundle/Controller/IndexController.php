@@ -14,7 +14,7 @@ class IndexController extends Controller
     public function indexAction()
     {
         // deputy homepage with links to register and login
-        return $this->render('AppBundle:Index:add.html.twig', [
+        return $this->render('AppBundle:Index:index.html.twig', [
 
         ]);
     }
