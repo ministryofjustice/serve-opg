@@ -10,10 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-/**
- * @Route("/order")
- */
-class OrderController extends Controller
+class DeputyController extends Controller
 {
     /**
      * @var EntityManager
@@ -30,17 +27,12 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/case/{clientId}/order/add", name="order-add")
+     * @Route("/case/order/{orderId}/deputy/add", name="deputy-add")
      */
-    public function addAction(Request $request, $clientId)
+    public function addAction(Request $request, $orderId)
     {
-        //TODO
-//        return $this->redirectToRoute('deputy-add', ['orderId'=>1]);
-
-        return $this->render('AppBundle:Order:add.html.twig', [
-            'client' => $this->em->getRepository(Client::class)->find($clientId)
+        return $this->render('AppBundle:Deputy:add.html.twig', [
         ]);
-
 
     }
 }

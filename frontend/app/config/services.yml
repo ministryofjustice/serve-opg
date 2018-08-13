@@ -16,6 +16,7 @@ services:
     AppBundle\Controller\CaseController: ~
     AppBundle\Controller\ManageController: ~
     AppBundle\Controller\OrderController: ~
+    AppBundle\Controller\DeputyController: ~
 
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension
