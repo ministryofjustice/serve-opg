@@ -4,7 +4,8 @@
 {% block pageTitle %}Create Order{% endblock %}
 
 {% block content %}
-	{{ dump(client) }}
+    {{ client.caseNumber }} |
+    {{ client.clientName }}
 
 	<a href="{{ path('deputy-add', {'orderId': 1}) }}">add deputy</a>
 {% endblock %}
