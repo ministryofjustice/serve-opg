@@ -23,3 +23,8 @@ AppBundle\Entity\Client:
         column: created_at
         type: datetime
         nullable: false
+    oneToMany:
+      orders:
+        targetEntity: Order
+        mappedBy: client
+        cascade: ["persist", "merge"]
