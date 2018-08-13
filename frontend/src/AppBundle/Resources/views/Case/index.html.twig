@@ -4,9 +4,26 @@
 {% block pageTitle %}Cases{% endblock %}
 
 {% block content %}
-	{% for client in clients %}
-		<a href="{{ path('order-add', {'clientId': client.id}) }}">
-		{{ client.caseNumber }} |
-		{{ client.clientName }}</a><hr/>
-	{% endfor %}
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header" scope="col">Case number</th>
+                <th class="govuk-table__header" scope="col">Client</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            {% for client in clients %}
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a href="{{ path('order-add', {'clientId': client.id}) }}">
+                            {{ client.caseNumber }}
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">
+                        {{ client.clientName }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

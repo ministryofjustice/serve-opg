@@ -44,23 +44,22 @@ class DefaultFixtures extends Fixture
         // clients
         $repo = $manager->getRepository(Client::class);
         foreach ([
-                     ['12345671', 'Peter Bloggs'],
-                     ['22345672', 'Victoria Brady'],
-                     ['32345673', 'Thomas Jefferson'],
-                     ['32345673', 'Thomas Jefferson'],
-                     ['42345674', 'Susan Grindle'],
-                     ['62345676', 'Lia Shelton'],
-                     ['72345677', 'Abdullah Lang'],
-                     ['52345675', 'Angela Walker'],
-                     ['92345679', 'Justine Henderson'],
-                     ['82345678', 'Marcus Cruz'],
-                 ] as $data) {
+             ['12345671', 'Peter Bloggs'],
+             ['22345672', 'Victoria Brady'],
+             ['32345673', 'Thomas Jefferson'],
+             ['42345674', 'Susan Grindle'],
+             ['62345676', 'Lia Shelton'],
+             ['72345677', 'Abdullah Lang'],
+             ['52345675', 'Angela Walker'],
+             ['92345679', 'Justine Henderson'],
+             ['82345678', 'Marcus Cruz'],
+         ] as $data) {
             if (!$repo->findOneBy(['caseNumber' => $data[0]])) {
                 $client = new Client($data[0], $data[1], new \DateTime());
                 $manager->persist($client);
+                $manager->flush();
             }
         }
 
-        $manager->flush();
     }
 }
