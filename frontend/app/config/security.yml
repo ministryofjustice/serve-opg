@@ -15,7 +15,7 @@ security:
         form_login:
             login_path: login
             check_path: login
-            default_target_path: dashboard
+            default_target_path: cases
         logout:
             path:   /logout
             target: login
@@ -26,7 +26,7 @@ security:
     access_control:
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/manage/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/dashboard, roles: ROLE_USER }
+    - { path: ^/cases, roles: ROLE_USER }
     - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 

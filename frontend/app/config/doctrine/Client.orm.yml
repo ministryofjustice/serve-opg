@@ -1,19 +1,25 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
-AppBundle\Entity\User:
+AppBundle\Entity\Client:
     type: entity
-    table: "dc_user"
+    table: "client"
     id:
       id:
         type: integer
         generator:
           strategy: AUTO
     fields:
-      email:
+      caseNumber:
+        column: case_number
+        type: string
+        length: 25
+        nullable: false
+        unique: true
+      clientName:
+        column: client_name
         type: string
         length: 60
         nullable: false
-        unique: true
-      password:
-        type: string
-        length: 60
+      createdAt:
+        column: created_at
+        type: datetime
         nullable: false

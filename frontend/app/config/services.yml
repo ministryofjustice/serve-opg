@@ -5,14 +5,15 @@ services:
         autoconfigure: true
         public: false
 
-    em:
+
+    Doctrine\ORM\EntityManager:
       alias: doctrine.orm.entity_manager
       public: true
 
     AppBundle\DataFixtures\DefaultFixtures: ~
     AppBundle\Controller\IndexController: ~
     AppBundle\Controller\UserController: ~
-    AppBundle\Controller\DashboardController: ~
+    AppBundle\Controller\CaseController: ~
     AppBundle\Controller\ManageController: ~
 
     twig.assets_extension:

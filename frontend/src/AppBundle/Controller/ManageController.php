@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -13,6 +14,20 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ManageController extends Controller
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * UserController constructor.
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/availability")
      * @Method({"GET"})
