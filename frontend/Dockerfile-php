@@ -29,7 +29,3 @@ RUN groupmod -g 1000 www-data && \
 RUN mkdir -p /tmp/app-cache && \
     mkdir -p /tmp/app-logs && \
     chown www-data:www-data -R /tmp/app-cache /tmp/app-logs
-
-
-#RUN php /app/app/console doctrine:schema:update --force --quiet;
-#RUN php /app/app/console doctrine:fixtures:load --append
