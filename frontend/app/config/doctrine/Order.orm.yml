@@ -1,0 +1,26 @@
+# reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
+AppBundle\Entity\Order:
+    type: entity
+    table: "dc_order"
+    id:
+      id:
+        type: integer
+        generator:
+          strategy: AUTO
+    fields:
+      type:
+        type: string
+        length: 4
+      subType:
+        column: sub_type
+        type: string
+        length: 20
+      hasAssetsAboveThreshold:
+        column: has_assets_above_threshold
+        type: string
+        length: 20
+    manyToOne:
+      client:
+        targetEntity: Client
+        inversedBy: orders
+        cascade: ["persist", "merge"]

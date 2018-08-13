@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,10 @@ class DeputyController extends Controller
      */
     public function addAction(Request $request, $orderId)
     {
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+
         return $this->render('AppBundle:Deputy:add.html.twig', [
+            'order'=>$order
         ]);
 
     }

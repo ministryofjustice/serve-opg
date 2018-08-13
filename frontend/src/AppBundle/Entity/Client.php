@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -28,6 +29,11 @@ class Client
     private $createdAt;
 
     /**
+     * @var ArrayCollection of Order[]
+     */
+    private $orders;
+
+    /**
      * Client constructor.
      * @param string $caseNumber
      * @param string $clientName
@@ -38,6 +44,7 @@ class Client
         $this->caseNumber = $caseNumber;
         $this->clientName = $clientName;
         $this->createdAt = $createdAt;
+        $this->orders = new ArrayCollection();
     }
 
     /**
@@ -71,7 +78,6 @@ class Client
     {
         return $this->createdAt;
     }
-
 
 
 }
