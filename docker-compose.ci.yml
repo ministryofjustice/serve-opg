@@ -42,12 +42,9 @@ services:
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
       DC_FIXURES_USERS: |
-        email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
-        email=sean.privett@digital.justice.gov.uk&password=Abcd1234
-        email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
-        email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
-        email=robert.ford@digital.justice.gov.uk&password=Abcd1234
-
+        email=behat@digital.justice.gov.uk&password=Abcd1234
+      DC_FIXURES_CASES: |
+        number=12345678&name=Behat User
 
   composer:
     build:

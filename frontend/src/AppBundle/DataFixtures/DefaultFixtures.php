@@ -29,9 +29,9 @@ class DefaultFixtures extends Fixture
     {
         // users
         $repo = $manager->getRepository(User::class);
-        $users = array_filter(explode("\n", getenv('DC_FIXURES_USERS')));
-        foreach ($users as $userStr) {
-            parse_str($userStr, $user);
+        $userLines = array_filter(explode("\n", getenv('DC_FIXURES_USERS')));
+        foreach ($userLines as $userLine) {
+            parse_str($userLine, $user);
             if (!empty($user['email']) && !$repo->findOneBy(['email' => $user['email']])) {
                 $u = new User($user['email']);
                 $pass = $this->encoder->encodePassword($u, $user['password']);
@@ -43,19 +43,11 @@ class DefaultFixtures extends Fixture
 
         // clients
         $repo = $manager->getRepository(Client::class);
-        foreach ([
-             ['12345671', 'Peter Bloggs'],
-             ['22345672', 'Victoria Brady'],
-             ['32345673', 'Thomas Jefferson'],
-             ['42345674', 'Susan Grindle'],
-             ['62345676', 'Lia Shelton'],
-             ['72345677', 'Abdullah Lang'],
-             ['52345675', 'Angela Walker'],
-             ['92345679', 'Justine Henderson'],
-             ['82345678', 'Marcus Cruz'],
-         ] as $data) {
-            if (!$repo->findOneBy(['caseNumber' => $data[0]])) {
-                $client = new Client($data[0], $data[1], new \DateTime());
+        $caseLines = array_filter(explode("\n", getenv('DC_FIXURES_CASES')));
+        foreach ($caseLines as $caseLine) {
+            parse_str($caseLine, $case);
+            if (!$repo->findOneBy(['caseNumber' => $case['number']])) {
+                $client = new Client($case['number'], $case['name'], new \DateTime());
                 $manager->persist($client);
                 $manager->flush();
             }
