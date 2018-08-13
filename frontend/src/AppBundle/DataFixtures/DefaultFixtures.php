@@ -47,7 +47,6 @@ class DefaultFixtures extends Fixture
                      ['12345671', 'Peter Bloggs'],
                      ['22345672', 'Victoria Brady'],
                      ['32345673', 'Thomas Jefferson'],
-                     ['32345673', 'Thomas Jefferson'],
                      ['42345674', 'Susan Grindle'],
                      ['62345676', 'Lia Shelton'],
                      ['72345677', 'Abdullah Lang'],
