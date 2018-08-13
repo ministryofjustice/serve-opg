@@ -74,8 +74,8 @@
                             </li>
                             {% endif %}
                             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <li class="govuk-header__navigation-item {{ currentRoute =='cases' ? 'govuk-header__navigation-item--active' : '' }}">
-                                <a class="govuk-header__link" href="{{ path('cases') }}">Dashboard</a>
+                            <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('case-list') }}">Dashboard</a>
                             </li>
                             <li class="govuk-header__navigation-item">
                                 <a class="govuk-header__link" href="/logout">Sign out</a>

@@ -26,7 +26,7 @@ security:
     access_control:
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/manage/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/cases, roles: ROLE_USER }
+    - { path: ^/case, roles: ROLE_USER }
     - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 

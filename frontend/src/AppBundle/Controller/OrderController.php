@@ -11,9 +11,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
- * @Route("/case")
+ * @Route("/order")
  */
-class CaseController extends Controller
+class OrderController extends Controller
 {
     /**
      * @var EntityManager
@@ -30,13 +30,12 @@ class CaseController extends Controller
     }
 
     /**
-     * @Route("", name="case-list")
+     * @Route("/case/{clientId}/order/add", name="order-add")
      */
-    public function indexAction(Request $request)
+    public function addAction(Request $request, $clientId)
     {
-        return $this->render('AppBundle:Case:index.html.twig', [
-            'clients' => $this->em->getRepository(Client::class)->findAll()
+        return $this->render('AppBundle:Order:add.html.twig', [
+            'client' => $this->em->getRepository(Client::class)->find($clientId)
         ]);
     }
-
 }

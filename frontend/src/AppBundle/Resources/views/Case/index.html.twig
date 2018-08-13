@@ -5,9 +5,8 @@
 
 {% block content %}
 	{% for client in clients %}
-		<a href="{{ path('create-order', {'clientId': client.id}) }}">
+		<a href="{{ path('order-add', {'clientId': client.id}) }}">
 		{{ client.caseNumber }} |
-		{{ client.clientName }} |
-		{{ client.createdAt | date }}</a><hr/>
+		{{ client.clientName }}</a><hr/>
 	{% endfor %}
 {% endblock %}
