@@ -2,6 +2,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -29,7 +30,7 @@ class Client
     private $createdAt;
 
     /**
-     * @var ArrayCollection of Order[]
+     * @var Collection of Order[]
      */
     private $orders;
 
@@ -77,6 +78,24 @@ class Client
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+        }
     }
 
 

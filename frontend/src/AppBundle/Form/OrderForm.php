@@ -5,18 +5,22 @@ namespace AppBundle\Form;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\Post;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class OrderType extends AbstractType
+class OrderForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('type', ChoiceType::class, [
+                'expanded'    => true,
+                'empty_data' => '',
                 'choices' => [
                     Order::TYPE_PROPERTY_AFFAIRS => Order::TYPE_PROPERTY_AFFAIRS,
                     Order::TYPE_HEALTH_WELFARE => Order::TYPE_HEALTH_WELFARE,
@@ -25,6 +29,7 @@ class OrderType extends AbstractType
             ])
             ->add('subType', ChoiceType::class, [
                 'choices' => [
+                    'Pleaase select...' => '',
                     Order::SUBTYPE_NEW => Order::SUBTYPE_NEW,
                     Order::SUBTYPE_REPLACEMENT => Order::SUBTYPE_REPLACEMENT,
                     Order::SUBTYPE_INTERIM_ORDER => Order::SUBTYPE_INTERIM_ORDER,
