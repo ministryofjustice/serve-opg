@@ -8,9 +8,6 @@ AppBundle\Entity\Order:
         generator:
           strategy: AUTO
     fields:
-      type:
-        type: string
-        length: 4
       subType:
         column: sub_type
         type: string
@@ -23,4 +20,13 @@ AppBundle\Entity\Order:
       client:
         targetEntity: Client
         inversedBy: orders
-        cascade: ["persist", "merge"]
+        cascade: ["persist"]
+        joinColumn:
+          name: client_id
+          referencedColumnName: id
+          onDelete: CASCADE
+    oneToMany:
+      types:
+        targetEntity: OrderType
+        mappedBy: order
+        cascade: ["persist"]

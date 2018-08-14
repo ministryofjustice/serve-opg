@@ -2,9 +2,8 @@
 
 namespace AppBundle\Entity;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 class Order
 {
@@ -40,6 +39,11 @@ class Order
     private $type;
 
     /**
+     * @var Collection
+     */
+    private $types;
+
+    /**
      * @var string|null see SUBTYPE_* values
      */
     private $subType;
@@ -58,7 +62,12 @@ class Order
      */
     public function __construct(Client $client)
     {
+        if (count($client->getOrders()) > 0 && $client->getOrders()->first() !== $this) {
+            throw new \InvalidArgumentException('The given client already has an Order');
+        }
+        $this->types = new ArrayCollection();
         $this->client = $client;
+        $client->addOrder($this);
     }
 
     /**
@@ -151,9 +160,23 @@ class Order
         return $this;
     }
 
+    /**
+     * @param OrderType $order
+     */
+    public function addType(OrderType $type)
+    {
+        if (!$this->types->contains($type)) {
+            $type->setOrder($this);
+            $this->types->add($type);
+        }
+    }
 
-
-
-
+    /**
+     * @return Collection
+     */
+    public function getTypes(): Collection
+    {
+        return $this->types;
+    }
 
 }

@@ -18,6 +18,8 @@ services:
     AppBundle\Controller\OrderController: ~
     AppBundle\Controller\DeputyController: ~
 
+    AppBundle\Service\OrderService: ~
+
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension
         public: false
