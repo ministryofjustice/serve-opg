@@ -86,7 +86,8 @@ dcop shell behat
 
 ## Pull and view digicop code updates
 
-    cd ~/www/opg-digicop
+    cd ~/OPG
+    /opg-digicop
     dcop down
     git pull origin master
     dcop env_setup
