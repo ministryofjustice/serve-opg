@@ -43,6 +43,7 @@ class DeputyType extends AbstractType
             ->add('surname', TextType::class)
             ->add('emailAddress', TextType::class)
             ->add('contactNumber', TextType::class)
+            ->add('organisationName', TextType::class)
             ->add('addressLine1', TextType::class)
             ->add('addressLine2', TextType::class)
             ->add('addressLine3', TextType::class)

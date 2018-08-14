@@ -45,6 +45,11 @@ class Deputy
     /**
      * @var string
      */
+    private $organisationName;
+
+    /**
+     * @var string
+     */
     private $forename;
 
     /**
@@ -113,7 +118,7 @@ class Deputy
      * @param null $orderType
      * @param null $appointmentType
      * @param null $deputyType
-     * @param array $personalDetails
+     * @param array $deputyDetails
      * @param array $addressDetails
      * @param null $deputyAnswerQ2_6
      * @param null $deputyS4Response
@@ -123,7 +128,7 @@ class Deputy
         $orderType = null,
         $appointmentType = null,
         $deputyType = null,
-        $personalDetails = [],
+        $deputyDetails = [],
         $addressDetails = [],
         $deputyAnswerQ2_6 = null,
         $deputyS4Response    = null
@@ -132,7 +137,7 @@ class Deputy
         $this->orderType = $orderType;
         $this->appointmentType = $appointmentType;
         $this->deputyType = $deputyType;
-        $this->constructPersonalDetails($personalDetails);
+        $this->constructPersonalDetails($deputyDetails);
         $this->constructAddressDetails($addressDetails);
         $this->deputyAnswerQ2_6 = $deputyAnswerQ2_6;
             $this->deputyS4Response = $deputyS4Response;
@@ -144,12 +149,15 @@ class Deputy
      *
      * @param $personalDetails
      */
-    private function constructPersonalDetails($personalDetails) {
-        if (!empty($personalDetails)) {
-            $this->forename = $personalDetails['forename'];
-            $this->surname = $personalDetails['surname'];
-            $this->emailAddress = $personalDetails['emailAddress'];
-            $this->contactNumber = $personalDetails['contactNumber'];
+    private function constructPersonalDetails($deputyDetails) {
+        if (!empty($deputyDetails)) {
+            if (isset($deputyDetails['organisationName'])) {
+                $this->organisationName = $deputyDetails['organisationName'];
+            }
+            $this->forename = $deputyDetails['forename'];
+            $this->surname = $deputyDetails['surname'];
+            $this->emailAddress = $deputyDetails['emailAddress'];
+            $this->contactNumber = $deputyDetails['contactNumber'];
         }
     }
 
@@ -259,6 +267,22 @@ class Deputy
     public function setDeputyType($deputyType)
     {
         $this->deputyType = $deputyType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganisationName()
+    {
+        return $this->organisationName;
+    }
+
+    /**
+     * @param string $organisationName
+     */
+    public function setOrganisationName($organisationName)
+    {
+        $this->organisationName = $organisationName;
     }
 
     /**
