@@ -30,3 +30,4 @@ AppBundle\Entity\Order:
         targetEntity: OrderType
         mappedBy: order
         cascade: ["persist"]
+

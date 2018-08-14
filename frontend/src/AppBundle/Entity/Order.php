@@ -3,7 +3,9 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class Order
 {
@@ -39,11 +41,6 @@ class Order
     private $type;
 
     /**
-     * @var Collection
-     */
-    private $types;
-
-    /**
      * @var string|null see SUBTYPE_* values
      */
     private $subType;
@@ -54,6 +51,11 @@ class Order
     private $hasAssetsAboveThreshold;
 
     /**
+     * @var ArrayCollection of Deputy[]
+     */
+    private $deputys;
+
+    /**
      * Order constructor.
      * @param Client $client
      * @param string $type
@@ -62,12 +64,9 @@ class Order
      */
     public function __construct(Client $client)
     {
-        if (count($client->getOrders()) > 0 && $client->getOrders()->first() !== $this) {
-            throw new \InvalidArgumentException('The given client already has an Order');
-        }
-        $this->types = new ArrayCollection();
         $this->client = $client;
-        $client->addOrder($this);
+        $this->deputys = new ArrayCollection();
+
     }
 
     /**
@@ -161,22 +160,24 @@ class Order
     }
 
     /**
-     * @param OrderType $order
+     * @return ArrayCollection
      */
-    public function addType(OrderType $type)
+    public function getDeputys()
     {
-        if (!$this->types->contains($type)) {
-            $type->setOrder($this);
-            $this->types->add($type);
-        }
+        return $this->deputys;
     }
 
     /**
-     * @return Collection
+     * @param ArrayCollection $deputys
      */
-    public function getTypes(): Collection
+    public function setDeputys($deputys)
     {
-        return $this->types;
+        $this->deputys = $deputys;
     }
+
+
+
+
+
 
 }

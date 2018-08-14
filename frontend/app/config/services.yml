@@ -17,6 +17,7 @@ services:
     AppBundle\Controller\ManageController: ~
     AppBundle\Controller\OrderController: ~
     AppBundle\Controller\DeputyController: ~
+    AppBundle\Controller\DocumentController: ~
 
     AppBundle\Service\OrderService: ~
 

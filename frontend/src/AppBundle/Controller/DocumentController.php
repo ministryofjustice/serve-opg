@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DeputyController extends Controller
+class DocumentController extends Controller
 {
     /**
      * @var EntityManager
@@ -30,28 +30,16 @@ class DeputyController extends Controller
     }
 
     /**
-     * @Route("/case/order/{orderId}/deputy/add", name="deputy-add")
+     * @Route("/case/order/{orderId}/document/add", name="document-add")
      */
     public function addAction(Request $request, $orderId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
-
-        $deputy = new Deputy($order);
-
-        $form = $this->createForm(DeputyType::class, $deputy);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->persist($deputy);
-            $this->em->flush($deputy);
-
-            return $this->redirectToRoute('document-add', ['orderId'=>$order->getId()]);
-        }
-
-        return $this->render('AppBundle:Deputy:add.html.twig', [
+        return $this->render('AppBundle:Document:add.html.twig', [
+            'deputies' => $order->getDeputys(),
             'client' => $order->getClient(),
             'order' => $order,
-            'form'=>$form->createView()
+            //'form'=>$form->createView()
         ]);
     }
 }

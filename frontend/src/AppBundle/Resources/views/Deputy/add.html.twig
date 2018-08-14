@@ -11,4 +11,11 @@
 	{% for t in order.types %}
 		{{ t.type }} (id={{ t.id }}),
 	{% endfor %}
+        {{ client.caseNumber }} |
+        {{ client.clientName }}
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+
 {% endblock %}
