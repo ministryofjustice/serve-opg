@@ -27,4 +27,4 @@ AppBundle\Entity\Client:
       orders:
         targetEntity: Order
         mappedBy: client
-        cascade: ["persist", "merge"]
+        cascade: ["persist"]

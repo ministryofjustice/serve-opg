@@ -31,6 +31,7 @@ class FeatureContext extends MinkContext implements KernelAwareContext
     public function deleteOrdersForClient($caseNumber)
     {
         $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber'=>$caseNumber]);
+
         foreach($client->getOrders() as $order) {
             $this->em->remove($order);
         }

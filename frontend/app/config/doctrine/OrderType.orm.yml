@@ -1,0 +1,30 @@
+# reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
+AppBundle\Entity\OrderType:
+    type: entity
+    table: "dc_order_type"
+    inheritanceType: single_table
+    discriminatorColumn:
+      name: type
+      type: string
+    discriminatorMap:
+      pa:  AppBundle\Entity\OrderTypePa
+      hw:  AppBundle\Entity\OrderTypeHw
+    id:
+      id:
+        type: integer
+        generator:
+          strategy: AUTO
+    fields:
+      createdAt:
+        column: created_at
+        type: datetime
+        nullable: false
+    manyToOne:
+      order:
+        targetEntity: Order
+        inversedBy: types
+        cascade: ["persist"]
+        joinColumn:
+          name: order_id
+          referencedColumnName: id
+          onDelete: CASCADE
