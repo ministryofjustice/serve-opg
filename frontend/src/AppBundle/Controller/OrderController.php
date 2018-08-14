@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
-use AppBundle\Form\OrderType;
+use AppBundle\Form\OrderForm;
 use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +51,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('deputy-add', ['orderId'=>$client->getOrders()->first()->getId()]);
         }
         $order = new Order($client);
-        $form = $this->createForm(OrderType::class, $order);
+        $form = $this->createForm(OrderForm::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
