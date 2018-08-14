@@ -92,7 +92,7 @@ dcop shell behat
     dcop env_setup
     dcop up
 
- Check [http://localhost:8088](http://localhost:8088/)
+ Check [http://localhost:8888](http://localhost:8888/)
 
 ## Other useful commands
     
