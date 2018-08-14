@@ -90,6 +90,8 @@ dcop shell behat
     dcop down
     git pull origin master
     dcop env_setup
+    dcop composer
+    dcop db
     dcop up
 
  Check [http://localhost:8888](http://localhost:8888/)
