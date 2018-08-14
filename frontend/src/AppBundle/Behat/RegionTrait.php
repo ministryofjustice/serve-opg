@@ -61,16 +61,6 @@ trait RegionTrait
         }
     }
 
-    /**
-     * @Then I should see a subsection called :subsection
-     */
-    public function iShouldSeeTheSubsection($subsection)
-    {
-        $elementsFound = $this->getSession()->getPage()->findAll('css', '#' . $subsection . '-subsection');
-        if (count($elementsFound) === 0) {
-            throw new \RuntimeException("Subsection $subsection not found");
-        }
-    }
 
     /**
      * @Then I should see :text in the :region region
@@ -172,29 +162,6 @@ trait RegionTrait
         }
     }
 
-    /**
-     * @Then I should not see the cookie warning banner
-     */
-    public function dontSeeCookieBanner()
-    {
-        $driver = $this->getSession()->getDriver();
-
-        if (get_class($driver) != 'Behat\Mink\Driver\GoutteDriver') {
-            $elementsFound = $this->getSession()->getPage()->findAll('css', '#global-cookie-message');
-
-            if (count($elementsFound) === 0) {
-                return;
-            }
-
-            foreach ($elementsFound as $node) {
-                // Note: getText() will return an empty string when using Selenium2D. This
-                // is ok since it will cause a failed step.
-                if ($node->getText() != '' && $node->isVisible()) {
-                    throw new \RuntimeException('Cookie banner Visible');
-                }
-            }
-        }
-    }
 
     /**
      * @Then I should see :text in the page header
@@ -204,28 +171,4 @@ trait RegionTrait
         $this->assertSession()->elementTextContains('css', '.page-header', $text);
     }
 
-    /**
-     * @Then /^I should see a confirmation$/
-     */
-    public function iShouldSeeAConfirmation()
-    {
-        $elementsFound = $this->getSession()->getPage()->findAll('css', '.confirm-bar');
-        $count = count($elementsFound);
-        if ($count < 1) {
-            throw new \RuntimeException('No confirmation dialog found');
-        }
-
-        if ($elementsFound[0]->isVisible() == false) {
-            throw new \RuntimeException('Confirmation dialog not visible');
-        }
-    }
-
-    /**
-     * @Then /^I should see "([^"]*)" in the section title info panel$/
-     */
-    public function iShouldSeeInSectionTitleInfoPanel($text)
-    {
-        $css = '#page-section-title-container .info';
-        $this->assertSession()->elementTextContains('css', $css, $text);
-    }
 }

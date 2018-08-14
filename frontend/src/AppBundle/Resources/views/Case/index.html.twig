@@ -15,7 +15,7 @@
             {% for client in clients %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <a href="{{ path('order-add', {'clientId': client.id}) }}">
+                        <a href="{{ path('order-add', {'clientId': client.id}) }}" id="add-order-{{ client.caseNumber }}">
                             {{ client.caseNumber }}
                         </a>
                     </td>
