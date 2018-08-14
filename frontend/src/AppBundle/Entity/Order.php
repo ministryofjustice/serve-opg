@@ -58,7 +58,11 @@ class Order
      */
     public function __construct(Client $client)
     {
+        if (count($client->getOrders()) > 0 && $client->getOrders()->first() !== $this) {
+            throw new \InvalidArgumentException('The given client already has an Order');
+        }
         $this->client = $client;
+        $client->addOrder($this);
     }
 
     /**

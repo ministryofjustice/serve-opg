@@ -33,7 +33,11 @@ class OrderController extends Controller
      */
     public function addAction(Request $request, $clientId)
     {
-        $client = $this->em->getRepository(Client::class)->find($clientId);
+        $client = $this->em->getRepository(Client::class)->find($clientId); /*@var $client Client*/
+        // redirect to next step if one order was already created
+        if (count($client->getOrders())) {
+            return $this->redirectToRoute('deputy-add', ['orderId'=>$client->getOrders()->first()->getId()]);
+        }
         $order = new Order($client);
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
@@ -46,7 +50,7 @@ class OrderController extends Controller
         }
 
         return $this->render('AppBundle:Order:add.html.twig', [
-            'client' => $this->em->getRepository(Client::class)->find($clientId),
+            'client' => $client,
             'form'=>$form->createView()
         ]);
 
