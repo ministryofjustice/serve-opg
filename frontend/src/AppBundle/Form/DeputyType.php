@@ -56,7 +56,7 @@ class DeputyType extends AbstractType
                     Answers::ANSWER_NO => Answers::ANSWERED_NO
                 ]
             ])
-            ->add('deputyS4ResponsesAnsweredNo', ChoiceType::class, [
+            ->add('deputyS4Response', ChoiceType::class, [
                 'choices' => [
                     Answers::ANSWER_YES => Answers::ANSWER_YES,
                     Answers::ANSWER_NO => Answers::ANSWER_NO

@@ -41,11 +41,17 @@ class DeputyController extends Controller
         $form = $this->createForm(DeputyType::class, $deputy);
         $form->handleRequest($request);
 
+        $buttonClicked = $form->getClickedButton();
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($deputy);
             $this->em->flush($deputy);
 
-            return $this->redirectToRoute('document-add', ['orderId'=>$order->getId()]);
+            if ($buttonClicked->getName() == 'saveAndAddAnother') {
+                return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
+            } else {
+                return $this->redirectToRoute('document-add', ['orderId' => $order->getId()]);
+            }
         }
 
         return $this->render('AppBundle:Deputy:add.html.twig', [

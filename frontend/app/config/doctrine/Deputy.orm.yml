@@ -64,6 +64,14 @@ AppBundle\Entity\Deputy:
         column: address_country
         type: string
         length: 50
+      deputyAnswerQ2_6:
+        column: deputy_answer_q2_6
+        type: string
+        length: 12
+      deputyS4Response:
+        column: deputy_s4_response
+        type: string
+        length: 12
     manyToOne:
       order:
         targetEntity: Order

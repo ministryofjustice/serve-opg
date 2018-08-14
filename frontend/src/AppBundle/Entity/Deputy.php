@@ -105,7 +105,7 @@ class Deputy
     /**
      * @var string
      */
-    private $deputyS4ResponsesAnsweredNo;
+    private $deputyS4Response;
 
     /**
      * Deputy constructor.
@@ -116,7 +116,7 @@ class Deputy
      * @param array $personalDetails
      * @param array $addressDetails
      * @param null $deputyAnswerQ2_6
-     * @param null $deputyS4ResponsesAnsweredNo
+     * @param null $deputyS4Response
      */
     public function __construct(
         Order $order,
@@ -126,7 +126,7 @@ class Deputy
         $personalDetails = [],
         $addressDetails = [],
         $deputyAnswerQ2_6 = null,
-        $deputyS4ResponsesAnsweredNo = null
+        $deputyS4Response    = null
     ) {
         $this->order = $order;
         $this->orderType = $orderType;
@@ -135,7 +135,7 @@ class Deputy
         $this->constructPersonalDetails($personalDetails);
         $this->constructAddressDetails($addressDetails);
         $this->deputyAnswerQ2_6 = $deputyAnswerQ2_6;
-        $this->deputyS4ResponsesAnsweredNo = $deputyS4ResponsesAnsweredNo;
+            $this->deputyS4Response = $deputyS4Response;
 
     }
 
@@ -482,19 +482,19 @@ class Deputy
     /**
      * @return string
      */
-    public function getDeputyS4ResponsesAnsweredNo()
+    public function getDeputyS4Response()
     {
-        return $this->deputyS4ResponsesAnsweredNo;
+        return $this->deputyS4Response;
     }
 
     /**
-     * @param string $deputyS4ResponsesAnsweredNo
+     * @param string $deputyS4Response
      *
      * @return $this
      */
-    public function setDeputyS4ResponsesAnsweredNo($deputyS4ResponsesAnsweredNo)
+    public function setDeputyS4Response($deputyS4Response)
     {
-        $this->deputyS4ResponsesAnsweredNo = $deputyS4ResponsesAnsweredNo;
+        $this->deputyS4Response = $deputyS4Response;
         return $this;
     }
 
