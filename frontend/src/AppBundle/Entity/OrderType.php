@@ -45,7 +45,6 @@ abstract class OrderType
     {
         $this->createdAt = new \DateTime();
         $this->deputys = new ArrayCollection();
-
     }
 
     /**
@@ -97,4 +96,16 @@ abstract class OrderType
     {
         $this->deputys = $deputys;
     }
+
+    /**
+     * @param Deputy $deputy
+     */
+    public function addDeputy(Deputy $deputy)
+    {
+        if (!$this->deputys->contains($deputy)) {
+            $this->deputys->add($deputy);
+        }
+    }
+
+
 }

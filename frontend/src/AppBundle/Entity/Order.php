@@ -189,7 +189,9 @@ class Order
     {
         $deputies = new ArrayCollection();
         foreach ($this->getTypes() as $ot) {
-            $deputies += $ot->getDeputys();
+            foreach ($ot->getDeputys() as $dep) {
+                $deputies->add($dep);
+            }
         }
         return $deputies;
     }
@@ -200,22 +202,20 @@ class Order
      * @param null $type
      * @return null
      */
-    public function getTypesByOrderType($type = null)
+    public function getTypesByOrderType($orderType = null)
     {
-        if (in_array($type, [Order::TYPE_HEALTH_WELFARE, Order::TYPE_PROPERTY_AFFAIRS])) {
+        if (in_array($orderType, [Order::TYPE_HEALTH_WELFARE, Order::TYPE_PROPERTY_AFFAIRS])) {
             $orderTypes = $this->getTypes();
+
             // declare a class name to search the array for
-            $objectClass = 'OrderType' . ucfirst($type);
-            array_filter($orderTypes, function ($ot) {
-                foreach ($this->getTypes() as $ot) {
-                    if ($ot instanceof $objectClass) {
-                        return $ot;
-                    }
+            $objectClass = 'AppBundle\Entity\OrderType' . ucfirst($orderType);
+            foreach ($orderTypes->toArray() as $ot) {
+                if ($ot instanceof $objectClass) {
+                    return $ot;
                 }
-            });
+            }
         }
         return null;
-
     }
 
 

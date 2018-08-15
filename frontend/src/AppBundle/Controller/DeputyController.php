@@ -55,10 +55,10 @@ class DeputyController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->deputyService->createDeputy($deputy);
+            $this->deputyService->createDeputyForOrderType($order, $deputy);
 
-            $this->em->persist($deputy);
-            $this->em->flush($deputy);
+            $this->em->persist($order);
+            $this->em->flush();
 
             if ($buttonClicked->getName() == 'saveAndAddAnother') {
                 return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);

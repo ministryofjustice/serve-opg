@@ -541,14 +541,6 @@ class Deputy
         }
     }
 
-    /**
-     * @return Collection
-     */
-    public function getOrderTypes(): Collection
-    {
-        return $this->orderTypes;
-    }
-
 
 
 }

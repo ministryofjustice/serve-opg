@@ -35,8 +35,9 @@ class DocumentController extends Controller
     public function addAction(Request $request, $orderId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
+
         return $this->render('AppBundle:Document:add.html.twig', [
-            'deputies' => $order->getAllDeputys(),
+            //'deputies' => $order->getAllDeputys()->toArray(),
             'client' => $order->getClient(),
             'order' => $order,
             //'form'=>$form->createView()
