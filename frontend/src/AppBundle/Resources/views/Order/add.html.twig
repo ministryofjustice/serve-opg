@@ -1,86 +1,4 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
-{# {% form_theme form 'AppBundle:Twig:Form:govuk_frontend.html.twig' %} #}
-
-{% form_theme form _self %}
-
-
-{# Form Row #}
-{% block form_row %}
-    <div class="govuk-form-group">
-        {{ form_label(form) }}
-        {{ form_errors(form) }}
-        {{ form_widget(form) }}
-    </div>
-{% endblock form_row %}
-
-{# Label #}
-{%- block form_label -%}
-    {% if label is not same as(false) -%}
-        {% if not compound -%}
-            {% set label_attr = label_attr|merge({'for': id}) %}
-        {%- endif -%}
-        {% if required -%}
-            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
-        {%- endif -%}
-        {% if label is empty -%}
-            {%- if label_format is not empty -%}
-                {% set label = label_format|replace({
-                    '%name%': name,
-                    '%id%': id,
-                }) %}
-            {%- else -%}
-                {% set label = name|humanize %}
-            {%- endif -%}
-        {%- endif -%}
-        <label {% if label_attr %}{% with { attr: label_attr|merge({'class': (label_attr.class|default('') ~ ' govuk-label')|trim}) } %}{{ block('attributes') }}{% endwith %}{% endif %}>
-            {%- if translation_domain is same as(false) -%}
-                {{- label -}}
-            {%- else -%}
-                {{- label|trans({}, translation_domain) -}}
-            {%- endif -%}
-        </label>
-    {%- endif -%}
-{%- endblock form_label -%}
-
-{# Select #}
-{% block choice_widget_collapsed %}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-select')|trim}) %}
-    {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
-        {% set required = false %}
-    {%- endif -%}
-    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
-        {%- if placeholder is not none -%}
-            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
-        {%- endif -%}
-        {%- if preferred_choices|length > 0 -%}
-            {% set options = preferred_choices %}
-            {{- block('choice_widget_options') -}}
-            {%- if choices|length > 0 and separator is not none -%}
-                <option disabled="disabled">{{ separator }}</option>
-            {%- endif -%}
-        {%- endif -%}
-        {%- set options = choices -%}
-        {{- block('choice_widget_options') -}}
-    </select>
-{% endblock choice_widget_collapsed %}
-
-{# Button #}
-{% block button_widget -%}
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-button')|trim}) -%}
-    {%- if label is empty -%}
-        {%- if label_format is not empty -%}
-            {% set label = label_format|replace({
-                '%name%': name,
-                '%id%': id,
-            }) %}
-        {%- elseif label is same as(false) -%}
-            {% set translation_domain = false %}
-        {%- else -%}
-            {% set label = name|humanize %}
-        {%- endif -%}
-    {%- endif -%}
-    <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</button>
-{%- endblock button_widget %}
 
 {% block htmlTitle %}Create Order{% endblock %}
 {% block pageTitle %}Create Order{% endblock %}
@@ -88,16 +6,15 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {{ client.caseNumber }} |
-            {{ client.clientName }}
-
             {{ form_start(form) }}
             {{ form_widget(form) }}
             {{ form_end(form) }}
         </div>
 
         <div class="govuk-grid-column-one-third">
-            <p class="govuk-body">Sidebar</p>
+            <p class="govuk-body"><strong>Case number:</strong><br> {{ client.caseNumber }}</p>
+            <p class="govuk-body"><strong>Client:</strong><br>{{ client.clientName }}</p>
+
         </div>
     </div>
 {% endblock %}
