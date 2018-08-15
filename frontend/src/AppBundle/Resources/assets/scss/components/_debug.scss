@@ -1,0 +1,19 @@
+// ==========================================================================
+// DEBUG
+// Debugging utility classes
+
+.debug-label {
+    display: none;
+}
+
+.debug {
+    .debug-label {
+        display: inline-block;
+        font-size: 12px;
+        color: black;
+        padding: 0px 6px;
+        border: 1px dashed;
+        font-family: monospace;
+        line-height: 1.3;
+    }
+}
