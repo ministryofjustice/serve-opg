@@ -4,10 +4,17 @@
 {% block pageTitle %}Create Order{% endblock %}
 
 {% block content %}
-    {{ client.caseNumber }} |
-    {{ client.clientName }}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+        <div class="govuk-grid-column-one-third">
+            <p class="govuk-body"><strong>Case number:</strong><br> {{ client.caseNumber }}</p>
+            <p class="govuk-body"><strong>Client:</strong><br>{{ client.clientName }}</p>
+
+        </div>
+    </div>
 {% endblock %}
