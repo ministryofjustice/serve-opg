@@ -1,3 +1,5 @@
+{% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
+
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
 <head>
@@ -19,7 +21,7 @@
     <meta property="og:image" content="{{ 'images/govuk-opengraph-image.png' | assetUrl }}">
 </head>
 
-<body class="govuk-template__body">
+<body class="govuk-template__body -debug">
     {% block bodyStart %}{% endblock %}
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
