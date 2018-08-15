@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -41,6 +42,11 @@ class Order
     private $type;
 
     /**
+     * @var Collection
+     */
+    private $types;
+
+    /**
      * @var string|null see SUBTYPE_* values
      */
     private $subType;
@@ -49,11 +55,6 @@ class Order
      * @var string|null yes/no/na/null
      */
     private $hasAssetsAboveThreshold;
-
-    /**
-     * @var ArrayCollection of Deputy[]
-     */
-    private $deputys;
 
     /**
      * Order constructor.
@@ -65,7 +66,9 @@ class Order
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->deputys = new ArrayCollection();
+        $this->types = new ArrayCollection();
+
+        $client->addOrder($this);
 
     }
 
@@ -142,6 +145,25 @@ class Order
     }
 
     /**
+     * @param OrderType $order
+     */
+    public function addType(OrderType $type)
+    {
+        if (!$this->types->contains($type)) {
+            $type->setOrder($this);
+            $this->types->add($type);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTypes(): Collection
+    {
+        return $this->types;
+    }
+
+    /**
      * @return null|string
      */
     public function getHasAssetsAboveThreshold(): ?string
@@ -159,25 +181,42 @@ class Order
         return $this;
     }
 
+
     /**
      * @return ArrayCollection
      */
-    public function getDeputys()
+    public function getAllDeputys()
     {
-        return $this->deputys;
+        $deputies = new ArrayCollection();
+        foreach ($this->getTypes() as $ot) {
+            $deputies += $ot->getDeputys();
+        }
+        return $deputies;
     }
 
     /**
-     * @param ArrayCollection $deputys
+     * Return a specific orderType from the order based on type ('hw' or 'pa')
+     *
+     * @param null $type
+     * @return null
      */
-    public function setDeputys($deputys)
+    public function getTypesByOrderType($type = null)
     {
-        $this->deputys = $deputys;
+        if (in_array($type, [Order::TYPE_HEALTH_WELFARE, Order::TYPE_PROPERTY_AFFAIRS])) {
+            $orderTypes = $this->getTypes();
+            // declare a class name to search the array for
+            $objectClass = 'OrderType' . ucfirst($type);
+            array_filter($orderTypes, function ($ot) {
+                foreach ($this->getTypes() as $ot) {
+                    if ($ot instanceof $objectClass) {
+                        return $ot;
+                    }
+                }
+            });
+        }
+        return null;
+
     }
-
-
-
-
 
 
 }

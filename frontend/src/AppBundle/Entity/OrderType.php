@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -31,6 +32,11 @@ abstract class OrderType
     private $type;
 
     /**
+     * @var ArrayCollection of Deputy[]
+     */
+    private $deputys;
+
+    /**
      * OrderType constructor.
      * @param Order $order
      * @param \DateTime $createdAt
@@ -38,6 +44,8 @@ abstract class OrderType
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->deputys = new ArrayCollection();
+
     }
 
     /**
@@ -74,4 +82,19 @@ abstract class OrderType
         return $this->createdAt;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getDeputys()
+    {
+        return $this->deputys;
+    }
+
+    /**
+     * @param ArrayCollection $deputys
+     */
+    public function setDeputys($deputys)
+    {
+        $this->deputys = $deputys;
+    }
 }

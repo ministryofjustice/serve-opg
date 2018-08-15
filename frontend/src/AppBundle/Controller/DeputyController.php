@@ -6,6 +6,7 @@ use AppBundle\Entity\Client;
 use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
+use AppBundle\Service\DeputyService;
 use AppBundle\Form\DeputyType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +22,21 @@ class DeputyController extends Controller
     private $em;
 
     /**
-     * UserController constructor.
-     * @param EntityManager $em
+     * @var DeputyService
      */
-    public function __construct(EntityManager $em)
+    private $deputyService;
+
+    /**
+     * DeputyController constructor
+     * .
+     * @param EntityManager $em
+     * @param DeputyService $deputyService
+     */
+    public function __construct(EntityManager $em, DeputyService $deputyService)
     {
         $this->em = $em;
+        $this->deputyService = $deputyService;
+
     }
 
     /**
@@ -44,6 +54,9 @@ class DeputyController extends Controller
         $buttonClicked = $form->getClickedButton();
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->deputyService->createDeputy($deputy);
+
             $this->em->persist($deputy);
             $this->em->flush($deputy);
 

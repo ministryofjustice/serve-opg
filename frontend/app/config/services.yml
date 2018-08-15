@@ -20,6 +20,7 @@ services:
     AppBundle\Controller\DocumentController: ~
 
     AppBundle\Service\OrderService: ~
+    AppBundle\Service\DeputyService: ~
 
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension

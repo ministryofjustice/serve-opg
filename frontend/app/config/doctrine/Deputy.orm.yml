@@ -8,10 +8,6 @@ AppBundle\Entity\Deputy:
         generator:
           strategy: AUTO
     fields:
-      orderType:
-        column: order_type
-        type: string
-        length: 4
       appointmentType:
         column: appointment_type
         type: string
@@ -80,4 +76,10 @@ AppBundle\Entity\Deputy:
       order:
         targetEntity: Order
         inversedBy: deputys
-        cascade: ["persist", "merge"]
+        cascade: ["persist"]
+    oneToMany:
+      orderTypes:
+        targetEntity: OrderType
+        mappedBy: orderTypes
+        inversedBy: deputys
+        cascade: ["persist"]

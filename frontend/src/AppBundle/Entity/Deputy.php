@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -31,6 +33,11 @@ class Deputy
      * @var string|null
      */
     private $orderType;
+
+    /**
+     * @var Collection
+     */
+    private $orderTypes;
 
     /**
      * @var string|null see APPOINTMENT_TYPE_* values
@@ -140,7 +147,9 @@ class Deputy
         $this->constructPersonalDetails($deputyDetails);
         $this->constructAddressDetails($addressDetails);
         $this->deputyAnswerQ2_6 = $deputyAnswerQ2_6;
-            $this->deputyS4Response = $deputyS4Response;
+        $this->deputyS4Response = $deputyS4Response;
+        $this->orderTypes = new ArrayCollection();
+
 
     }
 
@@ -522,7 +531,23 @@ class Deputy
         return $this;
     }
 
+    /**
+     * @param OrderType $order
+     */
+    public function addOrderType(OrderType $type)
+    {
+        if (!$this->orderTypes->contains($type)) {
+            $this->orderTypes->add($type);
+        }
+    }
 
+    /**
+     * @return Collection
+     */
+    public function getOrderTypes(): Collection
+    {
+        return $this->orderTypes;
+    }
 
 
 
