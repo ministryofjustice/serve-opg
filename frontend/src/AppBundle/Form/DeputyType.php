@@ -20,23 +20,23 @@ class DeputyType extends AbstractType
         $builder
             ->add('orderType', ChoiceType::class, [
                 'choices' => [
-                    Order::TYPE_PROPERTY_AFFAIRS => Order::TYPE_PROPERTY_AFFAIRS,
-                    Order::TYPE_HEALTH_WELFARE => Order::TYPE_HEALTH_WELFARE,
-                    Order::TYPE_BOTH => Order::TYPE_BOTH,
+                    'Property and affairs' => Order::TYPE_PROPERTY_AFFAIRS,
+                    'Health and welfare' => Order::TYPE_HEALTH_WELFARE,
+                    'Both' => Order::TYPE_BOTH,
                 ]
             ])
             ->add('appointmentType', ChoiceType::class, [
                 'choices' => [
-                    Deputy::APPOINTMENT_TYPE_SOLE => Deputy::APPOINTMENT_TYPE_SOLE,
-                    Deputy::APPOINTMENT_TYPE_SOLE => Deputy::APPOINTMENT_TYPE_SOLE,
-                    Deputy::APPOINTMENT_TYPE_JOINT_AND_SEVERAL => Deputy::APPOINTMENT_TYPE_JOINT_AND_SEVERAL
+                    'Sole' => Deputy::APPOINTMENT_TYPE_SOLE,
+                    'Joint' => Deputy::APPOINTMENT_TYPE_JOINT,
+                    'Joint and several' => Deputy::APPOINTMENT_TYPE_JOINT_AND_SEVERAL
                 ]
             ])
             ->add('deputyType', ChoiceType::class, [
                 'choices' => [
-                    Deputy::DEPUTY_TYPE_LAY => Deputy::DEPUTY_TYPE_LAY,
-                    Deputy::DEPUTY_TYPE_PA => Deputy::DEPUTY_TYPE_PA,
-                    Deputy::DEPUTY_TYPE_PROF => Deputy::DEPUTY_TYPE_PROF
+                    'Lay' => Deputy::DEPUTY_TYPE_LAY,
+                    'Public authority' => Deputy::DEPUTY_TYPE_PA,
+                    'Professional' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
             ->add('forename', TextType::class)
