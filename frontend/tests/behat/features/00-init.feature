@@ -1,3 +1,4 @@
+# @deployment
 Feature: prechecks
 
     Scenario: check app status
