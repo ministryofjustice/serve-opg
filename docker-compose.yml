@@ -53,16 +53,16 @@ services:
         email=robert.ford@digital.justice.gov.uk&password=Abcd1234
         email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
-        number=12345671&name=Peter Bloggs
-        number=22345672&name=Victoria Brady
-        number=32345673&name=Thomas Jefferson
-        number=42345674&name=Susan Grindle
-        number=62345676&name=Lia Shelton
-        number=72345677&name=Abdullah Lang
-        number=52345675&name=Angela Walker
-        number=92345679&name=Justine Henderson
-        number=82345678&name=Marcus Cruz
-        number=12345678&name=Behat User
+        number=12345671&name=Peter Bloggs&type=both
+        number=22345672&name=Victoria Brady&type=pa
+        number=32345673&name=Thomas Jefferson&type=hw
+        number=42345674&name=Susan Grindle&type=both
+        number=62345676&name=Lia Shelton&type=pa
+        number=72345677&name=Abdullah Lang&type=pa
+        number=52345675&name=Angela Walker&type=pa
+        number=92345679&name=Justine Henderson&type=pa
+        number=82345678&name=Marcus Cruz&type=pa
+        number=12345678&name=Behat User&type=both
 
   composer:
     build:
@@ -112,7 +112,7 @@ services:
       DC_FIXURES_USERS: |
         email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
-        number=12345678&name=Behat User
+        number=12345678&name=Behat User&type=both
 
   phpunit:
     build:

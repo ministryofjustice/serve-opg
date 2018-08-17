@@ -8,10 +8,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
-class Order
+abstract class Order
 {
-    const TYPE_PROPERTY_AFFAIRS = 'pa';
-    const TYPE_HEALTH_WELFARE = 'hw';
+    const TYPE_PA = 'pa';
+    const TYPE_HW = 'hw';
     const TYPE_BOTH = 'both';
 
     const SUBTYPE_NEW = 'new';
@@ -42,11 +42,6 @@ class Order
     private $type;
 
     /**
-     * @var Collection
-     */
-    private $types;
-
-    /**
      * @var string|null see SUBTYPE_* values
      */
     private $subType;
@@ -55,6 +50,33 @@ class Order
      * @var string|null yes/no/na/null
      */
     private $hasAssetsAboveThreshold;
+
+    /**
+     * @var ArrayCollection of Deputy[]
+     */
+    private $deputys;
+
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
+//    /**
+//     * @param Client $client
+//     * @param $type TYPE_*
+//     *
+//     * @return OrderHw|OrderPa
+//     */
+//    public static function factory(Client $client, $type)
+//    {
+//        switch($type) {
+//            case self::TYPE_PA:
+//                return new OrderPa($client);
+//            case self::TYPE_HW:
+//                return new OrderHw($client);
+//        }
+//        throw new \InvalidArgumentException("Unrecognised type $type");
+//    }
 
     /**
      * Order constructor.
@@ -66,7 +88,8 @@ class Order
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->types = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->deputys = new ArrayCollection();
 
         $client->addOrder($this);
 
@@ -109,22 +132,10 @@ class Order
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
+    abstract public function getType();
 
-    /**
-     * @param null|string $type
-     * @return Order
-     */
-    public function setType(?string $type): Order
-    {
-        $this->type = $type;
-        return $this;
-    }
 
     /**
      * @return null|string
@@ -144,24 +155,6 @@ class Order
         return $this;
     }
 
-    /**
-     * @param OrderType $order
-     */
-    public function addType(OrderType $type)
-    {
-        if (!$this->types->contains($type)) {
-            $type->setOrder($this);
-            $this->types->add($type);
-        }
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getTypes(): Collection
-    {
-        return $this->types;
-    }
 
     /**
      * @return null|string
@@ -204,7 +197,7 @@ class Order
      */
     public function getTypesByOrderType($orderType = null)
     {
-        if (in_array($orderType, [Order::TYPE_HEALTH_WELFARE, Order::TYPE_PROPERTY_AFFAIRS])) {
+        if (in_array($orderType, [Order::TYPE_HW, Order::TYPE_PA])) {
             $orderTypes = $this->getTypes();
 
             // declare a class name to search the array for
@@ -218,5 +211,38 @@ class Order
         return null;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDeputys()
+    {
+        return $this->deputys;
+    }
+
+    /**
+     * @param ArrayCollection $deputys
+     */
+    public function setDeputys($deputys)
+    {
+        $this->deputys = $deputys;
+    }
+
+    /**
+     * @param Deputy $deputy
+     */
+    public function addDeputy(Deputy $deputy)
+    {
+        if (!$this->deputys->contains($deputy)) {
+            $this->deputys->add($deputy);
+        }
+    }
 
 }

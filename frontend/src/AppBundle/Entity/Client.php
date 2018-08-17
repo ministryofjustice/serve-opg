@@ -81,11 +81,25 @@ class Client
     }
 
     /**
-     * @return Collection
+     * @return Collection|Order[]
      */
     public function getOrders(): Collection
     {
         return $this->orders;
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    public function hasOrder(string $type)
+    {
+        $orderTypes = [];
+        foreach($this->getOrders() as $order) {
+            $orderTypes[] = $order->getType();
+        }
+
+        return in_array($type, $orderTypes);
     }
 
     /**
