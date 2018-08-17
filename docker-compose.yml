@@ -123,6 +123,15 @@ services:
     volumes:
       - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
+    environment:
+      DC_SYMFONY_SECRET: dc2018!
+      DC_DYNAMODB_KEY: key
+      DC_DYNAMODB_SECRET: secret
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
 
   dynamodb:
     # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
