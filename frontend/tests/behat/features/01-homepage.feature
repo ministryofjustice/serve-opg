@@ -1,3 +1,4 @@
+@deployment
 Feature: homepage
 
     Scenario: homepage
