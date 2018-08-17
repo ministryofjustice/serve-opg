@@ -2,13 +2,13 @@
 
 namespace AppBundle\Entity;
 
-class OrderTypePa extends OrderType
+class OrderPa extends Order
 {
     /**
      * @return string
      */
     public function getType()
     {
-        return Order::TYPE_PROPERTY_AFFAIRS;
+        return Order::TYPE_PA;
     }
 }

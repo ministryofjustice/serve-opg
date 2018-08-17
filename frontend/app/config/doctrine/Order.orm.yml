@@ -2,6 +2,13 @@
 AppBundle\Entity\Order:
     type: entity
     table: "dc_order"
+    inheritanceType: single_table
+    discriminatorColumn:
+      name: type
+      type: string
+    discriminatorMap:
+      pa:  AppBundle\Entity\OrderPa
+      hw:  AppBundle\Entity\OrderHw
     id:
       id:
         type: integer
@@ -12,10 +19,16 @@ AppBundle\Entity\Order:
         column: sub_type
         type: string
         length: 20
+        nullable: true
       hasAssetsAboveThreshold:
         column: has_assets_above_threshold
         type: string
         length: 20
+        nullable: true
+      createdAt:
+        column: created_at
+        type: datetime
+        nullable: false
     manyToOne:
       client:
         targetEntity: Client
@@ -25,9 +38,17 @@ AppBundle\Entity\Order:
           name: client_id
           referencedColumnName: id
           onDelete: CASCADE
-    oneToMany:
-      types:
-        targetEntity: OrderType
-        mappedBy: order
+    manyToMany:
+      deputys:
+        targetEntity: Deputy
         cascade: ["persist"]
+        joinTable:
+          name: ordertype_deputy
+          cascade: ["persist"]
+          joinColumns:
+            deputy_id:
+              referencedColumnName: id
+          inverseJoinColumns:
+            order_type_id:
+              referencedColumnName: id
 
