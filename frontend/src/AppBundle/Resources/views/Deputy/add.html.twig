@@ -1,14 +1,28 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
+{% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 
-{% block htmlTitle %}Deputy{% endblock %}
-{% block pageTitle %}Deputy{% endblock %}
+{% block htmlTitle %}Add deputy{% endblock %}
+{% block pageTitle %}Add deputy{% endblock %}
 
 {% block content %}
-	deputy add
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
 
-	<hr/>ORDER: id={{ order.id }} |{{ order.subType }} | {{ order.hasAssetsAboveThreshold }}
-	<br/>Types:
-	{% for t in order.types %}
-		{{ t.type }} (id={{ t.id }}),
-	{% endfor %}
+        <div class="govuk-grid-column-one-third">
+            <p><strong>Case number</strong><br>{{ client.caseNumber }}</p>
+            <p><strong>Client</strong><br>{{ client.clientName }}</p>
+            <p><strong>Order ID</strong><br>id={{ order.id }}</p>
+            <p><strong>Order types</strong><br>
+                {% for t in order.types %}
+                    {{ t.type }} (id={{ t.id }}),
+                {% endfor %}
+            </p>
+            <p><strong>Order subtype</strong><br>{{ order.subType }}</p>
+            <p><strong>Bond or assets above £21,000?</strong><br>{{ order.hasAssetsAboveThreshold }}</p>
+        </div>
+    </div>
 {% endblock %}

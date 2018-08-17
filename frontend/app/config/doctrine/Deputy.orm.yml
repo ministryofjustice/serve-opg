@@ -1,0 +1,74 @@
+# reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
+AppBundle\Entity\Deputy:
+    type: entity
+    table: "deputy"
+    id:
+      id:
+        type: integer
+        generator:
+          strategy: AUTO
+    fields:
+      appointmentType:
+        column: appointment_type
+        type: string
+        length: 4
+      deputyType:
+        column: deputy_type
+        type: string
+        length: 4
+      forename:
+        column: forename
+        type: string
+        length: 50
+      surname:
+        column: surname
+        type: string
+        length: 50
+      emailAddress:
+        column: email_address
+        type: string
+        length: 200
+      contactNumber:
+        column: contact_number
+        type: string
+        length: 50
+      emailAddress:
+        column: email_address
+        type: string
+        length: 200
+      organisationName:
+        column: organisation_name
+        type: string
+        length: 50
+      addressLine1:
+        column: address_line_1
+        type: string
+        length: 50
+      addressLine2:
+        column: address_line_2
+        type: string
+        length: 50
+      addressLine3:
+        column: address_line_3
+        type: string
+        length: 50
+      addressCounty:
+        column: address_county
+        type: string
+        length: 50
+      addressPostcode:
+        column: address_postcode
+        type: string
+        length: 8
+      addressCountry:
+        column: address_country
+        type: string
+        length: 50
+      deputyAnswerQ2_6:
+        column: deputy_answer_q2_6
+        type: string
+        length: 12
+      deputyS4Response:
+        column: deputy_s4_response
+        type: string
+        length: 12

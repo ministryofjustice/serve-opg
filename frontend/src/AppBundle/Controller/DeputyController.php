@@ -3,8 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
+use AppBundle\Service\DeputyService;
+use AppBundle\Form\DeputyType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,12 +22,21 @@ class DeputyController extends Controller
     private $em;
 
     /**
-     * UserController constructor.
-     * @param EntityManager $em
+     * @var DeputyService
      */
-    public function __construct(EntityManager $em)
+    private $deputyService;
+
+    /**
+     * DeputyController constructor
+     * .
+     * @param EntityManager $em
+     * @param DeputyService $deputyService
+     */
+    public function __construct(EntityManager $em, DeputyService $deputyService)
     {
         $this->em = $em;
+        $this->deputyService = $deputyService;
+
     }
 
     /**
@@ -34,9 +46,31 @@ class DeputyController extends Controller
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
-        return $this->render('AppBundle:Deputy:add.html.twig', [
-            'order'=>$order
-        ]);
+        $deputy = new Deputy($order);
 
+        $form = $this->createForm(DeputyType::class, $deputy);
+        $form->handleRequest($request);
+
+        $buttonClicked = $form->getClickedButton();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->deputyService->createDeputyForOrderType($order, $deputy);
+
+            $this->em->persist($order);
+            $this->em->flush();
+
+            if ($buttonClicked->getName() == 'saveAndAddAnother') {
+                return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
+            } else {
+                return $this->redirectToRoute('document-add', ['orderId' => $order->getId()]);
+            }
+        }
+
+        return $this->render('AppBundle:Deputy:add.html.twig', [
+            'client' => $order->getClient(),
+            'order' => $order,
+            'form'=>$form->createView()
+        ]);
     }
 }

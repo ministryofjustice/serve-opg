@@ -28,3 +28,17 @@ AppBundle\Entity\OrderType:
           name: order_id
           referencedColumnName: id
           onDelete: CASCADE
+    manyToMany:
+      deputys:
+        targetEntity: Deputy
+        cascade: ["persist"]
+        joinTable:
+          name: ordertype_deputy
+          cascade: ["persist"]
+          joinColumns:
+            deputy_id:
+              referencedColumnName: id
+          inverseJoinColumns:
+            order_type_id:
+              referencedColumnName: id
+

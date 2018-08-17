@@ -29,7 +29,6 @@ services:
       dockerfile: Dockerfile-php
     volumes:
        - ./frontend/app:/app/app:ro
-       - ./src-common:/app/common:ro
        - ./frontend/src:/app/src:ro
        - ./frontend/web:/app/web:ro
        - ./frontend/vendor:/app/vendor:ro
@@ -110,6 +109,10 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
+      DC_FIXURES_USERS: |
+        email=behat@digital.justice.gov.uk&password=Abcd1234
+      DC_FIXURES_CASES: |
+        number=12345678&name=Behat User
 
   phpunit:
     build:
@@ -120,6 +123,15 @@ services:
     volumes:
       - ./env/local/phpunit.sh:/entrypoint.sh
       - ./frontend:/app:delegated
+    environment:
+      DC_SYMFONY_SECRET: dc2018!
+      DC_DYNAMODB_KEY: key
+      DC_DYNAMODB_SECRET: secret
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
 
   dynamodb:
     # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
@@ -130,7 +142,7 @@ services:
     #      ports:
     #        - 5432:5432
     volumes:
-    - .postgres-data:/var/lib/postgresql/data
+      - /tmp/postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: digicop

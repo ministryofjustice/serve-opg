@@ -4,6 +4,9 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class Order
 {
@@ -62,12 +65,11 @@ class Order
      */
     public function __construct(Client $client)
     {
-        if (count($client->getOrders()) > 0 && $client->getOrders()->first() !== $this) {
-            throw new \InvalidArgumentException('The given client already has an Order');
-        }
-        $this->types = new ArrayCollection();
         $this->client = $client;
+        $this->types = new ArrayCollection();
+
         $client->addOrder($this);
+
     }
 
     /**
@@ -143,24 +145,6 @@ class Order
     }
 
     /**
-     * @return null|string
-     */
-    public function getHasAssetsAboveThreshold(): ?string
-    {
-        return $this->hasAssetsAboveThreshold;
-    }
-
-    /**
-     * @param null|string $hasAssetsAboveThreshold
-     * @return Order
-     */
-    public function setHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): Order
-    {
-        $this->hasAssetsAboveThreshold = $hasAssetsAboveThreshold;
-        return $this;
-    }
-
-    /**
      * @param OrderType $order
      */
     public function addType(OrderType $type)
@@ -178,5 +162,61 @@ class Order
     {
         return $this->types;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getHasAssetsAboveThreshold(): ?string
+    {
+        return $this->hasAssetsAboveThreshold;
+    }
+
+    /**
+     * @param null|string $hasAssetsAboveThreshold
+     * @return Order
+     */
+    public function setHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): Order
+    {
+        $this->hasAssetsAboveThreshold = $hasAssetsAboveThreshold;
+        return $this;
+    }
+
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAllDeputys()
+    {
+        $deputies = new ArrayCollection();
+        foreach ($this->getTypes() as $ot) {
+            foreach ($ot->getDeputys() as $dep) {
+                $deputies->add($dep);
+            }
+        }
+        return $deputies;
+    }
+
+    /**
+     * Return a specific orderType from the order based on type ('hw' or 'pa')
+     *
+     * @param null $type
+     * @return null
+     */
+    public function getTypesByOrderType($orderType = null)
+    {
+        if (in_array($orderType, [Order::TYPE_HEALTH_WELFARE, Order::TYPE_PROPERTY_AFFAIRS])) {
+            $orderTypes = $this->getTypes();
+
+            // declare a class name to search the array for
+            $objectClass = 'AppBundle\Entity\OrderType' . ucfirst($orderType);
+            foreach ($orderTypes->toArray() as $ot) {
+                if ($ot instanceof $objectClass) {
+                    return $ot;
+                }
+            }
+        }
+        return null;
+    }
+
 
 }
