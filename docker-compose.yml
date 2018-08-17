@@ -29,7 +29,6 @@ services:
       dockerfile: Dockerfile-php
     volumes:
        - ./frontend/app:/app/app:ro
-       - ./src-common:/app/common:ro
        - ./frontend/src:/app/src:ro
        - ./frontend/web:/app/web:ro
        - ./frontend/vendor:/app/vendor:ro

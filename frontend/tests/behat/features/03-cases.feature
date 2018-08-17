@@ -37,6 +37,6 @@ Feature: cases
       | deputy_deputyAnswerQ2_6 | answered-yes                                |
       | deputy_deputyS4Response | no                                          |
     And I press "deputy_saveAndContinue"
-    
+
 
 
