@@ -18,15 +18,6 @@ class OrderForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('type', ChoiceType::class, [
-                'expanded'    => true,
-                'empty_data' => '',
-                'choices' => [
-                    Order::TYPE_PROPERTY_AFFAIRS => Order::TYPE_PROPERTY_AFFAIRS,
-                    Order::TYPE_HEALTH_WELFARE => Order::TYPE_HEALTH_WELFARE,
-                    Order::TYPE_BOTH => Order::TYPE_BOTH,
-                ]
-            ])
             ->add('subType', ChoiceType::class, [
                 'choices' => [
                     'Pleaase select...' => '',

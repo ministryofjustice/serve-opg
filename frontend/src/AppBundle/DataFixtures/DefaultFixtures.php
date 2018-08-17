@@ -3,6 +3,9 @@
 namespace AppBundle\DataFixtures;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderHw;
+use AppBundle\Entity\OrderPa;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -37,7 +40,7 @@ class DefaultFixtures extends Fixture
                 $pass = $this->encoder->encodePassword($u, $user['password']);
                 $u->setPassword($pass);
                 $manager->persist($u);
-                echo "Added {$user['email']}\n";
+                echo "Added user {$user['email']}\n";
             }
         }
 
@@ -46,11 +49,20 @@ class DefaultFixtures extends Fixture
         $caseLines = array_filter(explode("\n", getenv('DC_FIXURES_CASES')));
         foreach ($caseLines as $caseLine) {
             parse_str($caseLine, $case);
-            if (!$repo->findOneBy(['caseNumber' => $case['number']])) {
+            if (!$client = $repo->findOneBy(['caseNumber' => $case['number']])) {
                 $client = new Client($case['number'], $case['name'], new \DateTime());
                 $manager->persist($client);
-                $manager->flush();
+                echo "Added case {$case['number']}\n";
             }
+            if (!$client->hasOrder( Order::TYPE_PA) && ($case['type'] == Order::TYPE_BOTH || $case['type'] == Order::TYPE_PA)) {
+                $manager->persist(new OrderPa($client));
+                echo "Added order {Order::TYPE_PA} to case {$case['number']}\n";
+            }
+            if (!$client->hasOrder( Order::TYPE_HW) && ($case['type'] == Order::TYPE_BOTH || $case['type']==Order::TYPE_HW)) {
+                $manager->persist(new OrderHw($client));
+                echo "Added order {Order::TYPE_HW} to case {$case['number']}\n";
+            }
+            $manager->flush();
         }
 
     }

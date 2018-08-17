@@ -17,9 +17,9 @@
             <p><strong>Client</strong><br>{{ client.clientName }}</p>
             <p><strong>Order ID</strong><br>id={{ order.id }}</p>
             <p><strong>Order types</strong><br>
-                {% for t in order.types %}
-                    {{ t.type }} (id={{ t.id }}),
-                {% endfor %}
+                {#{% for t in order.types %}#}
+                    {#{{ t.type }} (id={{ t.id }}),#}
+                {#{% endfor %}#}
             </p>
             <p><strong>Order subtype</strong><br>{{ order.subType }}</p>
             <p><strong>Bond or assets above £21,000?</strong><br>{{ order.hasAssetsAboveThreshold }}</p>

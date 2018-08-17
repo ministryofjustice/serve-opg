@@ -8,17 +8,20 @@
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="col">Case number</th>
+                <th class="govuk-table__header" scope="col">Order type</th>
                 <th class="govuk-table__header" scope="col">Client</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            {% for client in clients %}
+            {% for order in orders %}
+                {% set client = order.client %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <a href="{{ path('order-add', {'clientId': client.id}) }}" id="add-order-{{ client.caseNumber }}">
+                        <a href="{{ path('order', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                             {{ client.caseNumber }}
                         </a>
                     </td>
+                    <td class="govuk-table__cell">{{ order.type }}</td>
                     <td class="govuk-table__cell">
                         {{ client.clientName }}
                     </td>

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,7 @@ class CaseController extends Controller
     public function indexAction(Request $request)
     {
         return $this->render('AppBundle:Case:index.html.twig', [
-            'clients' => $this->em->getRepository(Client::class)->findAll()
+            'orders' => $this->em->getRepository(Order::class)->findAll()
         ]);
     }
 
