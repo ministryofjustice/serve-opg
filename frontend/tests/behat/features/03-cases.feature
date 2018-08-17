@@ -8,11 +8,10 @@ Feature: cases
       | login_password | Abcd1234                     |
     And I press "login_submit"
     # click on case
-    When I follow "add-order-12345678"
+    When I follow "order-12345678-hw"
     Then the response status code should be 200
     # create order
     When I fill in the following:
-      | order_form_type_2                  | both        |
       | order_form_subType                 | replacement |
       | order_form_hasAssetsAboveThreshold | no          |
     And I press "order_form_submit"

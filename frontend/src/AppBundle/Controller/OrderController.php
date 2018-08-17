@@ -38,31 +38,25 @@ class OrderController extends Controller
 
 
     /**
-     * @Route("/case/{clientId}/order/add", name="order-add")
+     * @Route("/case/{orderId}/order", name="order")
      */
-    public function addAction(Request $request, $clientId)
+    public function addAction(Request $request, $orderId)
     {
-        $client = $this->em->getRepository(Client::class)->find($clientId); /*@var $client Client*/
-        if (!$client) {
-            throw new \RuntimeException("Case not existing");
+        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        if (!$order) {
+            throw new \RuntimeException("Order not existing");
         }
-        // redirect to next step if one order was already created
-        if (count($client->getOrders())) {
-            return $this->redirectToRoute('deputy-add', ['orderId'=>$client->getOrders()->first()->getId()]);
-        }
-        $order = new Order($client);
         $form = $this->createForm(OrderForm::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->orderService->createOrderTypes($order);
-            $this->em->flush();
+            $this->em->flush($order);
 
             return $this->redirectToRoute('deputy-add', ['orderId'=>$order->getId()]);
         }
 
-        return $this->render('AppBundle:Order:add.html.twig', [
-            'client' => $client,
+        return $this->render('AppBundle:Order:index.html.twig', [
+            'order' => $order,
             'form'=>$form->createView()
         ]);
 

@@ -20,8 +20,8 @@ class DeputyType extends AbstractType
         $builder
             ->add('orderType', ChoiceType::class, [
                 'choices' => [
-                    'Property and affairs' => Order::TYPE_PROPERTY_AFFAIRS,
-                    'Health and welfare' => Order::TYPE_HEALTH_WELFARE,
+                    'Property and affairs' => Order::TYPE_PA,
+                    'Health and welfare' => Order::TYPE_HW,
                     'Both' => Order::TYPE_BOTH,
                 ]
             ])
