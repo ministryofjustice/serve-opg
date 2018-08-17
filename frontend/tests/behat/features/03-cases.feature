@@ -1,7 +1,7 @@
 Feature: cases
 
   Scenario: cases
-    Given The case "12345678" has no orders
+    Given The case "12345678" orders are empty
     And I go to "/login"
     And I fill in the following:
       | login_username | behat@digital.justice.gov.uk |
@@ -36,6 +36,7 @@ Feature: cases
       | deputy_deputyAnswerQ2_6 | answered-yes                                |
       | deputy_deputyS4Response | no                                          |
     And I press "deputy_saveAndContinue"
+    Then the response status code should be 200
 
 
 

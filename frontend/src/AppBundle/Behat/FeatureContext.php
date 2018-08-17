@@ -26,14 +26,17 @@ class FeatureContext extends MinkContext implements KernelAwareContext
     }
 
     /**
-     * @Given The case :caseNumber has no orders
+     * @Given The case :caseNumber orders are empty
      */
-    public function deleteOrdersForClient($caseNumber)
+    public function emptyClientOrders($caseNumber)
     {
         $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber'=>$caseNumber]);
 
         foreach($client->getOrders() as $order) {
-            $this->em->remove($order);
+            $order->setSubType(null)->setHasAssetsAboveThreshold(null);
+            foreach($order->getDeputys() as $deputy) {
+               $this->em->remove($deputy);
+            }
         }
         $this->em->flush();
     }

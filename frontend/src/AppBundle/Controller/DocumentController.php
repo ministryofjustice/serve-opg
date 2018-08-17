@@ -36,8 +36,8 @@ class DocumentController extends Controller
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
-        return $this->render('AppBundle:Document:index.html.twig', [
-            'deputies' => $order->getAllDeputys()->toArray(),
+        return $this->render('AppBundle:Document:add.html.twig', [
+            'deputies' => $order->getDeputys()->toArray(),
             'client' => $order->getClient(),
             'order' => $order,
             //'form'=>$form->createView()

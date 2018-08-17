@@ -136,15 +136,6 @@ abstract class Order
      */
     abstract public function getType();
 
-    /**
-     * @param null|string $type
-     * @return Order
-     */
-    public function setType(?string $type): Order
-    {
-        $this->type = $type;
-        return $this;
-    }
 
     /**
      * @return null|string
