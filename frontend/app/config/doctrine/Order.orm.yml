@@ -44,11 +44,12 @@ AppBundle\Entity\Order:
         cascade: ["persist"]
         joinTable:
           name: ordertype_deputy
-          cascade: ["persist"]
+          cascade: ["persist", "delete"]
           joinColumns:
             deputy_id:
               referencedColumnName: id
           inverseJoinColumns:
             order_type_id:
               referencedColumnName: id
+              onDelete: CASCADE
 

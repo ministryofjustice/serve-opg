@@ -32,10 +32,6 @@ AppBundle\Entity\Deputy:
         column: contact_number
         type: string
         length: 50
-      emailAddress:
-        column: email_address
-        type: string
-        length: 200
       organisationName:
         column: organisation_name
         type: string

@@ -28,7 +28,6 @@ Feature: cases
       | deputy_addressLine1     | Emb house                                   |
       | deputy_addressLine2     | victoria road                               |
       | deputy_addressLine3     | London                                      |
-      | deputy_addressLine3     |                                             |
       | deputy_addressTown      | London                                      |
       | deputy_addressCounty    | London                                      |
       | deputy_addressCountry   | UK                                          |
