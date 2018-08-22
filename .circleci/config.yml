@@ -1,1 +1,35 @@
 version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            # Vendor php dependencies
+            docker-compose run --rm composer
+            # Generate static assets
+            docker-compose run --rm npm
+            # Build app
+            docker-compose up -d --build web
+      - run:
+          name: Migrate Database
+          command: |
+            sleep 2
+            docker-compose run --rm php-fpm php app/console doctrine:schema:update --force
+      - run:
+          name: Warm App
+          command: |
+            curl http://localhost:8888 -s
+            curl http://localhost:8888 -s
+      - run:
+          name: Test
+          command: |
+            docker-compose run --rm phpunit
+            docker-compose run --rm php-fpm php app/console doctrine:fixtures:load --append
+            docker-compose run --rm behat
+      - run:
+          name: Deploy
+          command: |
+            docker images

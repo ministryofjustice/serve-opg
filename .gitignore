@@ -1,8 +1,8 @@
 .idea
 # ignore bin as created by composer
 **/bin
-*/web/assets
-*/node_modules
+**/web/assets
+node_modules
 */bin/jp.php
 **/vendor
 bootstrap.php.cache

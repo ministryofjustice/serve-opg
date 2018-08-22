@@ -9,3 +9,4 @@
 3. Behat requires database drivers to be installed:
   - `An exception occurred in driver: could not find driver (Doctrine\DBAL\Exception\DriverException)`
 4. No codeowners file
+5. App needs to be warmed up
