@@ -1,38 +1,23 @@
-# https://docs.docker.com/compose/compose-file/compose-file-v2/#environment
-
-# ###############################################################################
-# This file is owned by WebOps. Do not merge to master without WebOps input first
-# ###############################################################################
-
-version: '2.1'
+version: '3'
 
 services:
-  frontend:
-    volumes_from:
-        - php
+  web:
     build:
-      context: frontend
-      dockerfile: ../docker/Dockerfile-nginx
+      context: .
+      dockerfile: nginx/Dockerfile
+    image: opg-digicop-nginx:latest
     ports:
-        - 8888:80
+      - 8888:80
     depends_on:
-    # todo - healthcheck - wait for FPM to give a 9000 out
-        - php
-    environment:
-      SYMFONY_ALLOW_DEV: 1
-    volumes:
-       - ./frontend/misc/config/app.conf:/etc/nginx/conf.d/app.conf
+      - php-fpm
 
-  php:
+  php-fpm:
     build:
-      context: frontend
-      dockerfile: Dockerfile-php
-    volumes:
-       - ./frontend/app:/app/app:ro
-       - ./frontend/src:/app/src:ro
-       - ./frontend/web:/app/web:ro
-       - ./frontend/vendor:/app/vendor:ro
-       - ./env/local:/scripts:ro
+      context: .
+      dockerfile: php-fpm/Dockerfile
+    image: opg-digicop-app:latest
+    ports:
+      - 9000:9000
     depends_on:
       - dynamodb
       - postgres
@@ -64,42 +49,37 @@ services:
         number=82345678&name=Marcus Cruz&type=pa
         number=12345678&name=Behat User&type=both
 
-  composer:
-    build:
-      context: ./frontend
-      dockerfile: ../docker/Dockerfile-composer
-    entrypoint:
-        - /entrypoint.sh
-    volumes:
-      - ./env/local/composer.sh:/entrypoint.sh
-      - ./frontend:/app:delegated
-      - ~/.composer:/root/.composer:delegated
+  dynamodb:
+    image: dwmkerr/dynamodb
 
-  node:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-node
+  postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: digicop
+      POSTGRES_USER: digicop
+      POSTGRES_PASSWORD: dcdb2018!
+
+  composer:
+    image: composer
     volumes:
-      - ./env/local/frontend-setup.sh:/entrypoint-setup.sh:ro
-      - ./env/local/frontend-generate.sh:/entrypoint-generate.sh:ro
-      - ./frontend/package.json:/app/package.json:ro
-      - ./frontend/package-lock.json:/app/package-lock.json:delegated
-      - ./frontend/gulpfile.js:/app/gulpfile.js:ro
-      - ./frontend/node_modules:/app/node_modules:delegated
-      - ./frontend/web/assets:/app/web/assets:delegated
-      - ./frontend/src:/app/src:ro
+      - .:/app
+    command: "composer install"
+
+  npm:
+    image: node
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: "npm i --unsafe-perm"
 
   behat:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-php
-    depends_on:
-      - frontend
-    entrypoint:
-        - /entrypoint.sh
+    image: php:7.2.7-fpm-alpine3.7
     volumes:
-      - ./env/local/behat.sh:/entrypoint.sh
-      - ./frontend:/app:delegated
+      - .:/app:ro
+    working_dir: /app
+    entrypoint: bin/behat
+    command: -c tests/behat/behat.yml
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DYNAMODB_KEY: key
@@ -113,18 +93,17 @@ services:
         email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
         number=12345678&name=Behat User&type=both
+      BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://web"}}}'
 
   phpunit:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-php
-    entrypoint:
-        - /entrypoint.sh
+    image: php:7.2.7-fpm-alpine3.7
     volumes:
-      - ./env/local/phpunit.sh:/entrypoint.sh
-      - ./frontend:/app:delegated
+      - .:/app:ro
+    working_dir: /app
+    entrypoint: bin/phpunit
+    command: -c tests/phpunit
     environment:
-      DC_SYMFONY_SECRET: dc2018!
+      DC_SYMFONY_SECRET: dcphpunit2018!
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
       DC_DB_HOST: postgres
@@ -133,24 +112,8 @@ services:
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
 
-  dynamodb:
-    # https://hub.docker.com/r/deangiberson/aws-dynamodb-local/
-    image: dwmkerr/dynamodb
-
-  postgres:
-    image: postgres:9.6
-    #      ports:
-    #        - 5432:5432
-    volumes:
-      - /tmp/postgres-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: digicop
-      POSTGRES_USER: digicop
-      POSTGRES_PASSWORD: dcdb2018!
-
   qa:
     image: jakzal/phpqa:alpine
-    working_dir: /app
     volumes:
-      - ./frontend:/app:delegated
+      - .:/app:ro
+    working_dir: /app

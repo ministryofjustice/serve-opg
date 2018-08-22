@@ -1,7 +1,8 @@
 'use strict';
 
 var gulp = require('gulp'),
-    now = new Date().getTime(),
+    // Remove time so nginx can serve the static assets.
+    // now = new Date().getTime(),
     clean = require('gulp-clean'),
     sass = require('gulp-sass'),
     concat = require('gulp-concat');
@@ -13,7 +14,8 @@ var config = {
         ]
     },
     sassSrc: 'src/AppBundle/Resources/assets/scss',
-    webAssets: 'web/assets/' + now,
+    // webAssets: 'web/assets/' + now,
+    webAssets: 'web/assets',
     jsSrc: 'src/AppBundle/Resources/assets/javascript',
     imgSrc: 'src/AppBundle/Resources/assets/images'
 }
