@@ -10,3 +10,4 @@
   - `An exception occurred in driver: could not find driver (Doctrine\DBAL\Exception\DriverException)`
 4. No codeowners file
 5. App needs to be warmed up
+6. Testing pipeline not complete. What does this look like?

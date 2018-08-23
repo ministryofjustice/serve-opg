@@ -22,7 +22,7 @@ docker-compose up -d --build web
 # -d Detached mode: Run containers in the background
 
 # Migrate database
-docker-compose run --rm php-fpm php app/console doctrine:schema:update --force
+docker-compose run --rm app php app/console doctrine:schema:update --force
 ```
 
 View logs
@@ -45,7 +45,7 @@ docker-compose run --rm phpunit
 ## Integration Testing
 ```bash
 # Load Fixtures
-docker-compose run --rm php-fpm php app/console doctrine:fixtures:load --append
+docker-compose run --rm app php app/console doctrine:fixtures:load --append
 
 # Run Behat
 docker-compose run --rm behat
@@ -59,7 +59,7 @@ docker-compose exec postgres psql -U digicop
 
 Clear Cache
 ```bash
-docker-compose exec php-fpm rm -rf /tmp/app-cache/
+docker-compose exec app rm -rf /tmp/app-cache/
 ```
 
 # Quality Analysis Tools

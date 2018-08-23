@@ -4,18 +4,18 @@ services:
   web:
     build:
       context: .
-      dockerfile: nginx/Dockerfile
-    image: opg-digicop-nginx:latest
+      dockerfile: docker/web/Dockerfile
+    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:latest
     ports:
       - 8888:80
     depends_on:
-      - php-fpm
+      - app
 
-  php-fpm:
+  app:
     build:
       context: .
-      dockerfile: php-fpm/Dockerfile
-    image: opg-digicop-app:latest
+      dockerfile: docker/app/Dockerfile
+    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/app:latest
     ports:
       - 9000:9000
     depends_on:

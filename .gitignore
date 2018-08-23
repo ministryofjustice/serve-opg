@@ -6,3 +6,4 @@ node_modules
 */bin/jp.php
 **/vendor
 bootstrap.php.cache
+*.iml
