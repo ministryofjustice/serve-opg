@@ -11,3 +11,7 @@
 4. No codeowners file
 5. App needs to be warmed up
 6. Testing pipeline not complete. What does this look like?
+7. dynamoDB required for app to startup
+8. PostgreSQL required for app to startup
+9. nginx config needs templating to accept different hostnames
+10. 
