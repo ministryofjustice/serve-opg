@@ -40,7 +40,7 @@ services:
               region: 'eu-west-1'
               version: 'latest'
               validate: false
-              endpoint: 'http://dynamodb:8000'
+              endpoint: "http://%dynamodb_host%:%dynamodb_port%"
               debug: false
 
     aws_dynamo.session:

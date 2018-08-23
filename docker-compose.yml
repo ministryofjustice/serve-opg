@@ -25,6 +25,8 @@ services:
       - postgres
     environment:
       DC_SYMFONY_SECRET: dc2018!
+      DC_DYNAMODB_HOST: dynamodb
+      DC_DYNAMODB_PORT: 8000
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
       DC_DB_HOST: postgres

@@ -1,6 +1,8 @@
 # env vars set by docker-compose at runtime
 parameters:
     secret:   '%env(DC_SYMFONY_SECRET)%'
+    dynamodb_host: '%env(DC_DYNAMODB_HOST)%'
+    dynamodb_port: '%env(DC_DYNAMODB_PORT)%'
     dynamodb_key:  '%env(DC_DYNAMODB_KEY)%'
     dynamodb_secret:  '%env(DC_DYNAMODB_SECRET)%'
     database_host: '%env(DC_DB_HOST)%'
