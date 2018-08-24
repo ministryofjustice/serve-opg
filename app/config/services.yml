@@ -33,14 +33,10 @@ services:
     aws_dynamo.client:
         class: Aws\DynamoDb\DynamoDbClient
         arguments:
-            -
-              credentials:
-                  key: "%dynamodb_key%"
-                  secret: "%dynamodb_secret%"
-              region: 'eu-west-1'
+            - region: 'eu-west-1'
               version: 'latest'
-              validate: false
-              endpoint: "http://%dynamodb_host%:%dynamodb_port%"
+              validate: true
+              endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
 
     aws_dynamo.session:
