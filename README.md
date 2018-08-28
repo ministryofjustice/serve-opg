@@ -62,6 +62,15 @@ Clear Cache
 docker-compose exec app rm -rf /tmp/app-cache/
 ```
 
+# Utilities
+
+Copy a file into the container
+```bash
+docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
+```
+
+
+
 # Quality Analysis Tools
 The Docker image `jakzal/phpqa` contains many useful QA tools
 To list the available tools run:
