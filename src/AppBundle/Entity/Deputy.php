@@ -534,7 +534,7 @@ class Deputy
     /**
      * @param OrderType $order
      */
-    public function addOrderType(OrderType $type)
+    public function addOrderType($type)
     {
         if (!$this->orderTypes->contains($type)) {
             $this->orderTypes->add($type);
