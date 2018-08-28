@@ -1,7 +1,11 @@
 <?php
 
-use Symfony\Component\ClassLoader\ApcClassLoader;
+use Symfony\Component\Debug\Debug;
+// use Symfony\Component\ClassLoader\ApcClassLoader;
 use Symfony\Component\HttpFoundation\Request;
+
+$isLocal = $_SERVER['HTTP_HOST'] === 'localhost:8888'
+    && !file_exists(__DIR__ . '/../.enableProdMode');
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
 //$loader = require_once __DIR__ . '/../app/bootstrap.php.cache';
@@ -14,7 +18,17 @@ $loader = new ApcClassLoader('sf2', $loader);
 $loader->register(true);
 */
 
-$kernel = new AppKernel('prod', false);
+if ($isLocal) {
+    ini_set('display_errors', 'on');
+    ini_set('date.timezone', 'Europe/London');
+    Debug::enable();
+}
+
+if ($isLocal) {
+    $kernel = new AppKernel('dev', true);
+} else {
+    $kernel = new AppKernel('prod', false);
+}
 //$kernel->loadClassCache();
 //$kernel = new AppCache($kernel);
 $request = Request::createFromGlobals();
