@@ -5,6 +5,15 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Build Docker-compose file
+          command: |
+            # Get the spruce tool (https://github.com/geofffranks/spruce) so that
+            # We can remove the metadata service
+            wget https://github.com/geofffranks/spruce/releases/download/v1.18.1/spruce-linux-amd64 -O  ~/bin/spruce
+            chmod +x ~/bin/spruce
+            spruce merge docker-compose.yml ci.spruce.yml > docker-compose.yaml
+            mv docker-compose.yaml docker-compose.yml
+      - run:
           name: Build
           command: |
             # Vendor php dependencies
