@@ -29,9 +29,6 @@ services:
         tags:
             - { name: twig.extension }
 
-    aws_credentials.ecs:
-        class: Aws\Credentials\EcsCredentialProvider
-
 # https://github.com/symfony/symfony/issues/15259
     aws_dynamo.client:
         class: Aws\DynamoDb\DynamoDbClient
@@ -41,7 +38,6 @@ services:
               validate: true
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
-              credentials: "@aws_credentials.ecs"
 
     aws_dynamo.session:
        class: Common\SessionConnectionCreatingTable
