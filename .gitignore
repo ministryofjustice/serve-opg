@@ -1,9 +1,9 @@
 .idea
 # ignore bin as created by composer
-frontend/bin
-frontend/vendor
-frontend/web/assets
-frontend/node_modules
-frontend/bin/jp.php
-dcop_toolkit/vendor
-frontend/app/bootstrap.php.cache
+**/bin
+**/web/assets
+node_modules
+*/bin/jp.php
+**/vendor
+bootstrap.php.cache
+*.iml
