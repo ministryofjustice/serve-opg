@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Migrate Database
           command: |
-            sleep 2
+            sleep 10
             docker-compose run --rm app php app/console doctrine:schema:update --force
       - run:
           name: Warm App

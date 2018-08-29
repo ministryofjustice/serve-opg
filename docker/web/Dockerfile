@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:stable-alpine
 WORKDIR /var/www
 COPY ./web/index.html web/index.html
 COPY ./web/robots.txt web/robots.txt
