@@ -1,4 +1,7 @@
 # DigiCop
+
+[![CircleCI](https://circleci.com/gh/ministryofjustice/opg-digicop/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/opg-digicop/tree/master)
+
 Symfony 3.4 & PHP 7.2
 
 # Prerequisites
