@@ -1,3 +1,4 @@
+@deployment
 Feature: login
 
   Scenario: login
