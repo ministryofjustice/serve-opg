@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     machine: true
     steps:
       - checkout
@@ -38,6 +38,30 @@ jobs:
             docker-compose run --rm phpunit
             docker-compose run --rm app php app/console doctrine:fixtures:load --append
             # docker-compose run --rm behat
+
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build Docker-compose file
+          command: |
+            # Get the spruce tool (https://github.com/geofffranks/spruce) so that
+            # We can remove the metadata service
+            wget https://github.com/geofffranks/spruce/releases/download/v1.18.1/spruce-linux-amd64 -O  ~/bin/spruce
+            chmod +x ~/bin/spruce
+            spruce merge docker-compose.yml ci.spruce.yml > docker-compose.yaml
+            mv docker-compose.yaml docker-compose.yml
+      - run:
+          name: Build
+          command: |
+            # Vendor php dependencies
+            docker-compose run --rm composer
+            # Generate static assets
+            docker-compose run --rm npm
+            # Build app
+            docker-compose build web
+            docker-compose build app
       - run:
           name: Deploy
           command: |
@@ -45,3 +69,18 @@ jobs:
             ./docker_login.sh
             docker-compose push app
             docker-compose push web
+
+workflows:
+  version: 2
+  build:
+    jobs:
+    - test:
+        filters:
+          branches:
+            ignore:
+            - master
+    - build:
+        filters:
+          branches:
+            only:
+            - master
