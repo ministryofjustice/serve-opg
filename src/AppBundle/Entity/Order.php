@@ -3,10 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 abstract class Order
 {
@@ -24,7 +20,6 @@ abstract class Order
     const HAS_ASSETS_YES = 'yes';
     const HAS_ASSETS_NO = 'no';
     const HAS_ASSETS_NA = 'na';
-
 
     /**
      * @var int|null
@@ -54,29 +49,12 @@ abstract class Order
     /**
      * @var ArrayCollection of Deputy[]
      */
-    private $deputys;
+    private $deputies;
 
     /**
      * @var \DateTime
      */
     private $createdAt;
-
-//    /**
-//     * @param Client $client
-//     * @param $type TYPE_*
-//     *
-//     * @return OrderHw|OrderPa
-//     */
-//    public static function factory(Client $client, $type)
-//    {
-//        switch($type) {
-//            case self::TYPE_PA:
-//                return new OrderPa($client);
-//            case self::TYPE_HW:
-//                return new OrderHw($client);
-//        }
-//        throw new \InvalidArgumentException("Unrecognised type $type");
-//    }
 
     /**
      * Order constructor.
@@ -89,7 +67,7 @@ abstract class Order
     {
         $this->client = $client;
         $this->createdAt = new \DateTime();
-        $this->deputys = new ArrayCollection();
+        $this->deputies = new ArrayCollection();
 
         $client->addOrder($this);
 
@@ -98,7 +76,7 @@ abstract class Order
     /**
      * @return int|null
      */
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
@@ -107,7 +85,7 @@ abstract class Order
      * @param int|null $id
      * @return Order
      */
-    public function setId(?int $id): Order
+    public function setId($id): Order
     {
         $this->id = $id;
         return $this;
@@ -176,42 +154,6 @@ abstract class Order
 
 
     /**
-     * @return ArrayCollection
-     */
-    public function getAllDeputys()
-    {
-        $deputies = new ArrayCollection();
-        foreach ($this->getTypes() as $ot) {
-            foreach ($ot->getDeputys() as $dep) {
-                $deputies->add($dep);
-            }
-        }
-        return $deputies;
-    }
-
-    /**
-     * Return a specific orderType from the order based on type ('hw' or 'pa')
-     *
-     * @param null $type
-     * @return null
-     */
-    public function getTypesByOrderType($orderType = null)
-    {
-        if (in_array($orderType, [Order::TYPE_HW, Order::TYPE_PA])) {
-            $orderTypes = $this->getTypes();
-
-            // declare a class name to search the array for
-            $objectClass = 'AppBundle\Entity\OrderType' . ucfirst($orderType);
-            foreach ($orderTypes->toArray() as $ot) {
-                if ($ot instanceof $objectClass) {
-                    return $ot;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -222,17 +164,17 @@ abstract class Order
     /**
      * @return ArrayCollection
      */
-    public function getDeputys()
+    public function getDeputies()
     {
-        return $this->deputys;
+        return $this->deputies;
     }
 
     /**
-     * @param ArrayCollection $deputys
+     * @param ArrayCollection $deputies
      */
-    public function setDeputys($deputys)
+    public function setDeputies($deputies)
     {
-        $this->deputys = $deputys;
+        $this->deputies = $deputies;
     }
 
     /**
@@ -240,8 +182,8 @@ abstract class Order
      */
     public function addDeputy(Deputy $deputy)
     {
-        if (!$this->deputys->contains($deputy)) {
-            $this->deputys->add($deputy);
+        if (!$this->deputies->contains($deputy)) {
+            $this->deputies->add($deputy);
         }
     }
 

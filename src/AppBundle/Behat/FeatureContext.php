@@ -34,7 +34,7 @@ class FeatureContext extends MinkContext implements KernelAwareContext
 
         foreach($client->getOrders() as $order) {
             $order->setSubType(null)->setHasAssetsAboveThreshold(null);
-            foreach($order->getDeputys() as $deputy) {
+            foreach($order->getDeputies() as $deputy) {
                $this->em->remove($deputy);
             }
         }

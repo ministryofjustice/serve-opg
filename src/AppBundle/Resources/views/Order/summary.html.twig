@@ -1,0 +1,229 @@
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
+
+{% block htmlTitle %}Create Order{% endblock %}
+{% block pageTitle %}Property and finance order summary{% endblock %}
+
+{% block content %}
+    <p class="govuk-heading-l">Order details</p>
+
+
+    <table class="documents-table check-your-answers">
+        <thead>
+        <tr>
+            <th scope="col" class="">Question</th>
+            <th scope="col" class="">Answer</th>
+            <th scope="col" class="width-fifth align-right"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td>
+                Are the bond or assets above £21,000?
+            </td>
+            <td>
+                {{ ('order.hasAsssets.' ~ order.hasAssetsAboveThreshold) | trans }}
+            </td>
+            <td class="align-right">
+                <a href="{{ path('order', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                Order subtype
+            </td>
+            <td>
+                {{ ('order.subType.' ~ order.subType) | trans }}
+            </td>
+            <td class="align-right">
+                <a href="&#10;    step1?id=18345934&amp;type=1&#10;    " class="bold-small action-link">Edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <h2 class="heading-medium">Deputies</h2>
+    <table class="width-two-thirds">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Appointment type</th>
+            <th scope="col">Order type</th>
+            <th scope="col">Deputy type</th>
+            <th scope="col">Address</th>
+            <th scope="col">Q2_6 answer</th>
+            <th scope="col">Section 4 answered</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if order.deputies | length %}
+            {% for deputy in order.deputies %}
+
+                <tr>
+                    <td>
+                        {{ deputy.fullname }}
+                    </td>
+                    <td>
+                        {{ deputy.emailAddress }}
+                    </td>
+                    <td>
+                        {{ deputy.appointmentType }}
+                    </td>
+                    <td>
+                        {{ deputy.orderType }}
+                    </td>
+                    <td>
+                        {{ deputy.deputyType }}
+                    </td>
+                    <td>
+                        {{ deputy.organisationName }}
+                        {{ deputy.addressFormatted }}
+                    </td>
+                    <td>
+                        {{ deputy.deputyAnswerQ26 }}
+                    </td>
+                    <td>
+                        {{ deputy.deputyS4Response }}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="8">No deputies added</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <p class="text">Add the details of each deputy named on the order.</p>
+
+
+
+    <a href="{{ path('deputy-add', {'orderId': order.id}) }}" class="bold-small action-link"><span
+                class="icon icon-plus"></span>
+        Add a deputy
+    </a>
+
+    <h2 class="heading-medium">Order documents</h2>
+
+    <div class="text push--top">
+        <p>Attach the documents listed below and any other relevant documents.</p>
+    </div>
+
+    <table class="documents-table check-your-answers push--bottom">
+        <thead>
+        <tr>
+            <th scope="col" class="width-third">Document</th>
+            <th scope="col" class="width-half">Status</th>
+            <th scope="col" class="width-fifth align-right"></th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        <tr>
+            <td>COP 1A</td>
+            <td>
+                Required
+            </td>
+            <td class="align-right">
+
+                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop1a'}) }}"
+                   class="bold-small action-link right">
+                    <span class="icon icon-plus"></span>Add document
+                </a>
+
+            </td>
+        </tr>
+        <tr>
+            <td>COP 1C</td>
+            <td>
+                Required if deputy has completed section 2
+            </td>
+            <td class="align-right">
+
+                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop1c'}) }}"
+                   class="bold-small action-link right">
+                    <span class="icon icon-plus"></span>Add document
+                </a>
+
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>COP 3</td>
+            <td>
+                Required
+            </td>
+            <td class="align-right">
+
+                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop3'}) }}"
+                   class="bold-small action-link right">
+                    <span class="icon icon-plus"></span>Add document
+                </a>
+
+
+            </td>
+        </tr>
+
+        <tr>
+            <td>COP 4</td>
+            <td>
+                Required
+            </td>
+            <td class="align-right">
+
+                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop4'}) }}"
+                   class="bold-small action-link right">
+                    <span class="icon icon-plus"></span>Add document
+                </a>
+
+
+            </td>
+        </tr>
+
+        <tr>
+            <td>Court order</td>
+            <td>
+                Required
+            </td>
+            <td class="align-right">
+
+                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'order'}) }}"
+                   class="bold-small action-link right">
+                    <span class="icon icon-plus"></span>Add document
+                </a>
+
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2 class="heading-small push--bottom-half">Other relevant documents</h2>
+
+
+
+    <div class="text push--bottom">
+        <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'additional'}) }}"
+           class="bold-small action-link"><span class="icon icon-plus"></span>Add additonal document</a>
+    </div>
+
+
+    <div class="alert-info panel panel-border-narrow text">
+        <span class="icon icon-information"></span>
+        <div class="alert-message">
+
+            <p>To continue, please add one or more deputies and upload all the required order documents.</p>
+
+        </div>
+    </div>
+
+
+    <button class="button" disabled="disabled">Continue</button>
+
+{% endblock %}

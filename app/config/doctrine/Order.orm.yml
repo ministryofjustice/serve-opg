@@ -39,7 +39,7 @@ AppBundle\Entity\Order:
           referencedColumnName: id
           onDelete: CASCADE
     manyToMany:
-      deputys:
+      deputies:
         targetEntity: Deputy
         cascade: ["persist"]
         joinTable:

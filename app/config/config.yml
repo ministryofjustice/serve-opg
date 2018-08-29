@@ -84,6 +84,7 @@ doctrine:
 
   orm:
     auto_generate_proxy_classes: "%kernel.debug%"
+    proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"
     auto_mapping: false
     mappings:
       commonEntities:
@@ -91,9 +92,8 @@ doctrine:
         dir: "%kernel.root_dir%/config/doctrine"
         prefix: AppBundle\Entity
         is_bundle: false
+
     #        metadata_cache_driver: apcu
-    #        proxy_dir:                    "%kernel.cache_dir%/doctrine/orm/Proxies"
-    auto_generate_proxy_classes:  true
 
 
 # needed for dynamodb

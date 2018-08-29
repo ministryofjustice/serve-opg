@@ -1,0 +1,12 @@
+order.pa: Property and finance order
+
+order.hasAsssets.yes: 'Yes'
+order.hasAsssets.no: 'No'
+order.hasAsssets.na: 'Not known at this time'
+
+order.subType.new: 'New Application'
+order.subType.replacement: 'Replacement of discharged deputy'
+order.subType.interim-order: 'Interim order'
+order.subType.trustee: 'Trustee'
+order.subType.variation: 'Variation'
+order.subType.direction: 'Direction'

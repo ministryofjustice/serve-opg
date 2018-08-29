@@ -36,9 +36,8 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-
     /**
-     * @Route("/case/{orderId}/order", name="order")
+     * @Route("/order/{orderId}/order", name="order")
      */
     public function addAction(Request $request, $orderId)
     {
@@ -46,20 +45,36 @@ class OrderController extends Controller
         if (!$order) {
             throw new \RuntimeException("Order not existing");
         }
+        if ($order->getHasAssetsAboveThreshold() && $order->getSubType()) {
+            return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
+        }
         $form = $this->createForm(OrderForm::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush($order);
 
-            return $this->redirectToRoute('deputy-add', ['orderId'=>$order->getId()]);
+            return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
         }
 
-        return $this->render('AppBundle:Order:index.html.twig', [
+        return $this->render('AppBundle:Order:add.html.twig', [
             'order' => $order,
             'form'=>$form->createView()
         ]);
+    }
 
+    /**
+     * @Route("/order/{orderId}/summary", name="order-summary")
+     */
+    public function summaryAction(Request $request, $orderId)
+    {
+        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        if (!$order) {
+            throw new \RuntimeException("Order not existing");
+        }
 
+        return $this->render('AppBundle:Order:summary.html.twig', [
+            'order' => $order,
+        ]);
     }
 }

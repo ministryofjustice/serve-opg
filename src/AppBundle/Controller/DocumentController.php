@@ -30,14 +30,14 @@ class DocumentController extends Controller
     }
 
     /**
-     * @Route("/case/order/{orderId}/document/add", name="document-add")
+     * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
      */
-    public function addAction(Request $request, $orderId)
+    public function addAction(Request $request, $orderId, $docType)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
         return $this->render('AppBundle:Document:add.html.twig', [
-            'deputies' => $order->getDeputys()->toArray(),
+            'deputies' => $order->getDeputies()->toArray(),
             'client' => $order->getClient(),
             'order' => $order,
             //'form'=>$form->createView()
