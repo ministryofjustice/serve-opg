@@ -7,3 +7,5 @@ node_modules
 **/vendor
 bootstrap.php.cache
 *.iml
+.env
+docker-compose.local.yml
