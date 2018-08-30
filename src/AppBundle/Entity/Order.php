@@ -21,6 +21,11 @@ abstract class Order
     const HAS_ASSETS_NO = 'no';
     const HAS_ASSETS_NA = 'na';
 
+    const APPOINTMENT_TYPE_SOLE = 'sole';
+    const APPOINTMENT_TYPE_JOINT = 'joint';
+    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'joint-several';
+
+
     /**
      * @var int|null
      */
@@ -50,6 +55,11 @@ abstract class Order
      * @var ArrayCollection of Deputy[]
      */
     private $deputies;
+
+    /**
+     * @var string|null see APPOINTMENT_TYPE_* values
+     */
+    private $appointmentType;
 
     /**
      * @var \DateTime
@@ -152,6 +162,24 @@ abstract class Order
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
+    public function getAppointmentType()
+    {
+        return $this->appointmentType;
+    }
+
+    /**
+     * @param null|string $appointmentType
+     *
+     * @return Order
+     */
+    public function setAppointmentType($appointmentType)
+    {
+        $this->appointmentType = $appointmentType;
+        return $this;
+    }
 
     /**
      * @return \DateTime

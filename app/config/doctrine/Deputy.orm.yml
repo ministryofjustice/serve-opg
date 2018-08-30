@@ -8,10 +8,6 @@ AppBundle\Entity\Deputy:
         generator:
           strategy: AUTO
     fields:
-      appointmentType:
-        column: appointment_type
-        type: string
-        length: 4
       deputyType:
         column: deputy_type
         type: string

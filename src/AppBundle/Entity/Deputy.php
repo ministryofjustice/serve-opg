@@ -11,10 +11,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 class Deputy
 {
 
-    const APPOINTMENT_TYPE_SOLE = 'sole';
-    const APPOINTMENT_TYPE_JOINT = 'joint';
-    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'joint-several';
-
     const DEPUTY_TYPE_LAY = 'lay';
     const DEPUTY_TYPE_PA = 'pa';
     const DEPUTY_TYPE_PROF = 'prof';
@@ -38,11 +34,6 @@ class Deputy
      * @var Collection
      */
     private $orderTypes;
-
-    /**
-     * @var string|null see APPOINTMENT_TYPE_* values
-     */
-    private $appointmentType;
 
     /**
      * @var string|null see DEPUTY_TYPE_* values
@@ -123,7 +114,6 @@ class Deputy
      * Deputy constructor.
      * @param Order $order
      * @param null $orderType
-     * @param null $appointmentType
      * @param null $deputyType
      * @param array $deputyDetails
      * @param array $addressDetails
@@ -133,7 +123,6 @@ class Deputy
     public function __construct(
         Order $order,
         $orderType = null,
-        $appointmentType = null,
         $deputyType = null,
         $deputyDetails = [],
         $addressDetails = [],
@@ -142,7 +131,6 @@ class Deputy
     ) {
         $this->order = $order;
         $this->orderType = $orderType;
-        $this->appointmentType = $appointmentType;
         $this->deputyType = $deputyType;
         $this->constructPersonalDetails($deputyDetails);
         $this->constructAddressDetails($addressDetails);
@@ -240,25 +228,6 @@ class Deputy
     public function setOrderType($orderType)
     {
         $this->orderType = $orderType;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getAppointmentType()
-    {
-        return $this->appointmentType;
-    }
-
-    /**
-     * @param null|string $appointmentType
-     *
-     * @return Deputy
-     */
-    public function setAppointmentType($appointmentType)
-    {
-        $this->appointmentType = $appointmentType;
         return $this;
     }
 

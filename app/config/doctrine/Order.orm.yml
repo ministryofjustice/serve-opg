@@ -25,6 +25,11 @@ AppBundle\Entity\Order:
         type: string
         length: 20
         nullable: true
+      appointmentType:
+        column: appointment_type
+        type: string
+        length: 4
+        nullable: true
       createdAt:
         column: created_at
         type: datetime
