@@ -10,6 +10,7 @@
                 <th class="govuk-table__header" scope="col">Case number</th>
                 <th class="govuk-table__header" scope="col">Order type</th>
                 <th class="govuk-table__header" scope="col">Client</th>
+                <th class="govuk-table__header" scope="col">Order date</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -24,6 +25,8 @@
                     <td class="govuk-table__cell">{{ order.type }}</td>
                     <td class="govuk-table__cell">
                         {{ client.clientName }}
+                    </td><td class="govuk-table__cell">
+                        {{ order.createdAt | date('j/m/Y') }}
                     </td>
                 </tr>
             {% endfor %}
