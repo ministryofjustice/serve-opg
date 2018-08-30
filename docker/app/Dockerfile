@@ -1,4 +1,4 @@
-FROM php:7.2.7-fpm-alpine3.7
+FROM php:7.2-fpm-alpine
 RUN apk add --no-cache postgresql-dev &&\
     docker-php-ext-install pdo pdo_pgsql
 # See this page for directories required
@@ -10,3 +10,6 @@ COPY web/config.php web/config.php
 COPY vendor vendor
 COPY src src
 COPY app app
+CMD php app/console doctrine:schema:update --force --no-interaction \
+&& chown -R www-data var \
+&& php-fpm
