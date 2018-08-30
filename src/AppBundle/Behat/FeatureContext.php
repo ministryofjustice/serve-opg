@@ -3,6 +3,7 @@
 namespace AppBundle\Behat;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Order;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Doctrine\ORM\EntityManager;
@@ -25,21 +26,6 @@ class FeatureContext extends MinkContext implements KernelAwareContext
         $this->em = $kernel->getContainer()->get(EntityManager::class);
     }
 
-    /**
-     * @Given The case :caseNumber orders are empty
-     */
-    public function emptyClientOrders($caseNumber)
-    {
-        $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber'=>$caseNumber]);
-
-        foreach($client->getOrders() as $order) {
-            $order->setSubType(null)->setHasAssetsAboveThreshold(null);
-            foreach($order->getDeputies() as $deputy) {
-               $this->em->remove($deputy);
-            }
-        }
-        $this->em->flush();
-    }
 
 
 }

@@ -17,12 +17,13 @@
         </thead>
         <tbody>
 
+        {# assets question only for PA orders #}
         {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PA') %}
         <tr>
             <td>
                 Are the bond or assets above £21,000?
             </td>
-            <td>
+            <td class="behat-region-has-assets">
                 {{ ('order.hasAsssets.' ~ order.hasAssetsAboveThreshold) | trans }}
             </td>
             <td class="align-right">
@@ -35,7 +36,7 @@
             <td>
                 Order subtype
             </td>
-            <td>
+            <td class="behat-region-order-subtype">
                 {{ ('order.subType.' ~ order.subType) | trans }}
             </td>
             <td class="align-right">
@@ -47,7 +48,7 @@
             <td>
                 Appointment type
             </td>
-            <td>
+            <td class="behat-region-app-type">
                 {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
             </td>
             <td class="align-right">
