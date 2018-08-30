@@ -82,6 +82,11 @@ abstract class Order
     private $createdAt;
 
     /**
+     * @var \DateTime
+     */
+    private $servedAt;
+
+    /**
      * Order constructor.
      * @param Client $client
      * @param string $type
@@ -255,6 +260,16 @@ abstract class Order
     public function setDocuments(ArrayCollection $documents): void
     {
         $this->documents = $documents;
+    }
+
+    /**
+     * @param \DateTime $servedAt
+     * @return Order
+     */
+    public function setServedAt(\DateTime $servedAt): Order
+    {
+        $this->servedAt = $servedAt;
+        return $this;
     }
 
     /**

@@ -35,8 +35,21 @@ class CaseController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $qb = $this->em->getRepository(Order::class)
+            ->createQueryBuilder('o')
+            ->select('o,c')
+            ->leftJoin('o.client', 'c');
+
+        $filter = $request->get('filter', 'pending');
+        if ($filter == 'pending') {
+            $qb->where('o.servedAt IS NULL');
+        } else {
+            $qb->where('o.servedAt IS NOT NULL');
+        }
+        $orders = $qb->getQuery()->getResult();
+
         return $this->render('AppBundle:Case:index.html.twig', [
-            'orders' => $this->em->getRepository(Order::class)->findAll()
+            'orders' => $orders
         ]);
     }
 

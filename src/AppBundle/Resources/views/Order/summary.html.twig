@@ -190,7 +190,7 @@
     <br/>
     <br/>
     {% if order.readyToServe %}
-        <button class="button">Continue</button>
+        <a class="govuk-button" href="{{ path('order-serve', {'orderId': order.id}) }}" >Continue</a>
     {% else %}
     <div class="alert-info panel panel-border-narrow text">
         <span class="icon icon-information"></span>
@@ -200,7 +200,7 @@
 
         </div>
     </div>
-    <button class="button" disabled="disabled">Continue</button>
+    <button class="govuk-button" disabled="disabled">Continue</button>
     {% endif %}
 
 {% endblock %}

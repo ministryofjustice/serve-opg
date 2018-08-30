@@ -85,4 +85,22 @@ class OrderController extends Controller
             'order' => $order,
         ]);
     }
+
+    /**
+     * @Route("/order/{orderId}/serve", name="order-serve")
+     */
+    public function serveAction(Request $request, $orderId)
+    {
+        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        if (!$order) {
+            throw new \RuntimeException("Order not existing");
+        }
+        if (!$order->readyToServe()) {
+            throw new \RuntimeException("Order not ready to be served");
+        }
+        $order->setServedAt(new \DateTime());
+        $this->em->flush($order);
+
+        return $this->redirectToRoute('case-list');
+    }
 }

@@ -4,6 +4,12 @@
 {% block pageTitle %}Cases{% endblock %}
 
 {% block content %}
+
+    {# to style #}
+    <a href="{{ path('case-list', {'filter': 'pending'}) }}">Pending</a> |
+    <a href="{{ path('case-list', {'filter': 'served'}) }}">Served Recently</a>
+    <br/>
+
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
