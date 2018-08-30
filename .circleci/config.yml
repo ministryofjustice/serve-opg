@@ -16,17 +16,14 @@ jobs:
       - run:
           name: Build
           command: |
+            # Startup postgreSQL first
+            docker-compose up -d postgres
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
             docker-compose run --rm npm
             # Build app
             docker-compose up -d --build web
-      - run:
-          name: Migrate Database
-          command: |
-            sleep 10
-            docker-compose run --rm app php app/console doctrine:schema:update --force
       - run:
           name: Warm App
           command: |
