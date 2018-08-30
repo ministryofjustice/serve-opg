@@ -101,6 +101,6 @@ class OrderController extends Controller
         $order->setServedAt(new \DateTime());
         $this->em->flush($order);
 
-        return $this->redirectToRoute('case-list');
+        return $this->redirectToRoute('case-list', ['filter'=>'served']);
     }
 }
