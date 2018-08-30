@@ -37,17 +37,15 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order/{orderId}/order", name="order")
+     * @Route("/order/{orderId}/edit", name="order-edit")
      */
-    public function addAction(Request $request, $orderId)
+    public function editAction(Request $request, $orderId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
         if (!$order) {
             throw new \RuntimeException("Order not existing");
         }
-        if ($order->getHasAssetsAboveThreshold() && $order->getSubType()) {
-            return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
-        }
+
         $form = $this->createForm(OrderForm::class, $order);
         $form->handleRequest($request);
 
@@ -57,7 +55,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
         }
 
-        return $this->render('AppBundle:Order:add.html.twig', [
+        return $this->render('AppBundle:Order:edit.html.twig', [
             'order' => $order,
             'form'=>$form->createView()
         ]);
@@ -71,6 +69,13 @@ class OrderController extends Controller
         $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
         if (!$order) {
             throw new \RuntimeException("Order not existing");
+        }
+        // nothing answered -> go to step 1
+        if (empty($order->getHasAssetsAboveThreshold())
+            && empty($order->getSubType())
+            && empty($order->getAppointmentType())
+        ) {
+            return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
         }
 
         return $this->render('AppBundle:Order:summary.html.twig', [

@@ -17,6 +17,7 @@ class OrderForm extends AbstractType
 {
     const HAS_ASSETS_TRANS_PREFIX = 'order.hasAsssets.';
     const SUBTYPE_TRANS_PREFIX = 'order.subType.';
+    const APPOINTMENT_TYPE_TRANS_PREFIX = 'order.appointmentType.';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -40,6 +41,15 @@ class OrderForm extends AbstractType
                     self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_TRUSTEE => Order::SUBTYPE_TRUSTEE,
                     self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_VARIATION => Order::SUBTYPE_VARIATION,
                     self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_DIRECTION => Order::SUBTYPE_DIRECTION
+                ]
+            ])
+            ->add('appointmentType', ChoiceType::class, [
+                'label' => 'Appointment type',
+                'choices' => [
+                    'Please select...' => '',
+                    self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_SOLE => Order::APPOINTMENT_TYPE_SOLE,
+                    self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_JOINT => Order::APPOINTMENT_TYPE_JOINT,
+                    self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
                 ]
             ])
             ->add('submit', SubmitType::class, ['label' => 'Save and continue']);

@@ -10,3 +10,7 @@ order.subType.interim-order: 'Interim order'
 order.subType.trustee: 'Trustee'
 order.subType.variation: 'Variation'
 order.subType.direction: 'Direction'
+
+order.appointmentType.sole: 'Sole'
+order.appointmentType.joint: 'Joint'
+order.appointmentType.joint-several: 'Joint and several'

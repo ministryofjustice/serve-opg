@@ -25,7 +25,7 @@
                 {{ ('order.hasAsssets.' ~ order.hasAssetsAboveThreshold) | trans }}
             </td>
             <td class="align-right">
-                <a href="{{ path('order', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
             </td>
         </tr>
 
@@ -37,9 +37,22 @@
                 {{ ('order.subType.' ~ order.subType) | trans }}
             </td>
             <td class="align-right">
-                <a href="&#10;    step1?id=18345934&amp;type=1&#10;    " class="bold-small action-link">Edit</a>
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
             </td>
         </tr>
+
+        <tr>
+            <td>
+                Appointment type
+            </td>
+            <td>
+                {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
+            </td>
+            <td class="align-right">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+            </td>
+        </tr>
+
         </tbody>
     </table>
 
