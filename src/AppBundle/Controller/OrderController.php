@@ -6,6 +6,7 @@ use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderPa;
 use AppBundle\Entity\User;
+use AppBundle\Form\DeclarationForm;
 use AppBundle\Form\OrderForm;
 use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
@@ -42,7 +43,8 @@ class OrderController extends Controller
      */
     public function editAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+        /** @var $order Order */
         if (!$order) {
             throw new \RuntimeException("Order not existing");
         }
@@ -55,12 +57,12 @@ class OrderController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush($order);
 
-            return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
         return $this->render('AppBundle:Order:edit.html.twig', [
             'order' => $order,
-            'form'=>$form->createView()
+            'form' => $form->createView()
         ]);
     }
 
@@ -69,7 +71,8 @@ class OrderController extends Controller
      */
     public function summaryAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+        /** @var $order Order */
         if (!$order) {
             throw new \RuntimeException("Order not existing");
         }
@@ -78,7 +81,7 @@ class OrderController extends Controller
             && empty($order->getSubType())
             && empty($order->getAppointmentType())
         ) {
-            return $this->redirectToRoute('order-edit', ['orderId'=>$order->getId()]);
+            return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
         }
 
         return $this->render('AppBundle:Order:summary.html.twig', [
@@ -87,16 +90,31 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order/{orderId}/serve", name="order-serve")
+     * @Route("/order/{orderId}/declaration", name="order-declaration")
      */
-    public function serveAction(Request $request, $orderId)
+    public function declarationAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+        /** @var $order Order */
         if (!$order) {
             throw new \RuntimeException("Order not existing");
         }
-        $this->get(OrderService::class)->serve($order);
 
-        return $this->redirectToRoute('case-list', ['filter'=>'served']);
+        $form = $this->createForm(DeclarationForm::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->get(OrderService::class)->serve($order);
+
+            $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
+
+            return $this->redirectToRoute('case-list', ['filter' => 'served']);
+        }
+
+        return $this->render('AppBundle:Order:declaration.html.twig', [
+            'order' => $order,
+            'form' => $form->createView()
+        ]);
+
     }
 }

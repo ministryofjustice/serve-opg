@@ -5,6 +5,12 @@
 
 {% block content %}
 
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="push--top">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
     {# to style #}
     <a href="{{ path('case-list', {'filter': 'pending'}) }}">Pending ({{ counts.pending }})</a> |
     <a href="{{ path('case-list', {'filter': 'served'}) }}">Served Recently ({{ counts.served }})</a>
