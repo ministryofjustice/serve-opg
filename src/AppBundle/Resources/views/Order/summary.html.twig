@@ -17,6 +17,7 @@
         </thead>
         <tbody>
 
+        {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PA') %}
         <tr>
             <td>
                 Are the bond or assets above £21,000?
@@ -28,6 +29,7 @@
                 <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
             </td>
         </tr>
+        {% endif %}
 
         <tr>
             <td>

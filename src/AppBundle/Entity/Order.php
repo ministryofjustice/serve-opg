@@ -23,7 +23,7 @@ abstract class Order
 
     const APPOINTMENT_TYPE_SOLE = 'sole';
     const APPOINTMENT_TYPE_JOINT = 'joint';
-    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'joint-several';
+    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'js';
 
 
     /**

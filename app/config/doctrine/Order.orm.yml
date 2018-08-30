@@ -28,7 +28,7 @@ AppBundle\Entity\Order:
       appointmentType:
         column: appointment_type
         type: string
-        length: 4
+        length: 5
         nullable: true
       createdAt:
         column: created_at

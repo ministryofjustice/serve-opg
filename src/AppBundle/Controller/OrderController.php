@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderPa;
 use AppBundle\Entity\User;
 use AppBundle\Form\OrderForm;
 use AppBundle\Service\OrderService;
@@ -46,7 +47,9 @@ class OrderController extends Controller
             throw new \RuntimeException("Order not existing");
         }
 
-        $form = $this->createForm(OrderForm::class, $order);
+        $form = $this->createForm(OrderForm::class, $order, [
+            'show_assets_question' => $order->getType() == Order::TYPE_PA
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

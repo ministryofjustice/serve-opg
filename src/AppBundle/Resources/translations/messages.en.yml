@@ -13,4 +13,4 @@ order.subType.direction: 'Direction'
 
 order.appointmentType.sole: 'Sole'
 order.appointmentType.joint: 'Joint'
-order.appointmentType.joint-several: 'Joint and several'
+order.appointmentType.js: 'Joint and several'
