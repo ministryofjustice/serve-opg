@@ -18,7 +18,6 @@ class DeputyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('organisationName', TextType::class)
             ->add('deputyType', ChoiceType::class, [
                 'choices' => [
                     'Please select...' => '',
@@ -27,6 +26,7 @@ class DeputyType extends AbstractType
                     'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
+            ->add('organisationName', TextType::class)
             ->add('forename', TextType::class, ['label'=>'First name'])
             ->add('surname', TextType::class, ['label'=>'Last name'])
             ->add('emailAddress', TextType::class)

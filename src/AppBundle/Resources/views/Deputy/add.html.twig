@@ -10,9 +10,11 @@
             {{ form_start(form) }}
             {{ form_widget(form) }}
             {{ form_end(form) }}
+        <a href="{{ path('order-summary', {'orderId': order.id}) }}">back to summary</a>
         </div>
 
         <div class="govuk-grid-column-one-third">
+            //TODO remove this ?
             <p><strong>Case number</strong><br>{{ client.caseNumber }}</p>
             <p><strong>Client</strong><br>{{ client.clientName }}</p>
             <p><strong>Order ID</strong><br>id={{ order.id }}</p>

@@ -66,12 +66,8 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Appointment type</th>
-            <th scope="col">Order type</th>
             <th scope="col">Deputy type</th>
             <th scope="col">Address</th>
-            <th scope="col">Q2_6 answer</th>
-            <th scope="col">Section 4 answered</th>
         </tr>
         </thead>
         <tbody>
@@ -86,23 +82,11 @@
                         {{ deputy.emailAddress }}
                     </td>
                     <td>
-                        {{ deputy.appointmentType }}
-                    </td>
-                    <td>
-                        {{ deputy.orderType }}
-                    </td>
-                    <td>
                         {{ deputy.deputyType }}
                     </td>
                     <td>
                         {{ deputy.organisationName }}
                         {{ deputy.addressFormatted }}
-                    </td>
-                    <td>
-                        {{ deputy.deputyAnswerQ26 }}
-                    </td>
-                    <td>
-                        {{ deputy.deputyS4Response }}
                     </td>
                 </tr>
             {% endfor %}
