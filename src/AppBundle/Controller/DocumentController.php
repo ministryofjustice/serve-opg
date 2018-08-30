@@ -46,9 +46,12 @@ class DocumentController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-//                $file = $doc->getFile();
 
-//            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+//                $file = $doc->getFile(); // upload this to S3
+
+            $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
+
+            $doc->setFile($fileName);
 
             $this->em->persist($doc);
             $this->em->flush($doc);

@@ -70,9 +70,16 @@ docker-compose exec app rm -rf /tmp/app-cache/
 
 # Utilities
 
-Copy a file into the container
 ```bash
+#Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
+
+# prod mode
+docker-compose exec app touch /var/www/.enableProdMode
+
+# dev mode
+docker-compose exec app rm /var/www/.enableProdMode
+
 ```
 
 

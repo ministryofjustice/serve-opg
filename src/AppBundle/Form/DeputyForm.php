@@ -38,7 +38,6 @@ class DeputyForm extends AbstractType
             ->add('addressCounty', TextType::class)
 //            ->add('addressCountry', TextType::class)
             ->add('addressPostcode', TextType::class)
-            ->add('saveAndAddAnother', SubmitType::class)
             ->add('saveAndContinue', SubmitType::class);
     }
 
