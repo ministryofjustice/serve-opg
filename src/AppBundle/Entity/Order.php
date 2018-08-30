@@ -82,7 +82,7 @@ abstract class Order
     private $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $servedAt;
 
@@ -270,6 +270,14 @@ abstract class Order
     {
         $this->servedAt = $servedAt;
         return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getServedAt(): ?\DateTime
+    {
+        return $this->servedAt;
     }
 
     /**

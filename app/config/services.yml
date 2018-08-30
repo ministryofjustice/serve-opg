@@ -20,7 +20,8 @@ services:
     AppBundle\Controller\DocumentController: ~
     AppBundle\Controller\BehatController: ~
 
-    AppBundle\Service\OrderService: ~
+    AppBundle\Service\OrderService:
+      public: true
     AppBundle\Service\DeputyService: ~
 
     twig.assets_extension:

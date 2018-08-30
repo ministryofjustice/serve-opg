@@ -46,6 +46,7 @@ class CaseController extends Controller
 
         return $this->render('AppBundle:Case:index.html.twig', [
             'orders' => $this->orderRepo->getOrders($filter),
+            'filter' => $filter,
             'counts' => [
                 'pending' => $this->orderRepo->getOrdersCount('pending'),
                 'served' => $this->orderRepo->getOrdersCount('served'),

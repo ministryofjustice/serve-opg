@@ -16,7 +16,12 @@
                 <th class="govuk-table__header" scope="col">Case number</th>
                 <th class="govuk-table__header" scope="col">Order type</th>
                 <th class="govuk-table__header" scope="col">Client</th>
-                <th class="govuk-table__header" scope="col">Order date</th>
+                {% if filter == 'pending' %}
+                    <th class="govuk-table__header" scope="col">Order date</th>
+                {% else %}
+                    <th class="govuk-table__header" scope="col">Date served</th>
+                    <th class="govuk-table__header" scope="col">Documents</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -28,12 +33,23 @@
                             {{ client.caseNumber }}
                         </a>
                     </td>
-                    <td class="govuk-table__cell">{{ order.type }}</td>
+                    <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>
                     <td class="govuk-table__cell">
                         {{ client.clientName }}
-                    </td><td class="govuk-table__cell">
-                        {{ order.createdAt | date('j/m/Y') }}
+                    {% if filter == 'pending' %}
+                        </td><td class="govuk-table__cell">
+                            {{ order.createdAt | date('j/m/Y') }}
+                        </td>
+                    {% else %}
+                        </td><td class="govuk-table__cell">
+                        {{ order.servedAt | date('j/m/Y') }}
+                        </td>
+                        </td><td class="govuk-table__cell">
+                        {% for d in order.documents %}
+                            {{ d.file }},
+                        {% endfor %}
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

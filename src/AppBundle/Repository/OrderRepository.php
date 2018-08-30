@@ -25,7 +25,7 @@ class OrderRepository extends EntityRepository
 
     /**
      * @param string $filter pending|served
-     * 
+     *
      * @return Order[]
      */
     public function getOrders($filter)
