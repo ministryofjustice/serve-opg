@@ -1,7 +1,8 @@
 Feature: cases
 
   Scenario: PA
-    Given I go to "/behat/case/empty/12345678-pa"
+    Given I go to "/behat/case/empty/12345678/pa"
+    And the response status code should be 200
     And I go to "/login"
     And I fill in the following:
       | login_username | behat@digital.justice.gov.uk |
@@ -23,7 +24,8 @@ Feature: cases
       | Joint and several                | app-type      |
 
   Scenario: HW
-    Given I go to "/behat/case/empty/12345678-hw"
+    Given I go to "/behat/case/empty/12345678/hw"
+    And the response status code should be 200
     And I go to "/login"
     And I fill in the following:
       | login_username | behat@digital.justice.gov.uk |
