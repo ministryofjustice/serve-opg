@@ -25,15 +25,6 @@ class Deputy
      */
     private $order;
 
-    /**
-     * @var string|null
-     */
-    private $orderType;
-
-    /**
-     * @var Collection
-     */
-    private $orderTypes;
 
     /**
      * @var string|null see DEPUTY_TYPE_* values
@@ -100,15 +91,6 @@ class Deputy
      */
     private $addressCountry;
 
-    /**
-     * @var string
-     */
-    private $deputyAnswerQ2_6;
-
-    /**
-     * @var string
-     */
-    private $deputyS4Response;
 
     /**
      * Deputy constructor.
@@ -120,60 +102,55 @@ class Deputy
      * @param null $deputyAnswerQ2_6
      * @param null $deputyS4Response
      */
-    public function __construct(
-        Order $order,
-        $orderType = null,
-        $deputyType = null,
-        $deputyDetails = [],
-        $addressDetails = [],
-        $deputyAnswerQ2_6 = null,
-        $deputyS4Response    = null
-    ) {
-        $this->order = $order;
-        $this->orderType = $orderType;
-        $this->deputyType = $deputyType;
-        $this->constructPersonalDetails($deputyDetails);
-        $this->constructAddressDetails($addressDetails);
-        $this->deputyAnswerQ2_6 = $deputyAnswerQ2_6;
-        $this->deputyS4Response = $deputyS4Response;
-        $this->orderTypes = new ArrayCollection();
-
-
-    }
+//    public function __construct(
+//        Order $order,
+//        $deputyType = null,
+//        $deputyDetails = [],
+//        $addressDetails = [],
+//        $deputyAnswerQ2_6 = null,
+//        $deputyS4Response    = null
+//    ) {
+//        $this->order = $order;
+//        $this->deputyType = $deputyType;
+////        $this->constructPersonalDetails($deputyDetails);
+////        $this->constructAddressDetails($addressDetails);
+//
+//
+//    }
 
     /**
      * Assign personal details to deputy object
      *
      * @param $personalDetails
      */
-    private function constructPersonalDetails($deputyDetails) {
-        if (!empty($deputyDetails)) {
-            if (isset($deputyDetails['organisationName'])) {
-                $this->organisationName = $deputyDetails['organisationName'];
-            }
-            $this->forename = $deputyDetails['forename'];
-            $this->surname = $deputyDetails['surname'];
-            $this->emailAddress = $deputyDetails['emailAddress'];
-            $this->contactNumber = $deputyDetails['contactNumber'];
-        }
-    }
+//    private function constructPersonalDetails($deputyDetails) {
+//        if (!empty($deputyDetails)) {
+//            if (isset($deputyDetails['organisationName'])) {
+//                $this->organisationName = $deputyDetails['organisationName'];
+//            }
+//            $this->forename = $deputyDetails['forename'];
+//            $this->surname = $deputyDetails['surname'];
+//            $this->emailAddress = $deputyDetails['emailAddress'];
+//            $this->contactNumber = $deputyDetails['contactNumber'];
+//        }
+//    }
 
     /**
      * Assign address details to deputy object
      *
      * @param $addressDetails
      */
-    private function constructAddressDetails($addressDetails) {
-        if (!empty($addressDetails)) {
-            $this->addressLine1 = $addressDetails['addressLine1'];
-            $this->addressLine2 = $addressDetails['addressLine2'];
-            $this->addressLine3 = $addressDetails['addressLine3'];
-            $this->addressTown = $addressDetails['addressTown'];
-            $this->addressCounty = $addressDetails['addressCounty'];
-            $this->addressPostcode = $addressDetails['addressPostcode'];
-            $this->addressCountry = $addressDetails['addressCountry'];
-        }
-    }
+//    private function constructAddressDetails($addressDetails) {
+//        if (!empty($addressDetails)) {
+//            $this->addressLine1 = $addressDetails['addressLine1'];
+//            $this->addressLine2 = $addressDetails['addressLine2'];
+//            $this->addressLine3 = $addressDetails['addressLine3'];
+//            $this->addressTown = $addressDetails['addressTown'];
+//            $this->addressCounty = $addressDetails['addressCounty'];
+//            $this->addressPostcode = $addressDetails['addressPostcode'];
+//            $this->addressCountry = $addressDetails['addressCountry'];
+//        }
+//    }
 
     /**
      * @return int|null
@@ -212,24 +189,6 @@ class Deputy
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getOrderType()
-    {
-        return $this->orderType;
-    }
-
-    /**
-     * @param null|string $orderType
-     *
-     * @return $this
-     */
-    public function setOrderType($orderType)
-    {
-        $this->orderType = $orderType;
-        return $this;
-    }
 
     /**
      * @return null|string
@@ -461,55 +420,6 @@ class Deputy
             $this->getAddressCountry()
         ]);
     }
-
-    /**
-     * @return string
-     */
-    public function getDeputyAnswerQ26()
-    {
-        return $this->deputyAnswerQ2_6;
-    }
-
-    /**
-     * @param string $deputyAnswerQ2_6
-     *
-     * @return $this
-     */
-    public function setDeputyAnswerQ26($deputyAnswerQ2_6)
-    {
-        $this->deputyAnswerQ2_6 = $deputyAnswerQ2_6;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDeputyS4Response()
-    {
-        return $this->deputyS4Response;
-    }
-
-    /**
-     * @param string $deputyS4Response
-     *
-     * @return $this
-     */
-    public function setDeputyS4Response($deputyS4Response)
-    {
-        $this->deputyS4Response = $deputyS4Response;
-        return $this;
-    }
-
-    /**
-     * @param OrderType $order
-     */
-    public function addOrderType($type)
-    {
-        if (!$this->orderTypes->contains($type)) {
-            $this->orderTypes->add($type);
-        }
-    }
-
 
 
 }

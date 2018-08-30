@@ -14,3 +14,7 @@ order.subType.direction: 'Direction'
 order.appointmentType.sole: 'Sole'
 order.appointmentType.joint: 'Joint'
 order.appointmentType.js: 'Joint and several'
+
+deputy.type.lay: 'Lay'
+deputy.type.pa: 'Public authority'
+deputy.type.prof: 'Professional'

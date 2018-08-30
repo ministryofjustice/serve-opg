@@ -18,51 +18,26 @@ class DeputyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('orderType', ChoiceType::class, [
-                'choices' => [
-                    'Property and affairs' => Order::TYPE_PA,
-                    'Health and welfare' => Order::TYPE_HW,
-                    'Both' => Order::TYPE_BOTH,
-                ]
-            ])
-            ->add('appointmentType', ChoiceType::class, [
-                'choices' => [
-                    'Sole' => Deputy::APPOINTMENT_TYPE_SOLE,
-                    'Joint' => Deputy::APPOINTMENT_TYPE_JOINT,
-                    'Joint and several' => Deputy::APPOINTMENT_TYPE_JOINT_AND_SEVERAL
-                ]
-            ])
+            ->add('organisationName', TextType::class)
             ->add('deputyType', ChoiceType::class, [
                 'choices' => [
-                    'Lay' => Deputy::DEPUTY_TYPE_LAY,
-                    'Public authority' => Deputy::DEPUTY_TYPE_PA,
-                    'Professional' => Deputy::DEPUTY_TYPE_PROF
+                    'Please select...' => '',
+                    'deputy.type.lay' => Deputy::DEPUTY_TYPE_LAY,
+                    'deputy.type.pa' => Deputy::DEPUTY_TYPE_PA,
+                    'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
-            ->add('forename', TextType::class)
-            ->add('surname', TextType::class)
+            ->add('forename', TextType::class, ['label'=>'First name'])
+            ->add('surname', TextType::class, ['label'=>'Last name'])
             ->add('emailAddress', TextType::class)
             ->add('contactNumber', TextType::class)
-            ->add('organisationName', TextType::class)
             ->add('addressLine1', TextType::class)
             ->add('addressLine2', TextType::class)
             ->add('addressLine3', TextType::class)
             ->add('addressTown', TextType::class)
             ->add('addressCounty', TextType::class)
-            ->add('addressCountry', TextType::class)
+//            ->add('addressCountry', TextType::class)
             ->add('addressPostcode', TextType::class)
-            ->add('deputyAnswerQ2_6', ChoiceType::class, [
-                'choices' => [
-                    Answers::ANSWER_YES => Answers::ANSWERED_YES,
-                    Answers::ANSWER_NO => Answers::ANSWERED_NO
-                ]
-            ])
-            ->add('deputyS4Response', ChoiceType::class, [
-                'choices' => [
-                    Answers::ANSWER_YES => Answers::ANSWER_YES,
-                    Answers::ANSWER_NO => Answers::ANSWER_NO
-                ]
-            ])
             ->add('saveAndAddAnother', SubmitType::class)
             ->add('saveAndContinue', SubmitType::class);
     }
