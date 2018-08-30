@@ -25,6 +25,16 @@ abstract class Order
     const APPOINTMENT_TYPE_JOINT = 'joint';
     const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'js';
 
+    public static function getExpectedDocuments()
+    {
+        return [
+            Document::TYPE_COP1A,
+            Document::TYPE_COP1C,
+            Document::TYPE_COP3,
+            Document::TYPE_COP4,
+            Document::TYPE_COURT_ORDER,
+        ];
+    }
 
     /**
      * @var int|null
@@ -57,6 +67,11 @@ abstract class Order
     private $deputies;
 
     /**
+     * @var ArrayCollection of Document[]
+     */
+    private $documents;
+
+    /**
      * @var string|null see APPOINTMENT_TYPE_* values
      */
     private $appointmentType;
@@ -78,6 +93,7 @@ abstract class Order
         $this->client = $client;
         $this->createdAt = new \DateTime();
         $this->deputies = new ArrayCollection();
+        $this->documents = new ArrayCollection();
 
         $client->addOrder($this);
 
@@ -213,6 +229,67 @@ abstract class Order
         if (!$this->deputies->contains($deputy)) {
             $this->deputies->add($deputy);
         }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDocumentsByType($type)
+    {
+        return $this->documents->filter(function($doc) use ($type) {
+            return $doc->getType() == $type;
+        });
+    }
+
+    /**
+     * @param ArrayCollection $documents
+     */
+    public function setDocuments(ArrayCollection $documents): void
+    {
+        $this->documents = $documents;
+    }
+
+    /**
+     * Return true if the order has
+     * - at least one deputy
+     * - a document for each `getExpectedDocuments()`
+     * - `hasAssetsAboveThreshold` (PA oly), `subType` and `appointmentType` answered
+     *
+     * @return bool
+     */
+    public function readyToServe()
+    {
+        if (!count($this->getDeputies())) {
+            return false;
+        }
+
+        foreach(self::getExpectedDocuments() as $type) {
+            if (!count($this->getDocumentsByType($type))) {
+                return false;
+            }
+        }
+
+        if ($this instanceof OrderPa && empty($this->getHasAssetsAboveThreshold())) {
+            return false;
+        }
+
+        if (empty($this->getSubType())) {
+            return false;
+        }
+
+        if (empty($this->getAppointmentType())) {
+            return false;
+        }
+
+        return true;
     }
 
 }

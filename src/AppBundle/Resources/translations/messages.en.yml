@@ -1,4 +1,5 @@
 order.pa: Property and finance order
+order.hw: Health and Welfare order
 
 order.hasAsssets.yes: 'Yes'
 order.hasAsssets.no: 'No'
@@ -18,3 +19,9 @@ order.appointmentType.js: 'Joint and several'
 deputy.type.lay: 'Lay'
 deputy.type.pa: 'Public authority'
 deputy.type.prof: 'Professional'
+
+document.type.cop1a: COP 1A
+document.type.cop1c: COP 1C
+document.type.cop3: COP 3
+document.type.cop4: COP 4
+document.type.co: Court order

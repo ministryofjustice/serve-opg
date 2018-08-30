@@ -19,17 +19,17 @@
 
         {# assets question only for PA orders #}
         {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PA') %}
-        <tr>
-            <td>
-                Are the bond or assets above £21,000?
-            </td>
-            <td class="behat-region-has-assets">
-                {{ ('order.hasAsssets.' ~ order.hasAssetsAboveThreshold) | trans }}
-            </td>
-            <td class="align-right">
-                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    Are the bond or assets above £21,000?
+                </td>
+                <td class="behat-region-has-assets">
+                    {{ ('order.hasAsssets.' ~ order.hasAssetsAboveThreshold) | trans }}
+                </td>
+                <td class="align-right">
+                    <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+                </td>
+            </tr>
         {% endif %}
 
         <tr>
@@ -122,98 +122,76 @@
         </tr>
         </thead>
         <tbody>
+        {% for docType in order.expectedDocuments %}
+            {% set doc = order.getDocumentsByType(docType) | first %}
+            <tr>
+                <td>{{ ('document.type.' ~ docType) | trans }}</td>
+                <td>
+                    {% if doc | length %}
+                        Uploaded
+                    {% else %}
+                        Required
+                    {% endif %}
+                </td>
+                <td class="align-right">
+                    <a href="{{
+                        doc | length ?
+                        path('document-remove', {'orderId': order.id, 'id': doc.id})
+                        : path('document-add', {'orderId': order.id, 'docType': docType})
+                    }}"
+                       class="bold-small action-link right">
+                        {% if doc | length %}
+                        <span class=""></span>Remove
+                        {% else %}
+                        <span class=""></span>Add document
+                        {% endif %}
+                    </a>
 
-
-        <tr>
-            <td>COP 1A</td>
-            <td>
-                Required
-            </td>
-            <td class="align-right">
-
-                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop1a'}) }}"
-                   class="bold-small action-link right">
-                    <span class="icon icon-plus"></span>Add document
-                </a>
-
-            </td>
-        </tr>
-        <tr>
-            <td>COP 1C</td>
-            <td>
-                Required if deputy has completed section 2
-            </td>
-            <td class="align-right">
-
-                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop1c'}) }}"
-                   class="bold-small action-link right">
-                    <span class="icon icon-plus"></span>Add document
-                </a>
-
-            </td>
-        </tr>
-
-
-        <tr>
-            <td>COP 3</td>
-            <td>
-                Required
-            </td>
-            <td class="align-right">
-
-                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop3'}) }}"
-                   class="bold-small action-link right">
-                    <span class="icon icon-plus"></span>Add document
-                </a>
-
-
-            </td>
-        </tr>
-
-        <tr>
-            <td>COP 4</td>
-            <td>
-                Required
-            </td>
-            <td class="align-right">
-
-                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'cop4'}) }}"
-                   class="bold-small action-link right">
-                    <span class="icon icon-plus"></span>Add document
-                </a>
-
-
-            </td>
-        </tr>
-
-        <tr>
-            <td>Court order</td>
-            <td>
-                Required
-            </td>
-            <td class="align-right">
-
-                <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'order'}) }}"
-                   class="bold-small action-link right">
-                    <span class="icon icon-plus"></span>Add document
-                </a>
-
-
-            </td>
-        </tr>
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 
     <h2 class="heading-small push--bottom-half">Other relevant documents</h2>
 
+    {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
+    {% if otherDocs | length %}
+    <table class="check-your-answers push--bottom">
+        <thead>
+        <tr><th>File name</th>
+            <th>Date attached</th>
+            <th><span class="visually-hidden">Actions</span></th>
+        </tr></thead>
+        <tbody class="behat-region-document-list">
+        {% for doc in otherDocs %}
+            <tr>
+                <td>
+                    {{ doc.file }}
+                </td>
+                <td class="numeric-small">29 March 2018 18:13</td>
+                <td class="change-answer width-sixth soft-half--left">
+                    <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button action-link">Remove</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
 
 
     <div class="text push--bottom">
-        <a href="{{ path('document-add', {'orderId': order.id, 'docType': 'additional'}) }}"
-           class="bold-small action-link"><span class="icon icon-plus"></span>Add additonal document</a>
+        <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+           class="bold-small action-link"><span class="icon icon-plus"></span>Add additional document</a>
     </div>
 
-
+    <br/>
+    <br/>
+    <br/>
+    {% if order.readyToServe %}
+        <button class="button">Continue</button>
+    {% else %}
     <div class="alert-info panel panel-border-narrow text">
         <span class="icon icon-information"></span>
         <div class="alert-message">
@@ -222,8 +200,7 @@
 
         </div>
     </div>
-
-
     <button class="button" disabled="disabled">Continue</button>
+    {% endif %}
 
 {% endblock %}

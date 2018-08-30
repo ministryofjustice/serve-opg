@@ -7,7 +7,7 @@ use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
 use AppBundle\Service\DeputyService;
-use AppBundle\Form\DeputyType;
+use AppBundle\Form\DeputyForm;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +48,7 @@ class DeputyController extends Controller
 
         $deputy = new Deputy($order);
 
-        $form = $this->createForm(DeputyType::class, $deputy);
+        $form = $this->createForm(DeputyForm::class, $deputy);
         $form->handleRequest($request);
 
         $buttonClicked = $form->getClickedButton();
