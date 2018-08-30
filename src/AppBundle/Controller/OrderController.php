@@ -75,7 +75,7 @@ class OrderController extends Controller
             && empty($order->getSubType())
             && empty($order->getAppointmentType())
         ) {
-            return $this->redirectToRoute('order-summary', ['orderId'=>$order->getId()]);
+            return $this->redirectToRoute('order-edit', ['orderId'=>$order->getId()]);
         }
 
         return $this->render('AppBundle:Order:summary.html.twig', [
