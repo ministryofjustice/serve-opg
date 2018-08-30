@@ -6,8 +6,8 @@
 {% block content %}
 
     {# to style #}
-    <a href="{{ path('case-list', {'filter': 'pending'}) }}">Pending</a> |
-    <a href="{{ path('case-list', {'filter': 'served'}) }}">Served Recently</a>
+    <a href="{{ path('case-list', {'filter': 'pending'}) }}">Pending ({{ counts.pending }})</a> |
+    <a href="{{ path('case-list', {'filter': 'served'}) }}">Served Recently ({{ counts.served }})</a>
     <br/>
 
     <table class="govuk-table">

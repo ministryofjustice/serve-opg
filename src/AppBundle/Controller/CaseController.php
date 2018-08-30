@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
+use AppBundle\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,12 +23,18 @@ class CaseController extends Controller
     private $em;
 
     /**
+     * @var OrderRepository
+     */
+    private $orderRepo;
+
+    /**
      * UserController constructor.
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+        $this->orderRepo = $em->getRepository(Order::class);
     }
 
     /**
@@ -35,21 +42,14 @@ class CaseController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $qb = $this->em->getRepository(Order::class)
-            ->createQueryBuilder('o')
-            ->select('o,c')
-            ->leftJoin('o.client', 'c');
-
         $filter = $request->get('filter', 'pending');
-        if ($filter == 'pending') {
-            $qb->where('o.servedAt IS NULL');
-        } else {
-            $qb->where('o.servedAt IS NOT NULL');
-        }
-        $orders = $qb->getQuery()->getResult();
 
         return $this->render('AppBundle:Case:index.html.twig', [
-            'orders' => $orders
+            'orders' => $this->orderRepo->getOrders($filter),
+            'counts' => [
+                'pending' => $this->orderRepo->getOrdersCount('pending'),
+                'served' => $this->orderRepo->getOrdersCount('served'),
+            ]
         ]);
     }
 

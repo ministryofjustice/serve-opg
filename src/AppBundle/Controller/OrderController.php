@@ -95,11 +95,7 @@ class OrderController extends Controller
         if (!$order) {
             throw new \RuntimeException("Order not existing");
         }
-        if (!$order->readyToServe()) {
-            throw new \RuntimeException("Order not ready to be served");
-        }
-        $order->setServedAt(new \DateTime());
-        $this->em->flush($order);
+        $this->get(OrderService::class)->serve($order);
 
         return $this->redirectToRoute('case-list', ['filter'=>'served']);
     }
