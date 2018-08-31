@@ -1,6 +1,6 @@
 FROM php:7.2-fpm-alpine
-RUN apk add --no-cache postgresql-dev &&\
-    docker-php-ext-install pdo pdo_pgsql
+RUN apk add --no-cache postgresql-dev bash \
+&& docker-php-ext-install pdo pdo_pgsql
 # See this page for directories required
 # https://symfony.com/doc/3.4/quick_tour/the_architecture.html
 WORKDIR /var/www
@@ -10,6 +10,6 @@ COPY web/config.php web/config.php
 COPY vendor vendor
 COPY src src
 COPY app app
-CMD php app/console doctrine:schema:update --force --no-interaction \
-&& chown -R www-data var \
-&& php-fpm
+COPY docker/wait-for-it.sh .
+COPY docker/app/entrypoint.sh .
+ENTRYPOINT ./entrypoint.sh

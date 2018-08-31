@@ -16,8 +16,6 @@ jobs:
       - run:
           name: Build
           command: |
-            # Startup postgreSQL first
-            docker-compose up -d postgres
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
