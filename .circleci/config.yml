@@ -23,11 +23,6 @@ jobs:
             # Build app
             docker-compose up -d --build web
       - run:
-          name: Warm App
-          command: |
-            curl http://localhost:8888 -s
-            curl http://localhost:8888 -s
-      - run:
           name: Test
           command: |
             docker-compose run --rm phpunit
