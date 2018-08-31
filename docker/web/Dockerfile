@@ -1,13 +1,21 @@
 FROM nginx:stable-alpine
+
+# Add Confd to configure nginx on start
+ENV CONFD_VERSION="0.16.0"
+RUN wget -q -O /usr/local/bin/confd "https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64" \
+&& chmod +x /usr/local/bin/confd
+
+# Add Waitforit to wait on app starting
+ENV WAITFORIT_VERSION="v2.2.1"
+RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
+&& chmod +x /usr/local/bin/waitforit
+
 WORKDIR /var/www
 COPY ./web/index.html web/index.html
 COPY ./web/robots.txt web/robots.txt
 COPY ./web/assets web/assets
 COPY docker/web/etc /etc
-ENV CONFD_VERSION="0.16.0"
-RUN wget "https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64" &&\
-    mkdir -p /opt/confd/bin &&\
-    mv confd-${CONFD_VERSION}-linux-amd64 /opt/confd/bin/confd &&\
-    chmod +x /opt/confd/bin/confd
-ENV PATH="$PATH:/opt/confd/bin"
-CMD confd -onetime -backend env && nginx -g "daemon off;"
+
+CMD confd -onetime -backend env \
+&& waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=20 \
+&& nginx -g "daemon off;"
