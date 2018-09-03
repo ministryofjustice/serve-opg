@@ -68,7 +68,7 @@ docker-compose exec postgres psql -U digicop
 
 Clear Cache
 ```bash
-docker-compose exec app rm -rf /tmp/app-cache/
+docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 ```
 
 # Utilities
