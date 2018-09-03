@@ -1,0 +1,52 @@
+# src/AppBundle/Resources/validation.yml
+AppBundle\Entity\Deputy:
+    properties:
+        deputyType:
+            - Type: string
+            - NotBlank: {message: "Please select a deputy type."}
+        forename:
+            - Type: string
+            - NotBlank: {message: "Please enter the deputy's first name."}
+        surname:
+            - Type: string
+            - NotBlank: {message: "Please enter the deputy's surname."}
+#        emailAddress:
+#            - Type: string
+#            - NotBlank: {message: "Please enter the deputy's email address."}
+#            - Email: {message: "Please enter a valid email address."}
+#            - Length:
+#                max: 60
+#                maxMessage: "The deputies email address is too long."
+#                min: 7
+#                minMessage: "The deputies email address is too short."
+#        contactNumber:
+#            - Type: string
+#            - NotBlank: {message: "Please enter the deputy's contact number."}
+#            - Length:
+#                max: 20
+#                maxMessage: "The deputies contact number is too long."
+#                min: 10
+#                minMessage: "The deputies contact number is too short."
+        addressLine1:
+            - Type: string
+            - NotBlank: {message: "Please enter the deputy's address line 1."}
+        addressLine2:
+            - Type: string
+            - NotBlank: {message: "Please enter the deputy's address line 2."}
+        addressLine3:
+            - Type: string
+            - NotBlank: {message: "Please enter the deputy's address line 3."}
+        addressTown:
+            - Type: string
+            - NotBlank: {message: "Please enter a town for the deputy's address."}
+        addressCounty:
+            - Type: string
+            - NotBlank: {message: "Please enter a county for the deputy's address."}
+#        addressPostcode:
+#            - Type: string
+#            - NotBlank: {message: "Please enter a postcode for the deputy's address."}
+#            - Length:
+#                min: 2
+#                minMessage: "The deputies postcode is too short."`
+#                max: 10
+#                maxMessage: "The deputies postcode is too long."
