@@ -108,12 +108,14 @@ services:
     command: "/app/node_modules/.bin/gulp watch"
 
   behat:
-    image: php:7.2.7-fpm-alpine3.7
+    image: php:7.2-fpm-alpine
     volumes:
-      - .:/app:ro
+      - .:/app
     working_dir: /app
     entrypoint: bin/behat
     command: -c tests/behat/behat.yml
+    depends_on:
+      - web
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DB_HOST: postgres
@@ -124,13 +126,13 @@ services:
       DC_FIXURES_USERS: |
         email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
-        number=12345678&name=Behat User&type=both
+        number=12345678&name=BehatUser&type=both
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://web"}}}'
 
   phpunit:
     image: php:7.2-fpm-alpine
     volumes:
-      - .:/app:ro
+      - .:/app
     working_dir: /app
     entrypoint: bin/phpunit
     command: -c tests/phpunit
