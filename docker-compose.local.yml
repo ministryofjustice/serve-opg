@@ -94,18 +94,12 @@ services:
   # docker-compose run --rm npm
   npm:
     image: node
+    environment:
+      PATH: "/app/node_modules/.bin:$PATH"
     working_dir: /app
     volumes:
       - .:/app
     command: "npm i --unsafe-perm"
-
-  # docker-compose run --rm npm-watch
-  npm-watch:
-    image: node
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: "/app/node_modules/.bin/gulp watch"
 
   behat:
     image: php:7.2-fpm-alpine

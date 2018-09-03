@@ -22,12 +22,12 @@ var config = {
 
 // Clean out old assets
 gulp.task('clean', function () {
-    return gulp.src('web/assets/*', {read: false})
+    return gulp.src('web/assets/v1/*', {read: false})
         .pipe(clean());
 });
 
 // Compile sass files
-gulp.task('sass', function () {
+gulp.task('sass', ['clean'], function () {
     return gulp.src([
             config.sassSrc + '/application.scss'])
         .pipe(sass(config.sass).on('error', sass.logError))
@@ -35,19 +35,19 @@ gulp.task('sass', function () {
 });
 
 // Copy images and fonts from govuk frontend
-gulp.task('govukImagesAndFonts', function () {
+gulp.task('govukImagesAndFonts', ['clean'], function () {
     return gulp.src('node_modules/govuk-frontend/assets/**/*')
         .pipe(gulp.dest(config.webAssets + '/'));
 });
 
 // Copy images
-gulp.task('images', function () {
+gulp.task('images', ['clean'], function () {
     return gulp.src(config.imgSrc + '/**/*')
         .pipe(gulp.dest(config.webAssets + '/images'));
 });
 
 // Concats js into application.js
-gulp.task('js', function () {
+gulp.task('js', ['clean'], function () {
     return gulp.src([
             'node_modules/govuk-frontend/all.js',
             config.jsSrc + '/main.js'])

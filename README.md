@@ -71,12 +71,20 @@ Clear Cache
 docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 ```
 
-# Utilities
+# Front end assets
 
 ```bash
-# Gulp watch (local env only)
-docker-compose run --rm npm-watch
+# Gulp tasks
+# Bash into the npm container
+docker-compose run npm bash
+# Then run any gulp tasks from there, ie:
+gulp watch
+```
 
+# Utilities
+
+
+```bash
 #Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 
