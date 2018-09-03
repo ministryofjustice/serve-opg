@@ -1,5 +1,47 @@
 version: 2
 jobs:
+  test:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build Docker-compose file
+          command: |
+            # Get the spruce tool (https://github.com/geofffranks/spruce) so that
+            # We can remove the metadata service
+            wget https://github.com/geofffranks/spruce/releases/download/v1.18.1/spruce-linux-amd64 -O  ~/bin/spruce
+            chmod +x ~/bin/spruce
+            spruce merge docker-compose.yml ci.spruce.yml > docker-compose.yaml
+            mv docker-compose.yaml docker-compose.yml
+      - restore_cache:
+          keys:
+            - dependencies-v1
+      - run:
+          name: Build Dependencies
+          command: |
+            # Vendor php dependencies
+            docker-compose run --rm composer
+            # Generate static assets
+            docker-compose run --rm npm
+      - save_cache:
+          key: dependencies-v1
+          paths:
+          - vendor
+          - node_modules
+          - bin
+      - run:
+          name: Unit Test
+          command: |
+            docker-compose run --rm phpunit
+#      - run:
+#          name: Integration Test
+#            export WAITFORIT_VERSION="v2.2.1"
+#            wget -q -O /home/circleci/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64
+#            chmod +x /home/circleci/bin/waitforit
+#            waitforit -address=http://localhost:8888 -timeout=20
+#            docker-compose run --rm app php app/console doctrine:fixtures:load --append
+#            docker-compose run --rm behat
+
   build:
     machine: true
     steps:
@@ -21,23 +63,8 @@ jobs:
             # Generate static assets
             docker-compose run --rm npm
             # Build app
-            docker-compose up -d --build web
-      - run:
-          name: Migrate Database
-          command: |
-            sleep 10
-            docker-compose run --rm app php app/console doctrine:schema:update --force
-      - run:
-          name: Warm App
-          command: |
-            curl http://localhost:8888 -s
-            curl http://localhost:8888 -s
-      - run:
-          name: Test
-          command: |
-            docker-compose run --rm phpunit
-            docker-compose run --rm app php app/console doctrine:fixtures:load --append
-            # docker-compose run --rm behat
+            docker-compose build web
+            docker-compose build app
       - run:
           name: Deploy
           command: |
@@ -45,3 +72,18 @@ jobs:
             ./docker_login.sh
             docker-compose push app
             docker-compose push web
+
+workflows:
+  version: 2
+  build:
+    jobs:
+    - test:
+        filters:
+          branches:
+            ignore:
+            - master
+    - build:
+        filters:
+          branches:
+            only:
+            - master
