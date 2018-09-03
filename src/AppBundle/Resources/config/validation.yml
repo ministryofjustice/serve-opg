@@ -13,7 +13,8 @@ AppBundle\Entity\Deputy:
         emailAddress:
             - Type: string
             - NotBlank: {message: "Please enter the deputy's email address."}
-#            - Email: {message: "Please enter a valid email address."}
+            - Email:
+                message: The email {{ value }} is not a valid email.
             - Length:
                 max: 60
                 maxMessage: "The deputies email address is too long."
