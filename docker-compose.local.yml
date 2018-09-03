@@ -21,6 +21,8 @@ services:
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:latest
     ports:
       - 8888:80
+    volumes:
+      - ./web/assets:/var/www/web/assets
     depends_on:
       - app
     environment:
@@ -43,6 +45,7 @@ services:
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
+      - ./web/assets:/var/www/web/assets
     environment:
       DYNAMODB_ENDPOINT: http://dynamodb:8000
       DC_SYMFONY_SECRET: dc2018!
@@ -87,12 +90,21 @@ services:
       - .:/app
     command: "composer install"
 
+  # docker-compose run --rm npm
   npm:
     image: node
     working_dir: /app
     volumes:
       - .:/app
     command: "npm i --unsafe-perm"
+
+  # docker-compose run --rm npm-watch
+  npm-watch:
+    image: node
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: "/app/node_modules/.bin/gulp watch"
 
   behat:
     image: php:7.2.7-fpm-alpine3.7
