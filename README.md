@@ -1,4 +1,7 @@
 # DigiCop
+
+[![CircleCI](https://circleci.com/gh/ministryofjustice/opg-digicop/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/opg-digicop/tree/master)
+
 Symfony 3.4 & PHP 7.2
 
 # Prerequisites
@@ -65,15 +68,23 @@ docker-compose exec postgres psql -U digicop
 
 Clear Cache
 ```bash
-docker-compose exec app rm -rf /tmp/app-cache/
+docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
+```
+
+# Front end assets
+
+```bash
+# Gulp tasks
+# Bash into the npm container
+docker-compose run npm bash
+# Then run any gulp tasks from there, ie:
+gulp watch
 ```
 
 # Utilities
 
-```bash
-# Gulp watch (local env only)
-docker-compose run --rm npm-watch
 
+```bash
 #Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 

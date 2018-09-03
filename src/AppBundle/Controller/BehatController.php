@@ -39,20 +39,25 @@ class BehatController extends Controller
     public function indexAction(Request $request, $caseNumber, $type)
     {
         $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber'=>$caseNumber]);
+        $res = [];
 
         foreach($client->getOrders() as $order) { /* @var $order Order */
             if($order->getType() == $type) {
-                $order->setSubType(null)
+                $order
+                    ->setServedAt(null)
+                    ->setSubType(null)
                     ->setHasAssetsAboveThreshold(null)
                     ->setAppointmentType(null);
+                $res[] = $order->getId() . " reset";
                 foreach($order->getDeputies() as $deputy) {
                     $this->em->remove($deputy);
+                    $res[] = $order->getId() . " deputy removed";
                 }
             }
         }
         $this->em->flush();
 
-        return new JsonResponse(true);
+        return new JsonResponse($res);
     }
 
 }

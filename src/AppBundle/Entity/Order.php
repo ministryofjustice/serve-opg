@@ -263,10 +263,10 @@ abstract class Order
     }
 
     /**
-     * @param \DateTime $servedAt
+     * @param \DateTime|null $servedAt
      * @return Order
      */
-    public function setServedAt(\DateTime $servedAt): Order
+    public function setServedAt(\DateTime $servedAt = null): Order
     {
         $this->servedAt = $servedAt;
         return $this;
