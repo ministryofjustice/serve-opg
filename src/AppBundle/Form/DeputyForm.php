@@ -63,9 +63,7 @@ class DeputyForm extends AbstractType
             ->add('addressPostcode', TextType::class, [
                 'required' => false,
             ])
-            ->add('saveAndContinue', SubmitType::class, [
-                'required' => false,
-            ]);
+            ->add('saveAndContinue', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
