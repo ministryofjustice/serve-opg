@@ -16,6 +16,7 @@ class DeclarationForm extends AbstractType
     {
         $builder
             ->add('agree', CheckboxType::class, [
+                'required'=>false,
                 'constraints'=> new IsTrue(['message'=>'you must agree'])
             ])
             ->add('submit', SubmitType::class, ['label' => 'Serve OPG']);

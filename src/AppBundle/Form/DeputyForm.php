@@ -19,26 +19,53 @@ class DeputyForm extends AbstractType
     {
         $builder
             ->add('deputyType', ChoiceType::class, [
+                'required' => false,
                 'choices' => [
-                    'Please select...' => '',
+                    'pleaseSelect' => '',
                     'deputy.type.lay' => Deputy::DEPUTY_TYPE_LAY,
                     'deputy.type.pa' => Deputy::DEPUTY_TYPE_PA,
                     'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
-            ->add('organisationName', TextType::class)
-            ->add('forename', TextType::class, ['label'=>'First name'])
-            ->add('surname', TextType::class, ['label'=>'Last name'])
-            ->add('emailAddress', TextType::class)
-            ->add('contactNumber', TextType::class)
-            ->add('addressLine1', TextType::class)
-            ->add('addressLine2', TextType::class)
-            ->add('addressLine3', TextType::class)
-            ->add('addressTown', TextType::class)
-            ->add('addressCounty', TextType::class)
+            ->add('organisationName', TextType::class, [
+                'required' => false,
+            ])
+            ->add('forename', TextType::class, [
+                'label' => 'First name',
+                'required' => false
+            ])
+            ->add('surname', TextType::class, [
+                'label' => 'Last name',
+                'required' => false
+            ])
+            ->add('emailAddress', TextType::class, [
+                'required' => false,
+            ])
+            ->add('contactNumber', TextType::class, [
+                'required' => false,
+            ])
+            ->add('addressLine1', TextType::class, [
+                'required' => false,
+            ])
+            ->add('addressLine2', TextType::class, [
+                'required' => false,
+            ])
+            ->add('addressLine3', TextType::class, [
+                'required' => false,
+            ])
+            ->add('addressTown', TextType::class, [
+                'required' => false,
+            ])
+            ->add('addressCounty', TextType::class, [
+                'required' => false,
+            ])
 //            ->add('addressCountry', TextType::class)
-            ->add('addressPostcode', TextType::class)
-            ->add('saveAndContinue', SubmitType::class);
+            ->add('addressPostcode', TextType::class, [
+                'required' => false,
+            ])
+            ->add('saveAndContinue', SubmitType::class, [
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

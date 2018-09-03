@@ -1,9 +1,12 @@
+pleaseSelect: Please select...
+
 order.pa: Property and finance order
 order.hw: Health and Welfare order
 
-order.hasAsssets.yes: 'Yes'
-order.hasAsssets.no: 'No'
-order.hasAsssets.na: 'Not known at this time'
+order.hasAssets.yes: 'Yes'
+order.hasAssets.no: 'No'
+order.hasAssets.na: 'Not known at this time'
+
 
 order.subType.new: 'New Application'
 order.subType.replacement: 'Replacement of discharged deputy'

@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class OrderForm extends AbstractType
 {
-    const HAS_ASSETS_TRANS_PREFIX = 'order.hasAsssets.';
+    const HAS_ASSETS_TRANS_PREFIX = 'order.hasAssets.';
     const SUBTYPE_TRANS_PREFIX = 'order.subType.';
     const APPOINTMENT_TYPE_TRANS_PREFIX = 'order.appointmentType.';
 
@@ -25,8 +25,9 @@ class OrderForm extends AbstractType
             $builder
                 ->add('hasAssetsAboveThreshold', ChoiceType::class, [
                     'label' => 'Are the bond or assets above £21,000?',
+                    'required' => false,
                     'choices' => [
-                        'Please select...' => '',
+                        'pleaseSelect' => '',
                         self::HAS_ASSETS_TRANS_PREFIX . Order::HAS_ASSETS_NA => Order::HAS_ASSETS_NA,
                         self::HAS_ASSETS_TRANS_PREFIX . Order::HAS_ASSETS_YES => Order::HAS_ASSETS_YES,
                         self::HAS_ASSETS_TRANS_PREFIX . Order::HAS_ASSETS_NO => Order::HAS_ASSETS_NO,
@@ -35,8 +36,9 @@ class OrderForm extends AbstractType
         }
         $builder->add('subType', ChoiceType::class, [
             'label' => 'Order subtype',
+            'required' => false,
             'choices' => [
-                'Please select...' => '',
+                'pleaseSelect' => '',
                 self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_NEW => Order::SUBTYPE_NEW,
                 self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_REPLACEMENT => Order::SUBTYPE_REPLACEMENT,
                 self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_INTERIM_ORDER => Order::SUBTYPE_INTERIM_ORDER,
@@ -47,8 +49,9 @@ class OrderForm extends AbstractType
         ])
             ->add('appointmentType', ChoiceType::class, [
                 'label' => 'Appointment type',
+                'required' => false,
                 'choices' => [
-                    'Please select...' => '',
+                    'pleaseSelect' => '',
                     self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_SOLE => Order::APPOINTMENT_TYPE_SOLE,
                     self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_JOINT => Order::APPOINTMENT_TYPE_JOINT,
                     self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,

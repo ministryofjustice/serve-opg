@@ -24,7 +24,9 @@
                     Are the bond or assets above £21,000?
                 </td>
                 <td class="behat-region-has-assets">
-                    {{ ('order.hasAsssets.' ~ order.hasAssetsAboveThreshold) | trans }}
+                    {% if order.hasAssetsAboveThreshold %}
+                        {{ ('order.hasAssets.' ~ order.hasAssetsAboveThreshold) | trans }}
+                    {% endif %}
                 </td>
                 <td class="align-right">
                     <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
@@ -37,7 +39,9 @@
                 Order subtype
             </td>
             <td class="behat-region-order-subtype">
-                {{ ('order.subType.' ~ order.subType) | trans }}
+                {% if order.subType %}
+                    {{ ('order.subType.' ~ order.subType) | trans }}
+                {% endif %}
             </td>
             <td class="align-right">
                 <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
@@ -49,7 +53,9 @@
                 Appointment type
             </td>
             <td class="behat-region-app-type">
-                {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
+                {% if order.appointmentType %}
+                    {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
+                {% endif %}
             </td>
             <td class="align-right">
                 <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
