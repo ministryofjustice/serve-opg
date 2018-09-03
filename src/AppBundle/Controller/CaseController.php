@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
+use AppBundle\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,12 +23,18 @@ class CaseController extends Controller
     private $em;
 
     /**
+     * @var OrderRepository
+     */
+    private $orderRepo;
+
+    /**
      * UserController constructor.
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+        $this->orderRepo = $em->getRepository(Order::class);
     }
 
     /**
@@ -35,8 +42,15 @@ class CaseController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $filter = $request->get('filter', 'pending');
+
         return $this->render('AppBundle:Case:index.html.twig', [
-            'orders' => $this->em->getRepository(Order::class)->findAll()
+            'orders' => $this->orderRepo->getOrders($filter),
+            'filter' => $filter,
+            'counts' => [
+                'pending' => $this->orderRepo->getOrdersCount('pending'),
+                'served' => $this->orderRepo->getOrdersCount('served'),
+            ]
         ]);
     }
 

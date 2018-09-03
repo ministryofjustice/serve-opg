@@ -1,65 +1,31 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
-{% block htmlTitle %}Deputy{% endblock %}
-{% block pageTitle %}Deputy{% endblock %}
+{% block htmlTitle %} Attach {{ docType | upper }}{% endblock %}
+{% block pageTitle %} Attach {{ docType | upper }}{% endblock %}
 
 {% block content %}
-	document add
 
-	<hr/>ORDER: id={{ order.id }} | {{ order.type }}| {{ order.subType }} | {{ order.hasAssetsAboveThreshold }}
+    {# TODO move to support title #}
+    {{ order.client.clientName }}: {{ ('order.' ~ order.type) | trans }}
 
-    Deputys added
+    {{ form_start(form) }}
 
-    <table class="width-two-thirds">
-        <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Appointment type</th>
-            <th scope="col">Order type</th>
-            <th scope="col">Deputy type</th>
-            <th scope="col">Address</th>
-            <th scope="col">Q2_6 answer</th>
-            <th scope="col">Section 4 answered</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% if deputies | length %}
-            {% for deputy in deputies %}
+    <h2>1. Select the file</h2>
 
-                <tr>
-                    <td>
-                        {{ deputy.fullname }}
-                    </td>
-                    <td>
-                        {{ deputy.emailAddress }}
-                    </td>
-                    <td>
-                        {{ deputy.appointmentType }}
-                    </td>
-                    <td>
-                        {{ deputy.orderType }}
-                    </td>
-                    <td>
-                        {{ deputy.deputyType }}
-                    </td>
-                    <td>
-                        {{ deputy.organisationName }}
-                        {{ deputy.addressFormatted }}
-                    </td>
-                    <td>
-                        {{ deputy.deputyAnswerQ26 }}
-                    </td>
-                    <td>
-                        {{ deputy.deputyS4Response }}
-                    </td>
-                </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="8">No deputies added</td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
+    Click 'Choose File' below to find the document you want to upload
+
+    You can only upload PDF, JPG and PNG files, and they cannot be larger than 15MB.
+    <br/>  <br/>
+    {{ form_row(form.file, {'label': false}) }}
+
+    <h2>2. Upload the file</h2>
+
+    {{ form_row(form.submit, {'label': 'Upload file and attach to order', 'attr': {'class': 'govuk-button'}}) }}
+
+    {{ form_end(form) }}
+
+    <br/><br/>
+
+    <a href="{{ path('order-summary', {'orderId': order.id}) }}">Back to Summary</a>
+
 {% endblock %}

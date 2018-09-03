@@ -3,10 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 abstract class Order
 {
@@ -25,6 +21,20 @@ abstract class Order
     const HAS_ASSETS_NO = 'no';
     const HAS_ASSETS_NA = 'na';
 
+    const APPOINTMENT_TYPE_SOLE = 'sole';
+    const APPOINTMENT_TYPE_JOINT = 'joint';
+    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'js';
+
+    public static function getExpectedDocuments()
+    {
+        return [
+            Document::TYPE_COP1A,
+            Document::TYPE_COP1C,
+            Document::TYPE_COP3,
+            Document::TYPE_COP4,
+            Document::TYPE_COURT_ORDER,
+        ];
+    }
 
     /**
      * @var int|null
@@ -54,29 +64,27 @@ abstract class Order
     /**
      * @var ArrayCollection of Deputy[]
      */
-    private $deputys;
+    private $deputies;
+
+    /**
+     * @var ArrayCollection of Document[]
+     */
+    private $documents;
+
+    /**
+     * @var string|null see APPOINTMENT_TYPE_* values
+     */
+    private $appointmentType;
 
     /**
      * @var \DateTime
      */
     private $createdAt;
 
-//    /**
-//     * @param Client $client
-//     * @param $type TYPE_*
-//     *
-//     * @return OrderHw|OrderPa
-//     */
-//    public static function factory(Client $client, $type)
-//    {
-//        switch($type) {
-//            case self::TYPE_PA:
-//                return new OrderPa($client);
-//            case self::TYPE_HW:
-//                return new OrderHw($client);
-//        }
-//        throw new \InvalidArgumentException("Unrecognised type $type");
-//    }
+    /**
+     * @var \DateTime|null
+     */
+    private $servedAt;
 
     /**
      * Order constructor.
@@ -89,7 +97,8 @@ abstract class Order
     {
         $this->client = $client;
         $this->createdAt = new \DateTime();
-        $this->deputys = new ArrayCollection();
+        $this->deputies = new ArrayCollection();
+        $this->documents = new ArrayCollection();
 
         $client->addOrder($this);
 
@@ -98,7 +107,7 @@ abstract class Order
     /**
      * @return int|null
      */
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
@@ -107,7 +116,7 @@ abstract class Order
      * @param int|null $id
      * @return Order
      */
-    public function setId(?int $id): Order
+    public function setId($id): Order
     {
         $this->id = $id;
         return $this;
@@ -174,41 +183,23 @@ abstract class Order
         return $this;
     }
 
-
     /**
-     * @return ArrayCollection
+     * @return null|string
      */
-    public function getAllDeputys()
+    public function getAppointmentType()
     {
-        $deputies = new ArrayCollection();
-        foreach ($this->getTypes() as $ot) {
-            foreach ($ot->getDeputys() as $dep) {
-                $deputies->add($dep);
-            }
-        }
-        return $deputies;
+        return $this->appointmentType;
     }
 
     /**
-     * Return a specific orderType from the order based on type ('hw' or 'pa')
+     * @param null|string $appointmentType
      *
-     * @param null $type
-     * @return null
+     * @return Order
      */
-    public function getTypesByOrderType($orderType = null)
+    public function setAppointmentType($appointmentType)
     {
-        if (in_array($orderType, [Order::TYPE_HW, Order::TYPE_PA])) {
-            $orderTypes = $this->getTypes();
-
-            // declare a class name to search the array for
-            $objectClass = 'AppBundle\Entity\OrderType' . ucfirst($orderType);
-            foreach ($orderTypes->toArray() as $ot) {
-                if ($ot instanceof $objectClass) {
-                    return $ot;
-                }
-            }
-        }
-        return null;
+        $this->appointmentType = $appointmentType;
+        return $this;
     }
 
     /**
@@ -222,17 +213,17 @@ abstract class Order
     /**
      * @return ArrayCollection
      */
-    public function getDeputys()
+    public function getDeputies()
     {
-        return $this->deputys;
+        return $this->deputies;
     }
 
     /**
-     * @param ArrayCollection $deputys
+     * @param ArrayCollection $deputies
      */
-    public function setDeputys($deputys)
+    public function setDeputies($deputies)
     {
-        $this->deputys = $deputys;
+        $this->deputies = $deputies;
     }
 
     /**
@@ -240,9 +231,88 @@ abstract class Order
      */
     public function addDeputy(Deputy $deputy)
     {
-        if (!$this->deputys->contains($deputy)) {
-            $this->deputys->add($deputy);
+        if (!$this->deputies->contains($deputy)) {
+            $this->deputies->add($deputy);
         }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDocumentsByType($type)
+    {
+        return $this->documents->filter(function($doc) use ($type) {
+            return $doc->getType() == $type;
+        });
+    }
+
+    /**
+     * @param ArrayCollection $documents
+     */
+    public function setDocuments(ArrayCollection $documents): void
+    {
+        $this->documents = $documents;
+    }
+
+    /**
+     * @param \DateTime|null $servedAt
+     * @return Order
+     */
+    public function setServedAt(\DateTime $servedAt = null): Order
+    {
+        $this->servedAt = $servedAt;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getServedAt(): ?\DateTime
+    {
+        return $this->servedAt;
+    }
+
+    /**
+     * Return true if the order has
+     * - at least one deputy
+     * - a document for each `getExpectedDocuments()`
+     * - `hasAssetsAboveThreshold` (PA oly), `subType` and `appointmentType` answered
+     *
+     * @return bool
+     */
+    public function readyToServe()
+    {
+        if (!count($this->getDeputies())) {
+            return false;
+        }
+
+        foreach(self::getExpectedDocuments() as $type) {
+            if (!count($this->getDocumentsByType($type))) {
+                return false;
+            }
+        }
+
+        if ($this instanceof OrderPa && empty($this->getHasAssetsAboveThreshold())) {
+            return false;
+        }
+
+        if (empty($this->getSubType())) {
+            return false;
+        }
+
+        if (empty($this->getAppointmentType())) {
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -55,6 +55,9 @@ class AssetsExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFilter('assetUrl', [$this, 'assetUrlFilter']),
+            new \Twig_SimpleFilter('debug', function($e) {
+                \Doctrine\Common\Util\Debug::dump($e);
+            }),
         ];
     }
 

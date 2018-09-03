@@ -4,12 +4,30 @@
 {% block pageTitle %}Cases{% endblock %}
 
 {% block content %}
+
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="push--top">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+
+    {# to style #}
+    <a href="{{ path('case-list', {'filter': 'pending'}) }}">Pending ({{ counts.pending }})</a> |
+    <a href="{{ path('case-list', {'filter': 'served'}) }}">Served Recently ({{ counts.served }})</a>
+    <br/>
+
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="col">Case number</th>
                 <th class="govuk-table__header" scope="col">Order type</th>
                 <th class="govuk-table__header" scope="col">Client</th>
+                {% if filter == 'pending' %}
+                    <th class="govuk-table__header" scope="col">Order date</th>
+                {% else %}
+                    <th class="govuk-table__header" scope="col">Date served</th>
+                    <th class="govuk-table__header" scope="col">Documents</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -17,14 +35,27 @@
                 {% set client = order.client %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <a href="{{ path('order', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
+                        <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                             {{ client.caseNumber }}
                         </a>
                     </td>
-                    <td class="govuk-table__cell">{{ order.type }}</td>
+                    <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>
                     <td class="govuk-table__cell">
                         {{ client.clientName }}
+                    {% if filter == 'pending' %}
+                        </td><td class="govuk-table__cell">
+                            {{ order.createdAt | date('j/m/Y') }}
+                        </td>
+                    {% else %}
+                        </td><td class="govuk-table__cell">
+                        {{ order.servedAt | date('j/m/Y') }}
+                        </td>
+                        </td><td class="govuk-table__cell">
+                        {% for d in order.documents %}
+                            {{ d.file }},
+                        {% endfor %}
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

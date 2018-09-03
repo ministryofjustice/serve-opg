@@ -8,10 +8,6 @@ AppBundle\Entity\Deputy:
         generator:
           strategy: AUTO
     fields:
-      appointmentType:
-        column: appointment_type
-        type: string
-        length: 4
       deputyType:
         column: deputy_type
         type: string
@@ -56,15 +52,7 @@ AppBundle\Entity\Deputy:
         column: address_postcode
         type: string
         length: 8
-      addressCountry:
-        column: address_country
-        type: string
-        length: 50
-      deputyAnswerQ2_6:
-        column: deputy_answer_q2_6
-        type: string
-        length: 12
-      deputyS4Response:
-        column: deputy_s4_response
-        type: string
-        length: 12
+#      addressCountry:
+#        column: address_country
+#        type: string
+#        length: 50

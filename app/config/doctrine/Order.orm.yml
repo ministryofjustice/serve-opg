@@ -1,6 +1,7 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
 AppBundle\Entity\Order:
     type: entity
+    repositoryClass: AppBundle\Repository\OrderRepository
     table: "dc_order"
     inheritanceType: single_table
     discriminatorColumn:
@@ -25,10 +26,19 @@ AppBundle\Entity\Order:
         type: string
         length: 20
         nullable: true
+      appointmentType:
+        column: appointment_type
+        type: string
+        length: 5
+        nullable: true
       createdAt:
         column: created_at
         type: datetime
         nullable: false
+      servedAt:
+        column: served_at
+        type: datetime
+        nullable: true
     manyToOne:
       client:
         targetEntity: Client
@@ -39,7 +49,7 @@ AppBundle\Entity\Order:
           referencedColumnName: id
           onDelete: CASCADE
     manyToMany:
-      deputys:
+      deputies:
         targetEntity: Deputy
         cascade: ["persist"]
         joinTable:
@@ -52,4 +62,8 @@ AppBundle\Entity\Order:
             order_type_id:
               referencedColumnName: id
               onDelete: CASCADE
-
+    oneToMany:
+      documents:
+        targetEntity: Document
+        mappedBy: order
+        cascade: ["persist"]

@@ -1,0 +1,30 @@
+pleaseSelect: Please select...
+
+order.pa: Property and finance order
+order.hw: Health and Welfare order
+
+order.hasAssets.yes: 'Yes'
+order.hasAssets.no: 'No'
+order.hasAssets.na: 'Not known at this time'
+
+
+order.subType.new: 'New Application'
+order.subType.replacement: 'Replacement of discharged deputy'
+order.subType.interim-order: 'Interim order'
+order.subType.trustee: 'Trustee'
+order.subType.variation: 'Variation'
+order.subType.direction: 'Direction'
+
+order.appointmentType.sole: 'Sole'
+order.appointmentType.joint: 'Joint'
+order.appointmentType.js: 'Joint and several'
+
+deputy.type.lay: 'Lay'
+deputy.type.pa: 'Public authority'
+deputy.type.prof: 'Professional'
+
+document.type.cop1a: COP 1A
+document.type.cop1c: COP 1C
+document.type.cop3: COP 3
+document.type.cop4: COP 4
+document.type.co: Court order

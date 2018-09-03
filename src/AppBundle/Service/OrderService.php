@@ -23,6 +23,13 @@ class OrderService
         $this->em = $em;
     }
 
-
+    public function serve(Order $order)
+    {
+        if (!$order->readyToServe()) {
+            throw new \RuntimeException("Order not ready to be served");
+        }
+        $order->setServedAt(new \DateTime());
+        $this->em->flush($order);
+    }
 
 }

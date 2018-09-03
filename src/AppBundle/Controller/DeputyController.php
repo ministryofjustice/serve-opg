@@ -7,7 +7,7 @@ use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
 use AppBundle\Service\DeputyService;
-use AppBundle\Form\DeputyType;
+use AppBundle\Form\DeputyForm;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,14 +48,12 @@ class DeputyController extends Controller
 
         $deputy = new Deputy($order);
 
-        $form = $this->createForm(DeputyType::class, $deputy);
+        $form = $this->createForm(DeputyForm::class, $deputy);
         $form->handleRequest($request);
 
         $buttonClicked = $form->getClickedButton();
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-//            $this->deputyService->createDeputyForOrderType($order, $deputy);
             $order->addDeputy($deputy);
             $this->em->persist($deputy);
             $this->em->flush();
@@ -63,7 +61,7 @@ class DeputyController extends Controller
             if ($buttonClicked->getName() == 'saveAndAddAnother') {
                 return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
             } else {
-                return $this->redirectToRoute('document-add', ['orderId' => $order->getId()]);
+                return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
             }
         }
 
