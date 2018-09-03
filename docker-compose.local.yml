@@ -26,7 +26,8 @@ services:
     depends_on:
       - app
     environment:
-      WEB_HOST: "app"
+      APP_HOST: app
+      APP_PORT: 9000
 
   app:
     build:
@@ -127,7 +128,7 @@ services:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://web"}}}'
 
   phpunit:
-    image: php:7.2.7-fpm-alpine3.7
+    image: php:7.2-fpm-alpine
     volumes:
       - .:/app:ro
     working_dir: /app
