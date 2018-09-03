@@ -26,7 +26,8 @@ services:
     depends_on:
       - app
     environment:
-      WEB_HOST: "app"
+      APP_HOST: app
+      APP_PORT: 9000
 
   app:
     build:
@@ -93,26 +94,22 @@ services:
   # docker-compose run --rm npm
   npm:
     image: node
+    environment:
+      PATH: "/app/node_modules/.bin:$PATH"
     working_dir: /app
     volumes:
       - .:/app
     command: "npm i --unsafe-perm"
 
-  # docker-compose run --rm npm-watch
-  npm-watch:
-    image: node
-    working_dir: /app
+  behat:
+    image: php:7.2-fpm-alpine
     volumes:
       - .:/app
-    command: "/app/node_modules/.bin/gulp watch"
-
-  behat:
-    image: php:7.2.7-fpm-alpine3.7
-    volumes:
-      - .:/app:ro
     working_dir: /app
     entrypoint: bin/behat
     command: -c tests/behat/behat.yml
+    depends_on:
+      - web
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DB_HOST: postgres
@@ -123,13 +120,13 @@ services:
       DC_FIXURES_USERS: |
         email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
-        number=12345678&name=Behat User&type=both
+        number=12345678&name=BehatUser&type=both
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://web"}}}'
 
   phpunit:
-    image: php:7.2.7-fpm-alpine3.7
+    image: php:7.2-fpm-alpine
     volumes:
-      - .:/app:ro
+      - .:/app
     working_dir: /app
     entrypoint: bin/phpunit
     command: -c tests/phpunit

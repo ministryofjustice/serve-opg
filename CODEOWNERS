@@ -1,0 +1,5 @@
+docker/* @ministryofjustice/opg-webops
+.circleci/* @ministryofjustice/opg-webops
+docker-compose.yml @ministryofjustice/opg-webops
+
+* @ministryofjustice/opg-digicop

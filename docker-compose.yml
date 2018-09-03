@@ -18,7 +18,8 @@ services:
     depends_on:
       - app
     environment:
-      WEB_HOST: "app"
+      APP_HOST: app
+      APP_PORT: 9000
 
   app:
     build:
@@ -86,9 +87,9 @@ services:
     command: "npm i --unsafe-perm"
 
   behat:
-    image: php:7.2.7-fpm-alpine3.7
+    image: php:7.2-fpm-alpine
     volumes:
-      - .:/app:ro
+      - .:/app
     working_dir: /app
     entrypoint: bin/behat
     command: -c tests/behat/behat.yml
@@ -106,9 +107,9 @@ services:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://web"}}}'
 
   phpunit:
-    image: php:7.2.7-fpm-alpine3.7
+    image: php:7.2-fpm-alpine
     volumes:
-      - .:/app:ro
+      - .:/app
     working_dir: /app
     entrypoint: bin/phpunit
     command: -c tests/phpunit
@@ -125,7 +126,7 @@ services:
   qa:
     image: jakzal/phpqa:alpine
     volumes:
-      - .:/app:ro
+      - .:/app
     working_dir: /app
 
   metadata:

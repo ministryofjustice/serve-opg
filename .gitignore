@@ -9,3 +9,4 @@ bootstrap.php.cache
 *.iml
 .env
 docker-compose.local.yml
+var
