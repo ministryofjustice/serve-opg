@@ -136,3 +136,8 @@ services:
     networks:
       link-local:
         ipv4_address: 169.254.169.254
+
+  waitforit:
+    build:
+      context: .
+      dockerfile: docker/waitforit/Dockerfile
