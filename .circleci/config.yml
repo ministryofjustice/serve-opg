@@ -38,6 +38,7 @@ jobs:
           command: |
             docker-compose up --build -d web
             docker-compose run --rm waitforit -address=http://web
+            docker-compose run --rm app php app/console doctrine:fixtures:load --append
             docker-compose run --rm behat
 
   build:
