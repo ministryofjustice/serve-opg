@@ -1,4 +1,4 @@
-# src/AppBundle/Resources/validation.yml
+# src/AppBundle/Resources/config/validation.yml
 AppBundle\Entity\Deputy:
     properties:
         deputyType:
