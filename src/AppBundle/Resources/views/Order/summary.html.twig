@@ -4,61 +4,58 @@
 {% block pageTitle %}Property and finance order summary{% endblock %}
 
 {% block content %}
-    <p class="govuk-heading-l">Order details</p>
+    <h2 class="govuk-heading-m">Order details</h2>
 
-
-    <table class="documents-table check-your-answers">
-        <thead>
-        <tr>
-            <th scope="col" class="">Question</th>
-            <th scope="col" class="">Answer</th>
-            <th scope="col" class="width-fifth align-right"></th>
-        </tr>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Question</th>
+                <th scope="col" class="govuk-table__header">Answer</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
         </thead>
-        <tbody>
+        <tbody class="govuk-table__body">
 
         {# assets question only for PA orders #}
         {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PA') %}
-            <tr>
-                <td>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
                     Are the bond or assets above £21,000?
                 </td>
-                <td class="behat-region-has-assets">
+                <td class="govuk-table__cell behat-region-has-assets">
                     {% if order.hasAssetsAboveThreshold %}
                         {{ ('order.hasAssets.' ~ order.hasAssetsAboveThreshold) | trans }}
                     {% endif %}
                 </td>
-                <td class="align-right">
-                    <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+                <td class="govuk-table__cell">
+                    <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link">Edit</a>
                 </td>
             </tr>
         {% endif %}
 
-        <tr>
-            <td>
-                Order subtype
-            </td>
-            <td class="behat-region-order-subtype">
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Order subtype</td>
+            <td class="govuk-table__cell behat-region-order-subtype">
                 {% if order.subType %}
                     {{ ('order.subType.' ~ order.subType) | trans }}
                 {% endif %}
             </td>
-            <td class="align-right">
-                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+            <td class="govuk-table__cell">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link">Edit</a>
             </td>
         </tr>
 
-        <tr>
-            <td>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
                 Appointment type
             </td>
-            <td class="behat-region-app-type">
+            <td class="govuk-table__cell behat-region-app-type">
                 {% if order.appointmentType %}
                     {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
                 {% endif %}
             </td>
-            <td class="align-right">
-                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="bold-small action-link">Edit</a>
+            <td class="govuk-table__cell">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link">Edit</a>
             </td>
         </tr>
 
@@ -66,34 +63,42 @@
     </table>
 
 
-    <h2 class="heading-medium">Deputies</h2>
-    <table class="width-two-thirds">
-        <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Deputy type</th>
-            <th scope="col">Address</th>
-        </tr>
+    {# ----- DEPUTIES ----- #}
+
+    <h2 class="govuk-heading-m">Deputies</h2>
+
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr>
+                <th scope="col" class="govuk-table__header">Deputy 1</th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="#">Edit</a>
+                    <a href="#">Remove</a>
+                </th>
+            </tr>
         </thead>
-        <tbody>
+        <tbody class="govuk-table__body">
         {% if order.deputies | length %}
             {% for deputy in order.deputies %}
-
-                <tr>
-                    <td>
-                        {{ deputy.fullname }}
-                    </td>
-                    <td>
-                        {{ deputy.emailAddress }}
-                    </td>
-                    <td>
-                        {{ deputy.deputyType }}
-                    </td>
-                    <td>
-                        {{ deputy.organisationName }}
-                        {{ deputy.addressFormatted }}
-                    </td>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">Name</th>
+                    <td class="govuk-table__cell">{{ deputy.fullname }}</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">Email address</th>
+                    <td class="govuk-table__cell">{{ deputy.emailAddress }}</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">Deputy type</th>
+                    <td class="govuk-table__cell">{{ deputy.deputyType }}</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">Organisation</th>
+                    <td class="govuk-table__cell">{{ deputy.organisationName }}</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">Address</th>
+                    <td class="govuk-table__cell">{{ deputy.addressFormatted }}</td>
                 </tr>
             {% endfor %}
         {% else %}
@@ -104,42 +109,43 @@
         </tbody>
     </table>
 
-    <p class="text">Add the details of each deputy named on the order.</p>
+    <p>Add the details of each deputy named on the order.</p>
+    <p>
+        <a href="{{ path('deputy-add', {'orderId': order.id}) }}" class="govuk-link">
+            <span class="icon icon-plus">+</span>
+            Add a deputy
+        </a>
+    </p>
 
 
+    {# ----- DOCUMENTS ----- #}
 
-    <a href="{{ path('deputy-add', {'orderId': order.id}) }}" class="bold-small action-link"><span
-                class="icon icon-plus"></span>
-        Add a deputy
-    </a>
+    <h2 class="govuk-heading-m">Order documents</h2>
+    <p>Attach the documents listed below and any other relevant documents.</p>
 
-    <h2 class="heading-medium">Order documents</h2>
-
-    <div class="text push--top">
-        <p>Attach the documents listed below and any other relevant documents.</p>
-    </div>
-
-    <table class="documents-table check-your-answers push--bottom">
-        <thead>
-        <tr>
-            <th scope="col" class="width-third">Document</th>
-            <th scope="col" class="width-half">Status</th>
-            <th scope="col" class="width-fifth align-right"></th>
-        </tr>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr>
+                <th scope="col" class="govuk-table__header">Document</th>
+                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
         </thead>
-        <tbody>
+
+        <tbody class="govuk-table__body">
         {% for docType in order.expectedDocuments %}
             {% set doc = order.getDocumentsByType(docType) | first %}
-            <tr>
-                <td>{{ ('document.type.' ~ docType) | trans }}</td>
-                <td>
+
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
+                <td class="govuk-table__cell">
                     {% if doc | length %}
                         Uploaded
                     {% else %}
                         Required
                     {% endif %}
                 </td>
-                <td class="align-right">
+                <td class="govuk-table__cell">
                     <a href="{{
                         doc | length ?
                         path('document-remove', {'orderId': order.id, 'id': doc.id})
@@ -147,50 +153,51 @@
                     }}"
                        class="bold-small action-link right">
                         {% if doc | length %}
-                        <span class=""></span>Remove
+                            Remove
                         {% else %}
-                        <span class=""></span>Add document
+                            Add document
                         {% endif %}
                     </a>
-
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <h2 class="heading-small push--bottom-half">Other relevant documents</h2>
+    <h3 class="govuk-heading-s">Other relevant documents</h3>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
     {% if otherDocs | length %}
-    <table class="check-your-answers push--bottom">
-        <thead>
-        <tr><th>File name</th>
-            <th>Date attached</th>
-            <th><span class="visually-hidden">Actions</span></th>
-        </tr></thead>
-        <tbody class="behat-region-document-list">
-        {% for doc in otherDocs %}
-            <tr>
-                <td>
-                    {{ doc.file }}
-                </td>
-                <td class="numeric-small">29 March 2018 18:13</td>
-                <td class="change-answer width-sixth soft-half--left">
-                    <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button action-link">Remove</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr>
+                    <th scope="col" class="govuk-table__header">File name</th>
+                    <th scope="col" class="govuk-table__header">Date attached</th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
+            </thead>
+
+            <tbody class="govuk-table__body behat-region-document-list">
+            {% for doc in otherDocs %}
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ doc.file }}</td>
+                    <td class="govuk-table__cell">29 March 2018 18:13</td>
+                    <td class="govuk-table__cell">
+                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link">Remove</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 
 
 
-    <div class="text push--bottom">
+    <p>
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="bold-small action-link"><span class="icon icon-plus"></span>Add additional document</a>
-    </div>
+           class="govuk-link"><span class="icon icon-plus">+</span> Add additional document</a>
+    </p>
 
     <br/>
     <br/>
@@ -198,15 +205,13 @@
     {% if order.readyToServe %}
         <a class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
     {% else %}
-    <div class="alert-info panel panel-border-narrow text">
-        <span class="icon icon-information"></span>
-        <div class="alert-message">
-
-            <p>To continue, please add one or more deputies and upload all the required order documents.</p>
-
+        <div class="govuk-alert govuk-alert--info">
+            <span class="govuk-icon govuk-icon--info"></span>
+            <div class="govuk-alert__message">
+                <p>To continue, please add one or more deputies and upload all the required order documents.</p>
+            </div>
         </div>
-    </div>
-    <button class="govuk-button" disabled="disabled">Continue</button>
+        <button class="govuk-button" disabled="disabled">Continue</button>
     {% endif %}
 
 {% endblock %}
