@@ -14,15 +14,9 @@
             <ul class="govuk-list govuk-error-summary__list">
                 {% if errors is not empty %}
                     {% for error in errors %}
-                        <li>{{ error.message }}</li>
+                        <li><a href="#">{{ error.message }}</a></li>
                     {% endfor %}
                 {% endif %}
-          <li>
-            <a href="#dob-error">Date of birth must be in the past</a>
-          </li>
-          <li>
-            <a href="#postcode-error">Enter a postcode, like AA1 1AA</a>
-          </li>
         </ul>
       </div>
     </div>
