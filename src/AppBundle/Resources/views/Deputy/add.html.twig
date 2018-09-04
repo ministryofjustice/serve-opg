@@ -7,6 +7,9 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+                {% for error in errors %}
+                <li>{{ error.message }}</li>
+            {% endfor %}
             {{ form_start(form) }}
             {{ form_widget(form) }}
             {{ form_end(form) }}

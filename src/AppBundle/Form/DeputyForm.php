@@ -69,16 +69,15 @@ class DeputyForm extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-
-
         $resolver->setDefaults(array(
             'data_class' => Deputy::class,
             'validation_groups' => function (FormInterface $form) {
-                $data = $form->getData();
+
                 /* @var $data \AppBundle\Entity\Deputy */
+                $data = $form->getData();
                 $validationGroups = ['order-deputy'];
 
-                if ($data->getDeputyType() !== Deputy::DEPUTY_TYPE_LAY) {
+                if (in_array($data->getDeputyType(), [Deputy::DEPUTY_TYPE_PA, Deputy::DEPUTY_TYPE_PROF])) {
                     $validationGroups[] = 'order-org-deputy';
                 }
 
