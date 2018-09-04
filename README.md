@@ -14,11 +14,6 @@ Software to download and install
 ## Build
 Launch all the following commands from the project directory
 ```bash
-
-# Local environment only: set docker-compose to use docker-compose.local.yml
-# (directories mount for local development)
-echo "COMPOSE_FILE=docker-compose.local.yml" > .env
-
 # Vendor php dependencies
 docker-compose run --rm composer
 
