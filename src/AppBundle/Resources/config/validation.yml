@@ -4,7 +4,7 @@ AppBundle\Entity\Deputy:
         deputyType:
             - Type: string
             - NotBlank:
-                message: "Please select a deputy type."
+                message: form-error-deputyType
                 groups: [order-deputy]
         organisationName:
             - Type: string

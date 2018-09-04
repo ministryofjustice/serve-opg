@@ -14,7 +14,7 @@
             <ul class="govuk-list govuk-error-summary__list">
                 {% if errors is not empty %}
                     {% for error in errors %}
-                        <li><a href="#">{{ error.message }}</a></li>
+                        <li><a href="#{{ error.messageTemplate }}">{{ error.message }}</a></li>
                     {% endfor %}
                 {% endif %}
         </ul>
