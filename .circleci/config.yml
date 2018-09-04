@@ -37,15 +37,11 @@ jobs:
           name: Integration Test
           command: |
             docker-compose up --build -d web
+            export WAITFORIT_VERSION="v2.2.1"
+            wget -q -O /home/circleci/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64
+            chmod +x /home/circleci/bin/waitforit
+            waitforit -address=http://localhost:8888 -timeout=60
             docker-compose run --rm behat
-
-#      - run:
-#          name: Integration Test
-#            export WAITFORIT_VERSION="v2.2.1"
-#            wget -q -O /home/circleci/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64
-#            chmod +x /home/circleci/bin/waitforit
-#            waitforit -address=http://localhost:8888 -timeout=20
-
 
   build:
     machine: true
