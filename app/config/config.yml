@@ -18,7 +18,6 @@ framework:
     templating:
         engines: ['twig']
     default_locale:  "en"
-    trusted_proxies: ~
     session:
       name: digideps
       handler_id: dynamo_session_handler

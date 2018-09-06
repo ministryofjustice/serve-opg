@@ -2,13 +2,21 @@
 version: '3'
 
 services:
+  loadbalancer:
+    image: jwilder/nginx-proxy
+    ports:
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./docker/loadbalancer/certs:/etc/nginx/certs
+    depends_on:
+      - web
+
   web:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:latest
-    ports:
-      - 8888:80
     volumes:
       - ./web/assets:/var/www/web/assets
     depends_on:
@@ -16,6 +24,8 @@ services:
     environment:
       APP_HOST: app
       APP_PORT: 9000
+      NGINX_LOG_LEVEL: warn
+      VIRTUAL_HOST: web
 
   app:
     build:
