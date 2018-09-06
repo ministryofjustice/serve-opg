@@ -122,6 +122,12 @@ class Document
         return $this;
     }
 
-
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
 
 }
