@@ -4,15 +4,6 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run:
-          name: Build Docker-compose file
-          command: |
-            # Get the spruce tool (https://github.com/geofffranks/spruce) so that
-            # We can remove the metadata service
-            wget https://github.com/geofffranks/spruce/releases/download/v1.18.1/spruce-linux-amd64 -O  ~/bin/spruce
-            chmod +x ~/bin/spruce
-            spruce merge docker-compose.yml ci.spruce.yml > docker-compose.yaml
-            mv docker-compose.yaml docker-compose.yml
       - restore_cache:
           keys:
             - dependencies-v1
@@ -33,28 +24,18 @@ jobs:
           name: Unit Test
           command: |
             docker-compose run --rm phpunit
-#      - run:
-#          name: Integration Test
-#            export WAITFORIT_VERSION="v2.2.1"
-#            wget -q -O /home/circleci/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64
-#            chmod +x /home/circleci/bin/waitforit
-#            waitforit -address=http://localhost:8888 -timeout=20
-#            docker-compose run --rm app php app/console doctrine:fixtures:load --append
-#            docker-compose run --rm behat
+      - run:
+          name: Integration Test
+          command: |
+            docker-compose up --build -d web
+            docker-compose run --rm waitforit -address=http://web
+            docker-compose run --rm app php app/console doctrine:fixtures:load --append
+            docker-compose run --rm behat
 
   build:
     machine: true
     steps:
       - checkout
-      - run:
-          name: Build Docker-compose file
-          command: |
-            # Get the spruce tool (https://github.com/geofffranks/spruce) so that
-            # We can remove the metadata service
-            wget https://github.com/geofffranks/spruce/releases/download/v1.18.1/spruce-linux-amd64 -O  ~/bin/spruce
-            chmod +x ~/bin/spruce
-            spruce merge docker-compose.yml ci.spruce.yml > docker-compose.yaml
-            mv docker-compose.yaml docker-compose.yml
       - run:
           name: Build
           command: |

@@ -1,9 +1,0 @@
----
-networks: (( prune ))
-services:
-  app:
-    networks:
-      - (( delete "link-local" ))
-    depends_on:
-      - (( delete "metadata" ))
-  metadata: (( prune ))

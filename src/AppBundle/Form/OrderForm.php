@@ -15,10 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class OrderForm extends AbstractType
 {
-    const HAS_ASSETS_TRANS_PREFIX = 'order.hasAssets.';
-    const SUBTYPE_TRANS_PREFIX = 'order.subType.';
-    const APPOINTMENT_TYPE_TRANS_PREFIX = 'order.appointmentType.';
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['show_assets_question']) {
@@ -28,9 +24,8 @@ class OrderForm extends AbstractType
                     'required' => false,
                     'choices' => [
                         'pleaseSelect' => '',
-                        self::HAS_ASSETS_TRANS_PREFIX . Order::HAS_ASSETS_NA => Order::HAS_ASSETS_NA,
-                        self::HAS_ASSETS_TRANS_PREFIX . Order::HAS_ASSETS_YES => Order::HAS_ASSETS_YES,
-                        self::HAS_ASSETS_TRANS_PREFIX . Order::HAS_ASSETS_NO => Order::HAS_ASSETS_NO,
+                        'order.hasAssets.yes'  => Order::HAS_ASSETS_YES,
+                        'order.hasAssets.no' => Order::HAS_ASSETS_NO,
                     ]
                 ]);
         }
@@ -39,12 +34,12 @@ class OrderForm extends AbstractType
             'required' => false,
             'choices' => [
                 'pleaseSelect' => '',
-                self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_NEW => Order::SUBTYPE_NEW,
-                self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_REPLACEMENT => Order::SUBTYPE_REPLACEMENT,
-                self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_INTERIM_ORDER => Order::SUBTYPE_INTERIM_ORDER,
-                self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_TRUSTEE => Order::SUBTYPE_TRUSTEE,
-                self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_VARIATION => Order::SUBTYPE_VARIATION,
-                self::SUBTYPE_TRANS_PREFIX . Order::SUBTYPE_DIRECTION => Order::SUBTYPE_DIRECTION
+                'order.subType.direction' => Order::SUBTYPE_DIRECTION,
+                'order.subType.interim-order' => Order::SUBTYPE_INTERIM_ORDER,
+                'order.subType.new' => Order::SUBTYPE_NEW,
+                'order.subType.replacement' => Order::SUBTYPE_REPLACEMENT,
+                'order.subType.trustee' => Order::SUBTYPE_TRUSTEE,
+                'order.subType.variation' => Order::SUBTYPE_VARIATION,
             ]
         ])
             ->add('appointmentType', ChoiceType::class, [
@@ -52,9 +47,9 @@ class OrderForm extends AbstractType
                 'required' => false,
                 'choices' => [
                     'pleaseSelect' => '',
-                    self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_SOLE => Order::APPOINTMENT_TYPE_SOLE,
-                    self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_JOINT => Order::APPOINTMENT_TYPE_JOINT,
-                    self::APPOINTMENT_TYPE_TRANS_PREFIX . Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
+                    'order.appointmentType.sole' => Order::APPOINTMENT_TYPE_SOLE,
+                    'order.appointmentType.joint' => Order::APPOINTMENT_TYPE_JOINT,
+                    'order.appointmentType.js' => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
                 ]
             ])
             ->add('submit', SubmitType::class, ['label' => 'Save and continue']);
