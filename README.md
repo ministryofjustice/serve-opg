@@ -35,7 +35,7 @@ docker-compose logs -f
 ```
 
 The app will be available locally at:
-> [http://localhost:8888](http://localhost:8888/)
+> [https://localhost:8888](https://localhost:8888/)
 
 # Testing
 DigiCOP uses PHPUnit and Behats to test the application
