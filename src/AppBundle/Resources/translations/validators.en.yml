@@ -1,5 +1,1 @@
 # appBundle/Resources/translations/validators.en.yml
-
-
-order:
-  emptyMessage: Please choose an option

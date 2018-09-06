@@ -4,17 +4,17 @@ AppBundle\Entity\Order:
     hasAssetsAboveThreshold:
     - Type: string
     - NotBlank:
-        message: order.emptyMessage
+        message: "Please choose 'Yes' or 'No'"
         groups: [order-has-assets]
     subType:
     - Type: string
     - NotBlank:
-        message: order.emptyMessage
+        message: "Please choose the order subtype"
         groups: [order-subtype]
     appointmentType:
     - Type: string
     - NotBlank:
-        message: order.emptyMessage
+        message: "Please choose the appointment type"
         groups: [appointment-type]
 
 
