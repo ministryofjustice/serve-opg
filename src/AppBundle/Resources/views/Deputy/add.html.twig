@@ -3,7 +3,10 @@
 {% import 'AppBundle:Macros:_macros.html.twig' as macro %}
 
 {% block htmlTitle %}Add deputy{% endblock %}
-{% block pageTitle %}Add deputy{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">Add deputy</h1>
+{% endblock %}
+
 
 {% block validationSummary %}
     {% if errors %}{{ macro.errorSummary(errors) }}{% endif %}
