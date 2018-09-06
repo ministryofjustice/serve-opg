@@ -1,7 +1,10 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
-{% block htmlTitle %}Create Order{% endblock %}
-{% block pageTitle %}Property and finance order summary{% endblock %}
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} summary{% endblock %}
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} summary</h1>
+{% endblock %}
 
 {% block content %}
     <h2 class="govuk-heading-m">Order details</h2>
@@ -27,8 +30,8 @@
                         {{ ('order.hasAssets.' ~ order.hasAssetsAboveThreshold) | trans }}
                     {% endif %}
                 </td>
-                <td class="govuk-table__cell">
-                    <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link">Edit</a>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">Edit</a>
                 </td>
             </tr>
         {% endif %}
@@ -40,8 +43,8 @@
                     {{ ('order.subType.' ~ order.subType) | trans }}
                 {% endif %}
             </td>
-            <td class="govuk-table__cell">
-                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link">Edit</a>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">Edit</a>
             </td>
         </tr>
 
@@ -54,8 +57,8 @@
                     {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
                 {% endif %}
             </td>
-            <td class="govuk-table__cell">
-                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link">Edit</a>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">Edit</a>
             </td>
         </tr>
 
@@ -67,53 +70,49 @@
 
     <h2 class="govuk-heading-m">Deputies</h2>
 
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-            <tr>
-                <th scope="col" class="govuk-table__header">Deputy 1</th>
-                <th scope="col" class="govuk-table__header">
-                    <a href="#">Edit</a>
-                    <a href="#">Remove</a>
-                </th>
-            </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        {% if order.deputies | length %}
-            {% for deputy in order.deputies %}
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">Name</th>
-                    <td class="govuk-table__cell">{{ deputy.fullname }}</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">Email address</th>
-                    <td class="govuk-table__cell">{{ deputy.emailAddress }}</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">Deputy type</th>
-                    <td class="govuk-table__cell">{{ deputy.deputyType }}</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">Organisation</th>
-                    <td class="govuk-table__cell">{{ deputy.organisationName }}</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">Address</th>
-                    <td class="govuk-table__cell">{{ deputy.addressFormatted }}</td>
-                </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="8">No deputies added</td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
+    {% if order.deputies | length %}
+        {% for deputy in order.deputies %}
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr>
+                        <th scope="col" class="govuk-table__header">Deputy {{ loop.index }}</th>
+                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">
+                            <a href="#" class="govuk-!-margin-right-3">Edit</a>
+                            <a href="#">Remove</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Name</td>
+                            <td class="govuk-table__cell">{{ deputy.fullname }}</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Email address</td>
+                            <td class="govuk-table__cell">{{ deputy.emailAddress }}</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Deputy type</td>
+                            <td class="govuk-table__cell">{{ deputy.deputyType }}</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Organisation</td>
+                            <td class="govuk-table__cell">{{ deputy.organisationName }}</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Address</td>
+                            <td class="govuk-table__cell">{{ deputy.addressFormatted }}</td>
+                        </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+    {% else %}
+        <p>Add the details of each deputy named on the order.</p>
+    {% endif %}
 
-    <p>Add the details of each deputy named on the order.</p>
     <p>
-        <a href="{{ path('deputy-add', {'orderId': order.id}) }}" class="govuk-link">
-            <span class="icon icon-plus">+</span>
-            Add a deputy
+        <a href="{{ path('deputy-add', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">
+            <span class="govuk-icon govuk-icon--plus"></span>Add a deputy
         </a>
     </p>
 
@@ -145,17 +144,17 @@
                         Required
                     {% endif %}
                 </td>
-                <td class="govuk-table__cell">
+                <td class="govuk-table__cell govuk-table__cell--numeric">
                     <a href="{{
                         doc | length ?
                         path('document-remove', {'orderId': order.id, 'id': doc.id})
                         : path('document-add', {'orderId': order.id, 'docType': docType})
                     }}"
-                       class="bold-small action-link right">
+                       class="govuk-link govuk-!-font-weight-bold">
                         {% if doc | length %}
                             Remove
                         {% else %}
-                            Add document
+                            <span class="govuk-icon govuk-icon--plus"></span>Add document
                         {% endif %}
                     </a>
                 </td>
@@ -182,9 +181,9 @@
             {% for doc in otherDocs %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">{{ doc.file }}</td>
-                    <td class="govuk-table__cell">29 March 2018 18:13</td>
-                    <td class="govuk-table__cell">
-                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link">Remove</a>
+                    <td class="govuk-table__cell"><span class="debug-highlight">29 March 2018 18:13</span></td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -194,14 +193,13 @@
 
 
 
-    <p>
+    <p class="govuk-!-margin-bottom-9">
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="govuk-link"><span class="icon icon-plus">+</span> Add additional document</a>
+           class="govuk-link govuk-!-font-weight-bold">
+           <span class="govuk-icon govuk-icon--plus"></span>Add additional document
+       </a>
     </p>
 
-    <br/>
-    <br/>
-    <br/>
     {% if order.readyToServe %}
         <a class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
     {% else %}
