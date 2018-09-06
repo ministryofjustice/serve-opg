@@ -1,8 +1,11 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 
-{% block htmlTitle %}Create Order{% endblock %}
-{% block pageTitle %}Create Order{% endblock %}
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} details{% endblock %}
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} details</h1>
+{% endblock %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -11,14 +14,6 @@
             {{ form_widget(form) }}
             {{ form_end(form) }}
         </div>
-
-        <div class="govuk-grid-column-one-third">
-            <p class="govuk-body"><strong>Case number:</strong><br> {{ order.client.caseNumber }}</p>
-            <p class="govuk-body"><strong>Client:</strong><br>{{ order.client.clientName }}</p>
-        </div>
     </div>
-
-
-    <a href-
 
 {% endblock %}
