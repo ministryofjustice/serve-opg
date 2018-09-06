@@ -40,6 +40,7 @@
                         <th class="govuk-table__header" scope="col">Client</th>
                         {% if filter == 'pending' %}
                             <th class="govuk-table__header" scope="col">Order date</th>
+                            <th class="govuk-table__header" scope="col">Order issued</th>
                         {% else %}
                             <th class="govuk-table__header" scope="col">Date served</th>
                             <th class="govuk-table__header" scope="col">Documents</th>
@@ -56,21 +57,23 @@
                                 </a>
                             </td>
                             <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>
-                            <td class="govuk-table__cell">
-                                {{ client.clientName }}
+                            <td class="govuk-table__cell">{{ client.clientName }}</td>
                             {% if filter == 'pending' %}
-                                </td><td class="govuk-table__cell">
+                                <td class="govuk-table__cell">
                                     {{ order.createdAt | date('j/m/Y') }}
                                 </td>
-                            {% else %}
-                                </td><td class="govuk-table__cell">
-                                {{ order.servedAt | date('j/m/Y') }}
+                                <td class="govuk-table__cell">
+                                    issued date
                                 </td>
-                                </td><td class="govuk-table__cell">
-                                {% for d in order.documents %}
-                                    {{ d.file }},
-                                {% endfor %}
-                            </td>
+                            {% else %}
+                                <td class="govuk-table__cell">
+                                    {{ order.servedAt | date('j/m/Y') }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    {% for d in order.documents %}
+                                        {{ d.file }},
+                                    {% endfor %}
+                                </td>
                             {% endif %}
                         </tr>
                     {% endfor %}
