@@ -67,4 +67,15 @@
         background-image: govuk-image-url("icons/icon-loader.gif");
         background-size: contain;
     }
+
+    .govuk-icon--plus {
+        @include icon(icon-plus, 22, 22, 'icons');
+        position: relative;
+        top: 3px;
+        margin-right: 5px;
+        background-size: contain;
+        a:hover & {
+            opacity: .7;
+        }
+    }
 }

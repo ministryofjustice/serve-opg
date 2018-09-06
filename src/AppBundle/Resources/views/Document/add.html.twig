@@ -1,7 +1,9 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
 {% block htmlTitle %} Attach {{ docType | upper }}{% endblock %}
-{% block pageTitle %} Attach {{ docType | upper }}{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">Attach {{ docType | upper }}</h1>
+{% endblock %}
 
 {% block content %}
 
