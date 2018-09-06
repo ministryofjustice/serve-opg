@@ -1,8 +1,10 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 
+{# biggs to add this to the template #}
+{% block supportTitle %}{{ order.client.caseNumber }}: {{ order.client.clientName }}{% endblock %}
 {% block htmlTitle %}Create Order{% endblock %}
-{% block pageTitle %}Create Order{% endblock %}
+{% block pageTitle %}{{ ('order.' ~ order.type) | trans }} details{% endblock %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -17,8 +19,5 @@
             <p class="govuk-body"><strong>Client:</strong><br>{{ order.client.clientName }}</p>
         </div>
     </div>
-
-
-    <a href-
 
 {% endblock %}
