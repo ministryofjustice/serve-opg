@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class FeatureContext extends MinkContext implements KernelAwareContext
 {
     use RegionTrait;
+    use FormTrait;
 
     /**
      * @var EntityManager
