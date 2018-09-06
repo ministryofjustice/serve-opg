@@ -4,9 +4,9 @@ openssl req \
     -newkey rsa:4096 \
     -x509 \
     -nodes \
-    -keyout docker/loadbalancer/certs/web.key \
+    -keyout certs/web.key \
     -new \
-    -out docker/loadbalancer/certs/web.crt \
+    -out certs/web.crt \
     -subj /CN=\localhost \
     -reqexts SAN \
     -extensions SAN \
@@ -15,4 +15,5 @@ openssl req \
     -sha256 \
     -days 3650
 
-sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain docker/loadbalancer/certs/web.crt
+printf "\n\nAdding certificates to your trusted certs store...\n"
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain certs/web.crt
