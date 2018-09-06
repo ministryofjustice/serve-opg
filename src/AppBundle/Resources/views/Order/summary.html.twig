@@ -168,6 +168,8 @@
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
     {% if otherDocs | length %}
 
+        <h2 class="govuk-heading-m">Attached documents</h2>
+
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr>
