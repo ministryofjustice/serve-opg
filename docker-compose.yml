@@ -11,8 +11,7 @@ services:
       - ./docker/loadbalancer/certs:/etc/nginx/certs
     depends_on:
       - web
-    environment:
-      DEFAULT_HOST: web
+
   web:
     build:
       context: .
@@ -25,7 +24,7 @@ services:
     environment:
       APP_HOST: app
       APP_PORT: 9000
-      NGINX_LOG_LEVEL: debug
+      NGINX_LOG_LEVEL: warn
       VIRTUAL_HOST: web
 
   app:
