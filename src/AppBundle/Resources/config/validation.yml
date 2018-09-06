@@ -4,17 +4,17 @@ AppBundle\Entity\Order:
     hasAssetsAboveThreshold:
     - Type: string
     - NotBlank:
-        message: "Please select an option"
+        message: order.emptyMessage
         groups: [order-has-assets]
     subType:
     - Type: string
     - NotBlank:
-        message: "Please select an option"
+        message: order.emptyMessage
         groups: [order-subtype]
     appointmentType:
     - Type: string
     - NotBlank:
-        message: "Please select an option"
+        message: order.emptyMessage
         groups: [appointment-type]
 
 
