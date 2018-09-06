@@ -44,6 +44,7 @@ class DeputyController extends Controller
      */
     public function addAction(Request $request, $orderId)
     {
+        $errors = [];
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
         $deputy = new Deputy($order);
@@ -53,20 +54,31 @@ class DeputyController extends Controller
 
         $buttonClicked = $form->getClickedButton();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $order->addDeputy($deputy);
-            $this->em->persist($deputy);
-            $this->em->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $order->addDeputy($deputy);
+                $this->em->persist($deputy);
+                $this->em->flush();
 
-            if ($buttonClicked->getName() == 'saveAndAddAnother') {
-                return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
+                if ($buttonClicked->getName() == 'saveAndAddAnother') {
+                    return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
+                } else {
+                    return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+                }
             } else {
-                return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+                $validator = $this->get('validator');
+
+                $validationGroups = ['order-deputy'];
+                if (in_array($deputy->getDeputyType(), [Deputy::DEPUTY_TYPE_PA, Deputy::DEPUTY_TYPE_PROF])) {
+                    $validationGroups = ['order-deputy', 'order-org-deputy'];
+                }
+                $errors = $validator->validate($deputy, null, $validationGroups);
             }
         }
 
         return $this->render('AppBundle:Deputy:add.html.twig', [
             'client' => $order->getClient(),
+            'errors' => $errors,
             'order' => $order,
             'form'=>$form->createView()
         ]);
