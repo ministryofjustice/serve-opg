@@ -1,17 +1,21 @@
 
-{% macro errorSummary(errors) %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-                {% if errors is not empty %}
+
+
+{% macro errorSummary(form) %}
+    {% set errors = form.vars.errors.form.getErrors(true) %}
+    {% if errors | length %}
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
                     {% for error in errors %}
-                        <li><a href="#form-group-{{ error.propertyPath }}">{{ error.message }}</a></li>
+                        {% set elementPath =  error.cause.propertyPath | replace({'data.': ''}) %}
+                        <li><a href="#form-group-{{ elementPath }}">{{ error.message }}</a></li>
                     {% endfor %}
-                {% endif %}
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endmacro %}

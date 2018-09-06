@@ -9,7 +9,7 @@
 
 
 {% block validationSummary %}
-    {% if errors %}{{ macro.errorSummary(errors) }}{% endif %}
+    {{ macro.errorSummary(form) }}
 {% endblock %}
 
 {% block content %}
