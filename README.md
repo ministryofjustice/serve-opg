@@ -15,8 +15,12 @@ Software to download and install
 Launch all the following commands from the project directory
 ```bash
 
-# Generate and trust the self-signed certificate for the load balancer
+# Generate self-signed certificate for the local loadbalancer
 ./generate_certs.sh
+
+# Add certificate to your local trust store to avoid browser warnings
+sudo security add-trusted-cert -d -r trustRoot \
+-k /Library/Keychains/System.keychain certs/web.crt
 
 # Vendor php dependencies
 docker-compose run --rm composer
