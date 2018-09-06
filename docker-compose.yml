@@ -1,12 +1,6 @@
 ---
 version: '3'
 
-networks:
-  link-local:
-    ipam:
-      config:
-      - subnet: 169.254.0.0/16
-
 services:
   web:
     build:
@@ -15,6 +9,8 @@ services:
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:latest
     ports:
       - 8888:80
+    volumes:
+      - ./web/assets:/var/www/web/assets
     depends_on:
       - app
     environment:
@@ -28,14 +24,16 @@ services:
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/app:latest
     ports:
       - 9000:9000
-    networks:
-      - default
-      - link-local
     depends_on:
       - dynamodb
       - postgres
-      - metadata
+    volumes:
+      - ./app:/var/www/app:ro
+      - ./src:/var/www/src:ro
+      - ./web/assets:/var/www/web/assets
     environment:
+      AWS_ACCESS_KEY_ID: foo
+      AWS_SECRET_ACCESS_KEY: bar
       DYNAMODB_ENDPOINT: http://dynamodb:8000
       DC_SYMFONY_SECRET: dc2018!
       DC_DB_HOST: postgres
@@ -81,6 +79,8 @@ services:
 
   npm:
     image: node
+    environment:
+      PATH: "/app/node_modules/.bin:$PATH"
     working_dir: /app
     volumes:
       - .:/app
@@ -93,6 +93,8 @@ services:
     working_dir: /app
     entrypoint: bin/behat
     command: -c tests/behat/behat.yml
+    depends_on:
+      - web
     environment:
       DC_SYMFONY_SECRET: dc2018!
       DC_DB_HOST: postgres
@@ -126,13 +128,10 @@ services:
   qa:
     image: jakzal/phpqa:alpine
     volumes:
-      - .:/app
+      - .:/app:ro
     working_dir: /app
 
-  metadata:
-    image: bpholt/fake-ec2-metadata-service
-    volumes:
-      - ./docker/metadata/opt/aws:/opt/aws
-    networks:
-      link-local:
-        ipv4_address: 169.254.169.254
+  waitforit:
+    build:
+      context: .
+      dockerfile: docker/waitforit/Dockerfile

@@ -53,6 +53,7 @@
     },
     "require-dev": {
         "phpstan/phpstan-symfony": "^0.10.0",
-        "symfony/var-dumper": "^4.1"
+        "symfony/var-dumper": "^4.1",
+        "egulias/email-validator": "^1.2.8|~2.0"
     }
 }
