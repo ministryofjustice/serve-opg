@@ -1,4 +1,23 @@
 # src/AppBundle/Resources/config/validation.yml
+AppBundle\Entity\Order:
+  properties:
+    hasAssetsAboveThreshold:
+    - Type: string
+    - NotBlank:
+        message: "Please select an option"
+        groups: [order-has-assets]
+    subType:
+    - Type: string
+    - NotBlank:
+        message: "Please select an option"
+        groups: [order-subtype]
+    appointmentType:
+    - Type: string
+    - NotBlank:
+        message: "Please select an option"
+        groups: [appointment-type]
+
+
 AppBundle\Entity\Deputy:
     properties:
         deputyType:

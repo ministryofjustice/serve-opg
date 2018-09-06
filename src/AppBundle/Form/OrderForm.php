@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderPa;
 use AppBundle\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -60,6 +62,15 @@ class OrderForm extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => Order::class,
             'show_assets_question' => true,
+            'validation_groups' => function (FormInterface $form) {
+                /* @var $data \AppBundle\Entity\Order */
+
+                return array_filter([
+                    $form->getData() instanceof OrderPa ? 'order-has-assets' : null,
+                    'order-subtype',
+                    'appointment-type'
+                ]);
+            }
         ));
     }
 }
