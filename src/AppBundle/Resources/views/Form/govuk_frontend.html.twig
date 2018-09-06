@@ -4,7 +4,7 @@
 {# Form Row #}
 {% block form_row %}
     <p class="debug-label">Custom: form_row</p>
-    <div class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+    <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
         {{ form_label(form) }}
         {{ form_errors(form) }}
         {{ form_widget(form) }}

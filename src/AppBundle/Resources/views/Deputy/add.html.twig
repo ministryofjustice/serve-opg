@@ -1,26 +1,12 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
+{% import 'AppBundle:Macros:_macros.html.twig' as macro %}
 
 {% block htmlTitle %}Add deputy{% endblock %}
 {% block pageTitle %}Add deputy{% endblock %}
 
 {% block validationSummary %}
-    {% if errors %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-                {% if errors is not empty %}
-                    {% for error in errors %}
-                        <li><a href="#{{ error.messageTemplate }}">{{ error.message }}</a></li>
-                    {% endfor %}
-                {% endif %}
-        </ul>
-      </div>
-    </div>
-{% endif %}
+    {% if errors %}{{ macro.errorSummary(errors) }}{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -30,20 +16,6 @@
             {{ form_widget(form) }}
             {{ form_end(form) }}
         <a href="{{ path('order-summary', {'orderId': order.id}) }}">back to summary</a>
-        </div>
-
-        <div class="govuk-grid-column-one-third">
-            //TODO remove this ?
-            <p><strong>Case number</strong><br>{{ client.caseNumber }}</p>
-            <p><strong>Client</strong><br>{{ client.clientName }}</p>
-            <p><strong>Order ID</strong><br>id={{ order.id }}</p>
-            <p><strong>Order types</strong><br>
-                {#{% for t in order.types %}#}
-                    {#{{ t.type }} (id={{ t.id }}),#}
-                {#{% endfor %}#}
-            </p>
-            <p><strong>Order subtype</strong><br>{{ order.subType }}</p>
-            <p><strong>Bond or assets above £21,000?</strong><br>{{ order.hasAssetsAboveThreshold }}</p>
         </div>
     </div>
 {% endblock %}

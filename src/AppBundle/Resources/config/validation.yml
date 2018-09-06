@@ -4,81 +4,81 @@ AppBundle\Entity\Deputy:
         deputyType:
             - Type: string
             - NotBlank:
-                message: form-error-deputyType
+                message: "Please select a deputy type"
                 groups: [order-deputy]
         organisationName:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's organisation name."
+                message: "Please enter the deputy's organisation name"
                 groups: [order-org-deputy]
         forename:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's first name."
+                message: "Please enter the deputy's first name"
                 groups: [order-deputy]
         surname:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's surname."
+                message: "Please enter the deputy's surname"
                 groups: [order-deputy]
         emailAddress:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's email address."
+                message: "Please enter the deputy's email address"
                 groups: [order-deputy]
             - Email:
                 message: The email {{ value }} is not a valid email.
                 groups: [order-deputy]
             - Length:
                 max: 60
-                maxMessage: "The deputies email address is too long."
+                maxMessage: "The deputy's email address is too long"
                 min: 7
-                minMessage: "The deputies email address is too short."
+                minMessage: "The deputy's email address is too short"
                 groups: [order-deputy]
         contactNumber:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's contact number."
+                message: "Please enter the deputy's contact number"
                 groups: [order-deputy]
             - Length:
                 max: 20
-                maxMessage: "The deputies contact number is too long."
+                maxMessage: "The deputy's contact number is too long"
                 min: 10
-                minMessage: "The deputies contact number is too short."
+                minMessage: "The deputy's contact number is too short"
                 groups: [order-deputy]
         addressLine1:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's address line 1."
+                message: "Please enter the deputy's address line 1"
                 groups: [order-deputy]
         addressLine2:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's address line 2."
+                message: "Please enter the deputy's address line 2"
                 groups: [order-deputy]
         addressLine3:
             - Type: string
             - NotBlank:
-                message: "Please enter the deputy's address line 3."
+                message: "Please enter the deputy's address line 3"
                 groups: [order-deputy]
         addressTown:
             - Type: string
             - NotBlank:
-                message: "Please enter a town for the deputy's address."
+                message: "Please enter a town for the deputy's address"
                 groups: [order-deputy]
         addressCounty:
             - Type: string
             - NotBlank:
-                message: "Please enter a county for the deputy's address."
+                message: "Please enter a county for the deputy's address"
                 groups: [order-deputy]
         addressPostcode:
             - Type: string
             - NotBlank:
-                message: "Please enter a postcode for the deputy's address."
+                message: "Please enter a postcode for the deputy's address"
                 groups: [order-deputy]
             - Length:
                 min: 2
-                minMessage: "The deputies postcode is too short."
+                minMessage: "The deputy's postcode is too short"
                 max: 10
-                maxMessage: "The deputies postcode is too long."
+                maxMessage: "The deputy's postcode is too long"
                 groups: [order-deputy]
