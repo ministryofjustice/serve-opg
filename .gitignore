@@ -10,3 +10,5 @@ bootstrap.php.cache
 .env
 docker-compose.local.yml
 var
+**/*.crt
+**/*.key
