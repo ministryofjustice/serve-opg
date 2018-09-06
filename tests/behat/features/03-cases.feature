@@ -11,7 +11,17 @@ Feature: cases
     # click on case
     When I follow "order-12345678-pa"
     Then the response status code should be 200
-    # edit order
+    # check form validation
+    When I fill in the following:
+      | order_form_hasAssetsAboveThreshold |  |
+      | order_form_subType                 |  |
+      | order_form_appointmentType         |  |
+    And I press "order_form_submit"
+    Then the following fields should have an error:
+      | order_form_hasAssetsAboveThreshold |
+      | order_form_subType                 |
+      | order_form_appointmentType         |
+    # fill form in with valid data
     When I fill in the following:
       | order_form_hasAssetsAboveThreshold | no          |
       | order_form_subType                 | replacement |
@@ -34,7 +44,15 @@ Feature: cases
     # click on case
     When I follow "order-12345678-hw"
     Then the response status code should be 200
-    # edit order
+    # check form validation
+    When I fill in the following:
+      | order_form_subType                 |  |
+      | order_form_appointmentType         |  |
+    And I press "order_form_submit"
+    Then the following fields should have an error:
+      | order_form_subType                 |
+      | order_form_appointmentType         |
+    # fill form in with valid data
     When I fill in the following:
       | order_form_subType         | interim-order |
       | order_form_appointmentType | sole          |

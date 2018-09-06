@@ -92,6 +92,12 @@ docker-compose exec app rm /var/www/.enableProdMode
 ```
 
 
+# Launch specific behat feature
+comment out "entrypoint" and "command" in behat container
+docker-compose up behat
+docker-compose exec behat sh
+bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
+
 
 # Quality Analysis Tools
 The Docker image `jakzal/phpqa` contains many useful QA tools
