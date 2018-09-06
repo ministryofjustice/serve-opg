@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DeputyForm extends AbstractType
@@ -70,6 +71,18 @@ class DeputyForm extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Deputy::class,
+            'validation_groups' => function (FormInterface $form) {
+
+                /* @var $data \AppBundle\Entity\Deputy */
+                $data = $form->getData();
+                $validationGroups = ['order-deputy'];
+
+                if (in_array($data->getDeputyType(), [Deputy::DEPUTY_TYPE_PA, Deputy::DEPUTY_TYPE_PROF])) {
+                    $validationGroups[] = 'order-org-deputy';
+                }
+
+                return $validationGroups;
+            }
         ));
     }
 }
