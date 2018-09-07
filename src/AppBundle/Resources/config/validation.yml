@@ -30,6 +30,11 @@ AppBundle\Entity\Deputy:
             - NotBlank:
                 message: "Please enter the deputy's organisation name"
                 groups: [order-org-deputy]
+        correspondenceName:
+            - Type: string
+            - NotBlank:
+                message: "Please enter a correspondence name"
+                groups: [order-org-deputy]
         forename:
             - Type: string
             - NotBlank:
@@ -39,6 +44,10 @@ AppBundle\Entity\Deputy:
             - Type: string
             - NotBlank:
                 message: "Please enter the deputy's surname"
+                groups: [order-deputy]
+        dateOfBirth:
+            - Type: Date
+            - Date:
                 groups: [order-deputy]
         emailAddress:
             - Type: string

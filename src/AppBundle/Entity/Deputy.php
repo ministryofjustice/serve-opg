@@ -39,12 +39,22 @@ class Deputy
     /**
      * @var string
      */
+    private $correspondenceName;
+
+    /**
+     * @var string
+     */
     private $forename;
 
     /**
      * @var string
      */
     private $surname;
+
+    /**
+     * @var \DateTime
+     */
+    private $dateOfBirth;
 
     /**
      * @var string
@@ -243,6 +253,25 @@ class Deputy
     /**
      * @return string
      */
+    public function getCorrespondenceName()
+    {
+        return $this->correspondenceName;
+    }
+
+    /**
+     * @param string $correspondenceName
+     *
+     * @return Deputy
+     */
+    public function setCorrespondenceName($correspondenceName)
+    {
+        $this->correspondenceName = $correspondenceName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getForename()
     {
         return $this->forename;
@@ -284,6 +313,25 @@ class Deputy
     public function getFullname()
     {
         return $this->forename . ' ' . $this->surname;
+    }
+
+    /**
+     * @return \DateTime $dateOfBirth
+     */
+    public function getDateOfBirth()
+    {
+        return $this->dateOfBirth;
+    }
+
+    /**
+     * @param \DateTime $dateOfBirth
+     * @return $this
+     */
+    public function setDateOfBirth($dateOfBirth)
+    {
+        $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
     }
 
     /**

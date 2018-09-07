@@ -20,6 +20,10 @@ AppBundle\Entity\Deputy:
         column: surname
         type: string
         length: 50
+      dateOfBirth:
+        column: dob
+        type: date
+        nullable: true
       emailAddress:
         column: email_address
         type: string

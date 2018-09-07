@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,6 +29,9 @@ class DeputyForm extends AbstractType
                     'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
+            ->add('correspondenceName', TextType::class, [
+                'required' => false,
+            ])
             ->add('organisationName', TextType::class, [
                 'required' => false,
             ])
@@ -38,6 +42,15 @@ class DeputyForm extends AbstractType
             ->add('surname', TextType::class, [
                 'label' => 'Last name',
                 'required' => false
+            ])
+            ->add('dateOfBirth', BirthdayType::class, [
+                'label' => 'Date of birth   ',
+                'required' => false,
+                'placeholder' => array(
+                    'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
+                ),
+                'format' => 'yyyy-MM-dd',
+                'invalid_message' => 'Please enter a valid date of birth'
             ])
             ->add('emailAddress', TextType::class, [
                 'required' => false,
