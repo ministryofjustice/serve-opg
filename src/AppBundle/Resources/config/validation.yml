@@ -42,9 +42,9 @@ AppBundle\Entity\Deputy:
                 groups: [order-deputy]
         emailAddress:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's email address"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter the deputy's email address"
+#                groups: [order-deputy]
             - Email:
                 message: The email {{ value }} is not a valid email.
                 groups: [order-deputy]
@@ -80,34 +80,34 @@ AppBundle\Entity\Deputy:
                 groups: [order-deputy]
         addressLine1:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's address line 1"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter the deputy's address line 1"
+#                groups: [order-deputy]
         addressLine2:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's address line 2"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter the deputy's address line 2"
+#                groups: [order-deputy]
         addressLine3:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's address line 3"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter the deputy's address line 3"
+#                groups: [order-deputy]
         addressTown:
             - Type: string
-            - NotBlank:
-                message: "Please enter a town for the deputy's address"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter a town for the deputy's address"
+#                groups: [order-deputy]
         addressCounty:
             - Type: string
-            - NotBlank:
-                message: "Please enter a county for the deputy's address"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter a county for the deputy's address"
+#                groups: [order-deputy]
         addressPostcode:
             - Type: string
-            - NotBlank:
-                message: "Please enter a postcode for the deputy's address"
-                groups: [order-deputy]
+#            - NotBlank:
+#                message: "Please enter a postcode for the deputy's address"
+#                groups: [order-deputy]
             - Length:
                 min: 2
                 minMessage: "The deputy's postcode is too short"

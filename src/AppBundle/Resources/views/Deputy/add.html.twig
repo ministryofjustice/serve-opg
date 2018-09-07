@@ -2,9 +2,10 @@
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 {% import 'AppBundle:Macros:_macros.html.twig' as macro %}
 
-{% block htmlTitle %}Add deputy{% endblock %}
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} deputy details{% endblock %}
 {% block pageTitle %}
-    <h1 class="govuk-heading-xl">Add deputy</h1>
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }}: deputy details</h1>
 {% endblock %}
 
 
