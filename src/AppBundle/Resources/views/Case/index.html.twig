@@ -14,12 +14,13 @@
     {% endfor %}
 
     <div class="govuk-form-group">
-        <form>
+        <form method="GET" action="#">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-visually-hidden">Search</legend>
                 <label for="search" class="govuk-label">Search by client name or court order number</label>
-                <input type="text" id="search" class="govuk-input govuk-!-width-one-half">
-                <input class="govuk-button" type="submit" value="Search">
+                <input type="text" id="search" name="q" value="{{  filters.q }}" class="govuk-input govuk-!-width-one-half" />
+                <input type="hidden" name="type" value="{{  filters.type }}" />
+                <input class="govuk-button" type="submit" value="Search" />
             </fieldset>
         </form>
     </div>
@@ -29,12 +30,12 @@
             Contents
         </h2>
         <ul class="govuk-tabs__list">
-                <a class="govuk-tabs__tab" href="{{ path('case-list', {'filter': 'pending'}) }}" {% if filter == 'pending' %}aria-selected="true"{% endif %}>
+                <a class="govuk-tabs__tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
                     Pending ({{ counts.pending }})
                 </a>
             </li>
             <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="{{ path('case-list', {'filter': 'served'}) }}" {% if filter == 'served' %}aria-selected="true"{% endif %}>
+                <a class="govuk-tabs__tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
                     Served Recently ({{ counts.served }})
                 </a>
             </li>
@@ -48,7 +49,7 @@
                         <th class="govuk-table__header" scope="col">Case number</th>
                         <th class="govuk-table__header" scope="col">Order type</th>
                         <th class="govuk-table__header" scope="col">Client</th>
-                        {% if filter == 'pending' %}
+                        {% if filters.type == 'pending' %}
                             <th class="govuk-table__header" scope="col">Order date</th>
                             <th class="govuk-table__header" scope="col">Order issued</th>
                         {% else %}
@@ -68,7 +69,7 @@
                             </td>
                             <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>
                             <td class="govuk-table__cell">{{ client.clientName }}</td>
-                            {% if filter == 'pending' %}
+                            {% if filters.type == 'pending' %}
                                 <td class="govuk-table__cell">
                                     {{ order.createdAt | date('j/m/Y') }}
                                 </td>
