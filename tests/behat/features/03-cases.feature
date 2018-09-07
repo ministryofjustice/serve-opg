@@ -3,11 +3,7 @@ Feature: cases
   Scenario: PA
     Given I go to "/behat/case/empty/12345678/pa"
     And the response status code should be 200
-    And I go to "/login"
-    And I fill in the following:
-      | login_username | behat@digital.justice.gov.uk |
-      | login_password | Abcd1234                     |
-    And I press "login_submit"
+    And I am logged in as behat user
     # click on case
     When I follow "order-12345678-pa"
     Then the response status code should be 200
@@ -36,11 +32,7 @@ Feature: cases
   Scenario: HW
     Given I go to "/behat/case/empty/12345678/hw"
     And the response status code should be 200
-    And I go to "/login"
-    And I fill in the following:
-      | login_username | behat@digital.justice.gov.uk |
-      | login_password | Abcd1234                     |
-    And I press "login_submit"
+    And I am logged in as behat user
     # click on case
     When I follow "order-12345678-hw"
     Then the response status code should be 200
@@ -62,6 +54,9 @@ Feature: cases
     And each text should be present in the corresponding region:
       | Interim order | order-subtype |
       | Sole          | app-type      |
+
+  Scenario: search
+    Given I am logged in as behat user
 
 
 
