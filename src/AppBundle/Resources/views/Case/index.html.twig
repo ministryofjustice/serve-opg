@@ -19,12 +19,12 @@
             Contents
         </h2>
         <ul class="govuk-tabs__list">
-                <a class="govuk-tabs__tab" href="{{ path('case-list', {'filter': 'pending'}) }}" aria-selected="true">
+                <a class="govuk-tabs__tab" href="{{ path('case-list', {'filter': 'pending'}) }}" {% if filter == 'pending' %}aria-selected="true"{% endif %}>
                     Pending ({{ counts.pending }})
                 </a>
             </li>
             <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="{{ path('case-list', {'filter': 'served'}) }}">
+                <a class="govuk-tabs__tab" href="{{ path('case-list', {'filter': 'served'}) }}" {% if filter == 'served' %}aria-selected="true"{% endif %}>
                     Served Recently ({{ counts.served }})
                 </a>
             </li>
