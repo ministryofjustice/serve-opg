@@ -24,6 +24,7 @@ AppBundle\Entity\Deputy:
         column: email_address
         type: string
         length: 200
+        nullable: true
       daytimeContactNumber:
         column: daytime_contact_number
         type: string
@@ -48,22 +49,27 @@ AppBundle\Entity\Deputy:
         column: address_line_1
         type: string
         length: 50
+        nullable: true
       addressLine2:
         column: address_line_2
         type: string
         length: 50
+        nullable: true
       addressLine3:
         column: address_line_3
         type: string
         length: 50
+        nullable: true
       addressCounty:
         column: address_county
         type: string
         length: 50
+        nullable: true
       addressPostcode:
         column: address_postcode
         type: string
         length: 8
+        nullable: true
 #      addressCountry:
 #        column: address_country
 #        type: string
