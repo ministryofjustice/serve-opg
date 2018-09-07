@@ -2,9 +2,7 @@
 
 namespace AppBundle\Behat;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Order;
-use Behat\Gherkin\Node\TableNode;
+use AppBundle\Controller\BehatController;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Doctrine\ORM\EntityManager;
@@ -15,7 +13,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class FeatureContext extends MinkContext implements KernelAwareContext
 {
-    use RegionTrait;
+    use RegionLinksTrait;
     use FormTrait;
 
     /**
@@ -34,8 +32,8 @@ class FeatureContext extends MinkContext implements KernelAwareContext
     public function iAmLoggedInAsBehatUser()
     {
         $this->visit("/login");
-        $this->fillField('login_username', 'behat@digital.justice.gov.uk');
-        $this->fillField('login_password', 'Abcd1234');
+        $this->fillField('login_username', BehatController::BEHAT_EMAIL);
+        $this->fillField('login_password', BehatController::BEHAT_PASSWORD);
         $this->pressButton('login_submit');
     }
 

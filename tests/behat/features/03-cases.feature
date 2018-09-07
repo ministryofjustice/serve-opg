@@ -1,7 +1,7 @@
 Feature: cases
 
   Scenario: PA
-    Given I go to "/behat/case/empty/12345678/pa"
+    Given I go to "/behat/fixture-reset"
     And the response status code should be 200
     And I am logged in as behat user
     # click on case
@@ -30,7 +30,7 @@ Feature: cases
       | Joint and several                | app-type      |
 
   Scenario: HW
-    Given I go to "/behat/case/empty/12345678/hw"
+    Given I go to "/behat/fixture-reset"
     And the response status code should be 200
     And I am logged in as behat user
     # click on case
@@ -56,7 +56,25 @@ Feature: cases
       | Sole          | app-type      |
 
   Scenario: search
-    Given I am logged in as behat user
+    Given I go to "/behat/fixture-reset"
+    And I am logged in as behat user
+    # fake q
+    When I fill in "search" with "NOT EXISTING"
+    And I press "search_submit"
+    Then I should not see the "order-12345678-pa" region
+    And I should not see the "order-12345678-hw" region
+    # real search
+    When I fill in "q" with "12345678"
+    And I press "search_submit"
+    # served tab has no results
+    And I click on "served-tab"
+    Then I should not see the "order-12345678-pa" region
+    And I should not see the "order-12345678-hw" region
+    # pending tab has results
+    When I click on "pending-tab"
+    Then I should see the "order-12345678-pa" region
+    And I should see the "order-12345678-hw" region
+
 
 
 

@@ -14,13 +14,13 @@
     {% endfor %}
 
     <div class="govuk-form-group">
-        <form method="GET" action="#">
+        <form method="GET" action="{{ path(app.request.attributes.get('_route')) }}">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-visually-hidden">Search</legend>
                 <label for="search" class="govuk-label">Search by client name or court order number</label>
                 <input type="text" id="search" name="q" value="{{  filters.q }}" class="govuk-input govuk-!-width-one-half" />
                 <input type="hidden" name="type" value="{{  filters.type }}" />
-                <input class="govuk-button" type="submit" value="Search" />
+                <input class="govuk-button" type="submit" value="Search" id="search_submit" />
             </fieldset>
         </form>
     </div>
@@ -30,12 +30,12 @@
             Contents
         </h2>
         <ul class="govuk-tabs__list">
-                <a class="govuk-tabs__tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
+                <a class="govuk-tabs__tab behat-link-pending-tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
                     Pending ({{ counts.pending }})
                 </a>
             </li>
             <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
+                <a class="govuk-tabs__tab behat-link- behat-link-served-tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
                     Served Recently ({{ counts.served }})
                 </a>
             </li>
@@ -61,7 +61,7 @@
                 <tbody class="govuk-table__body">
                     {% for order in orders %}
                         {% set client = order.client %}
-                        <tr class="govuk-table__row">
+                        <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >
                             <td class="govuk-table__cell">
                                 <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                     {{ client.caseNumber }}
