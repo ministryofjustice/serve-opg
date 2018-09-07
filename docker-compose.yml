@@ -116,7 +116,7 @@ services:
         email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
         number=12345678&name=Behat User&type=both
-      BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://web"}}}'
+      BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
   phpunit:
     image: php:7.2-fpm-alpine
