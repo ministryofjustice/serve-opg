@@ -54,7 +54,17 @@ class Deputy
     /**
      * @var string
      */
-    private $contactNumber;
+    private $daytimeContactNumber;
+
+    /**
+     * @var string
+     */
+    private $eveningContactNumber;
+
+    /**
+     * @var string
+     */
+    private $mobileContactNumber;
 
     /**
      * @var string
@@ -162,6 +172,7 @@ class Deputy
 
     /**
      * @param int|null $id
+     *
      * @return Deputy
      */
     public function setId($id)
@@ -181,6 +192,7 @@ class Deputy
 
     /**
      * @param Order $order
+     *
      * @return Deputy
      */
     public function setOrder(Order $order)
@@ -200,10 +212,13 @@ class Deputy
 
     /**
      * @param null|string $deputyType
+     *
+     * @return Deputy
      */
     public function setDeputyType($deputyType)
     {
         $this->deputyType = $deputyType;
+        return $this;
     }
 
     /**
@@ -216,10 +231,13 @@ class Deputy
 
     /**
      * @param string $organisationName
+     *
+     * @return Deputy
      */
     public function setOrganisationName($organisationName)
     {
         $this->organisationName = $organisationName;
+        return $this;
     }
 
     /**
@@ -232,10 +250,13 @@ class Deputy
 
     /**
      * @param string $forename
+     *
+     * @return Deputy
      */
     public function setForename($forename)
     {
         $this->forename = $forename;
+        return $this;
     }
 
     /**
@@ -248,10 +269,13 @@ class Deputy
 
     /**
      * @param string $surname
+     *
+     * @return Deputy
      */
     public function setSurname($surname)
     {
         $this->surname = $surname;
+        return $this;
     }
 
     /**
@@ -272,26 +296,70 @@ class Deputy
 
     /**
      * @param string $emailAddress
+     *
+     * @return Deputy
      */
     public function setEmailAddress($emailAddress)
     {
         $this->emailAddress = $emailAddress;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getContactNumber()
+    public function getDaytimeContactNumber()
     {
-        return $this->contactNumber;
+        return $this->daytimeContactNumber;
     }
 
     /**
-     * @param string $contactNumber
+     * @param string $daytimeContactNumber
+     *
+     * @return Deputy
      */
-    public function setContactNumber($contactNumber)
+    public function setDaytimeContactNumber($daytimeContactNumber)
     {
-        $this->contactNumber = $contactNumber;
+        $this->daytimeContactNumber = $daytimeContactNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEveningContactNumber()
+    {
+        return $this->eveningContactNumber;
+    }
+
+    /**
+     * @param string $eveningContactNumber
+     *
+     * @return Deputy
+     */
+    public function setEveningContactNumber($eveningContactNumber)
+    {
+        $this->eveningContactNumber = $eveningContactNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMobileContactNumber()
+    {
+        return $this->mobileContactNumber;
+    }
+
+    /**
+     * @param string $mobileContactNumber
+     *
+     * @return Deputy
+     */
+    public function setMobileContactNumber($mobileContactNumber)
+    {
+        $this->mobileContactNumber = $mobileContactNumber;
+        return $this;
     }
 
     /**
@@ -304,10 +372,13 @@ class Deputy
 
     /**
      * @param string $addressLine1
+     *
+     * @return Deputy
      */
     public function setAddressLine1($addressLine1)
     {
         $this->addressLine1 = $addressLine1;
+        return $this;
     }
 
     /**
@@ -320,10 +391,13 @@ class Deputy
 
     /**
      * @param string $addressLine2
+     *
+     * @return Deputy
      */
     public function setAddressLine2($addressLine2)
     {
         $this->addressLine2 = $addressLine2;
+        return $this;
     }
 
     /**
@@ -336,10 +410,13 @@ class Deputy
 
     /**
      * @param string $addressLine3
+     *
+     * @return Deputy
      */
     public function setAddressLine3($addressLine3)
     {
         $this->addressLine3 = $addressLine3;
+        return $this;
     }
 
     /**
@@ -352,10 +429,13 @@ class Deputy
 
     /**
      * @param string $addressTown
+     *
+     * @return Deputy
      */
     public function setAddressTown($addressTown)
     {
         $this->addressTown = $addressTown;
+        return $this;
     }
 
     /**
@@ -368,10 +448,13 @@ class Deputy
 
     /**
      * @param string $addressCounty
+     *
+     * @return Deputy
      */
     public function setAddressCounty($addressCounty)
     {
         $this->addressCounty = $addressCounty;
+        return $this;
     }
 
     /**
@@ -384,10 +467,13 @@ class Deputy
 
     /**
      * @param string $addressPostcode
+     *
+     * @return Deputy
      */
     public function setAddressPostcode($addressPostcode)
     {
         $this->addressPostcode = $addressPostcode;
+        return $this;
     }
 
     /**
@@ -400,10 +486,13 @@ class Deputy
 
     /**
      * @param string $addressCountry
+     *
+     * @return Deputy
      */
     public function setAddressCountry($addressCountry)
     {
         $this->addressCountry = $addressCountry;
+        return $this;
     }
 
     /**

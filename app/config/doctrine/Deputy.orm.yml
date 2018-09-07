@@ -24,10 +24,21 @@ AppBundle\Entity\Deputy:
         column: email_address
         type: string
         length: 200
-      contactNumber:
-        column: contact_number
+      daytimeContactNumber:
+        column: daytime_contact_number
         type: string
         length: 50
+        nullable: true
+      eveningContactNumber:
+        column: evening_contact_number
+        type: string
+        length: 50
+        nullable: true
+      mobileContactNumber:
+        column: mobile_contact_number
+        type: string
+        length: 50
+        nullable: true
       organisationName:
         column: organisation_name
         type: string

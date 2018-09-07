@@ -25,11 +25,11 @@ AppBundle\Entity\Deputy:
             - NotBlank:
                 message: "Please select a deputy type"
                 groups: [order-deputy]
-#        organisationName:
-#            - Type: string
-#            - NotBlank:
-#                message: "Please enter the deputy's organisation name"
-#                groups: [order-org-deputy]
+        organisationName:
+            - Type: string
+            - NotBlank:
+                message: "Please enter the deputy's organisation name"
+                groups: [order-org-deputy]
         forename:
             - Type: string
             - NotBlank:
@@ -54,16 +54,29 @@ AppBundle\Entity\Deputy:
                 min: 7
                 minMessage: "The deputy's email address is too short"
                 groups: [order-deputy]
-        contactNumber:
+        daytimeContactNumber:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's contact number"
-                groups: [order-deputy]
             - Length:
                 max: 20
-                maxMessage: "The deputy's contact number is too long"
+                maxMessage: "The deputy's daytime contact number is too long"
                 min: 10
-                minMessage: "The deputy's contact number is too short"
+                minMessage: "The deputy's daytime contact number is too short"
+                groups: [order-deputy]
+        eveningContactNumber:
+            - Type: string
+            - Length:
+                max: 20
+                maxMessage: "The deputy's evening contact number is too long"
+                min: 10
+                minMessage: "The deputy's evening contact number is too short"
+                groups: [order-deputy]
+        mobileContactNumber:
+            - Type: string
+            - Length:
+                max: 20
+                maxMessage: "The deputy's mobile number is too long"
+                min: 10
+                minMessage: "The deputy's mobile number is too short"
                 groups: [order-deputy]
         addressLine1:
             - Type: string

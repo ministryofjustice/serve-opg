@@ -28,9 +28,9 @@ class DeputyForm extends AbstractType
                     'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
-//            ->add('organisationName', TextType::class, [
-//                'required' => false,
-//            ])
+            ->add('organisationName', TextType::class, [
+                'required' => false,
+            ])
             ->add('forename', TextType::class, [
                 'label' => 'First name',
                 'required' => false
@@ -42,7 +42,13 @@ class DeputyForm extends AbstractType
             ->add('emailAddress', TextType::class, [
                 'required' => false,
             ])
-            ->add('contactNumber', TextType::class, [
+            ->add('daytimeContactNumber', TextType::class, [
+                'required' => false,
+            ])
+            ->add('eveningContactNumber', TextType::class, [
+                'required' => false,
+            ])
+            ->add('mobileContactNumber', TextType::class, [
                 'required' => false,
             ])
             ->add('addressLine1', TextType::class, [
