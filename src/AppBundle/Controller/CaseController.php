@@ -42,14 +42,17 @@ class CaseController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $filter = $request->get('filter', 'pending');
+        $filters = [
+            'type' => $request->get('type', 'pending'),
+            'q' => $request->get('q', ''),
+        ];
 
         return $this->render('AppBundle:Case:index.html.twig', [
-            'orders' => $this->orderRepo->getOrders($filter),
-            'filter' => $filter,
+            'orders' => $this->orderRepo->getOrders($filters),
+            'filters' => $filters,
             'counts' => [
-                'pending' => $this->orderRepo->getOrdersCount('pending'),
-                'served' => $this->orderRepo->getOrdersCount('served'),
+                'pending' => $this->orderRepo->getOrdersCount(['type'=>'pending'] + $filters),
+                'served' => $this->orderRepo->getOrdersCount(['type'=>'served'] + $filters),
             ]
         ]);
     }

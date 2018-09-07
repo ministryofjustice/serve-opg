@@ -58,7 +58,6 @@ services:
         number=52345675&name=Angela Walker&type=pa
         number=92345679&name=Justine Henderson&type=pa
         number=82345678&name=Marcus Cruz&type=pa
-        number=12345678&name=Behat User&type=both
 
   dynamodb:
     image: dwmkerr/dynamodb
