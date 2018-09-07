@@ -25,11 +25,11 @@ AppBundle\Entity\Deputy:
             - NotBlank:
                 message: "Please select a deputy type"
                 groups: [order-deputy]
-        organisationName:
-            - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's organisation name"
-                groups: [order-org-deputy]
+#        organisationName:
+#            - Type: string
+#            - NotBlank:
+#                message: "Please enter the deputy's organisation name"
+#                groups: [order-org-deputy]
         forename:
             - Type: string
             - NotBlank:

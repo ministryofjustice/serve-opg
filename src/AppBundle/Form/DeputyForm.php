@@ -28,9 +28,9 @@ class DeputyForm extends AbstractType
                     'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
-            ->add('organisationName', TextType::class, [
-                'required' => false,
-            ])
+//            ->add('organisationName', TextType::class, [
+//                'required' => false,
+//            ])
             ->add('forename', TextType::class, [
                 'label' => 'First name',
                 'required' => false

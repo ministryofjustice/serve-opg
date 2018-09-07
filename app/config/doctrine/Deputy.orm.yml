@@ -32,6 +32,7 @@ AppBundle\Entity\Deputy:
         column: organisation_name
         type: string
         length: 50
+        nullable: true
       addressLine1:
         column: address_line_1
         type: string
