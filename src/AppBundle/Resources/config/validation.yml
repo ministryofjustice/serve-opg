@@ -30,16 +30,6 @@ AppBundle\Entity\Deputy:
             - NotBlank:
                 message: "Please enter the deputy's organisation name"
                 groups: [order-org-deputy]
-        isOrganisation:
-            - Type: boolean
-            - NotBlank:
-                message: "Please tell us whether this deputy is an organisation"
-                groups: [order-org-deputy]
-        correspondenceName:
-            - Type: string
-            - NotBlank:
-                message: "Please enter a correspondence name"
-                groups: [order-org-deputy]
         forename:
             - Type: string
             - NotBlank:

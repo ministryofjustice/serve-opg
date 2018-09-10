@@ -37,16 +37,6 @@ class Deputy
     private $organisationName;
 
     /**
-     * @var boolean
-     */
-    private $isOrganisation;
-
-    /**
-     * @var string
-     */
-    private $correspondenceName;
-
-    /**
      * @var string
      */
     private $forename;
@@ -252,41 +242,6 @@ class Deputy
     public function setOrganisationName($organisationName)
     {
         $this->organisationName = $organisationName;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isIsOrganisation()
-    {
-        return $this->isOrganisation;
-    }
-
-    /**
-     * @param bool $isOrganisation
-     */
-    public function setIsOrganisation($isOrganisation)
-    {
-        $this->isOrganisation = $isOrganisation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCorrespondenceName()
-    {
-        return $this->correspondenceName;
-    }
-
-    /**
-     * @param string $correspondenceName
-     *
-     * @return Deputy
-     */
-    public function setCorrespondenceName($correspondenceName)
-    {
-        $this->correspondenceName = $correspondenceName;
         return $this;
     }
 

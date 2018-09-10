@@ -29,18 +29,6 @@ class DeputyForm extends AbstractType
                     'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
-            ->add('isOrganisation', ChoiceType::class, [
-                'required' => false,
-                'choices' => [
-                    'pleaseSelect' => '',
-                    'deputy.isOrganisation.no' => 'No',
-                    'deputy.isOrganisation.yes' => 'Yes',
-                ]
-            ])
-
-            ->add('correspondenceName', TextType::class, [
-                'required' => false,
-            ])
             ->add('organisationName', TextType::class, [
                 'required' => false,
             ])
@@ -106,7 +94,7 @@ class DeputyForm extends AbstractType
                 $validationGroups = ['order-deputy'];
 
                 if (in_array($data->getDeputyType(), [Deputy::DEPUTY_TYPE_PA, Deputy::DEPUTY_TYPE_PROF])) {
-                    $validationGroups = 'order-org-deputy';
+                    $validationGroups[] = 'order-org-deputy';
                 }
 
                 return $validationGroups;

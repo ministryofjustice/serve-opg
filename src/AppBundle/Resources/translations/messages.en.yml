@@ -21,9 +21,6 @@ deputy.type.lay: 'Lay'
 deputy.type.pa: 'Public authority'
 deputy.type.prof: 'Professional'
 
-deputy.isOrganisation.yes: 'Yes'
-deputy.isOrganisation.no: 'No'
-
 document.type.cop1a: COP 1A
 document.type.cop1c: COP 1C
 document.type.cop3: COP 3
