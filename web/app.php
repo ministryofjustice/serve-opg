@@ -2,9 +2,7 @@
 
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
-
-$isLocal = $_SERVER['HTTP_HOST'] === 'localhost:8888'
-    && !file_exists(__DIR__ . '/../.enableProdMode');
+$isLocal = file_exists(__DIR__ . '/../.enableDevMode');
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
