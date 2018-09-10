@@ -37,7 +37,9 @@ class OrderRepository extends EntityRepository
             ->createQueryBuilder('o')
             ->select('o,c')
             ->leftJoin('o.client', 'c')
-            ->setMaxResults($maxResults);
+            ->setMaxResults($maxResults)
+            ->orderBy('o.issuedAt', 'DESC')
+        ;
 
         $this->applyFilters($qb, $filters);
 

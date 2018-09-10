@@ -74,7 +74,7 @@
                                     {{ order.createdAt | date('j/m/Y') }}
                                 </td>
                                 <td class="govuk-table__cell">
-                                    issued date
+                                    {{ order.issuedAt | date('j/m/Y') }}
                                 </td>
                             {% else %}
                                 <td class="govuk-table__cell">
