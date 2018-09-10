@@ -36,11 +36,11 @@ docker-compose up -d --build loadbalancer
 # Migrate database
 docker-compose run --rm app php app/console doctrine:schema:update --force
 
-# enable dev mode
+# enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
-# To disable dev mode:
-docker-compose exec app rm /var/www/.enableDevMode
 
+# To disable dev mode and re-enable prod mode (default):
+docker-compose exec app rm /var/www/.enableDevMode
 ```
 
 View logs
