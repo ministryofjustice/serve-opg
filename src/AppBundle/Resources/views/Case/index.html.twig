@@ -17,7 +17,7 @@
         <form method="GET" action="{{ path(app.request.attributes.get('_route')) }}">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-visually-hidden">Search</legend>
-                <label for="search" class="govuk-label">Search by client name or court order number</label>
+                <label for="search" class="govuk-label">Search by court order number</label>
                 <input type="text" id="search" name="q" value="{{  filters.q }}" class="govuk-input govuk-!-width-one-half" />
                 <input type="hidden" name="type" value="{{  filters.type }}" />
                 <input class="govuk-button" type="submit" value="Search" id="search_submit" />
