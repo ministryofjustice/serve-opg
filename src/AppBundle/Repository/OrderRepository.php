@@ -27,15 +27,17 @@ class OrderRepository extends EntityRepository
 
     /**
      * @param array $filters
+     * @param integer $maxResults
      *
      * @return Order[]
      */
-    public function getOrders(array $filters)
+    public function getOrders(array $filters, $maxResults)
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select('o,c')
-            ->leftJoin('o.client', 'c');
+            ->leftJoin('o.client', 'c')
+            ->setMaxResults($maxResults);
 
         $this->applyFilters($qb, $filters);
 

@@ -47,8 +47,10 @@ class DefaultFixtures extends Fixture
         // clients
         $repo = $manager->getRepository(Client::class);
         $caseLines = array_filter(explode("\n", getenv('DC_FIXURES_CASES')));
+        foreach (range(1,10) as $n) {
         foreach ($caseLines as $caseLine) {
             parse_str($caseLine, $case);
+            $case['number'].=$n;
             if (!$client = $repo->findOneBy(['caseNumber' => $case['number']])) {
                 $client = new Client($case['number'], $case['name'], new \DateTime());
                 $manager->persist($client);
@@ -63,6 +65,7 @@ class DefaultFixtures extends Fixture
                 echo "Added order HW to case {$case['number']}\n";
             }
             $manager->flush();
+        }
         }
 
     }
