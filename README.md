@@ -78,6 +78,9 @@ docker-compose run --rm phpunit
 # Load Fixtures
 docker-compose run --rm app php app/console doctrine:fixtures:load --append
 
+# Load Fixtures truncating existing data (users, client, orders, deputies)
+docker-compose run --rm app php app/console doctrine:fixtures:load --purge-with-truncate
+
 # Run Behat
 docker-compose run --rm behat
 ```
