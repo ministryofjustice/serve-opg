@@ -78,7 +78,7 @@ class BehatController extends Controller
                     $this->em->remove($deputy);
                 }
             } else {
-                $order = new $orderClass($client);
+                $order = new $orderClass($client, new \DateTime('3 days ago'));
                 $this->em->persist($order);
             }
             $order
@@ -90,7 +90,7 @@ class BehatController extends Controller
 
         $this->em->flush();
 
-        return new JsonResponse(true);
+        return new Response('done');
     }
 
 }

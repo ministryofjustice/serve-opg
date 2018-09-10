@@ -120,10 +120,10 @@ docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 
 
 # Launch specific behat feature
+//TODO find an aesier way
 comment out "entrypoint" and "command" in behat container
 docker-compose up behat
-docker-compose exec behat sh
-bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
+docker-compose exec behat bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
 
 
 # Quality Analysis Tools
