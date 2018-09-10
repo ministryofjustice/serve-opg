@@ -85,23 +85,23 @@
                 <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Name</td>
-                            <td class="govuk-table__cell">{{ deputy.fullname }}</td>
+                            <td class="govuk-table__cell behat-region-deputy1-fullName">{{ deputy.fullname }}</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Email address</td>
-                            <td class="govuk-table__cell">{{ deputy.emailAddress }}</td>
+                            <td class="govuk-table__cell behat-region-deputy1-emailAddress">{{ deputy.emailAddress }}</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Deputy type</td>
-                            <td class="govuk-table__cell">{{ deputy.deputyType }}</td>
+                            <td class="govuk-table__cell behat-region-deputy1-deputyType">{{ deputy.deputyType }}</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Organisation</td>
-                            <td class="govuk-table__cell">{{ deputy.organisationName }}</td>
+                            <td class="govuk-table__cell behat-region-deputy1-organisationName">{{ deputy.organisationName }}</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Address</td>
-                            <td class="govuk-table__cell">{{ deputy.addressFormatted }}</td>
+                            <td class="govuk-table__cell behat-region-deputy1-address">{{ deputy.addressFormatted }}</td>
                         </tr>
                 </tbody>
             </table>
@@ -111,7 +111,7 @@
     {% endif %}
 
     <p>
-        <a href="{{ path('deputy-add', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">
+        <a href="{{ path('deputy-add', {'orderId': order.id}) }}" id="add-deputy" class=" govuk-link govuk-!-font-weight-bold">
             <span class="govuk-icon govuk-icon--plus"></span>Add a deputy
         </a>
     </p>

@@ -62,29 +62,3 @@ Feature: cases
     And each text should be present in the corresponding region:
       | Interim order | order-subtype |
       | Sole          | app-type      |
-
-
-
-    # create deputy
-#    When I fill in the following:
-#      | deputy_appointmentType  | sole                                        |
-#      | deputy_deputyType       | lay                                         |
-#      | deputy_forename         | Dep                                         |
-#      | deputy_surname          | Uty                                         |
-#      | deputy_emailAddress     | behat-12345678-depy1@digital.justice.gov.uk |
-#      | deputy_contactNumber    | 38745837468347                              |
-#      | deputy_organisationName | org1                                        |
-#      | deputy_addressLine1     | Emb house                                   |
-#      | deputy_addressLine2     | victoria road                               |
-#      | deputy_addressLine3     | London                                      |
-#      | deputy_addressTown      | London                                      |
-#      | deputy_addressCounty    | London                                      |
-#      | deputy_addressCountry   | UK                                          |
-#      | deputy_addressPostcode  | SW1                                         |
-#      | deputy_deputyAnswerQ2_6 | answered-yes                                |
-#      | deputy_deputyS4Response | no                                          |
-#    And I press "deputy_saveAndContinue"
-#    Then the response status code should be 200
-
-
-

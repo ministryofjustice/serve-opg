@@ -40,11 +40,12 @@ AppBundle\Entity\Deputy:
             - NotBlank:
                 message: "Please enter the deputy's surname"
                 groups: [order-deputy]
+        dateOfBirth:
+            - Type: Date
+            - Date:
+                groups: [order-deputy]
         emailAddress:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's email address"
-                groups: [order-deputy]
             - Email:
                 message: The email {{ value }} is not a valid email.
                 groups: [order-deputy]
@@ -54,47 +55,42 @@ AppBundle\Entity\Deputy:
                 min: 7
                 minMessage: "The deputy's email address is too short"
                 groups: [order-deputy]
-        contactNumber:
+        daytimeContactNumber:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's contact number"
-                groups: [order-deputy]
             - Length:
                 max: 20
-                maxMessage: "The deputy's contact number is too long"
+                maxMessage: "The deputy's daytime contact number is too long"
                 min: 10
-                minMessage: "The deputy's contact number is too short"
+                minMessage: "The deputy's daytime contact number is too short"
+                groups: [order-deputy]
+        eveningContactNumber:
+            - Type: string
+            - Length:
+                max: 20
+                maxMessage: "The deputy's evening contact number is too long"
+                min: 10
+                minMessage: "The deputy's evening contact number is too short"
+                groups: [order-deputy]
+        mobileContactNumber:
+            - Type: string
+            - Length:
+                max: 20
+                maxMessage: "The deputy's mobile number is too long"
+                min: 10
+                minMessage: "The deputy's mobile number is too short"
                 groups: [order-deputy]
         addressLine1:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's address line 1"
-                groups: [order-deputy]
         addressLine2:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's address line 2"
-                groups: [order-deputy]
         addressLine3:
             - Type: string
-            - NotBlank:
-                message: "Please enter the deputy's address line 3"
-                groups: [order-deputy]
         addressTown:
             - Type: string
-            - NotBlank:
-                message: "Please enter a town for the deputy's address"
-                groups: [order-deputy]
         addressCounty:
             - Type: string
-            - NotBlank:
-                message: "Please enter a county for the deputy's address"
-                groups: [order-deputy]
         addressPostcode:
             - Type: string
-            - NotBlank:
-                message: "Please enter a postcode for the deputy's address"
-                groups: [order-deputy]
             - Length:
                 min: 2
                 minMessage: "The deputy's postcode is too short"
