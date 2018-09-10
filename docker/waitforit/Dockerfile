@@ -1,6 +1,6 @@
 FROM alpine
 
-ENV WAITFORIT_VERSION="v2.2.1"
+ENV WAITFORIT_VERSION="v2.4.0"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
     && chmod +x /usr/local/bin/waitforit
 ENTRYPOINT ["/usr/local/bin/waitforit"]

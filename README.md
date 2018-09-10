@@ -6,14 +6,22 @@ Symfony 3.4 & PHP 7.2
 
 # Prerequisites
 Software to download and install
-- [docker](https://docs.docker.com/install/)
-- [docker-compose](https://docs.docker.com/compose/install/)
-- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+-   [docker](https://docs.docker.com/install/)
+-   [docker-compose](https://docs.docker.com/compose/install/)
+-   [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 # Usage
 ## Build
 Launch all the following commands from the project directory
 ```bash
+
+# Generate self-signed certificate for the local loadbalancer
+./generate_certs.sh
+
+# Add certificate to your local trust store to avoid browser warnings
+sudo security add-trusted-cert -d -r trustRoot \
+-k /Library/Keychains/System.keychain certs/web.crt
+
 # Vendor php dependencies
 docker-compose run --rm composer
 
@@ -21,7 +29,7 @@ docker-compose run --rm composer
 docker-compose run --rm npm
 
 # Build app
-docker-compose up -d --build web
+docker-compose up -d --build loadbalancer
 # --build Build images before starting containers
 # -d Detached mode: Run containers in the background
 
@@ -35,7 +43,8 @@ docker-compose logs -f
 ```
 
 The app will be available locally at:
-> [http://localhost:8888](http://localhost:8888/)
+> [https://localhost](https://localhost/)
+
 
 # Testing
 DigiCOP uses PHPUnit and Behats to test the application
@@ -107,22 +116,22 @@ docker-compose run --rm qa
 ```
 
 A recommended set of checks is as follows:
-- phpcs
-  ```bash
-  docker-compose run --rm qa phpcs src
-  ```
-- phpstan
-  ```bash
-  docker-compose run --rm qa phpstan analyse -l 4 src
-  ```
-- lint
-  ```bash
-  docker-compose run --rm qa parallel-lint src web app tests
-  ```
-- security-checker
-  ```bash
-  docker-compose run --rm qa security-checker security:check
-  ```
+-   phpcs
+    ```bash
+    docker-compose run --rm qa phpcs src
+    ```
+-   phpstan
+    ```bash
+    docker-compose run --rm qa phpstan analyse -l 4 src
+    ```
+-   lint
+    ```bash
+    docker-compose run --rm qa parallel-lint src web app tests
+    ```
+-   security-checker
+    ```bash
+    docker-compose run --rm qa security-checker security:check
+    ```
 
 A convenience script is provided for the above set:
 ```bash

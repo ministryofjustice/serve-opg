@@ -5,7 +5,7 @@ RUN apk add --no-cache postgresql-dev \
 && docker-php-ext-install pdo pdo_pgsql
 
 # Add Waitforit to wait on db starting
-ENV WAITFORIT_VERSION="v2.2.1"
+ENV WAITFORIT_VERSION="v2.4.0"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
 && chmod +x /usr/local/bin/waitforit
 
