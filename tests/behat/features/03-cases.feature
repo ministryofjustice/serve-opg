@@ -1,10 +1,7 @@
 Feature: cases
 
   Scenario: PA
-    Given I go to "/behat/fixture-reset"
-    And the response status code should be 200
-    And I am logged in as behat user
-    # click on case
+    Given I am logged in as behat user
     When I follow "order-12345678-pa"
     Then the response status code should be 200
     # check form validation
@@ -30,11 +27,7 @@ Feature: cases
       | Joint and several                | app-type      |
 
   Scenario: HW
-    Given I go to "/behat/fixture-reset"
-    And print last response
-    And the response status code should be 200
-    And I am logged in as behat user
-    # click on case
+    Given I am logged in as behat user
     When I follow "order-12345678-hw"
     Then the response status code should be 200
     # check form validation
@@ -57,9 +50,7 @@ Feature: cases
       | Sole          | app-type      |
 
   Scenario: search
-    Given I go to "/behat/fixture-reset"
-    And print last response
-    And I am logged in as behat user
+    Given I am logged in as behat user
     # fake q
     When I fill in "search" with "NOT EXISTING"
     And I press "search_submit"
@@ -76,30 +67,6 @@ Feature: cases
     When I click on "pending-tab"
     Then I should see the "order-12345678-pa" region
     And I should see the "order-12345678-hw" region
-
-
-
-
-    # create deputy
-#    When I fill in the following:
-#      | deputy_appointmentType  | sole                                        |
-#      | deputy_deputyType       | lay                                         |
-#      | deputy_forename         | Dep                                         |
-#      | deputy_surname          | Uty                                         |
-#      | deputy_emailAddress     | behat-12345678-depy1@digital.justice.gov.uk |
-#      | deputy_contactNumber    | 38745837468347                              |
-#      | deputy_organisationName | org1                                        |
-#      | deputy_addressLine1     | Emb house                                   |
-#      | deputy_addressLine2     | victoria road                               |
-#      | deputy_addressLine3     | London                                      |
-#      | deputy_addressTown      | London                                      |
-#      | deputy_addressCounty    | London                                      |
-#      | deputy_addressCountry   | UK                                          |
-#      | deputy_addressPostcode  | SW1                                         |
-#      | deputy_deputyAnswerQ2_6 | answered-yes                                |
-#      | deputy_deputyS4Response | no                                          |
-#    And I press "deputy_saveAndContinue"
-#    Then the response status code should be 200
 
 
 
