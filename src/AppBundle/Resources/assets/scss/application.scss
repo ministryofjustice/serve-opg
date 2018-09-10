@@ -5,6 +5,9 @@ $govuk-assets-path: '../';
 $govuk-font-family: helvetica, arial;
 @import "all";
 
+// GOVUK extensions
+@import "govuk-extension/core/links";
+
 // Custom components
 @import "components/alerts";
 @import "components/icons";

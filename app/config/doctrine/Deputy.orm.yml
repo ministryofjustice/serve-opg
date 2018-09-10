@@ -20,39 +20,57 @@ AppBundle\Entity\Deputy:
         column: surname
         type: string
         length: 50
+      dateOfBirth:
+        column: dob
+        type: date
+        nullable: true
       emailAddress:
         column: email_address
         type: string
         length: 200
-      contactNumber:
-        column: contact_number
+        nullable: true
+      daytimeContactNumber:
+        column: daytime_contact_number
         type: string
         length: 50
+        nullable: true
+      eveningContactNumber:
+        column: evening_contact_number
+        type: string
+        length: 50
+        nullable: true
+      mobileContactNumber:
+        column: mobile_contact_number
+        type: string
+        length: 50
+        nullable: true
       organisationName:
         column: organisation_name
         type: string
         length: 50
+        nullable: true
       addressLine1:
         column: address_line_1
         type: string
         length: 50
+        nullable: true
       addressLine2:
         column: address_line_2
         type: string
         length: 50
+        nullable: true
       addressLine3:
         column: address_line_3
         type: string
         length: 50
+        nullable: true
       addressCounty:
         column: address_county
         type: string
         length: 50
+        nullable: true
       addressPostcode:
         column: address_postcode
         type: string
         length: 8
-#      addressCountry:
-#        column: address_country
-#        type: string
-#        length: 50
+        nullable: true

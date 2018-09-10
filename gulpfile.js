@@ -49,7 +49,9 @@ gulp.task('images', ['clean'], function () {
 // Concats js into application.js
 gulp.task('js', ['clean'], function () {
     return gulp.src([
+            'node_modules/jquery/dist/jquery.js',
             'node_modules/govuk-frontend/all.js',
+            config.jsSrc + '/modules/*.js',
             config.jsSrc + '/main.js'])
         .pipe(concat('application.js'))
         .pipe(gulp.dest(config.webAssets + '/js'));

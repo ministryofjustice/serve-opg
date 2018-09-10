@@ -3,7 +3,6 @@ Feature: cases
   Scenario: PA
     Given I am logged in as behat user
     When I follow "order-12345678-pa"
-    Then the response status code should be 200
     # check form validation
     When I fill in the following:
       | order_form_hasAssetsAboveThreshold |  |
@@ -29,7 +28,6 @@ Feature: cases
   Scenario: HW
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
-    Then the response status code should be 200
     # check form validation
     When I fill in the following:
       | order_form_subType                 |  |
@@ -67,6 +65,4 @@ Feature: cases
     When I click on "pending-tab"
     Then I should see the "order-12345678-pa" region
     And I should see the "order-12345678-hw" region
-
-
 
