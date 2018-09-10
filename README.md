@@ -35,6 +35,12 @@ docker-compose up -d --build loadbalancer
 
 # Migrate database
 docker-compose run --rm app php app/console doctrine:schema:update --force
+
+# enable dev mode
+docker-compose exec app touch /var/www/.enableDevMode
+# To disable dev mode:
+docker-compose exec app rm /var/www/.enableDevMode
+
 ```
 
 View logs
@@ -45,6 +51,18 @@ docker-compose logs -f
 The app will be available locally at:
 > [https://localhost](https://localhost/)
 
+
+
+
+# Dev and prod mode
+```bash
+# dev mode
+docker-compose exec app touch /var/www/.enableDevMode
+
+# prod mode (default)
+docker-compose exec app rm /var/www/.enableDevMode
+
+```
 
 # Testing
 DigiCOP uses PHPUnit and Behats to test the application
@@ -85,6 +103,8 @@ docker-compose run npm bash
 gulp watch
 ```
 
+
+
 # Utilities
 
 
@@ -92,11 +112,6 @@ gulp watch
 #Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 
-# prod mode
-docker-compose exec app touch /var/www/.enableProdMode
-
-# dev mode
-docker-compose exec app rm /var/www/.enableProdMode
 
 ```
 
