@@ -54,32 +54,42 @@ class BehatController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $ret = [];
+
         // add user if not existing
-        $user = $this->em->getRepository(User::class)->findOneBy(['email'=>self::BEHAT_EMAIL]);
-        if (!$user) {
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => self::BEHAT_EMAIL]);
+        if ($user) {
+            $ret[] = "User " . self::BEHAT_EMAIL . " already present";
+        } else {
             $user = new User(self::BEHAT_EMAIL);
-            $pass = $this->encoder->encodePassword($user, $user['password']);
-            $user->setPassword($pass);
+            $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
+            $user->setPassword($encodedPassword);
             $this->em->persist($user);
+            $ret[] = "User " . self::BEHAT_EMAIL . " created";
         }
 
-        //add client if not existing
-        $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber'=>self::BEHAT_CASE_NUMBER]);
-        if (!$client) {
-            $client = new Client(self::BEHAT_CASE_NUMBER,'Behat User', new \DateTime());
+        // add client if not existing
+        $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
+        if ($client) {
+            $ret[] = "Client " . self::BEHAT_CASE_NUMBER . " already created";
+        } else {
+            $client = new Client(self::BEHAT_CASE_NUMBER, 'Behat User', new \DateTime());
             $this->em->persist($client);
+            $ret[] = "Client " . self::BEHAT_CASE_NUMBER . " created";
         }
 
         // add orders if not existing. If existing, reset them (3 quetions to null, and no deputies)
-        foreach([OrderPa::class, OrderHw::class] as $orderClass) {
+        foreach ([OrderPa::class, OrderHw::class] as $orderClass) {
             $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
             if ($order) {
                 foreach ($order->getDeputies() as $deputy) {
                     $this->em->remove($deputy);
                 }
+                $ret[] = $orderClass . " for client " . self::BEHAT_CASE_NUMBER . " already created, deputies dropped";
             } else {
                 $order = new $orderClass($client, new \DateTime('3 days ago'));
                 $this->em->persist($order);
+                $ret[] = $orderClass . " for client " . self::BEHAT_CASE_NUMBER . " created";
             }
             $order
                 ->setServedAt(null)
@@ -90,7 +100,7 @@ class BehatController extends Controller
 
         $this->em->flush();
 
-        return new Response('done');
+        return new Response(implode("\n", array_filter($ret)));
     }
 
 }

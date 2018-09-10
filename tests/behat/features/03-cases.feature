@@ -31,6 +31,7 @@ Feature: cases
 
   Scenario: HW
     Given I go to "/behat/fixture-reset"
+    And print last response
     And the response status code should be 200
     And I am logged in as behat user
     # click on case
@@ -57,6 +58,7 @@ Feature: cases
 
   Scenario: search
     Given I go to "/behat/fixture-reset"
+    And print last response
     And I am logged in as behat user
     # fake q
     When I fill in "search" with "NOT EXISTING"
