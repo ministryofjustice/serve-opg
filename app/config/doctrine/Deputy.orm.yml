@@ -12,6 +12,10 @@ AppBundle\Entity\Deputy:
         column: deputy_type
         type: string
         length: 4
+      isOrganisation:
+        column: is_organisation
+        type: boolean
+        nullable: true
       forename:
         column: forename
         type: string

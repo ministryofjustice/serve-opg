@@ -22,6 +22,8 @@
                 {{ form_row(form.correspondenceName   ) }}
                 {{ form_row(form.organisationName   ) }}
 
+                {{ form_row(form.isOrganisation)     }}
+
                 {{ form_row(form.forename) }}
                 {{ form_row(form.surname) }}
                 {{ form_row(form.emailAddress) }}
@@ -41,7 +43,7 @@
                 {{ form_row(form.saveAndContinue) }}
 
             {{ form_end(form) }}
-        <a href="{{ path('order-summary', {'orderId': order.id}) }}">back to summary</a>
+        <a href="{{ path('order-summary', {'orderId': order.id}) }}">Cancel</a>
         </div>
     </div>
 {% endblock %}
