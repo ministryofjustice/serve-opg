@@ -53,7 +53,12 @@ jobs:
             docker images
             ./docker_login.sh
             docker-compose push app
+            docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/app:latest 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/app:$CIRCLE_BUILD_NUM
+            docker push 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/app:$CIRCLE_BUILD_NUM
+
             docker-compose push web
+            docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:latest 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:$CIRCLE_BUILD_NUM
+            docker push 311462405659.dkr.ecr.eu-west-1.amazonaws.com/opg-digicop/web:$CIRCLE_BUILD_NUM
 
 workflows:
   version: 2
