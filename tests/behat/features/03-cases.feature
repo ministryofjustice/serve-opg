@@ -64,27 +64,65 @@ Feature: cases
       | Sole          | app-type      |
 
 
+  Scenario: Add deputy error checking
+    Given I follow "add-deputy"
+    And the response status code should be 200
+    # Add deputy form
+    When I fill in the following:
+      | deputy_form_deputyType       | lay |
+    And I press "deputy_deputyform_saveAndContinue"
+    Then the following fields should have an error:
+      | deputy_form_forename         |
+      | deputy_form_surname          |
+    When I fill in the following:
+      | deputy_form_deputyType       | pa  |
+    And I press "deputy_form_saveAndContinue"
+    Then the response status code should be 200
+    Then the following fields should have an error:
+      | deputy_form_forename         |
+      | deputy_form_surname          |
+      | organisation_name       |
+    When I fill in the following:
+      | deputy_form_deputyType       | prof  |
+    And I press "deputy_form_saveAndContinue"
+    Then the response status code should be 200
+    Then the following fields should have an error:
+      | deputy_form_forename         |
+      | deputy_form_surname          |
+      | organisation_name       |
 
-    # create deputy
-#    When I fill in the following:
-#      | deputy_appointmentType  | sole                                        |
-#      | deputy_deputyType       | lay                                         |
-#      | deputy_forename         | Dep                                         |
-#      | deputy_surname          | Uty                                         |
-#      | deputy_emailAddress     | behat-12345678-depy1@digital.justice.gov.uk |
-#      | deputy_contactNumber    | 38745837468347                              |
-#      | deputy_organisationName | org1                                        |
-#      | deputy_addressLine1     | Emb house                                   |
-#      | deputy_addressLine2     | victoria road                               |
-#      | deputy_addressLine3     | London                                      |
-#      | deputy_addressTown      | London                                      |
-#      | deputy_addressCounty    | London                                      |
-#      | deputy_addressCountry   | UK                                          |
-#      | deputy_addressPostcode  | SW1                                         |
-#      | deputy_deputyAnswerQ2_6 | answered-yes                                |
-#      | deputy_deputyS4Response | no                                          |
-#    And I press "deputy_saveAndContinue"
-#    Then the response status code should be 200
+  Scenario: Add lay deputy
+    Given I go to "/behat/case/empty/12345678/pa"
+    And the response status code should be 200
+    And I go to "/login"
+    And I fill in the following:
+      | login_username | behat@digital.justice.gov.uk |
+      | login_password | Abcd1234                     |
+    And I press "login_submit"
+    # click on case
+    When I follow "order-12345678-pa"
+    When I follow "add-deputy"
+    And the response status code should be 200
+    # Add deputy form
+    When I fill in the following:
+      | deputy_form_deputyType       | lay |
+      | deputy_form_forename         | Dep                                         |
+      | deputy_form_surname          | Uty                                         |
+      | deputy_form_emailAddress     | behat-12345678-depy1@digital.justice.gov.uk |
+      | deputy_form_contactNumber    | 38745837468347                              |
+      | deputy_form_organisationName | org1                                        |
+      | deputy_form_addressLine1     | Emb house                                   |
+      | deputy_form_addressLine2     | victoria road                               |
+      | deputy_form_addressLine3     | London                                      |
+      | deputy_form_addressTown      | London                                      |
+      | deputy_form_addressCounty    | London                                      |
+      | deputy_form_addressPostcode  | SW1                                         |
+
+    And I press "deputy_form_saveAndContinue"
+    Then the response status code should be 200
+
+
+
 
 
 
