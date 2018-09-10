@@ -14,10 +14,22 @@
 
     var displayOrg = function () {
 
+        var deputyType = $('#deputy_form_deputyType').val();
+        setVisibility(deputyType);
+
         $('#deputy_form_deputyType').on('change', function(){
-            console.log($(this).val());
-        })
+            var newDeputyType = $(this).val();
+            setVisibility(newDeputyType);
+        });
     };
+
+    var setVisibility = function(deputyType){
+        if (deputyType == 'lay') {
+            $('#form-group-organisationName').addClass('govuk-visually-hidden');
+        } else {
+            $('#form-group-organisationName').removeClass('govuk-visually-hidden');
+        }
+    }
 
     root.GOVUK.displayOrg = displayOrg;
 
