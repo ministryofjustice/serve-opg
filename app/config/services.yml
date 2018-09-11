@@ -27,7 +27,7 @@ services:
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension
         public: false
-        arguments: [ "/assets/" ]
+        arguments: [ "/assets/", "%env(DC_ASSETS_VERSION)%" ]
         tags:
             - { name: twig.extension }
 

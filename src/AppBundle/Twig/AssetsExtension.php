@@ -18,14 +18,20 @@ class AssetsExtension extends \Twig_Extension
     private $basePath;
 
     /**
+     * @var string|null
+     */
+    private $assetsVersion;
+
+    /**
      * AssetsExtension constructor.
      * @param string $basePath
+     * @param null|string $assetsVersion
      */
-    public function __construct(string $basePath)
+    public function __construct(string $basePath, ?string $assetsVersion)
     {
         $this->basePath = rtrim($basePath, '/');
+        $this->assetsVersion = $assetsVersion;
     }
-
 
     public function getFilters()
     {
