@@ -2,6 +2,11 @@
 
 namespace AppBundle\Twig;
 
+/**
+ * debug filter, using \Doctrine\Common\Util\Debug::dump();
+ *
+ * {{ var | debug }}
+ */
 class DebugExtension extends \Twig_Extension
 {
     public function getFilters()
