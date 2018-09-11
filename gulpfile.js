@@ -14,7 +14,6 @@ var config = {
         ]
     },
     sassSrc: 'src/AppBundle/Resources/assets/scss',
-    // webAssets: 'web/assets/' + now,
     webAssets: 'web/assets',
     jsSrc: 'src/AppBundle/Resources/assets/javascript',
     imgSrc: 'src/AppBundle/Resources/assets/images'
