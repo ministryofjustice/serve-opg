@@ -3,12 +3,7 @@ Feature: deputy
   Scenario: Add invalid deputy data
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
-    And I fill in the following:
-      | order_form_subType         | interim-order |
-      | order_form_appointmentType | sole          |
-    And I press "order_form_submit"
-    Then the response status code should be 200
-    And the url should match "order/\d+/summary"
+    Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
     And the url should match "case/order/\d+/deputy/add"
         # check form validation
@@ -38,12 +33,7 @@ Feature: deputy
   Scenario: Add valid deputy data
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
-    And I fill in the following:
-      | order_form_subType         | interim-order |
-      | order_form_appointmentType | sole          |
-    And I press "order_form_submit"
-    Then the response status code should be 200
-    And the url should match "order/\d+/summary"
+    Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
     And the url should match "case/order/\d+/deputy/add"
       # check form validation
