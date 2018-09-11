@@ -1,33 +1,28 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
+{% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 
 {% block htmlTitle %} Attach {{ docType | upper }}{% endblock %}
 {% block pageTitle %}
-    <h1 class="govuk-heading-xl">Attach {{ docType | upper }}</h1>
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">Attach {{ docType | upper }}</h1>
 {% endblock %}
 
 {% block content %}
 
-    {# TODO move to support title #}
-    {{ order.client.clientName }}: {{ ('order.' ~ order.type) | trans }}
-
     {{ form_start(form) }}
 
-    <h2>1. Select the file</h2>
+    <h2 class="govuk-heading-m">1. Select the file</h2>
 
-    Click 'Choose File' below to find the document you want to upload
+    <p>Click 'Choose File' below to find the document you want to upload.</p>
+    <p>You can only upload PDF, JPG and PNG files, and they cannot be larger than 20MB.</p>
 
-    You can only upload PDF, JPG and PNG files, and they cannot be larger than 15MB.
-    <br/>  <br/>
     {{ form_row(form.file, {'label': false}) }}
 
-    <h2>2. Upload the file</h2>
+    <h2 class="govuk-heading-m">2. Upload the file</h2>
 
-    {{ form_row(form.submit, {'label': 'Upload file and attach to order', 'attr': {'class': 'govuk-button'}}) }}
+    {{ form_widget(form.submit, {'label': 'Upload file and attach to order'}) }}
+    <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
 
     {{ form_end(form) }}
-
-    <br/><br/>
-
-    <a href="{{ path('order-summary', {'orderId': order.id}) }}">Back to Summary</a>
 
 {% endblock %}
