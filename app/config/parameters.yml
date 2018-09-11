@@ -9,3 +9,4 @@ parameters:
 
     # allow environment override, but set sensible default
     env(DYNAMODB_ENDPOINT): https://dynamodb.eu-west-1.amazonaws.com:443
+    env(DC_ASSETS_VERSION): ""
