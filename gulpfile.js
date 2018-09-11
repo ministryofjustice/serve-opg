@@ -15,14 +15,14 @@ var config = {
     },
     sassSrc: 'src/AppBundle/Resources/assets/scss',
     // webAssets: 'web/assets/' + now,
-    webAssets: 'web/assets/v1',
+    webAssets: 'web/assets',
     jsSrc: 'src/AppBundle/Resources/assets/javascript',
     imgSrc: 'src/AppBundle/Resources/assets/images'
 }
 
 // Clean out old assets
 gulp.task('clean', function () {
-    return gulp.src('web/assets/v1/*', {read: false})
+    return gulp.src('web/assets/*', {read: false})
         .pipe(clean());
 });
 

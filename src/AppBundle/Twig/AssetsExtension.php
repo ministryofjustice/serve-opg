@@ -3,60 +3,38 @@
 namespace AppBundle\Twig;
 
 /**
- * Class AssetsExtension.
+ * Twig filters for assets
+ *
+ * e.g.
+ * {{ 'images/file.png' | assetUrl }}
+ * Will generate /assets/images/file.png?v=<version>
+ * where <version> is the value of the DC_ASSETS_VERSION env variable (or - if not defined - the current timestamp)
  */
 class AssetsExtension extends \Twig_Extension
 {
-    /** @var string $tag */
-    private $tag;
-
-    /** @var string $rootDir */
-    private $rootDir;
+    /**
+     * @var string
+     */
+    private $basePath;
 
     /**
-     * @param string $rootDir
+     * AssetsExtension constructor.
+     * @param string $basePath
      */
-    public function __construct($rootDir)
+    public function __construct(string $basePath)
     {
-        $this->rootDir = $rootDir;
+        $this->basePath = rtrim($basePath, '/');
     }
 
-    /** Get the version name for assets add it to the url to give a versioned url
-     * Like assetic except The minification and versioning is done with gulp.
-     *
-     * @return string
-     */
-    public function assetUrlFilter($originalUrl)
-    {
-        return '/assets/' . $this->getTag() . '/' . ltrim($originalUrl, '/');
-    }
-
-    /**
-     * @return string
-     */
-    public function getTag()
-    {
-        if (!$this->tag) {
-            // List the files in the web/assets folder
-            $assetRoot = $this->rootDir . '/../web/assets';
-            if (file_exists($assetRoot)) {
-                $assetContents = array_diff(scandir($assetRoot), ['..', '.']);
-                rsort($assetContents);
-                return array_shift($assetContents);
-            } else {
-                return $this->tag = 'assets-dir-missing';
-            }
-        }
-
-        return $this->tag;
-    }
 
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('assetUrl', [$this, 'assetUrlFilter']),
-            new \Twig_SimpleFilter('debug', function($e) {
-                \Doctrine\Common\Util\Debug::dump($e);
+            new \Twig_SimpleFilter('assetUrl', function ($originalUrl) {
+                $assetVersion = getenv('DC_ASSETS_VERSION') ?: time();
+                $pathToFile = ltrim($originalUrl, '/');
+
+                return "{$this->basePath}/{$pathToFile}?v={$assetVersion}";
             }),
         ];
     }
