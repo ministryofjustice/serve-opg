@@ -78,6 +78,9 @@ docker-compose run --rm phpunit
 # Load Fixtures
 docker-compose run --rm app php app/console doctrine:fixtures:load --append
 
+# Load Fixtures truncating existing data (users, client, orders, deputies)
+docker-compose run --rm app php app/console doctrine:fixtures:load --purge-with-truncate
+
 # Run Behat
 docker-compose run --rm behat
 ```
@@ -112,15 +115,17 @@ gulp watch
 #Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 
+# Drop the data before schema update (mainl during local development)
+docker-compose run --rm app php app/console doctrine:schema:drop --force
 
 ```
 
 
 # Launch specific behat feature
+//TODO find an aesier way
 comment out "entrypoint" and "command" in behat container
 docker-compose up behat
-docker-compose exec behat sh
-bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
+docker-compose exec behat bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
 
 
 # Quality Analysis Tools

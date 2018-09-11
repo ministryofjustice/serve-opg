@@ -109,7 +109,7 @@ class OrderController extends Controller
 
             $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
 
-            return $this->redirectToRoute('case-list', ['filter' => 'served']);
+            return $this->redirectToRoute('case-list');
         }
 
         return $this->render('AppBundle:Order:declaration.html.twig', [

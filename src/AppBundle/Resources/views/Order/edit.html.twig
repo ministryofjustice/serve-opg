@@ -2,10 +2,10 @@
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 {% import 'AppBundle:Macros:_macros.html.twig' as macro %}
 
-{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} details{% endblock %}
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order details{% endblock %}
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
-    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} details</h1>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order details</h1>
 {% endblock %}
 
 {% block validationSummary %}
