@@ -1,4 +1,4 @@
-# @deployment
+@deployment
 Feature: prechecks
 
     Scenario: check app status and init db
