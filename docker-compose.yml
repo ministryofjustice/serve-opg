@@ -73,9 +73,12 @@ services:
     image: dwmkerr/dynamodb
 
   s3:
-    image: lphoward/fake-s3
+    image: damacus/fake-s3
     ports:
       - 4569:4569
+    environment:
+      LICENSE: "8510622909"
+
 
   postgres:
     image: postgres:9.6
@@ -112,6 +115,16 @@ services:
       - web
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
+      AWS_ACCESS_KEY_ID: foo
+      AWS_SECRET_ACCESS_KEY: bar
+      DYNAMODB_ENDPOINT: http://dynamodb:8000
+      DC_SYMFONY_SECRET: dc2018!
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
+
 
   phpunit:
     image: php:7.2-fpm-alpine
