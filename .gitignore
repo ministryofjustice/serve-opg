@@ -12,3 +12,5 @@ docker-compose.local.yml
 var
 **/*.crt
 **/*.key
+web/behat
+**/.DS_Store

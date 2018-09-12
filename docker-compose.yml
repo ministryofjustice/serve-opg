@@ -98,6 +98,7 @@ services:
     image: php:7.2-fpm-alpine
     volumes:
       - .:/app
+      - ./web/behat:/tmp/behat
     working_dir: /app
     entrypoint: bin/behat
     command: -c tests/behat/behat.yml

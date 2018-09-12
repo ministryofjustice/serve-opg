@@ -15,6 +15,7 @@ class FeatureContext extends MinkContext implements KernelAwareContext
 {
     use RegionLinksTrait;
     use FormTrait;
+    use DebugTrait;
 
     /**
      * @var EntityManager
