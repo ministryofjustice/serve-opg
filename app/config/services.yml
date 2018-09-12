@@ -1,3 +1,6 @@
+imports:
+    - { resource: services_file_upload.yml }
+
 services:
 
     _defaults:

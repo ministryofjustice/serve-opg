@@ -15,6 +15,9 @@ AppBundle\Entity\Document:
       file:
         type: string
         nullable: true
+      fileName:
+        type: string
+        nullable: true
       createdAt:
         column: created_at
         type: datetime
