@@ -1,6 +1,6 @@
 Feature: deputy
 
-  Scenario: Add invalid deputy data
+  Scenario: HW: add invalid deputy data
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
     Then the url should match "order/\d+/summary"
@@ -30,12 +30,10 @@ Feature: deputy
       | deputy_form_surname          |
       | deputy_form_organisationName |
 
-  Scenario: Add valid deputy data
+  Scenario: HW order: add valid deputy data
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
-    Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
-    And the url should match "case/order/\d+/deputy/add"
       # check form validation
     When I fill in the following:
       | deputy_form_deputyType           | lay                                         |
@@ -59,3 +57,14 @@ Feature: deputy
       | behat-12345678-depy1@digital.justice.gov.uk   | deputy1-emailAddress |
       | lay                                           | deputy1-deputyType   |
       | Emb house, victoria road, London, London, SW1 | deputy1-address      |
+
+
+  Scenario: PA order: add one deputy
+    Given I am logged in as behat user
+    When I follow "order-12345678-pa"
+    When I follow "add-deputy"
+      # check form validation
+    When I fill in the following:
+      | deputy_form_deputyType           | lay                                         |
+      | deputy_form_forename             | Dep                                         |
+    And I press "deputy_form_saveAndContinue"
