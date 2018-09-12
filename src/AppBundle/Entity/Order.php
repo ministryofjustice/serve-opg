@@ -307,11 +307,12 @@ abstract class Order
             return false;
         }
 
-        foreach(self::getExpectedDocuments() as $type) {
-            if (!count($this->getDocumentsByType($type))) {
-                return false;
-            }
-        }
+        // TODO enable when documents are added
+//        foreach(self::getExpectedDocuments() as $type) {
+//            if (!count($this->getDocumentsByType($type))) {
+//                return false;
+//            }
+//        }
 
         if ($this instanceof OrderPa && empty($this->getHasAssetsAboveThreshold())) {
             return false;
