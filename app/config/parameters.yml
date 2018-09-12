@@ -15,7 +15,7 @@ parameters:
     s3_client_params:
         version: latest
         region: eu-west-1
-        endpoint: 'fakes3:4569'
+        endpoint: 'http://fakes3:4569'
         validate: false
         credentials:
             key: 'YOUR_ACCESS_KEY_ID'
