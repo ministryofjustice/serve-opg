@@ -1,4 +1,4 @@
-@deployment
+@smoke
 Feature: homepage
 
     Scenario: homepage
