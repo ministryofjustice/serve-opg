@@ -19,8 +19,6 @@
     </div>
 
     {{ form_start(form) }}
-
-    {{ form_row(form.agree, {'label': 'I agree to this statement', 'attr': {}}) }}
     {{ form_widget(form.submit, {'label': 'Serve OPG'}) }}
     <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
 
