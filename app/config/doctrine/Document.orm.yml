@@ -18,6 +18,8 @@ AppBundle\Entity\Document:
       fileName:
         type: string
         nullable: true
+      storageReference:
+        type: string
       createdAt:
         column: created_at
         type: datetime

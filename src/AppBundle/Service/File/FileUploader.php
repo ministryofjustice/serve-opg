@@ -40,27 +40,36 @@ class FileUploader
      *
      * @param ReportInterface $reportId
      * @param string          $body
-     * @param string          $fileName
      *
      * @return Document
      */
-    public function uploadFile(Order $order, $body, $fileName)
+    public function uploadFile(Order $order, $body)
     {
-        $orderId = $order->getId();
-        $storageReference = 'dd_doc_' . $orderId . '_' . str_replace('.', '', microtime(1));
+        // @to-do move call to storage reference outside fileUploader - to decouple.
+        $storageReference = $this->generateStorageReference($order);
 
         $this->storage->store($storageReference, $body);
         $this->logger->debug("FileUploder : stored $storageReference, " . strlen($body) . ' bytes');
 
-        $document = new Document();
-        $document
-            ->setStorageReference($storageReference)
-            ->setFileName($fileName);
-
-//        $reportType = $report instanceof Report ? 'report' : 'ndr';
-//        $ret = $this->restClient->post("/document/{$reportType}/{$orderId}", $document, ['document']);
-//        $document->setId($ret['id']);
+        $document = new Document($order, $order->getType());
+        $document->setStorageReference($storageReference);
 
         return $document;
+    }
+
+    /**
+     * Generates a storage reference to reduce the coupling of fileuploader to either Order or
+     * Report entities.
+     *
+     * @param $entity Object doctrine entity that has an id field
+     *
+     * @return string
+     */
+    public function generateStorageReference($entity)
+    {
+        if (is_object($entity) && method_exists($entity, 'getId') && is_numeric($entity->getId())) {
+            return 'dc_doc_' . $entity->getId() . '_' . str_replace('.', '', microtime(1));
+        }
+        throw new \RuntimeException('Unable to generate storage reference, entity provided does not have an ID');
     }
 }

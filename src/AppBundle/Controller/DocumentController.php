@@ -49,10 +49,10 @@ class DocumentController extends Controller
         $document = new Document($order, $docType);
         $form = $this->createForm(DocumentForm::class, $document);
 
-//        if ($request->get('error') == 'tooBig') {
-//            $message = $this->get('translator')->trans('document.file.errors.maxSizeMessage', [], 'validators');
-//            $form->get('file')->addError(new FormError($message));
-//        }
+        if ($request->get('error') == 'tooBig') {
+            $message = $this->get('translator')->trans('document.file.errors.maxSizeMessage', [], 'validators');
+            $form->get('file')->addError(new FormError($message));
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -68,14 +68,13 @@ class DocumentController extends Controller
                 $fileChecker->checkFile();
 
                 if ($fileChecker->isSafe()) {
-//                    $document = $fileUploader->uploadFile(
-//                        $order,
-//                        file_get_contents($uploadedFile->getPathName()),
-//                        $uploadedFile->getClientOriginalName(),
-//                        false
-//                    );
-                    $request->getSession()->getFlashBag()->add('notice', 'File uploaded');
 
+                    $document = $fileUploader->uploadFile(
+                        $order,
+                        file_get_contents($uploadedFile->getPathName()),
+                        $uploadedFile->getClientOriginalName()
+                    );
+                    $request->getSession()->getFlashBag()->add('notice', 'File uploaded');
 
                     $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
 
@@ -100,6 +99,7 @@ class DocumentController extends Controller
                 } else {
                     $errorKey = 'generic';
                 }
+                var_dump($e->getMessage());exit;
                 $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
                     '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $request->headers->get('x-request-id'),
                 ], 'validators');
