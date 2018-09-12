@@ -11,21 +11,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * Behat context class.
  */
-class FeatureContext extends MinkContext implements KernelAwareContext
+class FeatureContext extends MinkContext
 {
     use RegionLinksTrait;
     use FormTrait;
     use DebugTrait;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    public function setKernel(KernelInterface $kernel)
-    {
-        $this->em = $kernel->getContainer()->get(EntityManager::class);
-    }
 
     /**
      * @Given I am logged in as behat user

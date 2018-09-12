@@ -105,12 +105,6 @@ services:
     depends_on:
       - web
     environment:
-      DC_SYMFONY_SECRET: dc2018!
-      DC_DB_HOST: postgres
-      DC_DB_PORT: 5432
-      DC_DB_NAME: digicop
-      DC_DB_USER: digicop
-      DC_DB_PASS: dcdb2018!
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
   phpunit:
