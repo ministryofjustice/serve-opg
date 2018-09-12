@@ -8,6 +8,24 @@ use Behat\Mink\Element\NodeElement;
 trait FormTrait
 {
     /**
+     * @Then /^the form should be (?P<shouldBe>(valid|invalid))$/
+     */
+    public function theFormShouldBeOrNotBeValid($shouldBe)
+    {
+        $this->assertResponseStatus(200);
+        $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error');
+
+        if ($shouldBe =='valid' && $hasErrors) {
+            throw new \RuntimeException('Errors found in the form');
+        }
+
+        if ($shouldBe =='invalid' && $hasErrors) {
+            throw new \RuntimeException('Errors found in the form');
+        }
+    }
+
+
+    /**
      * @return array of IDs of input/select/textarea elements inside a  .form-group.form-group-error CSS class
      */
     private function getElementsIdsWithValidationErrors()
