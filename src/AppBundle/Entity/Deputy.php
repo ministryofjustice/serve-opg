@@ -524,14 +524,14 @@ class Deputy
      */
     public function getAddressFormatted()
     {
-        return implode(', ', [
+        return implode(', ', array_filter([
             $this->getAddressLine1(),
             $this->getAddressLine2(),
             $this->getAddressLine3(),
             $this->getAddressCounty(),
             $this->getAddressPostcode(),
             $this->getAddressCountry()
-        ]);
+        ]));
     }
 
 

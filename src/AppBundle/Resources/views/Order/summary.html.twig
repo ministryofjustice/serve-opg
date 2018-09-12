@@ -212,7 +212,7 @@
     </p>
 
     {% if order.readyToServe %}
-        <a class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
+        <a id="serve_order_button" class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
     {% else %}
         <div class="govuk-alert govuk-alert--info">
             <span class="govuk-icon govuk-icon--info"></span>

@@ -8,6 +8,24 @@ use Behat\Mink\Element\NodeElement;
 trait FormTrait
 {
     /**
+     * @Then /^the form should be (?P<shouldBe>(valid|invalid))$/
+     */
+    public function theFormShouldBeOrNotBeValid($shouldBe)
+    {
+        $this->assertResponseStatus(200);
+        $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error');
+
+        if ($shouldBe == 'valid' && $hasErrors) {
+            throw new \RuntimeException('Errors found in the form. Zero expected');
+        }
+
+        if ($shouldBe == 'invalid' && !$hasErrors) {
+            throw new \RuntimeException('No errors found in form. At elast one expected');
+        }
+    }
+
+
+    /**
      * @return array of IDs of input/select/textarea elements inside a  .form-group.form-group-error CSS class
      */
     private function getElementsIdsWithValidationErrors()
@@ -17,7 +35,8 @@ trait FormTrait
         $errorRegions = $this->getSession()->getPage()->findAll('css', '.govuk-form-group--error');
         foreach ($errorRegions as $errorRegion) {
             $elementsWithErros = $errorRegion->findAll('xpath', "//*[name()='input' or name()='textarea' or name()='select']");
-            foreach ($elementsWithErros as $elementWithError) { /* @var $found NodeElement */
+            foreach ($elementsWithErros as $elementWithError) {
+                /* @var $found NodeElement */
                 $ret[] = $elementWithError->getAttribute('id');
             }
         }

@@ -104,18 +104,13 @@ services:
     image: php:7.2-fpm-alpine
     volumes:
       - .:/app
+      - ./web/behat:/tmp/behat
     working_dir: /app
     entrypoint: bin/behat
     command: -c tests/behat/behat.yml
     depends_on:
       - web
     environment:
-      DC_SYMFONY_SECRET: dc2018!
-      DC_DB_HOST: postgres
-      DC_DB_PORT: 5432
-      DC_DB_NAME: digicop
-      DC_DB_USER: digicop
-      DC_DB_PASS: dcdb2018!
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
   phpunit:
