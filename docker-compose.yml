@@ -37,6 +37,7 @@ services:
     depends_on:
       - dynamodb
       - postgres
+      - "s3"
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
@@ -72,6 +73,11 @@ services:
 
   dynamodb:
     image: dwmkerr/dynamodb
+
+  s3:
+    image: lphoward/fake-s3
+    ports:
+      - 4569:4569
 
   postgres:
     image: postgres:9.6
