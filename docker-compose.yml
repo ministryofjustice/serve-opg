@@ -58,7 +58,6 @@ services:
         email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
         email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
         email=robert.ford@digital.justice.gov.uk&password=Abcd1234
-        email=behat@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
         number=12345671&name=Peter Bloggs&type=both
         number=22345672&name=Victoria Brady&type=pa
@@ -69,7 +68,6 @@ services:
         number=52345675&name=Angela Walker&type=pa
         number=92345679&name=Justine Henderson&type=pa
         number=82345678&name=Marcus Cruz&type=pa
-        number=12345678&name=Behat User&type=both
 
   dynamodb:
     image: dwmkerr/dynamodb
@@ -118,10 +116,6 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
-      DC_FIXURES_USERS: |
-        email=behat@digital.justice.gov.uk&password=Abcd1234
-      DC_FIXURES_CASES: |
-        number=12345678&name=Behat User&type=both
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
   phpunit:

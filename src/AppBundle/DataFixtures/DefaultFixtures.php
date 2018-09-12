@@ -54,12 +54,13 @@ class DefaultFixtures extends Fixture
                 $manager->persist($client);
                 echo "Added case {$case['number']}\n";
             }
+
             if (!$client->hasOrder( Order::TYPE_PA) && ($case['type'] == Order::TYPE_BOTH || $case['type'] == Order::TYPE_PA)) {
-                $manager->persist(new OrderPa($client));
+                $manager->persist(new OrderPa($client, new \DateTime(rand(1, 10).' days ago')));
                 echo "Added order PA to case {$case['number']}\n";
             }
             if (!$client->hasOrder( Order::TYPE_HW) && ($case['type'] == Order::TYPE_BOTH || $case['type']==Order::TYPE_HW)) {
-                $manager->persist(new OrderHw($client));
+                $manager->persist(new OrderHw($client, new \DateTime(rand(1, 10).' days ago')));
                 echo "Added order HW to case {$case['number']}\n";
             }
             $manager->flush();

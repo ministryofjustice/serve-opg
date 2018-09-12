@@ -1,16 +1,8 @@
 Feature: cases
 
   Scenario: PA
-    Given I go to "/behat/case/empty/12345678/pa"
-    And the response status code should be 200
-    And I go to "/login"
-    And I fill in the following:
-      | login_username | behat@digital.justice.gov.uk |
-      | login_password | Abcd1234                     |
-    And I press "login_submit"
-    # click on case
+    Given I am logged in as behat user
     When I follow "order-12345678-pa"
-    Then the response status code should be 200
     # check form validation
     When I fill in the following:
       | order_form_hasAssetsAboveThreshold |  |
@@ -34,16 +26,8 @@ Feature: cases
       | Joint and several                | app-type      |
 
   Scenario: HW
-    Given I go to "/behat/case/empty/12345678/hw"
-    And the response status code should be 200
-    And I go to "/login"
-    And I fill in the following:
-      | login_username | behat@digital.justice.gov.uk |
-      | login_password | Abcd1234                     |
-    And I press "login_submit"
-    # click on case
+    Given I am logged in as behat user
     When I follow "order-12345678-hw"
-    Then the response status code should be 200
     # check form validation
     When I fill in the following:
       | order_form_subType                 |  |
@@ -62,3 +46,23 @@ Feature: cases
     And each text should be present in the corresponding region:
       | Interim order | order-subtype |
       | Sole          | app-type      |
+
+  Scenario: search
+    Given I am logged in as behat user
+    # fake q
+    When I fill in "search" with "NOT EXISTING"
+    And I press "search_submit"
+    Then I should not see the "order-12345678-pa" region
+    And I should not see the "order-12345678-hw" region
+    # real search
+    When I fill in "q" with "12345678"
+    And I press "search_submit"
+    # served tab has no results
+    And I click on "served-tab"
+    Then I should not see the "order-12345678-pa" region
+    And I should not see the "order-12345678-hw" region
+    # pending tab has results
+    When I click on "pending-tab"
+    Then I should see the "order-12345678-pa" region
+    And I should see the "order-12345678-hw" region
+

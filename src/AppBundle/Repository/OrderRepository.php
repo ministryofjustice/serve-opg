@@ -8,48 +8,59 @@ use Doctrine\ORM\QueryBuilder;
 class OrderRepository extends EntityRepository
 {
     /**
-     * @param string $filter pending|served
+     * @param array $filters
      *
      * @return integer
      */
-    public function getOrdersCount($filter)
+    public function getOrdersCount($filters)
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
-            ->select('COUNT(o)');
+            ->select('COUNT(o)')
+            ->leftJoin('o.client', 'c')
+        ;
 
-        $this->applyFilter($qb, $filter);
+        $this->applyFilters($qb, $filters);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * @param string $filter pending|served
+     * @param array $filters
+     * @param integer $maxResults
      *
      * @return Order[]
      */
-    public function getOrders($filter)
+    public function getOrders(array $filters, $maxResults)
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select('o,c')
-            ->leftJoin('o.client', 'c');
+            ->leftJoin('o.client', 'c')
+            ->setMaxResults($maxResults)
+            ->orderBy('o.issuedAt', 'DESC')
+        ;
 
-        $this->applyFilter($qb, $filter);
+        $this->applyFilters($qb, $filters);
 
         return $qb->getQuery()->getResult();
     }
 
     /**
      * @param QueryBuilder $qb
-     * @param string $filter pending|served
+     * @param aray $filters
      */
-    private function applyFilter(QueryBuilder $qb, $filter)
+    private function applyFilters(QueryBuilder $qb, $filters)
     {
-        if ($filter == 'pending') {
+        if ($filters['type'] == 'pending') {
             $qb->where('o.servedAt IS NULL');
-        } else if ($filter == 'served') {
+        } else if ( $filters['type'] == 'served') {
             $qb->where('o.servedAt IS NOT NULL');
+        }
+
+        if ($filters['q'] ?? false) {
+            $qb->andWhere('c.caseNumber = :cn')
+            ->setParameter('cn', $filters['q']);
         }
     }
 

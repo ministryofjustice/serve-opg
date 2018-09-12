@@ -4,7 +4,7 @@ namespace AppBundle\Behat;
 
 use Behat\Gherkin\Node\TableNode;
 
-trait RegionTrait
+trait RegionLinksTrait
 {
     /**
      * Assert that the HTML element with class behat-<type>-<element> does not exist.
@@ -170,5 +170,39 @@ trait RegionTrait
     {
         $this->assertSession()->elementTextContains('css', '.page-header', $text);
     }
+
+
+    /**
+     * Click on element with attribute [behat-link=:link].
+     *
+     * @When I click on ":link"
+     */
+    public function clickOnBehatLink($link)
+    {
+        // if multiple links are specified (comma-separated), click on all of them
+        if (strpos($link, ',') !== false) {
+            foreach (explode(',', $link) as $singleLink) {
+                $this->clickOnBehatLink(trim($singleLink));
+            }
+
+            return;
+        }
+
+        // find link inside the region
+        $linkSelector = self::behatElementToCssSelector($link, 'link');
+        $linksElementsFound = $this->getSession()->getPage()->findAll('css', $linkSelector);
+        $count = count($linksElementsFound);
+
+        if (count($linksElementsFound) > 1) {
+            throw new \RuntimeException("Found more than one $linkSelector element in the page ($count). Interrupted");
+        }
+        if (count($linksElementsFound) === 0) {
+            throw new \RuntimeException("$linkSelector not found in page");
+        }
+
+        // click on the found link
+        $linksElementsFound[0]->click();
+    }
+
 
 }

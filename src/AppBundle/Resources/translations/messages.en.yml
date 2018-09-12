@@ -1,7 +1,7 @@
 pleaseSelect: Please select...
 
-order.pa: Property and finance order
-order.hw: Health and welfare order
+order.pa: Property and finance
+order.hw: Health and welfare
 
 order.hasAssets.yes: 'Yes'
 order.hasAssets.no: 'No'

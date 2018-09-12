@@ -82,20 +82,24 @@ abstract class Order
     private $createdAt;
 
     /**
+     * @var \DateTime
+     */
+    private $issuedAt;
+
+    /**
      * @var \DateTime|null
      */
     private $servedAt;
 
     /**
-     * Order constructor.
      * @param Client $client
-     * @param string $type
-     * @param string $subType
-     * @param string $hasAssetsAboveThreshold
+     * @param \DateTime $issuedAt
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, \DateTime $issuedAt)
     {
         $this->client = $client;
+        $this->issuedAt =$issuedAt;
+
         $this->createdAt = new \DateTime();
         $this->deputies = new ArrayCollection();
         $this->documents = new ArrayCollection();
@@ -209,6 +213,15 @@ abstract class Order
     {
         return $this->createdAt;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getIssuedAt()
+    {
+        return $this->issuedAt;
+    }
+
 
     /**
      * @return ArrayCollection

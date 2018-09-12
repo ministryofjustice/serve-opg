@@ -30,9 +30,15 @@ services:
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension
         public: false
-        arguments: [  "%kernel.root_dir%" ]
+        arguments: [ "/assets/", "%env(DC_ASSETS_VERSION)%" ]
         tags:
             - { name: twig.extension }
+
+    twig.debug_extension:
+      class: AppBundle\Twig\DebugExtension
+      public: false
+      tags:
+      - { name: twig.extension }
 
 # https://github.com/symfony/symfony/issues/15259
     aws_dynamo.client:

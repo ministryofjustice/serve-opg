@@ -35,6 +35,12 @@ AppBundle\Entity\Order:
         column: created_at
         type: datetime
         nullable: false
+      issuedAt:
+        column: issued_at
+        type: datetime
+        # TODO set to false later on, to avoid local failure as orders are already created.
+        # A reason to introduce migrations maybe ?
+        nullable: true
       servedAt:
         column: served_at
         type: datetime
