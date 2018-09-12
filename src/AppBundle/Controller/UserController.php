@@ -39,9 +39,6 @@ class UserController extends Controller
 
         return $this->render('AppBundle:User:login.html.twig', array(
             'error'         => $error,
-            'users'=>[
-                $this->em->getRepository(User::class)->findAll()
-            ]
         ));
     }
 
