@@ -17,7 +17,7 @@ trait DebugTrait
         $data = $session->getPage()->getContent();
         file_put_contents($this->behatDebugDir . $filename, $data);
         echo '- Url: ' . $session->getCurrentUrl() . "\n";
-        echo "- Response: https://localhost/behat/{$filename}\n";
+        echo "- View response at: https://localhost/behat/{$filename}\n";
     }
 
     /**
