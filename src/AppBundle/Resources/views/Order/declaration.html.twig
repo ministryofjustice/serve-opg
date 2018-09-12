@@ -1,25 +1,26 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
+{% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 
 {% block htmlTitle %}Serve OPG{% endblock %}
 {% block pageTitle %}
-    <h1 class="govuk-heading-xl">Serve OPG</h1>
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">Serve OPG</h1>
 {% endblock %}
 
 {% block content %}
-    <div class="text push--top">
-        <p>You can now serve OPG with the deputy order.</p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p>You can now serve OPG with the deputy order.</p>
 
-        <p>By clicking 'Serve OPG' you are confirming that, to the best of your knowledge, the information you're providing is correct.</p>
+            <p>By clicking 'Serve OPG' you are confirming that, to the best of your knowledge, the information you're providing is correct.</p>
 
-        <p class="bold-small">You will not be able to change this order once you have clicked 'Serve OPG'.</p>
+            <p class="govuk-!-font-weight-bold">You will not be able to change this order once you have clicked 'Serve OPG'.</p>
+        </div>
     </div>
 
     {{ form_start(form) }}
-
-
-    {{ form_row(form.agree, {'label': 'I agree to this statement', 'attr': {}}) }}
-    <a href="{{ path('order-summary', {'orderId': order.id}) }}">Cancel</a>
-    {{ form_row(form.submit, {'label': 'Serve OPG', 'attr': {'class': 'govuk-button'}}) }}
+    {{ form_widget(form.submit, {'label': 'Serve OPG'}) }}
+    <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
 
     {{ form_end(form) }}
 
