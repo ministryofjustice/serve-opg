@@ -77,8 +77,9 @@ services:
     ports:
       - 4569:4569
     environment:
-      LICENSE: "8510622909"
-
+      LICENSE_KEY: "8510622909"
+    volumes:
+      - ./s3:/fakes3_root
 
   postgres:
     image: postgres:9.6
