@@ -16,6 +16,7 @@ COPY ./web/robots.txt web/robots.txt
 COPY ./web/assets web/assets
 COPY docker/web/etc /etc
 
+ENV TIMEOUT=20
 CMD confd -onetime -backend env \
-&& waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=20 \
+&& waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=$TIMEOUT \
 && nginx -g "daemon off;"

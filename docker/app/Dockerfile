@@ -18,8 +18,8 @@ COPY web/config.php web/config.php
 COPY vendor vendor
 COPY src src
 COPY app app
-
-CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=20 \
+ENV TIMEOUT=20
+CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
 && php app/console doctrine:schema:update --force --no-interaction \
 && chown -R www-data var \
 && php-fpm
