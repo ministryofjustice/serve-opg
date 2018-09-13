@@ -314,7 +314,7 @@ abstract class Order
 //            }
 //        }
 
-        if ($this instanceof OrderPa && empty($this->getHasAssetsAboveThreshold())) {
+        if ($this instanceof OrderPf && empty($this->getHasAssetsAboveThreshold())) {
             return false;
         }
 

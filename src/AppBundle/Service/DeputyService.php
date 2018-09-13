@@ -5,7 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderTypeHw;
-use AppBundle\Entity\OrderPa;
+use AppBundle\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
 
 class DeputyService

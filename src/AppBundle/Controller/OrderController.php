@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderPa;
+use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use AppBundle\Form\DeclarationForm;
 use AppBundle\Form\OrderForm;

@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-class OrderPa extends Order
+class OrderPf extends Order
 {
     /**
      * @return string

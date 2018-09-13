@@ -5,7 +5,7 @@ namespace AppBundle\DataFixtures;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderHw;
-use AppBundle\Entity\OrderPa;
+use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -56,7 +56,7 @@ class DefaultFixtures extends Fixture
             }
 
             if (!$client->hasOrder( Order::TYPE_PA) && ($case['type'] == Order::TYPE_BOTH || $case['type'] == Order::TYPE_PA)) {
-                $manager->persist(new OrderPa($client, new \DateTime(rand(1, 10).' days ago')));
+                $manager->persist(new OrderPf($client, new \DateTime(rand(1, 10).' days ago')));
                 echo "Added order PA to case {$case['number']}\n";
             }
             if (!$client->hasOrder( Order::TYPE_HW) && ($case['type'] == Order::TYPE_BOTH || $case['type']==Order::TYPE_HW)) {
