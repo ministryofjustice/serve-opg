@@ -133,7 +133,7 @@
         </thead>
 
         <tbody class="govuk-table__body">
-        {% for docType in order.expectedDocuments %}
+        {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
             {% set doc = order.getDocumentsByType(docType) | first %}
 
             <tr class="govuk-table__row">
@@ -147,7 +147,11 @@
                     {% if doc %}
                         Uploaded
                     {% else %}
-                        Required
+                        {% if docIsRequired %}
+                            Required
+                        {% else %}
+                            Required if deputy has completed section 2
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType }}-actions">
