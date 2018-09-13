@@ -14,11 +14,11 @@ parameters:
     env(DC_ASSETS_VERSION): ""
 
     # S3 Bucket configuration
-    s3_bucket_name: not set
+    s3_bucket_name: test_bucket
     s3_client_params:
         version: latest
         region: eu-west-1
-        endpoint: 'http://fakes3:4569'
+        endpoint: 'http://s3:4569'
         validate: false
         credentials:
             key: 'YOUR_ACCESS_KEY_ID'
