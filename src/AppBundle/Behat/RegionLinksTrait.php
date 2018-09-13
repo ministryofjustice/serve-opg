@@ -204,5 +204,40 @@ trait RegionLinksTrait
         $linksElementsFound[0]->click();
     }
 
+    /**
+     * Click on element with attribute [behat-link=:link] inside the element with attribute [behat-region=:region].
+     *
+     * @When I click on :link in the :region region
+     */
+    public function clickLinkInsideElement($link, $region)
+    {
+        $linkSelector = self::behatElementToCssSelector($link, 'link');
 
+        $regionSelector = $this->findRegion($region);
+        $linksElementsFound = $regionSelector->findAll('css', $linkSelector);
+        if (count($linksElementsFound) > 1) {
+            throw new \RuntimeException("Found more than a $linkSelector element inside $regionSelector . Interrupted");
+        }
+        if (count($linksElementsFound) === 0) {
+            throw new \RuntimeException("Element $linkSelector not found inside $regionSelector . Interrupted");
+        }
+
+        // click on the found link
+        $linksElementsFound[0]->click();
+    }
+
+    private function findRegion($region)
+    {
+        // find region
+        $regionSelector = '#' . $region . ', ' . self::behatElementToCssSelector($region, 'region');
+        $regionsFound = $this->getSession()->getPage()->findAll('css', $regionSelector);
+        if (count($regionsFound) > 1) {
+            throw new \RuntimeException("Found more than one $regionSelector");
+        }
+        if (count($regionsFound) === 0) {
+            throw new \RuntimeException("Region $regionSelector not found.");
+        }
+
+        return $regionsFound[0];
+    }
 }

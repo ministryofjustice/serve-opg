@@ -9,7 +9,7 @@ class Document
     const TYPE_COP1A = 'cop1a';
     const TYPE_COP1C = 'cop1c';
     const TYPE_COP3 = 'cop3';
-    const TYPE_COP4 = 'cop3';
+    const TYPE_COP4 = 'cop4';
     const TYPE_COURT_ORDER = 'co';
     const TYPE_OTHER = 'co';
     const TYPE_ADDITIONAL = 'additional';

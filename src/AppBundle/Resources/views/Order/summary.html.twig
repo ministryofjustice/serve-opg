@@ -150,7 +150,7 @@
                         Required
                     {% endif %}
                 </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">
+                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType }}-actions">
                     <a href="{{
                         doc | length ?
                         path('document-remove', {'orderId': order.id, 'id': doc.id})
@@ -160,7 +160,10 @@
                         {% if doc | length %}
                             Remove
                         {% else %}
-                            <span class="govuk-icon govuk-icon--plus"></span>Add document
+                            <span class="govuk-icon govuk-icon--plus"></span>
+                            <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}"
+                            class="behat-link-add-document-{{ docType }}">Add document</a>
+                            {#<span class="govuk-icon govuk-icon--plus behat-link"></span>Add document#}
                         {% endif %}
                     </a>
                 </td>
