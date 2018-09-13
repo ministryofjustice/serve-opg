@@ -1,6 +1,6 @@
 Feature: cases
 
-  Scenario: PA
+  Scenario: PA order: set assets, subtype, appointment type
     Given I am logged in as behat user
     When I follow "order-12345678-pa"
     # check form validation
@@ -25,7 +25,7 @@ Feature: cases
       | Replacement of discharged deputy | order-subtype |
       | Joint and several                | app-type      |
 
-  Scenario: HW
+  Scenario: HW order: set subtype, appointment type
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
     # check form validation
@@ -47,7 +47,7 @@ Feature: cases
       | Interim order | order-subtype |
       | Sole          | app-type      |
 
-  Scenario: search
+  Scenario: test search
     Given I am logged in as behat user
     # fake q
     When I fill in "search" with "NOT EXISTING"

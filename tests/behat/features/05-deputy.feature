@@ -59,7 +59,7 @@ Feature: deputy
       | Emb house, victoria road, London, London, SW1 | deputy1-address      |
 
 
-  Scenario: PA order: add one deputy
+  Scenario: PA order: add one deputy (just type, first and lastname)
     Given I am logged in as behat user
     When I follow "order-12345678-pa"
     When I follow "add-deputy"
