@@ -39,11 +39,13 @@ class FileUploader
      * Uploads a file into S3 + create and persist a Document entity using that reference
      *
      * @param ReportInterface $reportId
-     * @param string          $body
+     * @param Document $document
+     * @param string $body
+     * @param string $docType
      *
      * @return Document
      */
-    public function uploadFile(Order $order, $body)
+    public function uploadFile(Order $order, Document $document, $body)
     {
         // @to-do move call to storage reference outside fileUploader - to decouple.
         $storageReference = $this->generateStorageReference($order);
@@ -51,7 +53,6 @@ class FileUploader
         $this->storage->store($storageReference, $body);
         $this->logger->debug("FileUploder : stored $storageReference, " . strlen($body) . ' bytes');
 
-        $document = new Document($order, $order->getType());
         $document->setStorageReference($storageReference);
 
         return $document;
