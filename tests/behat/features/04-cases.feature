@@ -24,6 +24,7 @@ Feature: cases
       | No                               | has-assets    |
       | Replacement of discharged deputy | order-subtype |
       | Joint and several                | app-type      |
+    And the order should be unservable
 
   Scenario: HW order: set subtype, appointment type
     Given I am logged in as behat user
@@ -46,6 +47,7 @@ Feature: cases
     And each text should be present in the corresponding region:
       | Interim order | order-subtype |
       | Sole          | app-type      |
+    And the order should be unservable
 
   Scenario: test search
     Given I am logged in as behat user
