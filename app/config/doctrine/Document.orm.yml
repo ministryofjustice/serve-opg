@@ -12,9 +12,6 @@ AppBundle\Entity\Document:
         type: string
         length: 10
         nullable: false
-      file:
-        type: string
-        nullable: true
       fileName:
         type: string
         nullable: true
