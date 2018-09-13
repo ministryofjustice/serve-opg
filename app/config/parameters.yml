@@ -1,11 +1,11 @@
 # env vars set by docker-compose at runtime
 parameters:
     secret:   '%env(DC_SYMFONY_SECRET)%'
-    database_host: '%env(DC_DB_HOST)%'
-    database_port: '%env(DC_DB_PORT)%'
-    database_name: '%env(DC_DB_NAME)%'
-    database_user: '%env(DC_DB_USER)%'
-    database_password:  '%env(DC_DB_PASS)%'
+    env(DC_DB_HOST): ""
+    env(DC_DB_PORT): ""
+    env(DC_DB_NAME): ""
+    env(DC_DB_USER): ""
+    env(DC_DB_PASS): ""
 
     # allow environment override, but set sensible default
     env(DYNAMODB_ENDPOINT): https://dynamodb.eu-west-1.amazonaws.com:443
