@@ -11,6 +11,7 @@ use AppBundle\Form\DeputyForm;
 use AppBundle\Form\DocumentForm;
 use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
+use AppBundle\Service\File\Types\UploadableFileInterface;
 use Doctrine\ORM\EntityManager;
 use AppBundle\Service\File\Checker\FileCheckerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -61,13 +62,13 @@ class DocumentController extends Controller
             /* @var $uploadedFile UploadedFile */
             $uploadedFile = $document->getFile();
 
-            /** @var FileCheckerInterface $fileChecker */
-            $fileChecker = $this->get('file_checker_factory')->factory($uploadedFile);
+            /** @var UploadableFileInterface $fileObject */
+            $fileObject = $this->get('file_checker_factory')->factory($uploadedFile);
 
             try {
-                $fileChecker->checkFile();
+                $fileObject->checkFile();
 
-                if ($fileChecker->isSafe()) {
+                if ($fileObject->isSafe()) {
 
                     $document = $fileUploader->uploadFile(
                         $order,
