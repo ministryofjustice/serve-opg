@@ -11,6 +11,7 @@ use AppBundle\Form\DeputyForm;
 use AppBundle\Form\DocumentForm;
 use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
+use AppBundle\Service\File\FileUploader;
 use AppBundle\Service\File\Types\UploadableFileInterface;
 use Doctrine\ORM\EntityManager;
 use AppBundle\Service\File\Checker\FileCheckerInterface;
@@ -56,29 +57,23 @@ class DocumentController extends Controller
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $fileUploader = $this->container->get('file_uploader');
-
+            $fileUploader = $this->container->get('file_uploader'); /* @var $fileUploader FileUploader */
             /* @var $uploadedFile UploadedFile */
             $uploadedFile = $document->getFile();
-
             /** @var UploadableFileInterface $fileObject */
             $fileObject = $this->get('file_checker_factory')->factory($uploadedFile);
-
             try {
                 $fileObject->checkFile();
-
                 if ($fileObject->isSafe()) {
-
                     $document = $fileUploader->uploadFile(
                         $order,
+                        $document,
                         file_get_contents($uploadedFile->getPathName()),
                         $uploadedFile->getClientOriginalName()
                     );
                     $request->getSession()->getFlashBag()->add('notice', 'File uploaded');
 
                     $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
-
                     $document->setFilename($fileName);
 
                     $this->em->persist($document);
@@ -100,7 +95,6 @@ class DocumentController extends Controller
                 } else {
                     $errorKey = 'generic';
                 }
-                var_dump($e->getMessage());exit;
                 $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
                     '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $request->headers->get('x-request-id'),
                 ], 'validators');

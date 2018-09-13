@@ -139,12 +139,12 @@
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
                 <td class="govuk-table__cell">
-                    {% if doc.filename | length %}
+                    {% if doc %}
                         {{ doc.filename }}
                     {% endif %}
                 </td>
                 <td class="govuk-table__cell">
-                    {% if doc | length %}
+                    {% if doc %}
                         Uploaded
                     {% else %}
                         Required
@@ -152,7 +152,7 @@
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType }}-actions">
                     <a href="{{
-                        doc | length ?
+                        doc ?
                         path('document-remove', {'orderId': order.id, 'id': doc.id})
                         : path('document-add', {'orderId': order.id, 'docType': docType})
                     }}"
