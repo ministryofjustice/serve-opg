@@ -28,4 +28,21 @@ class FeatureContext extends MinkContext
         $this->pressButton('login_submit');
     }
 
+    /**
+     * @Then /^the order should be (?P<shouldBe>(servable|unservable))$/
+     */
+    public function theOrderIsOrNotServable($shouldBe)
+    {
+        $this->assertResponseStatus(200);
+
+        if ($shouldBe == 'servable') {
+            $this->assertSession()->elementExists('css', '#serve_order_button');
+        }
+
+        if ($shouldBe == 'unservable') {
+            $this->assertSession()->elementNotExists('css', '#serve_order_button');
+        }
+    }
+
+
 }
