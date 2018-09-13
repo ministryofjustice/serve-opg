@@ -83,16 +83,20 @@ services:
     image: composer
     volumes:
       - .:/app
-    command: "composer install"
+    command:
+      - install
 
   npm:
     image: node
     environment:
-      PATH: "/app/node_modules/.bin:$PATH"
+      PATH: /app/node_modules/.bin:$PATH
     working_dir: /app
     volumes:
       - .:/app
-    command: "npm i --unsafe-perm"
+    command:
+      - npm
+      - i
+      - --unsafe-perm
 
   behat:
     image: php:7.2-fpm-alpine
@@ -100,8 +104,11 @@ services:
       - .:/app
       - ./web/behat:/tmp/behat
     working_dir: /app
-    entrypoint: bin/behat
-    command: -c tests/behat/behat.yml
+    entrypoint:
+      - bin/behat
+    command:
+      - -c
+      - tests/behat/behat.yml
     depends_on:
       - web
     environment:
@@ -113,7 +120,9 @@ services:
       - .:/app
     working_dir: /app
     entrypoint: bin/phpunit
-    command: -c tests/phpunit
+    command:
+      - -c
+      - tests/phpunit
     environment:
       DC_SYMFONY_SECRET: dcphpunit2018!
       DC_DYNAMODB_KEY: key

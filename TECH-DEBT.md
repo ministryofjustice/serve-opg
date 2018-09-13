@@ -14,3 +14,4 @@
 8. ~~PostgreSQL required for app to startup~~
 9. ~~nginx config needs templating to accept different hostnames~~
 10. add time based assets directory
+11. ~~use arrays for cmd/entrypoint in compose files~~
