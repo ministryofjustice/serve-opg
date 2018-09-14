@@ -13,15 +13,7 @@ parameters:
     # appended to CSS and JS as "?v=<this value>". If empty, the request timestamp will be used
     env(DC_ASSETS_VERSION): ""
 
-    # S3 Bucket configuration
-    s3_bucket_name: test_bucket
-    s3_client_params:
-        version: latest
-        region: eu-west-1
-        endpoint: 'http://s3:4569'
-        validate: false
-        credentials:
-            key: 'YOUR_ACCESS_KEY_ID'
-            secret: 'YOUR_SECRET_ACCESS_KEY'
-    file_scanner_url: https://file-scanner-api:8443
-    file_scanner_sslverify: false
+    # S3 default config
+    env(DC_S3_REGION): "eu-west-1"
+    env(DC_S3_ENDPOINT): ''
+    env(DC_S3_BUCKET_NAME): "MUST_BE_DEFINED"
