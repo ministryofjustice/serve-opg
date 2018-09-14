@@ -31,4 +31,4 @@ Feature: serve order
     And I should not see the "order-12345678-hw" region
     When I click on "served-tab"
     Then I should see the "order-12345678-hw" region
-    And I should see "test-other.jpg" in the "order-12345678-pa" region
+    And I should see "test-other.jpg" in the "order-12345678-hw" region
