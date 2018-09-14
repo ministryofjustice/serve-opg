@@ -89,7 +89,7 @@
                                             </summary>
                                             <div class="govuk-details__text">
                                                 {% for d in order.documents %}
-                                                    {{ d.file }}{% if not loop.last %}<br>{% endif %}
+                                                    {{ d.fileName }}{% if not loop.last %}<br>{% endif %}
                                                 {% endfor %}
                                             </div>
                                         </details>
