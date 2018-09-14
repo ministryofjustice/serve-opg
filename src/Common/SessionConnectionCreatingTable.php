@@ -8,6 +8,8 @@ use Aws\DynamoDb\StandardSessionConnection;
 /**
  * Extension of DynamoDB StandardSessionConnection,
  * that creates the hash table with ID(string) as a key if not existing
+ * see more here
+ * https://github.com/symfony/symfony/issues/15259
  *
  * Example of usage
 ```
@@ -17,10 +19,9 @@ use Aws\DynamoDb\StandardSessionConnection;
       handler_id: dynamo_session_handler
 
     services:
-     aws_dynamo.session:
-        class: Common\SessionConnectionCreatingTable
+        Common\SessionConnectionCreatingTable:
         arguments:
-            - "@aws_dynamo.client"
+            - "@Aws\\DynamoDb\\DynamoDbClient"
             -
                 table_name: 'sessions'
                 hash_key: 'id'

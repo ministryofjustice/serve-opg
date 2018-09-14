@@ -36,12 +36,11 @@ class ClamAVChecker implements FileCheckerInterface
      * @param LoggerInterface $logger
      * @param array           $options
      */
-    public function __construct(ClientInterface $client, LoggerInterface $logger, array $options = [])
+    public function __construct(ClientInterface $client, LoggerInterface $logger)
     {
         /** @var GuzzleHttp\Client client */
         $this->client = $client;
         $this->logger = $logger;
-        $this->options = [];
     }
 
     /**

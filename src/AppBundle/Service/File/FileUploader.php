@@ -20,19 +20,14 @@ class FileUploader
     private $logger;
 
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * FileUploader constructor.
+     * @param StorageInterface $storage
+     * @param LoggerInterface $logger
      */
-    public function __construct(StorageInterface $s3Storage, LoggerInterface $logger, array $options = [])
+    public function __construct(StorageInterface $storage, LoggerInterface $logger)
     {
-        $this->storage = $s3Storage;
+        $this->storage = $storage;
         $this->logger = $logger;
-        $this->fileCheckers = [];
-        $this->options = [];
     }
 
     /**

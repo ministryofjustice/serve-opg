@@ -10,14 +10,12 @@ use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
 use AppBundle\Service\File\Checker\FileCheckerFactory;
 use AppBundle\Service\File\FileUploader;
-use AppBundle\Service\File\Types\UploadableFileInterface;
+use AppBundle\Service\File\Storage\StorageInterface;
+use AppBundle\Service\File\Types\Pdf;
 use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DocumentController extends Controller
@@ -42,13 +40,7 @@ class DocumentController extends Controller
      */
     private $fileCheckerFactory;
 
-    /**
-     * DocumentController constructor.
-     * @param EntityManager $em
-     * @param DocumentService $documentService
-     * @param FileUploader $fileUploader
-     * @param FileCheckerFactory $fileCheckerFactory
-     */
+
     public function __construct(EntityManager $em, DocumentService $documentService, FileUploader $fileUploader, FileCheckerFactory $fileCheckerFactory)
     {
         $this->em = $em;

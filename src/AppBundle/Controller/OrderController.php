@@ -105,7 +105,7 @@ class OrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get(OrderService::class)->serve($order);
+            $this->orderService->serve($order);
 
             $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
 

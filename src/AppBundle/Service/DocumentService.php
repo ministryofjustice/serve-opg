@@ -3,9 +3,9 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Document;
-use AppBundle\Service\File\Storage\S3Storage;
-use Doctrine\ORM\EntityManager;
+use AppBundle\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManager;
 
 class DocumentService
 {
@@ -15,9 +15,9 @@ class DocumentService
     private $em;
 
     /**
-     * @var S3Storage
+     * @var StorageInterface
      */
-    private $s3Storage;
+    private $storage;
 
     /**
      * @var LoggerInterface
@@ -27,13 +27,13 @@ class DocumentService
     /**
      * DocumentService constructor.
      * @param EntityManager $em
-     * @param S3Storage $s3Storage
+     * @param StorageInterface $s3Storage
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, S3Storage $s3Storage, LoggerInterface $logger)
+    public function __construct(EntityManager $em, StorageInterface $s3Storage, LoggerInterface $logger)
     {
         $this->em = $em;
-        $this->s3Storage = $s3Storage;
+        $this->storage = $s3Storage;
         $this->logger = $logger;
     }
 
@@ -68,7 +68,7 @@ class DocumentService
 
         try {
             $this->logger->notice("Deleting $ref from S3");
-            $return = $this->s3Storage->delete($ref);
+            $return = $this->storage->delete($ref);
             $this->logger->notice('RETURNED->>> ' . $return);
             $this->logger->notice("Deleting for $ref from S3: no exception thrown from deleteObject operation");
             return true;
