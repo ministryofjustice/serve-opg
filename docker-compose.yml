@@ -37,20 +37,32 @@ services:
     depends_on:
       - dynamodb
       - postgres
+      - "s3"
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
       - ./web:/var/www/web
     environment:
+      # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
+      # end still needed
       DYNAMODB_ENDPOINT: http://dynamodb:8000
       DC_SYMFONY_SECRET: dc2018!
+      # db
       DC_DB_HOST: postgres
       DC_DB_PORT: 5432
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
+      # S3 (don't define DC_S3_ENDPOINT if AWS credentials are defined in the instance)
+      DC_S3_BUCKET_NAME: test_bucket
+      DC_S3_REGION: eu-west-1
+      DC_S3_ENDPOINT: 'http://s3:4569'
+      # file scanner
+      DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
+      DC_FILE_SCANNER_SSL_VERIFY: 1
+      # fixtures
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
         email=sean.privett@digital.justice.gov.uk&password=Abcd1234
@@ -70,6 +82,15 @@ services:
 
   dynamodb:
     image: dwmkerr/dynamodb
+
+  s3:
+    image: damacus/fake-s3
+    ports:
+      - 4569:4569
+    environment:
+      LICENSE_KEY: "8510622909"
+    volumes:
+      - ./s3:/fakes3_root
 
   postgres:
     image: postgres:9.6
@@ -113,6 +134,16 @@ services:
       - web
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
+      AWS_ACCESS_KEY_ID: foo
+      AWS_SECRET_ACCESS_KEY: bar
+      DYNAMODB_ENDPOINT: http://dynamodb:8000
+      DC_SYMFONY_SECRET: dc2018!
+      DC_DB_HOST: postgres
+      DC_DB_PORT: 5432
+      DC_DB_NAME: digicop
+      DC_DB_USER: digicop
+      DC_DB_PASS: dcdb2018!
+
 
   phpunit:
     image: php:7.2-fpm-alpine

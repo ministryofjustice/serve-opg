@@ -57,9 +57,10 @@ Feature: deputy
       | behat-12345678-depy1@digital.justice.gov.uk   | deputy1-emailAddress |
       | lay                                           | deputy1-deputyType   |
       | Emb house, victoria road, London, London, SW1 | deputy1-address      |
+    And the order should be unservable
 
 
-  Scenario: PA order: add one deputy
+  Scenario: PA order: add one deputy (just type, first and lastname)
     Given I am logged in as behat user
     When I follow "order-12345678-pa"
     When I follow "add-deputy"
@@ -72,3 +73,4 @@ Feature: deputy
     Then the form should be valid
     And each text should be present in the corresponding region:
       | PaDep Uty | deputy1-fullName |
+    And the order should be unservable

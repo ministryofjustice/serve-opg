@@ -25,16 +25,15 @@ abstract class Order
     const APPOINTMENT_TYPE_JOINT = 'joint';
     const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'js';
 
-    public static function getExpectedDocuments()
-    {
-        return [
-            Document::TYPE_COP1A,
-            Document::TYPE_COP1C,
-            Document::TYPE_COP3,
-            Document::TYPE_COP4,
-            Document::TYPE_COURT_ORDER,
-        ];
-    }
+    /**
+     * @return array
+     */
+    abstract public function getAcceptedDocumentTypes();
+
+    /**
+     * @return boolean
+     */
+    abstract protected function isOrderValid();
 
     /**
      * @var int|null
@@ -106,6 +105,26 @@ abstract class Order
 
         $client->addOrder($this);
 
+    }
+
+    /**
+     * @return bool
+     */
+    public function readyToServe()
+    {
+        if (!$this->isOrderValid() ||
+            !count($this->getDeputies())
+        ) {
+            return false;
+        }
+
+        foreach ($this->getAcceptedDocumentTypes() as $type => $required) {
+            if ($required && count($this->getDocumentsByType($type)) === 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -291,42 +310,6 @@ abstract class Order
     public function getServedAt(): ?\DateTime
     {
         return $this->servedAt;
-    }
-
-    /**
-     * Return true if the order has
-     * - at least one deputy
-     * - a document for each `getExpectedDocuments()`
-     * - `hasAssetsAboveThreshold` (PA oly), `subType` and `appointmentType` answered
-     *
-     * @return bool
-     */
-    public function readyToServe()
-    {
-        if (!count($this->getDeputies())) {
-            return false;
-        }
-
-        // TODO enable when documents are added
-//        foreach(self::getExpectedDocuments() as $type) {
-//            if (!count($this->getDocumentsByType($type))) {
-//                return false;
-//            }
-//        }
-
-        if ($this instanceof OrderPa && empty($this->getHasAssetsAboveThreshold())) {
-            return false;
-        }
-
-        if (empty($this->getSubType())) {
-            return false;
-        }
-
-        if (empty($this->getAppointmentType())) {
-            return false;
-        }
-
-        return true;
     }
 
 }

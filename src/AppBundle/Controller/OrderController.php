@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderPa;
+use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use AppBundle\Form\DeclarationForm;
 use AppBundle\Form\OrderForm;
@@ -105,7 +105,7 @@ class OrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->get(OrderService::class)->serve($order);
+            $this->orderService->serve($order);
 
             $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
 

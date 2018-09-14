@@ -3,7 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderPa;
+use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -66,7 +66,7 @@ class OrderForm extends AbstractType
                 /* @var $data \AppBundle\Entity\Order */
 
                 return array_filter([
-                    $form->getData() instanceof OrderPa ? 'order-has-assets' : null,
+                    $form->getData() instanceof OrderPf ? 'order-has-assets' : null,
                     'order-subtype',
                     'appointment-type'
                 ]);

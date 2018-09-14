@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderHw;
-use AppBundle\Entity\OrderPa;
+use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,13 +79,16 @@ class BehatController extends Controller
         }
 
         // add orders if not existing. If existing, reset them (3 quetions to null, and no deputies)
-        foreach ([OrderPa::class, OrderHw::class] as $orderClass) {
-            $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
+        foreach ([OrderPf::class, OrderHw::class] as $orderClass) {
+            $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]); /* @var $order Order */
             if ($order) {
                 foreach ($order->getDeputies() as $deputy) {
                     $this->em->remove($deputy);
                 }
-                $ret[] = $orderClass . " for client " . self::BEHAT_CASE_NUMBER . " already created, deputies dropped";
+                foreach ($order->getDocuments() as $document) {
+                    $this->em->remove($document);
+                }
+                $ret[] = $orderClass . " for client " . self::BEHAT_CASE_NUMBER . " already created, deputies and documents dropped";
             } else {
                 $order = new $orderClass($client, new \DateTime('3 days ago'));
                 $this->em->persist($order);

@@ -126,37 +126,42 @@
         <thead class="govuk-table__head">
             <tr>
                 <th scope="col" class="govuk-table__header">Document</th>
+                <th scope="col" class="govuk-table__header">File name</th>
                 <th scope="col" class="govuk-table__header">Status</th>
                 <th scope="col" class="govuk-table__header"></th>
             </tr>
         </thead>
 
         <tbody class="govuk-table__body">
-        {% for docType in order.expectedDocuments %}
+        {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
             {% set doc = order.getDocumentsByType(docType) | first %}
 
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
-                <td class="govuk-table__cell">
-                    {% if doc | length %}
-                        Uploaded
-                    {% else %}
-                        Required
+                <td class="govuk-table__cell behat-region-document-{{ docType }}-filename">
+                    {% if doc %}
+                        {{ doc.filename }}
                     {% endif %}
                 </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">
-                    <a href="{{
-                        doc | length ?
-                        path('document-remove', {'orderId': order.id, 'id': doc.id})
-                        : path('document-add', {'orderId': order.id, 'docType': docType})
-                    }}"
-                       class="govuk-link govuk-!-font-weight-bold">
-                        {% if doc | length %}
-                            Remove
+                <td class="govuk-table__cell">
+                    {% if doc %}
+                        Uploaded
+                    {% else %}
+                        {% if docIsRequired %}
+                            Required
                         {% else %}
-                            <span class="govuk-icon govuk-icon--plus"></span>Add document
+                            Required if deputy has completed section 2
                         {% endif %}
-                    </a>
+                    {% endif %}
+                </td>
+                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType }}-actions">
+                    {% if doc | length %}
+                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType }} govuk-link govuk-!-font-weight-bold">Remove</a>
+                    {% else %}
+                        <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType }} govuk-link govuk-!-font-weight-bold">
+                            <span class="govuk-icon govuk-icon--plus behat-link"></span>Add document
+                        </a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
@@ -170,7 +175,7 @@
 
         <h2 class="govuk-heading-m">Attached documents</h2>
 
-        <table class="govuk-table">
+        <table class="govuk-table behat-region-documents-additional-filenames">
             <thead class="govuk-table__head">
                 <tr>
                     <th scope="col" class="govuk-table__header">File name</th>
@@ -179,12 +184,15 @@
                 </tr>
             </thead>
 
-            <tbody class="govuk-table__body behat-region-document-list">
+            <tbody class="govuk-table__body">
             {% for doc in otherDocs %}
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">{{ doc.file }}</td>
+                    <td class="govuk-table__cell">
+                        {% if doc.filename | length %}
+                            {{ doc.filename }}
+                        {% endif %}</td>
                     <td class="govuk-table__cell">{{ doc.createdAt | date('j F H:i') }}</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
                         <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
                     </td>
                 </tr>
@@ -195,9 +203,9 @@
 
 
 
-    <p class="govuk-!-margin-bottom-9">
+    <p class="govuk-!-margin-bottom-9 behat-region-documents-additional">
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="govuk-link govuk-!-font-weight-bold">
+           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-additional">
            <span class="govuk-icon govuk-icon--plus"></span>Add additional document
        </a>
     </p>

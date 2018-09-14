@@ -1,14 +1,10 @@
 services:
-
     _defaults:
         autowire: true
         autoconfigure: true
         public: false
 
-
-    Doctrine\ORM\EntityManager:
-      alias: doctrine.orm.entity_manager
-      public: true
+    Doctrine\ORM\EntityManager: "@doctrine.orm.entity_manager"
 
     AppBundle\DataFixtures\DefaultFixtures: ~
     AppBundle\Controller\IndexController: ~
@@ -20,26 +16,23 @@ services:
     AppBundle\Controller\DocumentController: ~
     AppBundle\Controller\BehatController: ~
 
-    AppBundle\Service\OrderService:
-      public: true
+    AppBundle\Service\OrderService: ~
     AppBundle\Service\DeputyService: ~
+    AppBundle\Service\DocumentService: ~
 
-    twig.assets_extension:
-        class: AppBundle\Twig\AssetsExtension
-        public: false
+    # twig extensions
+    AppBundle\Twig\AssetsExtension:
         arguments: [ "/assets/", "%env(DC_ASSETS_VERSION)%" ]
         tags:
             - { name: twig.extension }
 
-    twig.debug_extension:
-      class: AppBundle\Twig\DebugExtension
-      public: false
+    AppBundle\Twig\DebugExtension:
       tags:
       - { name: twig.extension }
 
-# https://github.com/symfony/symfony/issues/15259
-    aws_dynamo.client:
-        class: Aws\DynamoDb\DynamoDbClient
+
+    # Dynamo Db (session) config
+    Aws\DynamoDb\DynamoDbClient:
         arguments:
             - region: 'eu-west-1'
               version: 'latest'
@@ -47,11 +40,9 @@ services:
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
 
-    aws_dynamo.session:
-       class: Common\SessionConnectionCreatingTable
+    Common\SessionConnectionCreatingTable:
        arguments:
-           - "@aws_dynamo.client"
-           -
+         $config:
             table_name: 'sessions'
             hash_key: 'id'
             max_lock_wait_time: 10
@@ -60,9 +51,43 @@ services:
 
     dynamo_session_handler:
       class: Aws\DynamoDb\SessionHandler
-      arguments: [ "@aws_dynamo.session" ]
+      arguments: [ "@Common\\SessionConnectionCreatingTable" ]
 
+    Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
-    Aws\DynamoDb\SessionConnectionInterface:
-       alias: aws_dynamo.session
-       public: true
+    AppBundle\Service\S3Client:
+      arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
+
+    # document storage and checking
+    Aws\S3\S3ClientInterface: "@AppBundle\\Service\\S3Client"
+
+    AppBundle\Service\File\Storage\S3Storage:
+      arguments:
+        $bucketName: "%env(DC_S3_BUCKET_NAME)%"
+
+    AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
+    AppBundle\Service\File\Checker\ClamAVChecker: ~
+    AppBundle\Service\File\Checker\PdfChecker: ~
+    AppBundle\Service\File\Checker\JpgChecker: ~
+    AppBundle\Service\File\Checker\PngChecker: ~
+    AppBundle\Service\File\Checker\FileCheckerFactory: ~
+    AppBundle\Service\File\FileUploader: ~
+    AppBundle\Service\File\Types\Pdf: ~
+    AppBundle\Service\File\Types\Jpg: ~
+    AppBundle\Service\File\Types\Png: ~
+
+    GuzzleHttp\Client:
+      class: GuzzleHttp\Client
+      arguments:
+        $config:
+          base_uri: "https://file-scanner-api:8443"
+          verify: false
+          proxy: ""
+          debug: false
+          headers:
+            Content-Type: multipart-form-data
+          version: "1.1"
+          timeout: 10
+          allow_redirects: false
+
+    GuzzleHttp\ClientInterface: "@GuzzleHttp\\Client"

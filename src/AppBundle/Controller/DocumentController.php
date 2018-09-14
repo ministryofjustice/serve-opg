@@ -2,18 +2,21 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Document;
 use AppBundle\Entity\Order;
-use AppBundle\Entity\User;
-use AppBundle\Form\DeputyForm;
 use AppBundle\Form\DocumentForm;
+use AppBundle\Service\DocumentService;
+use AppBundle\Service\File\Checker\Exception\RiskyFileException;
+use AppBundle\Service\File\Checker\Exception\VirusFoundException;
+use AppBundle\Service\File\Checker\FileCheckerFactory;
+use AppBundle\Service\File\FileUploader;
+use AppBundle\Service\File\Storage\StorageInterface;
+use AppBundle\Service\File\Types\Pdf;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DocumentController extends Controller
 {
@@ -23,13 +26,29 @@ class DocumentController extends Controller
     private $em;
 
     /**
-     * UserController constructor.
-     * @param EntityManager $em
+     * @var DocumentService
      */
-    public function __construct(EntityManager $em)
+    private $documentService;
+
+    /**
+     * @var FileUploader
+     */
+    private $fileUploader;
+
+    /**
+     * @var FileCheckerFactory
+     */
+    private $fileCheckerFactory;
+
+
+    public function __construct(EntityManager $em, DocumentService $documentService, FileUploader $fileUploader, FileCheckerFactory $fileCheckerFactory)
     {
         $this->em = $em;
+        $this->documentService = $documentService;
+        $this->fileUploader = $fileUploader;
+        $this->fileCheckerFactory = $fileCheckerFactory;
     }
+
 
     /**
      * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
@@ -41,22 +60,56 @@ class DocumentController extends Controller
             throw new \RuntimeException("Order not existing");
         }
 
-        $doc = new Document($order, $docType);
-        $form = $this->createForm(DocumentForm::class, $doc);
+        $document = new Document($order, $docType);
+        $form = $this->createForm(DocumentForm::class, $document);
+
+        //TODO implement redirect with JS and import error message
+        /*if ($request->get('error') == 'tooBig') {
+            $message = $this->get('translator')->trans('document.file.errors.maxSizeMessage', [], 'validators');
+            $form->get('file')->addError(new FormError($message));
+        }*/
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $document->getFile();
+            $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
+            try {
+                $fileObject->checkFile();
+                if ($fileObject->isSafe()) {
+                    $document = $this->fileUploader->uploadFile(
+                        $order,
+                        $document,
+                        file_get_contents($uploadedFile->getPathName())
+                    );
+                    $request->getSession()->getFlashBag()->add('notice', 'File uploaded');
 
-//                $file = $doc->getFile(); // upload this to S3
+                    $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
+                    $document->setFilename($fileName);
 
-            $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
+                    $this->em->persist($document);
+                    $this->em->flush($document);
+                } else {
+                    $request->getSession()->getFlashBag()->add('notice', 'File could not be uploaded');
+                }
 
-            $doc->setFile($fileName);
+                return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+            } catch (\Exception $e) {
 
-            $this->em->persist($doc);
-            $this->em->flush($doc);
-
-            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+                $errorToErrorTranslationKey = [
+                    RiskyFileException::class => 'risky',
+                    VirusFoundException::class => 'virusFound',
+                ];
+                $errorClass = get_class($e);
+                if (isset($errorToErrorTranslationKey[$errorClass])) {
+                    $errorKey = $errorToErrorTranslationKey[$errorClass];
+                } else {
+                    $errorKey = 'generic';
+                }
+                $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
+                    '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $request->headers->get('x-request-id'),
+                ], 'validators');
+                $form->get('file')->addError(new FormError($message));
+                $this->get('logger')->error($e->getMessage()); //fully log exceptions
+            }
         }
 
         return $this->render('AppBundle:Document:add.html.twig', [
@@ -71,14 +124,15 @@ class DocumentController extends Controller
      */
     public function removeAction(Request $request, $orderId, $id)
     {
-        $doc = $this->em->getRepository(Document::class)->find($id); /* @var $doc Document */
-        if (!$doc) {
-            throw new \RuntimeException("not found");
+        try {
+            $this->documentService->deleteDocumentById($id);
+        } catch (\Exception $e) {
+            $this->get('logger')->error($e->getMessage());
+            $this->addFlash('error', 'Document could not be removed.');
         }
-
-        $this->em->remove($doc);
-        $this->em->flush($doc);
 
         return $this->redirectToRoute('order-summary', ['orderId' => $orderId]);
     }
+
+
 }

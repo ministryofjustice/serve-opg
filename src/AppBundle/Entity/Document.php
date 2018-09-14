@@ -2,15 +2,20 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 class Document
 {
-    const TYPE_COP1A = 'cop1a';
-    const TYPE_COP1C = 'cop1c';
-    const TYPE_COP3 = 'cop3';
-    const TYPE_COP4 = 'cop3';
-    const TYPE_COURT_ORDER = 'co';
-    const TYPE_OTHER = 'co';
-    const TYPE_ADDITIONAL = 'additional';
+    const TYPE_COP1A = 'cop1a'; // required by PF
+    const TYPE_COP1C = 'cop1c'; // displayed by PF, but not required
+    const TYPE_COP3 = 'cop3'; // required by PF and HW
+    const TYPE_COP4 = 'cop4'; // required by PF and HW
+    const TYPE_COURT_ORDER = 'co'; //required by PF and HW
+
+    const TYPE_ADDITIONAL = 'additional'; // not required
+
+    const FILE_NAME_MAX_LENGTH = 255;
+    const MAX_UPLOAD_PER_ORDER = 100;
 
     /**
      * @var int|null
@@ -27,10 +32,34 @@ class Document
      */
     private $type;
 
-    /**
-     * @var string|null
+//    /**
+//     * // add more validators here if needed
+//     * http://symfony.com/doc/current/reference/constraints/File.html
+//     *
+//     * @Assert\NotBlank(message="Please choose a file", groups={"document"})
+//     * @Assert\File(
+//     *     maxSize = "15M",
+//     *     maxSizeMessage = "document.file.errors.maxSizeMessage",
+//     *     mimeTypes = {"application/pdf", "application/x-pdf", "image/png", "image/jpeg"},
+//     *     mimeTypesMessage = "document.file.errors.mimeTypesMessage",
+//     *     groups={"document"}
+//     * )
+
+     /**
+     *
+     * @var UploadedFile
      */
     private $file;
+
+    /**
+     * @var string
+     */
+    private $fileName;
+
+    /***
+     * @var string
+     */
+    private $storageReference;
 
     /**
      * @var \DateTime
@@ -49,6 +78,37 @@ class Document
         $this->createdAt = new \DateTime();
     }
 
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function isValidForOrder(ExecutionContextInterface $context)
+    {
+        if (!($this->getFile() instanceof UploadedFile)) {
+            return;
+        }
+
+        $fileNames = [];
+        foreach ($this->getOrder()->getDocuments() as $document) {
+            $fileNames[] = $document->getFileName();
+        }
+
+        $fileOriginalName = $this->getFile()->getClientOriginalName();
+
+        if (strlen($fileOriginalName) > self::FILE_NAME_MAX_LENGTH) {
+            $context->buildViolation('document.file.errors.maxMessage')->atPath('file')->addViolation();
+            return;
+        }
+
+        if (in_array($fileOriginalName, $fileNames)) {
+            $context->buildViolation('document.file.errors.alreadyPresent')->atPath('file')->addViolation();
+            return;
+        }
+
+//        if (count($this->getReport()->getDocuments()) >= self::MAX_UPLOAD_PER_ORDER) {
+//            $context->buildViolation('document.file.errors.maxDocumentsPerReport')->atPath('file')->addViolation();
+//            return;
+//        }
+    }
 
     /**
      * @return int|null
@@ -105,21 +165,57 @@ class Document
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getFile(): ?string
+    public function getFileName()
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @param  string   $fileName
+     * @return Document
+     */
+    public function setFileName($fileName)
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStorageReference()
+    {
+        return $this->storageReference;
+    }
+
+    /**
+     * @param  string   $storageReference
+     * @return Document
+     */
+    public function setStorageReference($storageReference)
+    {
+        $this->storageReference = $storageReference;
+
+        return $this;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFile()
     {
         return $this->file;
     }
 
     /**
-     * @param null|string $file
-     * @return Document
+     * @param UploadedFile $file
      */
-    public function setFile(?string $file): Document
+    public function setFile($file)
     {
         $this->file = $file;
-        return $this;
     }
 
     /**

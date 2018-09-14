@@ -136,9 +136,15 @@
 
 {# Simple input #}
 {% block form_widget_simple -%}
-    {% if type is not defined or type not in ['file', 'hidden'] %}
+    <p class="debug-label">Custom: form_widget_simple</p>
+    {% set additionalClass = type is defined and type == 'file' ? 'govuk-file-upload' : 'govuk-input' %}
+
+    {% if type is defined and type == 'file' %}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-file-upload')|trim}) -%}
+    {% elseif type is not defined or type not in ["hidden"] %}
         {%- set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-input')|trim}) -%}
     {% endif %}
+
     {{- parent() -}}
 {%- endblock form_widget_simple %}
 
