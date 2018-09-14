@@ -15,7 +15,6 @@ Feature: documents
 
     # Add COP3 PNG
     When I click on "add-document-cop3" in the "documents-cop3-actions" region
-    Then the url should match "/order/\d+/document/cop3/add"
     When I attach the file "test-cop3.png" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
@@ -23,7 +22,6 @@ Feature: documents
 
     # Add COP4 PDF
     When I click on "add-document-cop4" in the "documents-cop4-actions" region
-    Then the url should match "/order/\d+/document/cop4/add"
     When I attach the file "test-cop4.pdf" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
@@ -31,7 +29,6 @@ Feature: documents
 
     # Add Court order
     When I click on "add-document-co" in the "documents-co-actions" region
-    Then the url should match "/order/\d+/document/co/add"
     When I attach the file "test-court-order.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
@@ -46,7 +43,6 @@ Feature: documents
 
     # Add COP1C JPG (not required)
     When I click on "add-document-cop1c" in the "documents-cop1c-actions" region
-    Then the url should match "/order/\d+/document/cop1c/add"
     When I attach the file "test-cop1c.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
@@ -69,22 +65,25 @@ Feature: documents
     Then the url should match "/order/\d+/summary"
     # Add COP3 PNG
     When I click on "add-document-cop3" in the "documents-cop3-actions" region
-    Then the url should match "/order/\d+/document/cop3/add"
     When I attach the file "test-cop3.png" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
     And the order should be unservable
     # Add COP4 PDF
     When I click on "add-document-cop4" in the "documents-cop4-actions" region
-    Then the url should match "/order/\d+/document/cop4/add"
     When I attach the file "test-cop4.pdf" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
     And the order should be unservable
     # Add Court order
     When I click on "add-document-co" in the "documents-co-actions" region
-    Then the url should match "/order/\d+/document/co/add"
     When I attach the file "test-cop1c.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
     And the order should be servable
+    # Add additional docuiment
+    # Add Other additional document
+    When I click on "add-document-additional" in the "documents-additional" region
+    When I attach the file "test-other.jpg" to "document_form_file"
+    And I click on "submit"
+    Then the form should be valid
