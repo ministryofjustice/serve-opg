@@ -138,7 +138,7 @@
 
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
-                <td class="govuk-table__cell">
+                <td class="govuk-table__cell behat-region-document-{{ docType }}-filename">
                     {% if doc %}
                         {{ doc.filename }}
                     {% endif %}
@@ -180,7 +180,7 @@
 
         <h2 class="govuk-heading-m">Attached documents</h2>
 
-        <table class="govuk-table">
+        <table class="govuk-table behat-region-documents-additional-filenames">
             <thead class="govuk-table__head">
                 <tr>
                     <th scope="col" class="govuk-table__header">File name</th>
@@ -189,7 +189,7 @@
                 </tr>
             </thead>
 
-            <tbody class="govuk-table__body behat-region-document-list">
+            <tbody class="govuk-table__body">
             {% for doc in otherDocs %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
@@ -197,7 +197,7 @@
                             {{ doc.filename }}
                         {% endif %}</td>
                     <td class="govuk-table__cell">{{ doc.createdAt | date('j F H:i') }}</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
                         <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
                     </td>
                 </tr>
@@ -208,9 +208,9 @@
 
 
 
-    <p class="govuk-!-margin-bottom-9">
+    <p class="govuk-!-margin-bottom-9 behat-region-documents-additional">
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="govuk-link govuk-!-font-weight-bold">
+           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-additional">
            <span class="govuk-icon govuk-icon--plus"></span>Add additional document
        </a>
     </p>
