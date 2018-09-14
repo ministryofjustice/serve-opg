@@ -16,7 +16,6 @@ Feature: serve order
     Then I should see the "order-12345678-pa" region
     And I should see "test-cop1a.pdf" in the "order-12345678-pa" region
 
-
   Scenario: Serve HW order
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
