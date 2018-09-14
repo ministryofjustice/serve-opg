@@ -4,9 +4,7 @@ services:
         autoconfigure: true
         public: false
 
-    Doctrine\ORM\EntityManager:
-      alias: doctrine.orm.entity_manager
-      public: true
+    Doctrine\ORM\EntityManager: "@doctrine.orm.entity_manager"
 
     AppBundle\DataFixtures\DefaultFixtures: ~
     AppBundle\Controller\IndexController: ~
@@ -20,6 +18,7 @@ services:
 
     AppBundle\Service\OrderService: ~
     AppBundle\Service\DeputyService: ~
+    AppBundle\Service\DocumentService: ~
 
     # twig extensions
     AppBundle\Twig\AssetsExtension:
@@ -54,17 +53,12 @@ services:
       class: Aws\DynamoDb\SessionHandler
       arguments: [ "@Common\\SessionConnectionCreatingTable" ]
 
-    Aws\DynamoDb\SessionConnectionInterface:
-       alias: "Common\\SessionConnectionCreatingTable"
-       public: true
-
-    # document and storage config
-    AppBundle\Service\DocumentService: ~
+    Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
     AppBundle\Service\S3Client:
-      class: AppBundle\Service\S3Client
       arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
 
+    # document storage and checking
     Aws\S3\S3ClientInterface: "@AppBundle\\Service\\S3Client"
 
     AppBundle\Service\File\Storage\S3Storage:
@@ -82,7 +76,6 @@ services:
     AppBundle\Service\File\Types\Jpg: ~
     AppBundle\Service\File\Types\Png: ~
 
-    # file scanner
     GuzzleHttp\Client:
       class: GuzzleHttp\Client
       arguments:
