@@ -89,7 +89,9 @@ class S3Storage implements StorageInterface
      */
     public function delete($key)
     {
-        $this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
+        /** If no access to remove, we'll need to reimplment tagging **/
+
+        //$this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
 
         return $this->s3Client->deleteObject([
             'Bucket' => $this->bucketName,

@@ -26,6 +26,9 @@ services:
     AppBundle\Service\OrderService:
       public: true
     AppBundle\Service\DeputyService: ~
+    AppBundle\Service\DocumentService:
+      arguments: [ "@doctrine.orm.entity_manager", "@s3_storage", "@logger" ]
+      public: true
 
     twig.assets_extension:
         class: AppBundle\Twig\AssetsExtension

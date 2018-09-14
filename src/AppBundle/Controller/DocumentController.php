@@ -2,19 +2,16 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Document;
 use AppBundle\Entity\Order;
-use AppBundle\Entity\User;
-use AppBundle\Form\DeputyForm;
 use AppBundle\Form\DocumentForm;
+use AppBundle\Service\DocumentService;
 use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
 use AppBundle\Service\File\FileUploader;
 use AppBundle\Service\File\Types\UploadableFileInterface;
 use Doctrine\ORM\EntityManager;
-use AppBundle\Service\File\Checker\FileCheckerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,13 +26,26 @@ class DocumentController extends Controller
      */
     private $em;
 
+
+    /**
+     * @var DocumentService
+     */
+    private $documentService;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     /**
      * UserController constructor.
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, DocumentService $documentService, LoggerInterface $logger)
     {
         $this->em = $em;
+        $this->documentService = $documentService;
+        $this->logger = $logger;
     }
 
     /**
@@ -103,25 +113,6 @@ class DocumentController extends Controller
             }
         }
 
-
-
-
-
-
-
-            /***** OLD ***/
-//                $file = $document->getFile(); // upload this to S3
-
-//            $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
-//
-//            $document->setFile($fileName);
-//
-//            $this->em->persist($document);
-//            $this->em->flush($document);
-
-//            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
-//        }
-
         return $this->render('AppBundle:Document:add.html.twig', [
             'order' => $order,
             'docType' => $docType,
@@ -134,14 +125,15 @@ class DocumentController extends Controller
      */
     public function removeAction(Request $request, $orderId, $id)
     {
-        $doc = $this->em->getRepository(Document::class)->find($id); /* @var $doc Document */
-        if (!$doc) {
-            throw new \RuntimeException("not found");
+        try {
+            $this->documentService->deleteDocumentById($id);
+        } catch ( \Exception $e) {
+            $this->get('logger')->error($e->getMessage());
+            $this->addFlash('error', 'Document could not be removed.');
         }
-
-        $this->em->remove($doc);
-        $this->em->flush($doc);
 
         return $this->redirectToRoute('order-summary', ['orderId' => $orderId]);
     }
+
+
 }
