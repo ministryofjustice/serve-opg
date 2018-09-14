@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service\File\Checker;
 
+use AppBundle\Service\File\Types\UploadableFile;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -21,7 +22,7 @@ class FileCheckerFactory
     /**
      * @param UploadedFile $uploadedFile
      *
-     * @return FileCheckerInterface
+     * @return UploadableFile
      */
     public function factory(UploadedFile $uploadedFile)
     {

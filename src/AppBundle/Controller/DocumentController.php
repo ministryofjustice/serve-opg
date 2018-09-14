@@ -8,6 +8,7 @@ use AppBundle\Form\DocumentForm;
 use AppBundle\Service\DocumentService;
 use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
+use AppBundle\Service\File\Checker\FileCheckerFactory;
 use AppBundle\Service\File\FileUploader;
 use AppBundle\Service\File\Types\UploadableFileInterface;
 use Doctrine\ORM\EntityManager;
@@ -26,27 +27,36 @@ class DocumentController extends Controller
      */
     private $em;
 
-
     /**
      * @var DocumentService
      */
     private $documentService;
 
     /**
-     * @var LoggerInterface
+     * @var FileUploader
      */
-    private $logger;
+    private $fileUploader;
 
     /**
-     * UserController constructor.
-     * @param EntityManager $em
+     * @var FileCheckerFactory
      */
-    public function __construct(EntityManager $em, DocumentService $documentService, LoggerInterface $logger)
+    private $fileCheckerFactory;
+
+    /**
+     * DocumentController constructor.
+     * @param EntityManager $em
+     * @param DocumentService $documentService
+     * @param FileUploader $fileUploader
+     * @param FileCheckerFactory $fileCheckerFactory
+     */
+    public function __construct(EntityManager $em, DocumentService $documentService, FileUploader $fileUploader, FileCheckerFactory $fileCheckerFactory)
     {
         $this->em = $em;
         $this->documentService = $documentService;
-        $this->logger = $logger;
+        $this->fileUploader = $fileUploader;
+        $this->fileCheckerFactory = $fileCheckerFactory;
     }
+
 
     /**
      * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
@@ -61,25 +71,22 @@ class DocumentController extends Controller
         $document = new Document($order, $docType);
         $form = $this->createForm(DocumentForm::class, $document);
 
-        if ($request->get('error') == 'tooBig') {
+        //TODO implement redirect with JS and import error message
+        /*if ($request->get('error') == 'tooBig') {
             $message = $this->get('translator')->trans('document.file.errors.maxSizeMessage', [], 'validators');
             $form->get('file')->addError(new FormError($message));
-        }
+        }*/
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $fileUploader = $this->container->get('file_uploader'); /* @var $fileUploader FileUploader */
-            /* @var $uploadedFile UploadedFile */
             $uploadedFile = $document->getFile();
-            /** @var UploadableFileInterface $fileObject */
-            $fileObject = $this->get('file_checker_factory')->factory($uploadedFile);
+            $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
             try {
                 $fileObject->checkFile();
                 if ($fileObject->isSafe()) {
-                    $document = $fileUploader->uploadFile(
+                    $document = $this->fileUploader->uploadFile(
                         $order,
                         $document,
-                        file_get_contents($uploadedFile->getPathName()),
-                        $uploadedFile->getClientOriginalName()
+                        file_get_contents($uploadedFile->getPathName())
                     );
                     $request->getSession()->getFlashBag()->add('notice', 'File uploaded');
 
@@ -127,7 +134,7 @@ class DocumentController extends Controller
     {
         try {
             $this->documentService->deleteDocumentById($id);
-        } catch ( \Exception $e) {
+        } catch (\Exception $e) {
             $this->get('logger')->error($e->getMessage());
             $this->addFlash('error', 'Document could not be removed.');
         }

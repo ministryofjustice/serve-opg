@@ -41,7 +41,7 @@ services:
 
    file_checker_factory:
       class: AppBundle\Service\File\Checker\FileCheckerFactory
-      arguments: [ "@service_container", 'uploadedFile']
+      arguments: [ "@service_container" ]
       public: true
 
    file_pdf:
