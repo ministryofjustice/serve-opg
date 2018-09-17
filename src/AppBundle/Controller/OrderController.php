@@ -44,11 +44,7 @@ class OrderController extends Controller
      */
     public function editAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId);
-        /** @var $order Order */
-        if (!$order) {
-            throw new \RuntimeException("Order not existing");
-        }
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $form = $this->createForm(OrderForm::class, $order, [
             'show_assets_question' => $order->getType() == Order::TYPE_PA
@@ -72,11 +68,8 @@ class OrderController extends Controller
      */
     public function summaryAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId);
-        /** @var $order Order */
-        if (!$order) {
-            throw new \RuntimeException("Order not existing");
-        }
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
         // nothing answered -> go to step 1
         if (empty($order->getHasAssetsAboveThreshold())
             && empty($order->getSubType())
@@ -95,11 +88,7 @@ class OrderController extends Controller
      */
     public function declarationAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId);
-        /** @var $order Order */
-        if (!$order) {
-            throw new \RuntimeException("Order not existing");
-        }
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $form = $this->createForm(DeclarationForm::class);
         $form->handleRequest($request);

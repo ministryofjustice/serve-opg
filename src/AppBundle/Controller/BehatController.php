@@ -24,7 +24,6 @@ class BehatController extends Controller
     const BEHAT_PASSWORD = 'Abcd1234';
     const BEHAT_CASE_NUMBER = '12345678';
 
-
     /**
      * @var EntityManager
      */
@@ -45,7 +44,6 @@ class BehatController extends Controller
         $this->em = $em;
         $this->encoder = $encoder;
     }
-
 
     /**
      * //TODO protect from running on production ?
