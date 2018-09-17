@@ -5,7 +5,7 @@ Feature: deputy
     When I follow "order-12345678-hw"
     Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
-    And the url should match "case/order/\d+/deputy/add"
+    And the url should match "order/\d+/deputy/add"
         # check form validation
     When I fill in the following:
       | deputy_form_deputyType | lay |
