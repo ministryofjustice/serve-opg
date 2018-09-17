@@ -1,5 +1,18 @@
 Feature: cases
 
+  Scenario: upload CSV
+    Given I am logged in as behat user
+    When I go to "/upload-csv"
+    When I attach the file "behat-users.csv" to "csv_upload_form_file"
+    And I click on "submit"
+    Then the form should be valid
+    And I should see the "order-12345678-pa" region
+    And I should see the "order-12345678-hw" region
+    When I go to "/behat/reset-behat-orders"
+    And print last response
+    Then the response status code should be 200
+
+
   Scenario: PA order: set assets, subtype, appointment type
     Given I am logged in as behat user
     When I follow "order-12345678-pa"

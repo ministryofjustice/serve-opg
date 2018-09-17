@@ -15,10 +15,13 @@ services:
     AppBundle\Controller\DeputyController: ~
     AppBundle\Controller\DocumentController: ~
     AppBundle\Controller\BehatController: ~
+    AppBundle\Controller\CsvController: ~
 
+    AppBundle\Service\ClientService: ~
     AppBundle\Service\OrderService: ~
     AppBundle\Service\DeputyService: ~
     AppBundle\Service\DocumentService: ~
+    AppBundle\Service\CsvImporterService: ~
 
     # twig extensions
     AppBundle\Twig\AssetsExtension:

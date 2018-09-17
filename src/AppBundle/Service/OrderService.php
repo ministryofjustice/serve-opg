@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderTypeHw;
 use AppBundle\Entity\OrderPf;
@@ -40,7 +41,8 @@ class OrderService
      */
     public function getOrderByIdIfNotServed($orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+        /** @var $order Order */
 
         if (!$order) {
             throw new \RuntimeException("Order not existing");
@@ -50,6 +52,44 @@ class OrderService
         }
 
         return $order;
+    }
+
+    /**
+     * @param Client $client
+     * @param string $orderClass
+     * @param \DateTime $issuedAt
+     *
+     * @return Order
+     */
+    public function upsert(Client $client, $orderClass, \DateTime $issuedAt)
+    {
+        $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]); /* @var $order Order */
+        if (!$order) {
+            $order = new $orderClass($client, $issuedAt);
+            $this->em->persist($order);
+            $this->em->flush($client);
+        }
+
+        return $order;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function emptyOrder(Order $order)
+    {
+        foreach ($order->getDeputies() as $deputy) {
+            $this->em->remove($deputy);
+        }
+        foreach ($order->getDocuments() as $document) {
+            $this->em->remove($document);
+        }
+        $order
+            ->setServedAt(null)
+            ->setSubType(null)
+            ->setHasAssetsAboveThreshold(null)
+            ->setAppointmentType(null);
+        $this->em->flush($order);
     }
 
 }
