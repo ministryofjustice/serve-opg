@@ -46,7 +46,7 @@ class OrderService
             throw new \RuntimeException("Order not existing");
         }
         if ($order->getServedAt()) {
-            throw new AccessDeniedException('Cannot modify an already served order');
+            throw new AccessDeniedException('Cannot access an already served order');
         }
 
         return $order;
