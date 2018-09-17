@@ -40,7 +40,7 @@ class DeputyController extends Controller
     }
 
     /**
-     * @Route("/case/order/{orderId}/deputy/add", name="deputy-add")
+     * @Route("/order/{orderId}/deputy/add", name="deputy-add")
      */
     public function addAction(Request $request, $orderId)
     {
