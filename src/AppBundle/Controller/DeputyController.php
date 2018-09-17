@@ -78,15 +78,23 @@ class DeputyController extends Controller
         ]);
     }
 
-
     /**
      * @Route("/case/order/{orderId}/deputy/edit/{deputyId}", name="deputy-edit")
+     * @param Request $request
+     * @param $orderId
+     * @param $deputyId
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function editAction(Request $request, $orderId, $deputyId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
         $deputy = $order->getDeputyById($deputyId);
+
+        if (!$deputy instanceof Deputy) {
+            throw new \RuntimeException('Unknown Deputy');
+        }
 
         $form = $this->createForm(DeputyForm::class, $deputy);
         $form->handleRequest($request);
