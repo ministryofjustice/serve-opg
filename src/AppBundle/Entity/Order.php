@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 abstract class Order
 {
@@ -312,4 +313,19 @@ abstract class Order
         return $this->servedAt;
     }
 
+    /**
+     * Filter o ut a deputy from the list of deputies assigned to this order
+     *
+     * @param $deputyId
+     * @return bool|static
+     */
+    public function getDeputyById($deputyId)
+    {
+        $result = $this->getDeputies()->filter(
+            function(Deputy $deputy) use ($deputyId) {
+                return $deputy->getId() == $deputyId;
+            }
+        );
+        return $result->count() > 0 ? $result[0] : null;
+    }
 }
