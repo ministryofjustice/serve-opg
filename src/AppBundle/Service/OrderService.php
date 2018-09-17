@@ -6,6 +6,7 @@ use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderTypeHw;
 use AppBundle\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OrderService
 {
@@ -30,6 +31,25 @@ class OrderService
         }
         $order->setServedAt(new \DateTime());
         $this->em->flush($order);
+    }
+
+    /**
+     * @param integer $orderId
+     *
+     * @return Order
+     */
+    public function getOrderByIdIfNotServed($orderId)
+    {
+        $order = $this->em->getRepository(Order::class)->find($orderId); /** @var $order Order */
+
+        if (!$order) {
+            throw new \RuntimeException("Order not existing");
+        }
+        if ($order->getServedAt()) {
+            throw new AccessDeniedException('Cannot modify an already served order');
+        }
+
+        return $order;
     }
 
 }

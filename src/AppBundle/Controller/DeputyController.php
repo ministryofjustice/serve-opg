@@ -8,6 +8,7 @@ use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
 use AppBundle\Service\DeputyService;
 use AppBundle\Form\DeputyForm;
+use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,16 +28,21 @@ class DeputyController extends Controller
     private $deputyService;
 
     /**
-     * DeputyController constructor
-     * .
+     * @var OrderService
+     */
+    private $orderService;
+
+    /**
+     * DeputyController constructor.
      * @param EntityManager $em
      * @param DeputyService $deputyService
+     * @param OrderService $orderService
      */
-    public function __construct(EntityManager $em, DeputyService $deputyService)
+    public function __construct(EntityManager $em, DeputyService $deputyService, OrderService $orderService)
     {
         $this->em = $em;
         $this->deputyService = $deputyService;
-
+        $this->orderService = $orderService;
     }
 
     /**
@@ -44,7 +50,7 @@ class DeputyController extends Controller
      */
     public function addAction(Request $request, $orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId);
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $deputy = new Deputy($order);
 

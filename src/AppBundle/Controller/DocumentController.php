@@ -12,6 +12,7 @@ use AppBundle\Service\File\Checker\FileCheckerFactory;
 use AppBundle\Service\File\FileUploader;
 use AppBundle\Service\File\Storage\StorageInterface;
 use AppBundle\Service\File\Types\Pdf;
+use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
@@ -24,6 +25,11 @@ class DocumentController extends Controller
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @var OrderService
+     */
+    private $orderService;
 
     /**
      * @var DocumentService
@@ -40,25 +46,29 @@ class DocumentController extends Controller
      */
     private $fileCheckerFactory;
 
-
-    public function __construct(EntityManager $em, DocumentService $documentService, FileUploader $fileUploader, FileCheckerFactory $fileCheckerFactory)
+    /**
+     * DocumentController constructor.
+     * @param EntityManager $em
+     * @param OrderService $orderService
+     * @param DocumentService $documentService
+     * @param FileUploader $fileUploader
+     * @param FileCheckerFactory $fileCheckerFactory
+     */
+    public function __construct(EntityManager $em, OrderService $orderService, DocumentService $documentService, FileUploader $fileUploader, FileCheckerFactory $fileCheckerFactory)
     {
         $this->em = $em;
+        $this->orderService = $orderService;
         $this->documentService = $documentService;
         $this->fileUploader = $fileUploader;
         $this->fileCheckerFactory = $fileCheckerFactory;
     }
-
 
     /**
      * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
      */
     public function addAction(Request $request, $orderId, $docType)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId);
-        if (!$order) {
-            throw new \RuntimeException("Order not existing");
-        }
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $document = new Document($order, $docType);
         $form = $this->createForm(DocumentForm::class, $document);

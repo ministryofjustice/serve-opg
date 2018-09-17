@@ -65,9 +65,13 @@
                             {% set client = order.client %}
                             <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >
                                 <td class="govuk-table__cell">
-                                    <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
-                                        {{ client.caseNumber }}
-                                    </a>
+                                    {% if order.servedAt %}
+                                         {{ client.caseNumber }}
+                                    {% else %}
+                                        <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
+                                            {{ client.caseNumber }}
+                                        </a>
+                                    {% endif %}
                                 </td>
                                 <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>
                                 <td class="govuk-table__cell">{{ client.clientName }}</td>
