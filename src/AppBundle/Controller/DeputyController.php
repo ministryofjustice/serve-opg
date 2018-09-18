@@ -77,4 +77,39 @@ class DeputyController extends Controller
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/case/order/{orderId}/deputy/edit/{deputyId}", name="deputy-edit")
+     * @param Request $request
+     * @param $orderId
+     * @param $deputyId
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function editAction(Request $request, $orderId, $deputyId)
+    {
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+
+        $deputy = $order->getDeputyById($deputyId);
+
+        if (!$deputy instanceof Deputy) {
+            throw new \RuntimeException('Unknown Deputy');
+        }
+
+        $form = $this->createForm(DeputyForm::class, $deputy);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($deputy);
+            $this->em->flush();
+
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+        }
+
+        return $this->render('AppBundle:Deputy:add.html.twig', [
+            'client' => $order->getClient(),
+            'order' => $order,
+            'form' => $form->createView()
+        ]);
+    }
 }
