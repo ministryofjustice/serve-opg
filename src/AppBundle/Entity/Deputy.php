@@ -34,11 +34,6 @@ class Deputy
     /**
      * @var string
      */
-    private $organisationName;
-
-    /**
-     * @var string
-     */
     private $forename;
 
     /**
@@ -223,25 +218,6 @@ class Deputy
     public function setDeputyType($deputyType)
     {
         $this->deputyType = $deputyType;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrganisationName()
-    {
-        return $this->organisationName;
-    }
-
-    /**
-     * @param string $organisationName
-     *
-     * @return Deputy
-     */
-    public function setOrganisationName($organisationName)
-    {
-        $this->organisationName = $organisationName;
         return $this;
     }
 
