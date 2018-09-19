@@ -78,7 +78,7 @@
                         <th scope="col" class="govuk-table__header govuk-!-width-one-third">Deputy {{ loop.index }}</th>
                         <th scope="col" class="govuk-table__header govuk-table__header--numeric">
                             <a href="{{ path('deputy-edit', {'deputyId': deputy.id, 'orderId': order.id}) }}" class="govuk-!-margin-right-3" id="edit-deputy-{{ loop.index }}">Edit</a>
-                            <a href="#">Remove</a>
+                            <a href="{{ path('deputy-delete', {'deputyId': deputy.id, 'orderId': order.id}) }}" id="delete-deputy-{{ loop.index }}">Remove</a>
                         </th>
                     </tr>
                 </thead>

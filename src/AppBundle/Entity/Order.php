@@ -327,4 +327,18 @@ abstract class Order
         );
         return $result->count() > 0 ? $result[0] : null;
     }
+
+    /**
+     * Remove a deputy from the order
+     *
+     * @param Deputy $deputy
+     * @return $this
+     */
+    public function removeDeputy(Deputy $deputy)
+    {
+        if (!$this->deputies->contains($deputy)) {
+            $this->deputies->removeElement($deputy);
+        }
+        return $this;
+    }
 }
