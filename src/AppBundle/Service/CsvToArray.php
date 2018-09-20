@@ -23,6 +23,9 @@ class CsvToArray
      */
     private $normaliseNewLines;
 
+    /**
+     * @var array
+     */
     private $firstRow = [];
 
     /**
@@ -32,8 +35,9 @@ class CsvToArray
      *
      * @throws \RuntimeException
      */
-    public function __construct($file, $normaliseNewLines)
+    public function __construct($file, array $expectedColumns, $normaliseNewLines)
     {
+        $this->expectedColumns = $expectedColumns;
         $this->normaliseNewLines = $normaliseNewLines;
 
         if (!file_exists($file)) {
@@ -48,13 +52,6 @@ class CsvToArray
             ini_set('auto_detect_line_endings', true);
             $this->handle = fopen($file, 'r');
         }
-    }
-
-    public function setExpectedColumns(array $expectedColumns)
-    {
-        $this->expectedColumns = $expectedColumns;
-
-        return $this;
     }
 
     /**

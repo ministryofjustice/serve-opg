@@ -35,17 +35,8 @@ class CsvController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $fileName = $form->get('file')->getData();
-            $csvToArray = new CsvToArray($fileName, true);
-            $rows = $csvToArray->setExpectedColumns([
-                'Case',
-                'ClientName',
-                'OrderType',
-                'IssuedAt',
-            ])->getData();
-
-            foreach ($rows as $row) {
-                $this->csvImporterService->import($row);
-            }
+            $added = $this->csvImporterService->importFile($fileName);
+            $request->getSession()->getFlashBag()->add('notice', "Processeddocker- $added orders");
 
             return $this->redirectToRoute('case-list');
         }

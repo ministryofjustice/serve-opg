@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 
 class CsvImporterService
@@ -28,17 +29,39 @@ class CsvImporterService
     }
 
     /**
-     * @param array $row with keys Case, ClientName, OrderType, IssuedAt
+     * @param array $filePath file CSV with keys: Case, ClientName, OrderType, IssuedAt
      *
-     * @return \AppBundle\Entity\Order
+     * @return integer added columns
      */
-    public function import(array $row)
+    public function importFile($filePath)
     {
-        $wasCreated = null;
+        $csvToArray = new CsvToArray($filePath, [
+            'Case',
+            'ClientName',
+            'OrderType',
+            'IssuedAt',
+        ], true);
+        $rows = $csvToArray->getData();
 
+        $count = 0;
+        foreach ($rows as $row) {
+            $this->importSingleRow($row);
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return Order
+     */
+    private function importSingleRow(array $row)
+    {
         $client = $this->clientService->upsert($row['Case'], $row['ClientName']);
         $issuedAt = new \DateTime($row['IssuedAt']);
-        return $this->orderService->upsert($client, $row['OrderType'], $issuedAt, $wasCreated);
+        return $this->orderService->upsert($client, $row['OrderType'], $issuedAt);
     }
 
 }
