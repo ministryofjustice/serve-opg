@@ -41,8 +41,8 @@ class OrderService
      */
     public function getOrderByIdIfNotServed($orderId)
     {
-        $order = $this->em->getRepository(Order::class)->find($orderId);
         /** @var $order Order */
+        $order = $this->em->getRepository(Order::class)->find($orderId);
 
         if (!$order) {
             throw new \RuntimeException("Order not existing");
