@@ -19,11 +19,6 @@ class CsvToArray
     private $expectedColumns = [];
 
     /**
-     * @var array
-     */
-//    private $optionalColumns = [];
-
-    /**
      * @var bool
      */
     private $normaliseNewLines;
@@ -61,13 +56,6 @@ class CsvToArray
 
         return $this;
     }
-//
-//    public function setOptionalColumns(array $optionalColumns)
-//    {
-//        $this->optionalColumns = $optionalColumns;
-//
-//        return $this;
-//    }
 
     /**
      * @return array or false when EOF
@@ -122,16 +110,6 @@ class CsvToArray
                     $rowArray[$expectedColumn] = $row[$index];
                 }
             }
-//            foreach ($this->optionalColumns as $optionalColumn) {
-//                $index = array_search($optionalColumn, $header);
-//                if ($index !== false) {
-//                    // fix for CSV with last two columns being empty and not having commas
-//                    if (!isset($row[$index])) {
-//                        $row[$index] = '';
-//                    }
-//                    $rowArray[$optionalColumn] = $row[$index];
-//                }
-//            }
             $ret[] = $rowArray;
         }
 
