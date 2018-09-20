@@ -6,6 +6,7 @@ use AppBundle\Entity\Client;
 use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
+use AppBundle\Form\ConfirmationForm;
 use AppBundle\Service\DeputyService;
 use AppBundle\Form\DeputyForm;
 use AppBundle\Service\OrderService;
@@ -107,6 +108,41 @@ class DeputyController extends Controller
         }
 
         return $this->render('AppBundle:Deputy:add.html.twig', [
+            'client' => $order->getClient(),
+            'order' => $order,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/case/order/{orderId}/deputy/delete/{deputyId}", name="deputy-delete")
+     * @param Request $request
+     * @param $orderId
+     * @param $deputyId
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function deleteAction(Request $request, $orderId, $deputyId)
+    {
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+
+        $deputy = $order->getDeputyById($deputyId);
+
+        if (!$deputy instanceof Deputy) {
+            throw new \RuntimeException('Unknown Deputy');
+        }
+
+        $form = $this->createForm(ConfirmationForm::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $this->em->remove($deputy);
+            $this->em->flush();
+
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+        }
+
+        return $this->render('AppBundle:Common:confirm.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()
