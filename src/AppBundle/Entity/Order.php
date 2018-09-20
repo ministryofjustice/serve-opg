@@ -325,7 +325,7 @@ abstract class Order
                 return $deputy->getId() == $deputyId;
             }
         );
-        return $result->count() > 0 ? $result[0] : null;
+        return $result->count() > 0 ? $result->first() : null;
     }
 
     /**

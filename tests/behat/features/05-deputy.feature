@@ -60,7 +60,7 @@ Feature: deputy
   Scenario: HW order: edit deputy data
     Given I am logged in as behat user
     When I follow "order-12345678-hw"
-    When I follow "edit-deputy-1"
+    Then I follow "edit-deputy-1"
   # check form validation
     When I fill in the following:
       | deputy_form_deputyType           | lay                                         |
@@ -85,6 +85,39 @@ Feature: deputy
       | lay                                                   | deputy1-deputyType   |
       | Emb houseE, victoria roadE, LondonE1, LondonE3, SW1 E | deputy1-address      |
     And the order should be unservable
+
+
+  Scenario: HW order: remove deputy
+    Given I am logged in as behat user
+    When I follow "order-12345678-hw"
+    Then I follow "add-deputy"
+    When I fill in the following:
+      | deputy_form_deputyType           | lay                                         |
+      | deputy_form_forename             | Dep2                                         |
+      | deputy_form_surname              | Uty2                                         |
+      | deputy_form_emailAddress         | behat-12345678-depy2@digital.justice.gov.uk |
+      | deputy_form_daytimeContactNumber | 11111111111                                 |
+      | deputy_form_eveningContactNumber | 22222222222                                 |
+      | deputy_form_mobileContactNumber  | +447933333333                               |
+      | deputy_form_addressLine1         | Emb house                                   |
+      | deputy_form_addressLine2         | victoria road                               |
+      | deputy_form_addressLine3         | District                                      |
+      | deputy_form_addressTown          | London                                      |
+      | deputy_form_addressCounty        | Surrey                                      |
+      | deputy_form_addressPostcode      | SW1                                         |
+    And I press "deputy_form_saveAndContinue"
+    Then the response status code should be 200
+    And the url should match "order/\d+/summary"
+    And each text should be present in the corresponding region:
+      | Dep2 Uty2                                             | deputy2-fullName     |
+      | behat-12345678-depy2@digital.justice.gov.uk           | deputy2-emailAddress |
+      | lay                                                   | deputy2-deputyType   |
+      | Emb house, victoria road, district, Surrey, SW1 | deputy2-address      |
+    Then I follow "delete-deputy-2"
+    And I press "confirmation_form_submit"
+    Then the response status code should be 200
+    And the url should match "order/\d+/summary"
+    And I should not see "deputy2-fullName"
 
 
   Scenario: PA order: add one deputy (just type, first and lastname)
