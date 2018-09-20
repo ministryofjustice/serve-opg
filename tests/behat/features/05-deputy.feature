@@ -20,7 +20,6 @@ Feature: deputy
     Then the following fields should have an error:
       | deputy_form_forename         |
       | deputy_form_surname          |
-      | deputy_form_organisationName |
     When I fill in the following:
       | deputy_form_deputyType | prof |
     And I press "deputy_form_saveAndContinue"
@@ -28,7 +27,6 @@ Feature: deputy
     Then the following fields should have an error:
       | deputy_form_forename         |
       | deputy_form_surname          |
-      | deputy_form_organisationName |
 
   Scenario: HW order: add valid deputy data
     Given I am logged in as behat user

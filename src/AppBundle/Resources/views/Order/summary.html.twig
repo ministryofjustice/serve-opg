@@ -87,12 +87,6 @@
                         <td class="govuk-table__cell" scope="row">Deputy type</td>
                         <td class="govuk-table__cell behat-region-deputy1-deputyType">{{ ('deputy.type.' ~ deputy.deputyType) | trans }}</td>
                     </tr>
-                    {% if deputy.organisationName %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" scope="row">Organisation</td>
-                            <td class="govuk-table__cell behat-region-deputy1-organisationName">{{ deputy.organisationName }}</td>
-                        </tr>
-                    {% endif %}
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" scope="row">Name</td>
                         <td class="govuk-table__cell behat-region-deputy1-fullName">{{ deputy.fullname }}</td>
