@@ -69,8 +69,6 @@ class BehatController extends Controller
      */
     public function userReset(Request $request)
     {
-        $ret = [];
-
         // add user if not existing
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => self::BEHAT_EMAIL]);
         if ($user) {

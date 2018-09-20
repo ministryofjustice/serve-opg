@@ -90,7 +90,8 @@ class OrderService
             ->setSubType(null)
             ->setHasAssetsAboveThreshold(null)
             ->setAppointmentType(null);
-        $this->em->flush($order);
+
+        $this->em->flush();
     }
 
 }
