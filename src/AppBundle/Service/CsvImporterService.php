@@ -7,11 +7,6 @@ use Doctrine\ORM\EntityManager;
 class CsvImporterService
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * @var ClientService
      */
     private $clientService;
@@ -23,13 +18,11 @@ class CsvImporterService
 
     /**
      * CsvImporterService constructor.
-     * @param EntityManager $em
      * @param ClientService $clientService
      * @param OrderService $orderService
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService)
+    public function __construct(ClientService $clientService, OrderService $orderService)
     {
-        $this->em = $em;
         $this->clientService = $clientService;
         $this->orderService = $orderService;
     }
