@@ -3,10 +3,17 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderHw;
+use AppBundle\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
 
 class CsvImporterService
 {
+    private static $orderTypeMap = [
+        'hw' => OrderHw::class,
+        'pf' => OrderPf::class,
+    ];
+
     /**
      * @var ClientService
      */
@@ -59,9 +66,17 @@ class CsvImporterService
      */
     private function importSingleRow(array $row)
     {
+        // client
         $client = $this->clientService->upsert($row['Case'], $row['ClientName']);
+
+        // order
         $issuedAt = new \DateTime($row['IssuedAt']);
-        return $this->orderService->upsert($client, $row['OrderType'], $issuedAt);
+        $orderType = self::$orderTypeMap[$row['OrderType']] ?? null;
+        if (empty($orderType)) {
+            throw new \RuntimeException("Invalid order type:" . $row['OrderType']);
+        }
+
+        return $this->orderService->upsert($client, $orderType, $issuedAt);
     }
 
 }

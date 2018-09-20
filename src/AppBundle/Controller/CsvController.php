@@ -36,7 +36,7 @@ class CsvController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $fileName = $form->get('file')->getData();
             $added = $this->csvImporterService->importFile($fileName);
-            $request->getSession()->getFlashBag()->add('notice', "Processeddocker- $added orders");
+            $request->getSession()->getFlashBag()->add('notice', "Processed $added orders");
 
             return $this->redirectToRoute('case-list');
         }
