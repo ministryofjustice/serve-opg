@@ -41,21 +41,17 @@
                     <nav>
                         <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
                             {% set currentRoute = app.request.attributes.get('_route') %}
-                            <li class="govuk-header__navigation-item {{ currentRoute =='homepage' ? 'govuk-header__navigation-item--active' : '' }}">
-                                <a class="govuk-header__link" href="{{ path('homepage') }}">Home</a>
-                            </li>
                             {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
-                                <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
-                            </li>
-                            {% endif %}
-                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
-                                <a class="govuk-header__link" href="{{ path('case-list') }}">Cases</a>
-                            </li>
-                            <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link" href="/logout">Sign out</a>
-                            </li>
+                                <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
+                                    <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
+                                </li>
+                            {% else %}
+                                <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
+                                    <a class="govuk-header__link" href="{{ path('case-list') }}">Cases</a>
+                                </li>
+                                <li class="govuk-header__navigation-item">
+                                    <a class="govuk-header__link" href="/logout">Sign out</a>
+                                </li>
                             {% endif %}
                         </ul>
                     </nav>
