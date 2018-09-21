@@ -117,7 +117,7 @@ class CsvToArray
     {
         fclose($this->handle);
 
-        if ($this->normaliseNewLines) {
+        if (!$this->normaliseNewLines) {
             ini_set('auto_detect_line_endings', false);
         }
     }
