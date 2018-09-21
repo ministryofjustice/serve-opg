@@ -78,53 +78,53 @@
                         <th scope="col" class="govuk-table__header govuk-!-width-one-third">Deputy {{ loop.index }}</th>
                         <th scope="col" class="govuk-table__header govuk-table__header--numeric">
                             <a href="{{ path('deputy-edit', {'deputyId': deputy.id, 'orderId': order.id}) }}" class="govuk-!-margin-right-3" id="edit-deputy-{{ loop.index }}">Edit</a>
-                            <a href="#">Remove</a>
+                            <a href="{{ path('deputy-delete', {'deputyId': deputy.id, 'orderId': order.id}) }}" id="delete-deputy-{{ loop.index }}">Remove</a>
                         </th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" scope="row">Deputy type</td>
-                        <td class="govuk-table__cell behat-region-deputy1-deputyType">{{ ('deputy.type.' ~ deputy.deputyType) | trans }}</td>
+                        <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-deputyType">{{ ('deputy.type.' ~ deputy.deputyType) | trans }}</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" scope="row">Name</td>
-                        <td class="govuk-table__cell behat-region-deputy1-fullName">{{ deputy.fullname }}</td>
+                        <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-fullName">{{ deputy.fullname }}</td>
                     </tr>
                     {% if deputy.emailAddress %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Email address</td>
-                            <td class="govuk-table__cell behat-region-deputy1-emailAddress">{{ deputy.emailAddress }}</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-emailAddress">{{ deputy.emailAddress }}</td>
                         </tr>
                     {% endif %}
                     {% if deputy.dateOfBirth %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Date of birth</td>
-                            <td class="govuk-table__cell behat-region-deputy1-dateOfBirth">{{ deputy.dateOfBirth | date("j F Y") }}</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-dateOfBirth">{{ deputy.dateOfBirth | date("j F Y") }}</td>
                         </tr>
                     {% endif %}
                     {% if deputy.daytimeContactNumber %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Daytime contact number</td>
-                            <td class="govuk-table__cell behat-region-deputy1-daytimeContactNumber">{{ deputy.daytimeContactNumber }}</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-daytimeContactNumber">{{ deputy.daytimeContactNumber }}</td>
                         </tr>
                     {% endif %}
                     {% if deputy.eveningContactNumber %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Evening contact number</td>
-                            <td class="govuk-table__cell behat-region-deputy1-eveningContactNumber">{{ deputy.eveningContactNumber }}</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-eveningContactNumber">{{ deputy.eveningContactNumber }}</td>
                         </tr>
                     {% endif %}
                     {% if deputy.mobileContactNumber %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Mobile contact number</td>
-                            <td class="govuk-table__cell behat-region-deputy1-mobileContactNumber">{{ deputy.mobileContactNumber }}</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-mobileContactNumber">{{ deputy.mobileContactNumber }}</td>
                         </tr>
                     {% endif %}
                     {% if deputy.addressFormatted %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Address</td>
-                            <td class="govuk-table__cell behat-region-deputy1-address">{{ deputy.addressFormatted }}</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-address">{{ deputy.addressFormatted }}</td>
                         </tr>
                     {% endif %}
                 </tbody>

@@ -325,6 +325,20 @@ abstract class Order
                 return $deputy->getId() == $deputyId;
             }
         );
-        return $result->count() > 0 ? $result[0] : null;
+        return $result->count() > 0 ? $result->first() : null;
+    }
+
+    /**
+     * Remove a deputy from the order
+     *
+     * @param Deputy $deputy
+     * @return $this
+     */
+    public function removeDeputy(Deputy $deputy)
+    {
+        if (!$this->deputies->contains($deputy)) {
+            $this->deputies->removeElement($deputy);
+        }
+        return $this;
     }
 }
