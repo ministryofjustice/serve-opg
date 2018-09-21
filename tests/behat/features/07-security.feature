@@ -12,3 +12,5 @@ Feature: security checks
       Then I should be on "/login"
       When I go to "/order/1/deputy/add"
       Then I should be on "/login"
+      When I go to "/"
+      Then I should be on "/login"
