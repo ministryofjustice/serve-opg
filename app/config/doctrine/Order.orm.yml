@@ -64,6 +64,7 @@ AppBundle\Entity\Order:
           joinColumns:
             deputy_id:
               referencedColumnName: id
+              onDelete: CASCADE
           inverseJoinColumns:
             order_type_id:
               referencedColumnName: id
