@@ -3,7 +3,7 @@ Feature: cases
   Scenario: upload CSV
     Given I am logged in as behat user
     When I go to "/upload-csv"
-    When I attach the file "behat-users.csv" to "csv_upload_form_file"
+    When I attach the file "behat-cases.csv" to "csv_upload_form_file"
     And I click on "submit"
     Then the form should be valid
     And I should see the "order-12345678-pa" region

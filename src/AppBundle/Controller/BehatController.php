@@ -24,7 +24,7 @@ class BehatController extends Controller
 {
     const BEHAT_EMAIL = 'behat@digital.justice.gov.uk';
     const BEHAT_PASSWORD = 'Abcd1234';
-    // keep in sync with behat-users.csv
+    // keep in sync with behat-cases.csv
     const BEHAT_CASE_NUMBER = '12345678';
 
     /**

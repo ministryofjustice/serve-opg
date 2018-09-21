@@ -43,10 +43,11 @@ class CsvImporterService
     public function importFile($filePath)
     {
         $csvToArray = new CsvToArray($filePath, [
-            'Case',
-            'ClientName',
-            'OrderType',
-            'IssuedAt',
+            'Case', // 8 digits. might end with a T
+            'Forename',
+            'Surname',
+            'Corref', // HW / P2
+            'Issue Date', //.e.g/ 15-Aug-2018
         ], true);
         $rows = $csvToArray->getData();
 
@@ -66,17 +67,17 @@ class CsvImporterService
      */
     private function importSingleRow(array $row)
     {
+        $row = array_map('trim', $row);
+        $case = strtoupper($row['Case']);
+        $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
+        $orderType = strtolower($row['Corref']) =='hw' ? OrderHw::class : OrderPf::class;
+
         // client
-        $client = $this->clientService->upsert($row['Case'], $row['ClientName']);
+        $client = $this->clientService->upsert($case, $clientName);
 
         // order
-        $issuedAt = new \DateTime($row['IssuedAt']);
-        $orderType = self::$orderTypeMap[$row['OrderType']] ?? null;
-        if (empty($orderType)) {
-            throw new \RuntimeException("Invalid order type:" . $row['OrderType']);
-        }
+        $issuedAt = new \DateTime($row['Issue Date']);
 
         return $this->orderService->upsert($client, $orderType, $issuedAt);
     }
-
 }
