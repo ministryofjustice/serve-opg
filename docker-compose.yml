@@ -131,7 +131,7 @@ services:
       - -c
       - tests/behat/behat.yml
     depends_on:
-      - web
+      - loadbalancer
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
       AWS_ACCESS_KEY_ID: foo
