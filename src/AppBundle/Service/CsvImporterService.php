@@ -36,18 +36,23 @@ class CsvImporterService
     }
 
     /**
-     * @param array $filePath file CSV with keys: Case, ClientName, OrderType, IssuedAt
+     * @param array $filePath file CSV with keys:
+     * Case : 8 digits. might end with a T
+     * Forename
+     * Surname
+     * Ord Type: integer. 2 means HW order
+     * IssuedAt e.g. 15-Aug-2018 or any format accepted by DateTime
      *
      * @return integer added columns
      */
     public function importFile($filePath)
     {
         $csvToArray = new CsvToArray($filePath, [
-            'Case', // 8 digits. might end with a T
+            'Case',
             'Forename',
             'Surname',
-            'Corref', // HW / P2
-            'Issue Date', //.e.g/ 15-Aug-2018
+            'Ord Type',
+            'Issue Date',
         ], true);
         $rows = $csvToArray->getData();
 
@@ -70,7 +75,7 @@ class CsvImporterService
         $row = array_map('trim', $row);
         $case = strtoupper($row['Case']);
         $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
-        $orderType = strtolower($row['Corref']) =='hw' ? OrderHw::class : OrderPf::class;
+        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);
