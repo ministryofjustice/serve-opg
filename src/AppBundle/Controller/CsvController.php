@@ -46,20 +46,4 @@ class CsvController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{id}/remove", name="document-remove")
-     */
-    public function removeAction(Request $request, $orderId, $id)
-    {
-        try {
-            $this->documentService->deleteDocumentById($id);
-        } catch (\Exception $e) {
-            $this->get('logger')->error($e->getMessage());
-            $this->addFlash('error', 'Document could not be removed.');
-        }
-
-        return $this->redirectToRoute('order-summary', ['orderId' => $orderId]);
-    }
-
-
 }
