@@ -15,7 +15,10 @@ services:
     AppBundle\Controller\DeputyController: ~
     AppBundle\Controller\DocumentController: ~
     AppBundle\Controller\BehatController: ~
+    AppBundle\Controller\CsvController: ~
 
+    AppBundle\Service\ClientService: ~
+    AppBundle\Service\CsvImporterService: ~
     AppBundle\Service\OrderService:
         arguments: [ "@Doctrine\\ORM\\EntityManager", "@AppBundle\\Service\\SiriusService" ]
 
@@ -25,17 +28,20 @@ services:
         arguments: [ "@AppBundle\\Service\\SiriusClient" ]
 
     AppBundle\Service\SiriusClient:
+        class: AppBundle\Service\SiriusClient
         arguments:
-          $config:
-              base_uri: "%env(DC_SIRIUS_URL)%"
-              verify: "%env(DC_SIRIUS_SSL_VERIFY)%"
-              proxy: ""
-              debug: "false"
+            [
+#              base_uri: "%env(DC_SIRIUS_URL)%",
+              base_uri: "https://localhost:8080",
+              verify: 0,
+              proxy: "",
+              debug: "false",
               headers:
-                  Content-Type: "multipart-form-data"
-              version: "1.1"
-              timeout: 10
+                  Content-Type: multipart-form-data,
+              version: "1.1",
+              timeout: 10,
               allow_redirects: "false"
+            ]
 
     # twig extensions
     AppBundle\Twig\AssetsExtension:

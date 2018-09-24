@@ -2,12 +2,12 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\Order;
+use GuzzleHttp\Client as GuzzleHttpClient;
 
 /**
  * SiriusClient wrapper
  */
-class SiriusClient extends \Guzzle\Http\Client
+class SiriusClient extends GuzzleHttpClient
 {
     /**
      * SiriusClient constructor.
@@ -15,7 +15,6 @@ class SiriusClient extends \Guzzle\Http\Client
      */
     public function __construct($args)
     {
-        var_dump($args);exit;
         parent::__construct($args);
     }
 }
