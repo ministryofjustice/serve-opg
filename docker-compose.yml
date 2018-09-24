@@ -62,6 +62,10 @@ services:
       # file scanner
       DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
       DC_FILE_SCANNER_SSL_VERIFY: 1
+      # Sirius public API configuratiion
+      DC_SIRIUS_URL: 'http://localhost:8080'
+      DC_SIRIUS_SSL_VERIFY: 0
+
       # fixtures
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234

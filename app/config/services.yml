@@ -16,9 +16,26 @@ services:
     AppBundle\Controller\DocumentController: ~
     AppBundle\Controller\BehatController: ~
 
-    AppBundle\Service\OrderService: ~
+    AppBundle\Service\OrderService:
+        arguments: [ "@Doctrine\\ORM\\EntityManager", "@AppBundle\\Service\\SiriusService" ]
+
     AppBundle\Service\DeputyService: ~
     AppBundle\Service\DocumentService: ~
+    AppBundle\Service\SiriusService:
+        arguments: [ "@AppBundle\\Service\\SiriusClient" ]
+
+    AppBundle\Service\SiriusClient:
+        arguments:
+          $config:
+              base_uri: "%env(DC_SIRIUS_URL)%"
+              verify: "%env(DC_SIRIUS_SSL_VERIFY)%"
+              proxy: ""
+              debug: "false"
+              headers:
+                  Content-Type: "multipart-form-data"
+              version: "1.1"
+              timeout: 10
+              allow_redirects: "false"
 
     # twig extensions
     AppBundle\Twig\AssetsExtension:
@@ -75,6 +92,7 @@ services:
     AppBundle\Service\File\Types\Pdf: ~
     AppBundle\Service\File\Types\Jpg: ~
     AppBundle\Service\File\Types\Png: ~
+
 
     GuzzleHttp\Client:
       class: GuzzleHttp\Client
