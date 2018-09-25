@@ -5,7 +5,9 @@ namespace AppBundle\Service\File;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\Document;
 use AppBundle\Service\File\Storage\StorageInterface;
+use AppBundle\Service\File\Types\UploadableFile;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
 {
@@ -40,13 +42,14 @@ class FileUploader
      *
      * @return Document
      */
-    public function uploadFile(Order $order, Document $document, $body)
+    public function uploadFile(Order $order, Document $document, UploadedFile $uploadedFile)
     {
         // @to-do move call to storage reference outside fileUploader - to decouple.
-        $storageReference = $this->generateStorageReference($order);
+        $storageReference = $this->generateStorageReference($uploadedFile, $order);
 
+        $body = file_get_contents($uploadedFile->getPathName());
         $this->storage->store($storageReference, $body);
-        $this->logger->debug("FileUploder : stored $storageReference, " . strlen($body) . ' bytes');
+        $this->logger->debug("FileUploder : stored $storageReference, " . $uploadedFile->getSize() . ' bytes');
 
         $document->setStorageReference($storageReference);
 
@@ -61,10 +64,10 @@ class FileUploader
      *
      * @return string
      */
-    public function generateStorageReference($entity)
+    public function generateStorageReference(UploadedFile $uploadedFile, $entity)
     {
         if (is_object($entity) && method_exists($entity, 'getId') && is_numeric($entity->getId())) {
-            return 'dc_doc_' . $entity->getId() . '_' . str_replace('.', '', microtime(1));
+            return 'dc_doc_' . $entity->getId() . '_' . str_replace('.', '', microtime(1)) . '.' . $uploadedFile->getClientOriginalExtension();
         }
         throw new \RuntimeException('Unable to generate storage reference, entity provided does not have an ID');
     }
