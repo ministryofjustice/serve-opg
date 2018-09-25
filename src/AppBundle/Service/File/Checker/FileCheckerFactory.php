@@ -6,6 +6,8 @@ use AppBundle\Service\File\Types\Jpg;
 use AppBundle\Service\File\Types\Pdf;
 use AppBundle\Service\File\Types\Png;
 use AppBundle\Service\File\Types\UploadableFile;
+use AppBundle\Service\File\Types\UploadableFileInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -27,16 +29,27 @@ class FileCheckerFactory
     protected $jpg;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * FileCheckerFactory constructor.
      * @param Pdf $pdf
      * @param Png $png
      * @param Jpg $jpg
+     * @parma Other $other
      */
-    public function __construct(Pdf $pdf, Png $png, Jpg $jpg)
-    {
+    public function __construct(
+        Pdf $pdf,
+        Png $png,
+        Jpg $jpg,
+        LoggerInterface $logger
+    ) {
         $this->pdf = $pdf;
         $this->png = $png;
         $this->jpg = $jpg;
+        $this->logger = $logger;
     }
 
     /**
@@ -54,7 +67,10 @@ class FileCheckerFactory
             case 'image/jpeg':
                 return $this->jpg->setUploadedFile($uploadedFile);
             default:
-                throw new \RuntimeException('File type not supported');
+                $uploadableFile = new UploadableFile($this->logger);
+                $uploadableFile->setUploadedFile($uploadedFile);
+                $uploadableFile->setFileCheckers([]);
+                return $uploadableFile;
 
         }
     }

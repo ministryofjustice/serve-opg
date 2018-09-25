@@ -81,6 +81,7 @@ class DocumentController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $document->getFile();
+
             $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
             try {
                 $fileObject->checkFile();
@@ -88,7 +89,7 @@ class DocumentController extends Controller
                     $document = $this->fileUploader->uploadFile(
                         $order,
                         $document,
-                        file_get_contents($uploadedFile->getPathName())
+                        $uploadedFile
                     );
                     $request->getSession()->getFlashBag()->add('notice', 'File uploaded');
 

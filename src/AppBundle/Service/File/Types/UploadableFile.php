@@ -31,6 +31,10 @@ class UploadableFile implements UploadableFileInterface
      */
     protected $scanResult;
 
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @return FileCheckerInterface[]
