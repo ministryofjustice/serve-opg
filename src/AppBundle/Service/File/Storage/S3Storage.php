@@ -41,8 +41,8 @@ class S3Storage implements StorageInterface
     /**
      * S3Storage constructor.
      *
-     * @param S3Client $s3Client (Aws library)
-     * @param $bucketName S3 bucket name
+     * @param S3ClientInterface $s3Client
+     * @param string $bucketName
      * @param LoggerInterface $logger
      */
     public function __construct(S3ClientInterface $s3Client, $bucketName, LoggerInterface $logger)

@@ -39,13 +39,13 @@ class OrderService
 
         // Make API call to Sirius
         try {
-            var_dump($this->siriusService->serveOrder($order));
-            exit;
+            $this->siriusService->serveOrder($order);
         } catch (\Exception $e) {
             throw $e;
         }
-//        $order->setServedAt(new \DateTime());
-//        $this->em->flush($order);
+
+        $order->setServedAt(new \DateTime());
+        $this->em->flush($order);
     }
 
     /**
