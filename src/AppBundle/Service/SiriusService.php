@@ -7,6 +7,7 @@ use Application\Factory\GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
+use AppBundle\Service\File\Storage\StorageInterface;
 
 class SiriusService
 {
@@ -16,20 +17,41 @@ class SiriusService
     private $httpClient;
 
     /**
-     * SiriusService constructor.
-     * @param GuzzleClient $restClient
+     * @var StorageInterface
      */
-    public function __construct(ClientInterface $httpClient)
-    {
+    private $localS3Storage;
+
+    /**
+     * @var StorageInterface
+     */
+    private $siriusS3Storage;
+
+    /**
+     * SiriusService constructor.
+     * @param ClientInterface $httpClient
+     * @param StorageInterface $localS3storage
+     * @param StorageInterface $siriusS3storage
+     */
+    public function __construct(
+        ClientInterface $httpClient,
+        StorageInterface $localS3storage,
+        StorageInterface $siriusS3storage
+    ) {
         $this->httpClient = $httpClient;
+        $this->localS3Storage = $localS3storage;
+        $this->siriusS3Storage = $siriusS3storage;
     }
 
     public function serveOrder(Order $order)
     {
-        $return = $this->login();
+        // copy Documents to Sirius S3 bucket
+
+        // generate JSON payload
         //$payload = $this->generatePayload($order);
-        //var_dump($payload);exit;
-        //$return = $this->httpClient->serveOrder($order);
+
+        // Make API call
+        //$return = $this->login();
+        //$return = $this->httpClient->serveOrderToSirius($payload);
 
     }
 

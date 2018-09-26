@@ -78,15 +78,31 @@ services:
 
     Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
+    s3.siriusS3Client:
+        class: AppBundle\Service\S3Client
+        autowire: false
+        arguments:
+            - "%env(SIRIUS_S3_REGION)%",
+            - "%env(SIRIUS_S3_ENDPOINT)%"
+
+    s3.digicopS3Client:
+        class: AppBundle\Service\S3Client
+        autowire: false
+        arguments:
+            - "%env(DC_S3_REGION)%",
+            - "%env(DC_S3_ENDPOINT)%"
+
+
+
+
+
+
+     -----------
     AppBundle\Service\S3Client:
       arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
 
     # document storage and checking
     Aws\S3\S3ClientInterface: "@AppBundle\\Service\\S3Client"
-
-    AppBundle\Service\File\Storage\S3Storage:
-      arguments:
-        $bucketName: "%env(DC_S3_BUCKET_NAME)%"
 
     AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
     AppBundle\Service\File\Checker\ClamAVChecker: ~
