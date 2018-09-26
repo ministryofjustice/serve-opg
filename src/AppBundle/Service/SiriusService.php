@@ -21,26 +21,19 @@ class SiriusService
     /**
      * @var StorageInterface
      */
-    private $localS3Storage;
-
-    /**
-     * @var StorageInterface
-     */
-    private $siriusS3Storage;
+    private $S3Storage;
 
     /**
      * SiriusService constructor.
      * @param ClientInterface $httpClient
-     * @param StorageInterface $localS3storage
-     * @param StorageInterface $siriusS3storage
+     * @param StorageInterface $S3storage
      */
     public function __construct(
         ClientInterface $httpClient,
         StorageInterface $S3storage
     ) {
         $this->httpClient = $httpClient;
-        $this->localS3Storage = $localS3storage;
-        $this->siriusS3Storage = $siriusS3storage;
+        $this->S3Storage = $S3storage;
     }
 
     public function serveOrder(Order $order)
