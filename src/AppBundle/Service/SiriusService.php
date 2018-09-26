@@ -4,6 +4,8 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Order;
 use Application\Factory\GuzzleClient;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
@@ -34,8 +36,7 @@ class SiriusService
      */
     public function __construct(
         ClientInterface $httpClient,
-        StorageInterface $localS3storage,
-        StorageInterface $siriusS3storage
+        StorageInterface $S3storage
     ) {
         $this->httpClient = $httpClient;
         $this->localS3Storage = $localS3storage;
@@ -45,6 +46,7 @@ class SiriusService
     public function serveOrder(Order $order)
     {
         // copy Documents to Sirius S3 bucket
+        $this->sendDocuments($order->getDocuments());
 
         // generate JSON payload
         //$payload = $this->generatePayload($order);
@@ -55,32 +57,72 @@ class SiriusService
 
     }
 
-    private function login()
+    private function sendDocuments(Collection $documents)
     {
-        $jar = new \GuzzleHttp\Cookie\CookieJar;
-
-        try {
-            $response = $this->httpClient->request(
-                'POST',
-                'https://localhost:8080/auth/login',
-                [
-                        'email' => 'manager@opgtest.com',
-                        'password' => 'Password1',
-//                        'cookies' => $jar
-                ]
-            );
-            echo 'RESPONSE--> ';
-            var_dump($response);exit;
-        } catch (RequestException $e) {
-            echo Psr7\str($e->getRequest());
-            echo '--------------<br />';
-            var_dump($e->getCode());
-
-            var_dump($e->getMessage());
-            if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
-            }
-        }
-
+//        $sourceBucket = '*** Your Source Bucket Name ***';
+//        $sourceKeyname = '*** Your Source Object Key ***';
+//        $targetBucket = '*** Your Target Bucket Name ***';
+//
+//
+//// Copy an object.
+//        $s3->copyObject([
+//            'Bucket'     => $this->siriusS3Storage->get,
+//            'Key'        => "{$sourceKeyname}-copy",
+//            'CopySource' => "{$sourceBucket}/{$sourceKeyname}",
+//        ]);
+//
+//// Perform a batch of CopyObject operations.
+//        $batch = array();
+//        for ($i = 1; $i <= 3; $i++) {
+//            $batch[] = $s3->getCommand('CopyObject', [
+//                'Bucket'     => $targetBucket,
+//                'Key'        => "{targetKeyname}-{$i}",
+//                'CopySource' => "{$sourceBucket}/{$sourceKeyname}",
+//            ]);
+//        }
+//        try {
+//            $results = CommandPool::batch($s3, $batch);
+//            foreach($results as $result) {
+//                if ($result instanceof ResultInterface) {
+//                    // Result handling here
+//                }
+//                if ($result instanceof AwsException) {
+//                    // AwsException handling here
+//                }
+//            }
+//        } catch (\Exception $e) {
+//            // General error handling here
+//        }
+        var_dump($documents);
+        exit;
     }
+
+//    private function login()
+//    {
+//        $jar = new \GuzzleHttp\Cookie\CookieJar;
+//
+//        try {
+//            $response = $this->httpClient->request(
+//                'POST',
+//                'https://localhost:8080/auth/login',
+//                [
+//                        'email' => 'manager@opgtest.com',
+//                        'password' => 'Password1',
+////                        'cookies' => $jar
+//                ]
+//            );
+//            echo 'RESPONSE--> ';
+//            var_dump($response);exit;
+//        } catch (RequestException $e) {
+//            echo Psr7\str($e->getRequest());
+//            echo '--------------<br />';
+//            var_dump($e->getCode());
+//
+//            var_dump($e->getMessage());
+//            if ($e->hasResponse()) {
+//                echo Psr7\str($e->getResponse());
+//            }
+//        }
+//
+//    }
 }

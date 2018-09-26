@@ -96,15 +96,11 @@ services:
 
     s3.storage.digicop:
       class: AppBundle\Service\File\Storage\S3Storage
-      arguments:
-        $s3Client: "@s3.client.digicop"
-        $bucketName: "%env(DC_S3_BUCKET_NAME)%"
+      arguments: ["@s3.client.digicop", "%env(DC_S3_BUCKET_NAME)%", "@logger"]
 
     s3.storage.sirius:
       class: AppBundle\Service\File\Storage\S3Storage
-      arguments:
-        $s3Client: "@s3.client.sirius"
-        $bucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
+      arguments: ["@s3.client.sirius", "%env(SIRIUS_S3_BUCKET_NAME)%", "@logger"]
 
     AppBundle\Service\File\Storage\S3Storage:
       autowire: false
@@ -121,7 +117,9 @@ services:
     AppBundle\Service\File\Checker\JpgChecker: ~
     AppBundle\Service\File\Checker\PngChecker: ~
     AppBundle\Service\File\Checker\FileCheckerFactory: ~
-    AppBundle\Service\File\FileUploader: ~
+    AppBundle\Service\File\FileUploader:
+      arguments: ["@s3.storage.digicop", "@logger"]
+
     AppBundle\Service\File\Types\Pdf: ~
     AppBundle\Service\File\Types\Jpg: ~
     AppBundle\Service\File\Types\Png: ~
