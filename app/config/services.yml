@@ -23,9 +23,11 @@ services:
         arguments: [ "@Doctrine\\ORM\\EntityManager", "@AppBundle\\Service\\SiriusService" ]
 
     AppBundle\Service\DeputyService: ~
-    AppBundle\Service\DocumentService: ~
+    AppBundle\Service\DocumentService:
+        arguments: [ "@Doctrine\\ORM\\EntityManager", "@s3.storage.digicop", "@logger"]
+
     AppBundle\Service\SiriusService:
-        arguments: [ "@AppBundle\\Service\\SiriusClient" ]
+        arguments: [ "@AppBundle\\Service\\SiriusClient", "@s3.storage.digicop", "@s3.storage.sirius" ]
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient
@@ -78,28 +80,37 @@ services:
 
     Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
-    s3.siriusS3Client:
+    s3.client.sirius:
         class: AppBundle\Service\S3Client
         autowire: false
         arguments:
-            - "%env(SIRIUS_S3_REGION)%",
+            - "%env(SIRIUS_S3_REGION)%"
             - "%env(SIRIUS_S3_ENDPOINT)%"
 
-    s3.digicopS3Client:
+    s3.client.digicop:
         class: AppBundle\Service\S3Client
         autowire: false
         arguments:
-            - "%env(DC_S3_REGION)%",
+            - "%env(DC_S3_REGION)%"
             - "%env(DC_S3_ENDPOINT)%"
 
+    s3.storage.digicop:
+      class: AppBundle\Service\File\Storage\S3Storage
+      arguments:
+        $s3Client: "@s3.client.digicop"
+        $bucketName: "%env(DC_S3_BUCKET_NAME)%"
 
+    s3.storage.sirius:
+      class: AppBundle\Service\File\Storage\S3Storage
+      arguments:
+        $s3Client: "@s3.client.sirius"
+        $bucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
 
+    AppBundle\Service\File\Storage\S3Storage:
+      autowire: false
 
-
-
-     -----------
     AppBundle\Service\S3Client:
-      arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
+      autowire: false
 
     # document storage and checking
     Aws\S3\S3ClientInterface: "@AppBundle\\Service\\S3Client"
