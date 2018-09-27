@@ -38,7 +38,6 @@ services:
       - dynamodb
       - postgres
       - "s3"
-      - "sirius-s3"
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
@@ -61,7 +60,7 @@ services:
       DC_S3_REGION: eu-west-1
       DC_S3_ENDPOINT: 'http://s3:4569'
 
-      SIRIUS_S3_BUCKET_NAME: test_bucket
+      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       SIRIUS_S3_REGION: eu-west-1
       SIRIUS_S3_ENDPOINT: 'http://sirius-s3:4570'
 
@@ -98,15 +97,6 @@ services:
       LICENSE_KEY: "8510622909"
     volumes:
       - ./s3:/fakes3_root
-
-  sirius-s3:
-    image: damacus/fake-s3
-    ports:
-      - 4570:4570
-    environment:
-      LICENSE_KEY: "8510622909"
-    volumes:
-      - ./sirius-s3:/sirius-fakes3_root
 
   postgres:
     image: postgres:9.6
