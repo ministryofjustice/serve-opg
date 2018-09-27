@@ -19,15 +19,11 @@ services:
 
     AppBundle\Service\ClientService: ~
     AppBundle\Service\CsvImporterService: ~
-    AppBundle\Service\OrderService:
-        arguments: [ "@Doctrine\\ORM\\EntityManager", "@AppBundle\\Service\\SiriusService" ]
+    AppBundle\Service\OrderService: ~
 
     AppBundle\Service\DeputyService: ~
-    AppBundle\Service\DocumentService:
-        arguments: [ "@Doctrine\\ORM\\EntityManager", "@s3.storage.digicop", "@logger"]
-
-    AppBundle\Service\SiriusService:
-        arguments: [ "@AppBundle\\Service\\SiriusClient", "@s3.storage.digicop", "@s3.storage.sirius" ]
+    AppBundle\Service\DocumentService: ~
+    AppBundle\Service\SiriusService: ~
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient
@@ -80,36 +76,17 @@ services:
 
     Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
-    s3.client.sirius:
-        class: AppBundle\Service\S3Client
-        autowire: false
-        arguments:
-            - "%env(SIRIUS_S3_REGION)%"
-            - "%env(SIRIUS_S3_ENDPOINT)%"
-
-    s3.client.digicop:
-        class: AppBundle\Service\S3Client
-        autowire: false
-        arguments:
-            - "%env(DC_S3_REGION)%"
-            - "%env(DC_S3_ENDPOINT)%"
-
-    s3.storage.digicop:
-      class: AppBundle\Service\File\Storage\S3Storage
-      arguments: ["@s3.client.digicop", "%env(DC_S3_BUCKET_NAME)%", "@logger"]
-
-    s3.storage.sirius:
-      class: AppBundle\Service\File\Storage\S3Storage
-      arguments: ["@s3.client.sirius", "%env(SIRIUS_S3_BUCKET_NAME)%", "@logger"]
-
-    AppBundle\Service\File\Storage\S3Storage:
-      autowire: false
-
     AppBundle\Service\S3Client:
-      autowire: false
+      arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
 
     # document storage and checking
     Aws\S3\S3ClientInterface: "@AppBundle\\Service\\S3Client"
+
+    AppBundle\Service\File\Storage\S3Storage:
+      arguments:
+        $s3Client: "@AppBundle\\Service\\S3Client"
+        $localBucketName: "%env(DC_S3_BUCKET_NAME)%"
+        $remoteBucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
 
     AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
     AppBundle\Service\File\Checker\ClamAVChecker: ~
@@ -117,9 +94,7 @@ services:
     AppBundle\Service\File\Checker\JpgChecker: ~
     AppBundle\Service\File\Checker\PngChecker: ~
     AppBundle\Service\File\Checker\FileCheckerFactory: ~
-    AppBundle\Service\File\FileUploader:
-      arguments: ["@s3.storage.digicop", "@logger"]
-
+    AppBundle\Service\File\FileUploader: ~
     AppBundle\Service\File\Types\Pdf: ~
     AppBundle\Service\File\Types\Jpg: ~
     AppBundle\Service\File\Types\Png: ~
