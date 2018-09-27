@@ -38,10 +38,24 @@ class ManageController extends Controller
         $errors = [];
 
         if ($errors) {
-            return new Response('<h1>ERRORS</h1><li>'.implode('</li><li>', $errors).'</li></ul> ', 500);
+            return new Response('<h1>ERRORS</h1><li>' . implode('</li><li>', $errors) . '</li></ul> ', 500);
         }
 
         return new Response('OK', 200);
+    }
+
+    /**
+     * @Route("/version")
+     * @Method({"GET"})
+     * @Template
+     */
+    public function versionAction()
+    {
+        return new Response(
+            json_encode(['version' => getenv("APP_VERSION")]),
+            200,
+            ['content-type' => 'application/json']
+        );
     }
 
     /**
