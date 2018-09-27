@@ -43,6 +43,7 @@ services:
       - ./src:/var/www/src:ro
       - ./web:/var/www/web
     environment:
+      APP_VERSION: 0-local
       # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
@@ -127,12 +128,12 @@ services:
     working_dir: /app
     entrypoint:
       - bin/behat
-    command:
       - -c
       - tests/behat/behat.yml
     depends_on:
       - loadbalancer
     environment:
+      APP_VERSION: 0-local
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
