@@ -18,6 +18,23 @@ class FeatureContext extends MinkContext
     use DebugTrait;
 
     /**
+     * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
+     */
+    public function theHeaderContains($name, $value)
+    {
+        $this->assertSession()->responseHeaderContains($name, $value);
+    }
+
+    /**
+     * @Then the current version should be shown
+     */
+    public function theCurrentVersionIsShown()
+    {
+        $this->assertResponseContains(getenv("APP_VERSION"));
+    }
+
+
+    /**
      * @Given I am logged in as behat user
      */
     public function iAmLoggedInAsBehatUser()
