@@ -4,8 +4,12 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Order;
 use Application\Factory\GuzzleClient;
+use Aws\CommandPool;
+use Aws\Exception\AwsException;
+use Aws\ResultInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
@@ -13,6 +17,11 @@ use AppBundle\Service\File\Storage\StorageInterface;
 
 class SiriusService
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
     /**
      * @var SiriusClient
      */
@@ -25,13 +34,16 @@ class SiriusService
 
     /**
      * SiriusService constructor.
-     * @param ClientInterface $httpClient
+     *
+     * @param ClientInterface $httpClient Used for Sirius API call
      * @param StorageInterface $S3storage
      */
     public function __construct(
+        EntityManager $em,
         ClientInterface $httpClient,
         StorageInterface $S3storage
     ) {
+        $this->em = $em;
         $this->httpClient = $httpClient;
         $this->S3Storage = $S3storage;
     }
@@ -39,55 +51,41 @@ class SiriusService
     public function serveOrder(Order $order)
     {
         // copy Documents to Sirius S3 bucket
-        $this->sendDocuments($order->getDocuments());
 
-        // generate JSON payload
-        //$payload = $this->generatePayload($order);
+        try {
 
-        // Make API call
-        //$return = $this->login();
-        //$return = $this->httpClient->serveOrderToSirius($payload);
+            $documents = $this->sendDocuments($order->getDocuments());
 
+            foreach ($documents as $document) {
+                $this->em->persist($document);
+            }
+
+            $this->em->flush();
+
+            // generate JSON payload
+            //$payload = $this->generatePayload($order);
+
+            // Make API call
+            //$return = $this->login();
+            //$return = $this->httpClient->serveOrderToSirius($payload);
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
+    /**
+     * Send documents to Sirius
+     *
+     * @param Collection $documents
+     * @return mixed
+     * @throws \Exception
+     */
     private function sendDocuments(Collection $documents)
     {
-//        $sourceBucket = '*** Your Source Bucket Name ***';
-//        $sourceKeyname = '*** Your Source Object Key ***';
-//        $targetBucket = '*** Your Target Bucket Name ***';
-//
-//
-//// Copy an object.
-//        $s3->copyObject([
-//            'Bucket'     => $this->siriusS3Storage->get,
-//            'Key'        => "{$sourceKeyname}-copy",
-//            'CopySource' => "{$sourceBucket}/{$sourceKeyname}",
-//        ]);
-//
-//// Perform a batch of CopyObject operations.
-//        $batch = array();
-//        for ($i = 1; $i <= 3; $i++) {
-//            $batch[] = $s3->getCommand('CopyObject', [
-//                'Bucket'     => $targetBucket,
-//                'Key'        => "{targetKeyname}-{$i}",
-//                'CopySource' => "{$sourceBucket}/{$sourceKeyname}",
-//            ]);
-//        }
-//        try {
-//            $results = CommandPool::batch($s3, $batch);
-//            foreach($results as $result) {
-//                if ($result instanceof ResultInterface) {
-//                    // Result handling here
-//                }
-//                if ($result instanceof AwsException) {
-//                    // AwsException handling here
-//                }
-//            }
-//        } catch (\Exception $e) {
-//            // General error handling here
-//        }
-        var_dump($documents);
-        exit;
+        $documents = $this->S3Storage->moveDocuments($documents);
+
+        return $documents;
     }
 
 //    private function login()
