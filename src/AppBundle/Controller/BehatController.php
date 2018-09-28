@@ -96,7 +96,8 @@ class BehatController extends Controller
 
         // empty orders for behat client
         $client  = $this->em->getRepository(Client::class)->findBy(['caseNumber'=>self::BEHAT_CASE_NUMBER]);
-        foreach($this->em->getRepository(Order::class)->findBy(['client' => $client]) as $order) {
+        $clientOrders = $this->em->getRepository(Order::class)->findBy(['client' => $client]);
+        foreach($clientOrders as $order) {
             $this->orderService->emptyOrder($order);
             $ret[] = get_class($order). " for client " . self::BEHAT_CASE_NUMBER . " present and emptied (docs, deputies)";
         }
