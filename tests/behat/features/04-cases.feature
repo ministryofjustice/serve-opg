@@ -8,8 +8,6 @@ Feature: cases
     Then the form should be valid
     And I should see the "order-12345678-pa" region
     And I should see the "order-12345678-hw" region
-    When I go to "/behat/reset-behat-orders"
-    And print last response
     Then the response status code should be 200
 
 
