@@ -62,12 +62,9 @@ services:
       DC_S3_ENDPOINT: 'http://s3:4569'
 
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
-      SIRIUS_S3_REGION: eu-west-1
-      SIRIUS_S3_ENDPOINT: 'http://sirius-s3:4570'
 
       # Sirius public API configuratiion
       DC_SIRIUS_URL: 'http://localhost:8080'
-      DC_SIRIUS_SSL_VERIFY: 0
 
       # fixtures
       DC_FIXURES_USERS: |

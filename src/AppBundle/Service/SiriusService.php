@@ -56,17 +56,20 @@ class SiriusService
 
             $documents = $this->sendDocuments($order->getDocuments());
 
+            // persist documents with new location added
             foreach ($documents as $document) {
                 $this->em->persist($document);
             }
-
             $this->em->flush();
 
-            // generate JSON payload
+            // Begin API call to Sirius
+            // login to establish connectivity
+            //$return = $this->login();
+
+            // generate JSON payload of order
             //$payload = $this->generatePayload($order);
 
             // Make API call
-            //$return = $this->login();
             //$return = $this->httpClient->serveOrderToSirius($payload);
 
         } catch (\Exception $e) {

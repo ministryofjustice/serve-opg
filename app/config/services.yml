@@ -29,8 +29,7 @@ services:
         class: AppBundle\Service\SiriusClient
         arguments:
             [
-#              base_uri: "%env(DC_SIRIUS_URL)%",
-              base_uri: "https://localhost:8080",
+              base_uri: "%env(DC_SIRIUS_URL)%",
               verify: 0,
               proxy: "",
               debug: "false",
