@@ -50,6 +50,9 @@ jobs:
       - run:
           name: Deploy
           command: |
+            git tag $CIRCLE_BUILD_NUM
+            git push --tags
+
             docker images
             ./docker_login.sh
             docker-compose push app
