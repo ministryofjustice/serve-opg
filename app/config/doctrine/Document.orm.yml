@@ -10,7 +10,7 @@ AppBundle\Entity\Document:
     fields:
       type:
         type: string
-        length: 10
+        length: 11
         nullable: false
       fileName:
         type: string
