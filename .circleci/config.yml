@@ -3,6 +3,9 @@ jobs:
   test:
     machine: true
     steps:
+      - add_ssh_keys:
+          fingerprints:
+          - d5:8c:8f:b5:22:91:45:16:35:49:42:f2:2e:78:a0:5f
       - checkout
       - restore_cache:
           keys:
