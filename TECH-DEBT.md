@@ -6,8 +6,7 @@
   - `add_header X-Content-Type-Options nosniff;`
   - `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";`
 - dynamoDB required for app to startup
-- push version back to git
-- make version available to app
+- move fakes3 license key to env var
 
 # Solved
 - ~~add time based assets directory~~
@@ -20,3 +19,5 @@
 - ~~PostgreSQL required for app to startup~~
 - ~~nginx config needs templating to accept different hostnames~~
 - ~~use arrays for cmd/entrypoint in compose files~~
+- ~~push version back to git~~
+- ~~make version available to app~~
