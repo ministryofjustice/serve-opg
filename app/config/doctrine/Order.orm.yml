@@ -8,8 +8,8 @@ AppBundle\Entity\Order:
       name: type
       type: string
     discriminatorMap:
-      pa:  AppBundle\Entity\OrderPf
-      hw:  AppBundle\Entity\OrderHw
+      PF:  AppBundle\Entity\OrderPf
+      HW:  AppBundle\Entity\OrderHw
     id:
       id:
         type: integer

@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 abstract class Order
 {
-    const TYPE_PA = 'PF';
+    const TYPE_PF = 'PF';
     const TYPE_HW = 'HW ';
     const TYPE_BOTH = 'both';
 

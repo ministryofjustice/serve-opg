@@ -20,7 +20,7 @@
         <tbody class="govuk-table__body">
 
         {# assets question only for PA orders #}
-        {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PA') %}
+        {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PF') %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
                     Are the bond or assets above £21,000?
