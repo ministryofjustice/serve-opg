@@ -190,7 +190,7 @@ class SiriusService
             "courtReference" => $order->getClient()->getCaseNumber(),
             "type" => $order->getType() == 'hw' ? 'HW' : 'PF',
             "subType" => $order->getSubType(),
-            "date" => $order->getCreatedAt()->format(self::SIRIUS_DATE_FORMAT),
+            "date" => $order->getMadeAt()->format(self::SIRIUS_DATE_FORMAT),
             "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
             "appointmentType" => $order->getAppointmentType(),
             "assetLevel" => $order->getHasAssetsAboveThreshold() ? 'HIGH' : 'LOW',
