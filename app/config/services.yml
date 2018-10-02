@@ -23,7 +23,13 @@ services:
 
     AppBundle\Service\DeputyService: ~
     AppBundle\Service\DocumentService: ~
-    AppBundle\Service\SiriusService: ~
+    AppBundle\Service\SiriusService:
+        arguments:
+            [
+              "@doctrine.orm.entity_manager",
+              "@AppBundle\\Service\\SiriusClient",
+              "@AppBundle\\Service\\File\\Storage\\S3Storage"
+            ]
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient
