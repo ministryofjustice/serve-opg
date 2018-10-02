@@ -35,6 +35,10 @@ AppBundle\Entity\Order:
         column: created_at
         type: datetime
         nullable: false
+      madeAt:
+        column: made_at
+        type: datetime
+        nullable: false
       issuedAt:
         column: issued_at
         type: datetime

@@ -76,9 +76,18 @@ abstract class Order
     private $appointmentType;
 
     /**
+     * Date order was created in DC database
+     *
      * @var \DateTime
      */
     private $createdAt;
+
+    /**
+     * Date order was first made outside DC
+     *
+     * @var \DateTime
+     */
+    private $madeAt;
 
     /**
      * @var \DateTime
@@ -92,12 +101,14 @@ abstract class Order
 
     /**
      * @param Client $client
-     * @param \DateTime $issuedAt
+     * @param \DateTime $madeAt Date Order was first made, outside DC
+     * @param \DateTime $issuedAts
      */
-    public function __construct(Client $client, \DateTime $issuedAt)
+    public function __construct(Client $client, \DateTime $madeAt, \DateTime $issuedAt)
     {
         $this->client = $client;
-        $this->issuedAt =$issuedAt;
+        $this->madeAt = $madeAt;
+        $this->issuedAt = $issuedAt;
 
         $this->createdAt = new \DateTime();
         $this->deputies = new ArrayCollection();
@@ -231,6 +242,14 @@ abstract class Order
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getMadeAt(): \DateTime
+    {
+        return $this->madeAt;
     }
 
     /**
