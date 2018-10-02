@@ -20,6 +20,7 @@ use AppBundle\Service\File\Storage\StorageInterface;
 
 class SiriusService
 {
+    const SIRIUS_DATE_FORMAT = 'd/m/Y';
     /**
      * @var EntityManager
      */
@@ -34,6 +35,8 @@ class SiriusService
      * @var StorageInterface
      */
     private $S3Storage;
+
+    private $cookieJar;
 
     /**
      * SiriusService constructor.
@@ -54,32 +57,45 @@ class SiriusService
     public function serveOrder(Order $order)
     {
         // copy Documents to Sirius S3 bucket
-
         try {
 
-//            $documents = $this->sendDocuments($order->getDocuments());
-//
-//            // persist documents with new location added
-//            foreach ($documents as $document) {
-//                $this->em->persist($document);
-//            }
-//            $this->em->flush();
+            $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
+
+            $documents = $this->sendDocuments($order->getDocuments());
+
+            // persist documents with new location added
+            foreach ($documents as $document) {
+                $this->em->persist($document);
+            }
+            $this->em->flush();
 
             // Begin API call to Sirius
             // login to establish connectivity
-            //$return = $this->login();
+//            echo '<p> Logging in: </p>';
+            $loginResponse = $this->login();
+//            var_dump($loginResponse);
+            if ($loginResponse->getStatusCode() == 200) {
+                // generate JSON payload of order
+//                echo "<p>Generating payload</p>";
+                $payload = $this->generateOrderPayload($order);
+//                echo "<p> Payload is : </p>";
+//                var_export($payload);
+                if ($payload) {
+                    // Make API call
+                    echo '<p> Making API call: </p>';
 
-            // generate JSON payload of order
-            $payload = $this->generateOrderPayload($order);
+                    $apiResponse = $this->sendOrderToSirius($payload);
+                    var_dump($apiResponse);
+                }
+           }
 
-            if ($payload) {
-                echo $payload;
-                exit;
-                // Make API call
-                //$return = $this->httpClient->serveOrderToSirius($payload);
+            $this->logout();
+
+        } catch (RequestException $e) {
+            echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
             }
-            $return = $this->logout();
-
         } catch (\Exception $e) {
             throw $e;
         }
@@ -101,6 +117,52 @@ class SiriusService
     }
 
     /**
+     * Login to Sirius
+     */
+    private function login()
+    {
+        return $this->httpClient->post(
+            'auth/login',
+            [
+                'form_params' => [
+                    'email'    => 'manager@opgtest.com',
+                    'password' => 'Password1',
+                ],
+                'cookies' => $this->cookieJar
+
+            ]
+        );
+    }
+
+
+    /**
+     * Send order payload to Sirius
+     *
+     * @param string $payload JSON encoded
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     */
+    private function sendOrderToSirius($payload)
+    {
+        return $this->httpClient->post(
+            'api/public/v1/orders',
+            [
+                'json' =>  $payload,
+                'cookies' => $this->cookieJar
+            ]
+        );
+    }
+
+    /**
+     * Logout from Sirius API
+     */
+    private function logout()
+    {
+        return $this->httpClient->post(
+            'auth/logout'
+        );
+    }
+
+    /**
      * Generates JSON payload for Sirius API call
      *
      * @param Order $order
@@ -108,14 +170,12 @@ class SiriusService
      */
     private function generateOrderPayload(Order $order)
     {
-        return json_encode(
-            [
-                $this->generateOrderDetails($order),
-                'client' => $this->generateClientDetails($order->getClient()),
-                'deputies' => $this->generateDeputiesDetails($order->getDeputies()),
-                'documents' => $this->generateDocumentDetails($order->getDocuments())
-            ]
-        );
+        $dataArray = $this->generateOrderDetails($order);
+        $dataArray['client'] = $this->generateClientDetails($order->getClient());
+        $dataArray['deputies'] = $this->generateDeputiesDetails($order->getDeputies());
+        $dataArray['documents'] = $this->generateDocumentDetails($order->getDocuments());
+
+        return $dataArray;
     }
 
     /**
@@ -130,8 +190,8 @@ class SiriusService
             "courtReference" => $order->getClient()->getCaseNumber(),
             "type" => $order->getType() == 'hw' ? 'HW' : 'PF',
             "subType" => $order->getSubType(),
-            "date" => $order->getCreatedAt()->format('Y-m-d'),
-            "issueDate" => $order->getIssuedAt()->format('Y-m-d'),
+            "date" => $order->getCreatedAt()->format(self::SIRIUS_DATE_FORMAT),
+            "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
             "appointmentType" => $order->getAppointmentType(),
             "assetLevel" => $order->getHasAssetsAboveThreshold() ? 'HIGH' : 'LOW',
         ];
@@ -180,7 +240,7 @@ class SiriusService
             "type" => $deputy->getDeputyType(),
             "firstName" => $deputy->getForename(),
             "lastName" => $deputy->getSurname(),
-            "dob" => $deputy->getDateOfBirth()->format('Y-m-d'),
+            "dob" => (!empty($deputy->getDateOfBirth()) ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
             "email" => $deputy->getEmailAddress(),
             "daytimeNumber" => $deputy->getDaytimeContactNumber(),
             "eveningNumber" => $deputy->getEveningContactNumber(),
@@ -248,66 +308,33 @@ class SiriusService
     {
         return [
             "type" => $document->getType(),
-            "s3Link" => $document->getStorageReference()
+            "filename" => $document->getStorageReference()
         ];
     }
 
     /**
-     * Login to Sirius
+     * Generates a court reference accepted by the Sirius API
+     *
+     * @return string
      */
-    private function login()
+    private static function generateCourtReference(): string
     {
-        $jar = new \GuzzleHttp\Cookie\CookieJar;
+        $constants = [3, 4, 7, 5, 8, 2, 4];
 
-        try {
-            $response = $this->httpClient->request(
-                'POST',
-                'https://frontend-datamigration.dev.sirius.opg.digital',
-                [
-                    'form_params' => [
-                        'email'     => 'manager@opgtest.com',
-                        'password' => 'Password1',
-                        'cookies' => $jar
-                    ]
-                ]
-            );
-            echo 'RESPONSE--> ';
-            var_dump($response);exit;
-        } catch (RequestException $e) {
-            echo Psr7\str($e->getRequest());
-            echo '--------------<br />';
-            var_dump($e->getCode());
+        $ref = '';
+        $sum = 0;
 
-            var_dump($e->getMessage());
-            if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
-            }
+        foreach ($constants as $constant) {
+            $value = mt_rand(0, 9);
+            $ref .= $value;
+            $sum += $value * $constant;
         }
 
-    }
-
-    private function logout()
-    {
-        try {
-            $response = $this->httpClient->request(
-                'POST',
-                'https://frontend-datamigration.dev.sirius.opg.digital/auth/logout',
-                [
-                    'form_params' => []
-                ]
-            );
-            echo 'RESPONSE--> ';
-            var_dump($response);exit;
-        } catch (RequestException $e) {
-            echo Psr7\str($e->getRequest());
-            echo '--------------<br />';
-            var_dump($e->getCode());
-
-            var_dump($e->getMessage());
-            if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
-            }
+        $checkbit = (11 - ($sum % 11)) % 11;
+        if ($checkbit === 10) {
+            $checkbit = 'T';
         }
 
+        return $ref . $checkbit;
     }
 }
