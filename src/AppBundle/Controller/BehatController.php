@@ -63,6 +63,9 @@ class BehatController extends Controller
         $this->encoder = $encoder;
     }
 
+    /**
+     * throw a AccessDeniedException if DC_BEHAT_CONTROLLER_ENABLED is empty or false
+     */
     private function securityChecks()
     {
         if (!getenv('DC_BEHAT_CONTROLLER_ENABLED')) {
