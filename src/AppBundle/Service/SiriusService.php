@@ -17,6 +17,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use AppBundle\Service\File\Storage\StorageInterface;
+use Psr\Log\LoggerInterface;
 
 class SiriusService
 {
@@ -47,21 +48,27 @@ class SiriusService
     public function __construct(
         EntityManager $em,
         ClientInterface $httpClient,
-        StorageInterface $S3storage
+        StorageInterface $S3storage,
+        LoggerInterface $logger
     ) {
         $this->em = $em;
         $this->httpClient = $httpClient;
         $this->S3Storage = $S3storage;
+        $this->logger = $logger;
     }
 
     public function serveOrder(Order $order)
     {
-        // copy Documents to Sirius S3 bucket
-        try {
+        $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
+        try {
+            // init cookie jar to pass session token between requests
             $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
 
-            $documents = $this->sendDocuments($order->getDocuments());
+            // send DC docs to Sirius
+            $documents = $order->getDocuments();
+            $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
+            $documents = $this->sendDocuments($documents);
 
             // persist documents with new location added
             foreach ($documents as $document) {
@@ -70,44 +77,44 @@ class SiriusService
             $this->em->flush();
 
             // Begin API call to Sirius
-            // login to establish connectivity
-//            echo '<p> Logging in: </p>';
             $loginResponse = $this->login();
-//            var_dump($loginResponse);
+
+            $this->logger->debug('Sirius login response' . print_r($loginResponse));
             if ($loginResponse->getStatusCode() == 200) {
                 // generate JSON payload of order
-//                echo "<p>Generating payload</p>";
                 $payload = $this->generateOrderPayload($order);
-//                echo "<p> Payload is : </p>";
-//                var_export($payload);
+
                 if ($payload) {
+                    $order->setPayloadServed($payload);
+
                     // Make API call
-                    echo '<p> Making API call: </p>';
+                    $this->logger->info('Begin API call:');
 
                     $apiResponse = $this->sendOrderToSirius($payload);
-                    var_dump($apiResponse);
+                    $order->setApiResponse(json_encode($apiResponse->toArray()));
+
+                    $this->logger->debug('Sirius API response' . print_r($apiResponse));
                 }
            }
 
             $this->logout();
 
         } catch (RequestException $e) {
-            echo Psr7\str($e->getRequest());
+            $this->logger->error('RequestException: Request -> ' . print_r(Psr7\str($e->getRequest())));
             if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
+                $this->logger->error('RequestException: Reponse <- ' . print_r(Psr7\str($e->getResponse())));
             }
         } catch (\Exception $e) {
+            $this->logger->error('General Exception thrown: ' . print_r($e->getMessage()));
             throw $e;
         }
-        exit;
     }
 
     /**
      * Send documents to Sirius
      *
      * @param Collection $documents
-     * @return mixed
-     * @throws \Exception
+     * @return Collection
      */
     private function sendDocuments(Collection $documents)
     {
@@ -121,16 +128,20 @@ class SiriusService
      */
     private function login()
     {
+        $params = [
+            'form_params' => [
+                'email'    => getenv('SIRIUS_PUBLIC_API_EMAIL'),
+                'password' => getenv('SIRIUS_PUBLIC_API_PASSWORD'),
+            ],
+            'cookies' => $this->cookieJar
+        ];
+
+        $this->logger->debug('Attempting to login to ' .
+            $this->httpClient->getConfig('base_uri') .
+            ', with ' . print_r($params));
         return $this->httpClient->post(
             'auth/login',
-            [
-                'form_params' => [
-                    'email'    => 'manager@opgtest.com',
-                    'password' => 'Password1',
-                ],
-                'cookies' => $this->cookieJar
-
-            ]
+            $params
         );
     }
 
@@ -138,7 +149,7 @@ class SiriusService
     /**
      * Send order payload to Sirius
      *
-     * @param string $payload JSON encoded
+     * @param string $payload NOT JSON encoded. Client does this with 'json' parameter.
      * @return mixed|\Psr\Http\Message\ResponseInterface
      */
     private function sendOrderToSirius($payload)
@@ -286,7 +297,7 @@ class SiriusService
      *
      * @return array
      */
-    private function generateDocumentDetails(   Collection $documents)
+    private function generateDocumentDetails(Collection $documents)
     {
         $docsArray = [];
         /** @var Document $doc */
@@ -317,7 +328,7 @@ class SiriusService
      *
      * @return string
      */
-    private static function generateCourtReference(): string
+    public static function generateCourtReference()
     {
         $constants = [3, 4, 7, 5, 8, 2, 4];
 

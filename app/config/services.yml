@@ -28,7 +28,8 @@ services:
             [
               "@doctrine.orm.entity_manager",
               "@AppBundle\\Service\\SiriusClient",
-              "@AppBundle\\Service\\File\\Storage\\S3Storage"
+              "@AppBundle\\Service\\File\\Storage\\S3Storage",
+              "@logger"
             ]
 
     AppBundle\Service\SiriusClient:

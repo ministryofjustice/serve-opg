@@ -100,6 +100,20 @@ abstract class Order
     private $servedAt;
 
     /**
+     * JSON string served to the API
+     *
+     * @var string
+     */
+    private $payloadServed;
+
+    /**
+     * API response as a string
+     *
+     * @var string
+     */
+    private $apiResponse;
+
+    /**
      * @param Client $client
      * @param \DateTime $madeAt Date Order was first made, outside DC
      * @param \DateTime $issuedAts
@@ -178,7 +192,6 @@ abstract class Order
      * @return string
      */
     abstract public function getType();
-
 
     /**
      * @return null|string
@@ -358,6 +371,44 @@ abstract class Order
         if (!$this->deputies->contains($deputy)) {
             $this->deputies->removeElement($deputy);
         }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayloadServed()
+    {
+        return $this->payloadServed;
+    }
+
+    /**
+     * @param string $payloadServed
+     *
+     * @return $this
+     */
+    public function setPayloadServed($payloadServed)
+    {
+        $this->payloadServed = $payloadServed;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiResponse()
+    {
+        return $this->apiResponse;
+    }
+
+    /**
+     * @param string $apiResponse
+     *
+     * @return $this
+     */
+    public function setApiResponse($apiResponse)
+    {
+        $this->apiResponse = $apiResponse;
         return $this;
     }
 }

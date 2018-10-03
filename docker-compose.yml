@@ -65,6 +65,8 @@ services:
 
       # Sirius public API configuratiion
       DC_SIRIUS_URL: 'https://frontend-datamigration.dev.sirius.opg.digital/'
+      SIRIUS_PUBLIC_API_EMAIL: manager@opgtest.com
+      SIRIUS_PUBLIC_API_PASSWORD: Password1
 
       # fixtures
       DC_FIXURES_USERS: |
