@@ -188,7 +188,7 @@ class SiriusService
     {
         return [
             "courtReference" => $order->getClient()->getCaseNumber(),
-            "type" => $order->getType() == 'hw' ? 'HW' : 'PF',
+            "type" => $order->getType(),
             "subType" => $order->getSubType(),
             "date" => $order->getMadeAt()->format(self::SIRIUS_DATE_FORMAT),
             "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
