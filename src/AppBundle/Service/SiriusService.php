@@ -59,6 +59,7 @@ class SiriusService
 
     public function serveOrder(Order $order)
     {
+        return;
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
         try {
@@ -90,8 +91,8 @@ class SiriusService
                     // Make API call
                     $this->logger->info('Begin API call:');
 
-                    $apiResponse = $this->sendOrderToSirius($payload);
-                    $order->setApiResponse(json_encode($apiResponse->toArray()));
+    //                    $apiResponse = $this->sendOrderToSirius($payload);
+    //                    $order->setApiResponse(json_encode($apiResponse->toArray()));
 
                     $this->logger->debug('Sirius API response' . print_r($apiResponse));
                 }

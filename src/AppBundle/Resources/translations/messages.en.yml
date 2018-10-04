@@ -7,7 +7,7 @@ order.hasAssets.yes: 'Yes'
 order.hasAssets.no: 'No'
 
 order.subType.NEW_APPLICATION: 'New Application'
-order.subType.REPLACEMENT: 'Replacement of discharged deputy'
+order.subType.REPLACEMENT_OF_DISCHARGED_DEPUTY: 'Replacement of discharged deputy'
 order.subType.INTERIM_ORDER: 'Interim order'
 order.subType.TRUSTEE: 'Trustee'
 order.subType.VARIATION: 'Variation'

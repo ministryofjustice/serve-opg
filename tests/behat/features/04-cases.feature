@@ -50,8 +50,8 @@ Feature: cases
       | order_form_appointmentType         |
     # fill form in with valid data
     When I fill in the following:
-      | order_form_subType         | interim-order |
-      | order_form_appointmentType | sole          |
+      | order_form_subType         | INTERIM_ORDER |
+      | order_form_appointmentType | SOLE          |
     And I press "order_form_submit"
     Then the response status code should be 200
     And I should not see the "has-assets" region

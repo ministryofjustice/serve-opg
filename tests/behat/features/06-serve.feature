@@ -18,7 +18,7 @@ Feature: serve order
 
   Scenario: Serve HW order
     Given I am logged in as behat user
-    When I follow "order-12345678-hw"
+    When I follow "order-93559316-HW"
     # summary page
     Then the url should match "order/\d+/summary"
     When I follow "serve_order_button"
