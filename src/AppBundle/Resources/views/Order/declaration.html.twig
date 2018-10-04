@@ -20,7 +20,7 @@
 
     {{ form_start(form) }}
     {{ form_widget(form.submit, {'label': 'Serve OPG'}) }}
-    <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
+    <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Back to summary</a>
 
     {{ form_end(form) }}
 
