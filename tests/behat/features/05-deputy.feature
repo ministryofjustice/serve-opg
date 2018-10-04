@@ -122,7 +122,7 @@ Feature: deputy
 
   Scenario: PA order: add one deputy (just type, first and lastname)
     Given I am logged in as behat user
-    When I follow "order-12345678-pa"
+    When I follow "order-93559316-PF"
     When I follow "add-deputy"
       # check form validation
     When I fill in the following:

@@ -75,12 +75,12 @@ class OrderService
      *
      * @return Order
      */
-    public function upsert(Client $client, string $orderClass, \DateTime $issuedAt)
+    public function upsert(Client $client, string $orderClass, \DateTime $madeAt, \DateTime $issuedAt)
     {
         /* @var $order Order */
         $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
         if (!$order) {
-            $order = new $orderClass($client, $issuedAt);
+            $order = new $orderClass($client, $madeAt, $issuedAt);
             $this->em->persist($order);
             $this->em->flush($client);
         }

@@ -157,7 +157,7 @@ class SiriusService
         return $this->httpClient->post(
             'api/public/v1/orders',
             [
-                'json' =>  $payload,
+                'json' => $payload,
                 'cookies' => $this->cookieJar
             ]
         );

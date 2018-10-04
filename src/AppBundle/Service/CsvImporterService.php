@@ -82,7 +82,8 @@ class CsvImporterService
 
         // order
         $issuedAt = new \DateTime($row['Issue Date']);
+        $madeAt = new \DateTime($row['Made Date']);
 
-        return $this->orderService->upsert($client, $orderType, $issuedAt);
+        return $this->orderService->upsert($client, $orderType, $madeAt, $issuedAt);
     }
 }
