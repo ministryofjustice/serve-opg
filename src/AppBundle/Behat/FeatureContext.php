@@ -61,5 +61,13 @@ class FeatureContext extends MinkContext
         }
     }
 
+    /**
+     * @Then sirius should be available
+     **/
+     public function sirusIsAvailable()
+     {
+         $this->assertResponseNotContains('{"sirius":"unavailable"}');
+     }
+
 
 }

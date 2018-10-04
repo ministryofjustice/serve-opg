@@ -16,6 +16,8 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use AppBundle\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 
@@ -144,6 +146,20 @@ class SiriusService
             'auth/login',
             $params
         );
+    }
+
+    /**
+     * Ping Sirius
+     */
+    public function ping()
+    {
+        try {
+            $this->httpClient->get('/', ['connect_timeout' => 3.14]);
+        } catch (ClientException $e) {
+            return $e->getResponse()->getStatusCode();
+        } catch (ConnectException $e) {
+            return 'unavailable';
+        }
     }
 
 

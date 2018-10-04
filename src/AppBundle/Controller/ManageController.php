@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Service\SiriusService;
 
 /**
  * @Route("/manage")
@@ -22,10 +23,12 @@ class ManageController extends Controller
     /**
      * UserController constructor.
      * @param EntityManager $em
+     * @param SiriusService $siriusService
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, SiriusService $siriusService)
     {
         $this->em = $em;
+        $this->siriusService = $siriusService;
     }
 
     /**
@@ -35,13 +38,8 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
-        $errors = [];
-
-        if ($errors) {
-            return new Response('<h1>ERRORS</h1><li>' . implode('</li><li>', $errors) . '</li></ul> ', 500);
-        }
-
-        return new Response('OK', 200);
+        $status = $this->siriusService->ping();
+        return $this->json(['sirius' => $status]);
     }
 
     /**
@@ -82,5 +80,4 @@ class ManageController extends Controller
     {
         return ['status' => 'OK'];
     }
-
 }
