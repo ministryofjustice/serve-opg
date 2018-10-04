@@ -61,12 +61,16 @@ services:
       DC_S3_REGION: eu-west-1
       DC_S3_ENDPOINT: 'http://s3:4569'
 
-      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
-
       # Sirius public API configuratiion
+      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       DC_SIRIUS_URL: 'https://frontend-datamigration.dev.sirius.opg.digital/'
       SIRIUS_PUBLIC_API_EMAIL: manager@opgtest.com
       SIRIUS_PUBLIC_API_PASSWORD: Password1
+
+      # file scanner
+      DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
+      DC_FILE_SCANNER_SSL_VERIFY: 1
+      DC_BEHAT_CONTROLLER_ENABLED: 1
 
       # fixtures
       DC_FIXURES_USERS: |

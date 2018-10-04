@@ -150,8 +150,7 @@
         <thead class="govuk-table__head">
             <tr>
                 <th scope="col" class="govuk-table__header">Document</th>
-                <th scope="col" class="govuk-table__header">File name</th>
-                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header">File</th>
                 <th scope="col" class="govuk-table__header"></th>
             </tr>
         </thead>
@@ -162,14 +161,13 @@
 
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
+<<<<<<< HEAD
                 <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
+=======
+                <td class="govuk-table__cell behat-region-document-{{ docType }}-filename {{ docIsRequired and not doc ? 'govuk-error-message' }}">
+>>>>>>> 5827ca83753af8a045ef74b78643e1d67997aebf
                     {% if doc %}
                         {{ doc.filename }}
-                    {% endif %}
-                </td>
-                <td class="govuk-table__cell">
-                    {% if doc %}
-                        Uploaded
                     {% else %}
                         {% if docIsRequired %}
                             Required
@@ -182,8 +180,8 @@
                     {% if doc | length %}
                         <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">Remove</a>
                     {% else %}
-                        <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower}} govuk-link govuk-!-font-weight-bold">
-                            <span class="govuk-icon govuk-icon--plus behat-link"></span>Add document
+                        <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">
+                            <span class="govuk-icon govuk-icon--plus behat-link"></span>Add file
                         </a>
                     {% endif %}
                 </td>
@@ -202,7 +200,7 @@
         <table class="govuk-table behat-region-documents-additional-filenames">
             <thead class="govuk-table__head">
                 <tr>
-                    <th scope="col" class="govuk-table__header">File name</th>
+                    <th scope="col" class="govuk-table__header">File</th>
                     <th scope="col" class="govuk-table__header">Date attached</th>
                     <th scope="col" class="govuk-table__header"></th>
                 </tr>
@@ -229,8 +227,13 @@
 
     <p class="govuk-!-margin-bottom-9 behat-region-documents-other">
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+<<<<<<< HEAD
            class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
            <span class="govuk-icon govuk-icon--plus"></span>Add additional document
+=======
+           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-additional">
+           <span class="govuk-icon govuk-icon--plus"></span>Add file
+>>>>>>> 5827ca83753af8a045ef74b78643e1d67997aebf
        </a>
     </p>
 

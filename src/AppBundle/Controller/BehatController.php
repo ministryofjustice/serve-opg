@@ -10,6 +10,7 @@ use AppBundle\Entity\User;
 use AppBundle\Service\ClientService;
 use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,12 +64,22 @@ class BehatController extends Controller
     }
 
     /**
-     * //TODO protect from running on production ?
-     *
+     * throw a AccessDeniedException if DC_BEHAT_CONTROLLER_ENABLED is empty or false
+     */
+    private function securityChecks()
+    {
+        if (!getenv('DC_BEHAT_CONTROLLER_ENABLED')) {
+            throw new AccessDeniedException('Not accessible on this environment');
+        }
+    }
+
+    /**
      * @Route("/behat-user-upsert")
      */
     public function userReset(Request $request)
     {
+        $this->securityChecks();
+
         // add user if not existing
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => self::BEHAT_EMAIL]);
         if ($user) {
@@ -92,6 +103,8 @@ class BehatController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $this->securityChecks();
+
         $ret = [];
 
         // empty orders for behat client
