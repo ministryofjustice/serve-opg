@@ -19,17 +19,17 @@ AppBundle\Entity\Order:
       subType:
         column: sub_type
         type: string
-        length: 20
+        length: 50
         nullable: true
       hasAssetsAboveThreshold:
         column: has_assets_above_threshold
         type: string
-        length: 20
+        length: 50
         nullable: true
       appointmentType:
         column: appointment_type
         type: string
-        length: 5
+        length: 50
         nullable: true
       createdAt:
         column: created_at

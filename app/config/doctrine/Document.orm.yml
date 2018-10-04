@@ -10,13 +10,15 @@ AppBundle\Entity\Document:
     fields:
       type:
         type: string
-        length: 11
+        length: 50
         nullable: false
       fileName:
         type: string
+        length: 255
         nullable: true
       storageReference:
         type: string
+        length: 255
       createdAt:
         column: created_at
         type: datetime
