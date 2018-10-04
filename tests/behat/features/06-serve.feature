@@ -9,6 +9,8 @@ Feature: serve order
     # declaration page
     Then the url should match "order/\d+/declaration"
     When I press "declaration_form_submit"
+    Then the order documents should be transferred
+    And the order payload should be sent to Sirius
     # case list page: assert order is in "pending tab"
     Then I should be on "/case"
     And I should not see the "order-93559316-PF" region
@@ -25,6 +27,8 @@ Feature: serve order
     # declaration page
     Then the url should match "order/\d+/declaration"
     When I press "declaration_form_submit"
+    Then the order documents should be transferred
+    And the order payload should be sent to Sirius
     # case list page: assert order is in "pending tab"
     Then I should be on "/case"
     And I should not see the "order-93559316-HW" region
