@@ -38,12 +38,13 @@ class DeputyForm extends AbstractType
                 'required' => false
             ])
             ->add('dateOfBirth', BirthdayType::class, [
-                'label' => 'Date of birth   ',
+                'label' => 'Date of birth',
                 'required' => false,
+                'widget' => 'text',
                 'placeholder' => array(
-                    'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
+                    'day' => 'Day','month' => 'Month' , 'year' => 'Year'
                 ),
-                'format' => 'yyyy-MM-dd',
+                'format' => 'dd-MM-yyyy',
                 'invalid_message' => 'Please enter a valid date of birth'
             ])
             ->add('emailAddress', TextType::class, [
