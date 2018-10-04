@@ -7,6 +7,7 @@ $govuk-font-family: helvetica, arial;
 
 // GOVUK extensions
 @import "govuk-extension/core/links";
+@import "govuk-extension/core/error-message";
 
 // Custom components
 @import "components/alerts";
