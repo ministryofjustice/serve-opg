@@ -1,0 +1,12 @@
+@import "settings/all";
+@import "tools/all";
+@import "helpers/all";
+
+@include govuk-exports("govuk/core/error-message-extended") {
+    .govuk-error-message {
+        .govuk-table__cell + & {
+            display: table-cell;
+            margin-bottom: 0;
+        }
+    }
+}
