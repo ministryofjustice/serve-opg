@@ -16,7 +16,7 @@ class SecureUserProvider implements UserProviderInterface
     /**
      * @var EntityRepository
      */
-    private $em;
+    private $repo;
 
     /**
      * SecureUserProvider constructor.
