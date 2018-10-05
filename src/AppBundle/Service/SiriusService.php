@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use AppBundle\Service\File\Storage\StorageInterface;
@@ -39,6 +40,9 @@ class SiriusService
      */
     private $S3Storage;
 
+    /**
+     * @var CookieJarInterface
+     */
     private $cookieJar;
 
     /**
@@ -82,7 +86,7 @@ class SiriusService
                 // Begin API call to Sirius
                 $loginResponse = $this->login();
 
-                $this->logger->debug('Sirius login response' . print_r($loginResponse));
+                $this->logger->debug('Sirius login response: statusCode: ' . $loginResponse->getStatusCode());
                 if ($loginResponse->getStatusCode() == 200) {
                     // generate JSON payload of order
                     $payload = $this->generateOrderPayload($order);
@@ -96,7 +100,7 @@ class SiriusService
                         $apiResponse = $this->sendOrderToSirius($payload);
                         $order->setApiResponse(json_encode($apiResponse->toArray()));
 
-                        $this->logger->debug('Sirius API response' . print_r($apiResponse));
+                        $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
                     }
                 }
 
@@ -139,9 +143,9 @@ class SiriusService
             'cookies' => $this->cookieJar
         ];
 
-        $this->logger->debug('Attempting to login to ' .
-            $this->httpClient->getConfig('base_uri') .
-            ', with ' . print_r($params));
+//        $this->logger->debug('Attempting to login to ' .
+//            $this->httpClient->getConfig('base_uri') .
+//            ', with ' . print_r($params));
         return $this->httpClient->post(
             'auth/login',
             $params
@@ -180,7 +184,7 @@ class SiriusService
      * Generates JSON payload for Sirius API call
      *
      * @param Order $order
-     * @return string
+     * @return array
      */
     private function generateOrderPayload(Order $order)
     {
