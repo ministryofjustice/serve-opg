@@ -38,6 +38,9 @@ Feature: deputy
       | deputy_form_forename             | Dep                                         |
       | deputy_form_surname              | Uty                                         |
       | deputy_form_emailAddress         | behat-12345678-depy1@digital.justice.gov.uk |
+      | deputy_form_dateOfBirth_day      | 01                                          |
+      | deputy_form_dateOfBirth_month    | 11                                          |
+      | deputy_form_dateOfBirth_year     | 1999                                        |
       | deputy_form_daytimeContactNumber | 11111111111                                 |
       | deputy_form_eveningContactNumber | 22222222222                                 |
       | deputy_form_mobileContactNumber  | +447933333333                               |
@@ -53,6 +56,7 @@ Feature: deputy
     And each text should be present in the corresponding region:
       | Dep Uty                                       | deputy1-fullName     |
       | behat-12345678-depy1@digital.justice.gov.uk   | deputy1-emailAddress |
+      | 1 November 1999                               | deputy1-dateOfBirth  |
       | lay                                           | deputy1-deputyType   |
       | Emb house, victoria road, London, London, SW1 | deputy1-address      |
     And the order should be unservable
@@ -67,6 +71,9 @@ Feature: deputy
       | deputy_form_forename             | DepE                                         |
       | deputy_form_surname              | UtyE                                          |
       | deputy_form_emailAddress         | behat-12345678-depy1E@digital.justice.gov.uk |
+      | deputy_form_dateOfBirth_day      | 01                                          |
+      | deputy_form_dateOfBirth_month    | 11                                          |
+      | deputy_form_dateOfBirth_year     | 1999                                        |
       | deputy_form_daytimeContactNumber | 11111111119                                 |
       | deputy_form_eveningContactNumber | 22222222229                                 |
       | deputy_form_mobileContactNumber  | +447933333339                               |
@@ -82,6 +89,7 @@ Feature: deputy
     And each text should be present in the corresponding region:
       | DepE UtyE                                             | deputy1-fullName     |
       | behat-12345678-depy1E@digital.justice.gov.uk          | deputy1-emailAddress |
+      | 1 November 1999                                       | deputy1-dateOfBirth  |
       | lay                                                   | deputy1-deputyType   |
       | Emb houseE, victoria roadE, LondonE1, LondonE3, SW1 E | deputy1-address      |
     And the order should be unservable
@@ -96,6 +104,9 @@ Feature: deputy
       | deputy_form_forename             | Dep2                                         |
       | deputy_form_surname              | Uty2                                         |
       | deputy_form_emailAddress         | behat-12345678-depy2@digital.justice.gov.uk |
+      | deputy_form_dateOfBirth_day      | 01                                          |
+      | deputy_form_dateOfBirth_month    | 11                                          |
+      | deputy_form_dateOfBirth_year     | 1999                                        |
       | deputy_form_daytimeContactNumber | 11111111111                                 |
       | deputy_form_eveningContactNumber | 22222222222                                 |
       | deputy_form_mobileContactNumber  | +447933333333                               |
@@ -111,6 +122,7 @@ Feature: deputy
     And each text should be present in the corresponding region:
       | Dep2 Uty2                                             | deputy2-fullName     |
       | behat-12345678-depy2@digital.justice.gov.uk           | deputy2-emailAddress |
+      | 1 November 1999                                       | deputy2-dateOfBirth  |
       | lay                                                   | deputy2-deputyType   |
       | Emb house, victoria road, district, Surrey, SW1 | deputy2-address      |
     Then I follow "delete-deputy-2"

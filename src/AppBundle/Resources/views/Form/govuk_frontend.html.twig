@@ -40,6 +40,61 @@
     {%- endif -%}
 {%- endblock form_label -%}
 
+{% block _deputy_form_dateOfBirth_row %}
+    <p class="debug-label">Custom: _deputy_form_dateOfBirth_row</p>
+    <div class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend">
+            <h1 class="govuk-fieldset__heading">
+                {{ form_label(form) }}
+            </h1>
+        </legend>
+
+        <span id="dob-hint" class="govuk-hint">
+            For example, 31 3 1980
+        </span>
+
+        {{ form_errors(form) }}
+
+        <div class="govuk-date-input" id="form-group-{{ name }}">
+        {{ form_widget(form) }}
+        </div>
+    </div>
+{% endblock _deputy_form_dateOfBirth_row %}
+
+{% block birthday_widget %}
+    <p class="debug-label">Custom: birthday_widget</p>
+    <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_day">
+                Day
+            </label>
+            {{ form_widget(form.day, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-2'} }) }}
+        </div>
+    </div>
+    <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_month">
+                Month
+            </label>
+
+            {{ form_widget(form.month, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-2'} }) }}
+        </div>
+    </div>
+    <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_year">
+                Year
+            </label>
+            {{ form_widget(form.year, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-4'} }) }}
+        </div>
+    </div>
+{%- endblock birthday_widget -%}
+
+{% block _deputy_form_dateOfBirth %}
+    day
+{%- endblock _deputy_form_dateOfBirth -%}
+
+
 {# Select #}
 {% block choice_widget_collapsed %}
     <p class="debug-label">Custom: choice_widget_collapsed</p>
