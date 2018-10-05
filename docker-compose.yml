@@ -148,7 +148,9 @@ services:
 
 
   phpunit:
-    image: php:7.2-fpm-alpine
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
     volumes:
       - .:/app
     working_dir: /app
