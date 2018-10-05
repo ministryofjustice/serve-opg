@@ -8,18 +8,33 @@ use Behat\Mink\Element\NodeElement;
 trait SiriusTrait
 {
     /**
-     * @Then the order documents should be transferred
+     * @Then the documents for order :orderIdentifier should be transferred
      */
-    public function theOrderDocumentsShouldBeTransferred()
+    public function theDocumentsForOrderShouldBeTransferred($orderIdentifier)
     {
-        throw new \RuntimeException();
+        $documentsList = explode("|", $this->getDocumentsList($orderIdentifier));
+
+        /** @to-do use ENV variable for needle */
+        $needle = 'sirius_test_bucket';
+
+        foreach ($documentsList as $docLocation) {
+            if (!strpos($docLocation, $needle)) {
+                throw new \RuntimeException('Document location ' . $docLocation   . ' does not contain ' . $needle);
+            }
+        }
     }
 
     /**
-     * @Then the order payload should be sent to Sirius
+     * @param bool $throwExceptionIfNotFound
+     * @param int  $index                    = last (default), 1=second last
+     *
+     * @return array|null
      */
-    public function theOrderPayloadShouldBeSentToSirius()
+    private function getDocumentsList($orderIdentifier)
     {
-        throw new \RuntimeException();
+        $this->visit('/behat/document-list/' . $orderIdentifier);
+
+        return $this->getSession()->getPage()->getContent();
     }
+
 }

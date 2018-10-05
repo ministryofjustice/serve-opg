@@ -118,4 +118,36 @@ class BehatController extends Controller
         return new Response(implode("\n", array_filter($ret)));
     }
 
+    /**
+     * //TODO protect from running on production ?
+     *
+     * @Route("/document-list/{orderIdentifier}")
+     */
+    public function orderDocumentsList(Request $request, $orderIdentifier)
+    {
+        $this->securityChecks();
+
+        $ret = [];
+
+        // get Order for behat case
+        $order = $this->getOrderFromIdentifier($orderIdentifier);
+
+        $documents = $order->getDocuments();
+        foreach($documents as $document) {
+            $ret[] = $document->getStorageReference();
+        }
+
+        return new Response(implode("|", array_filter($ret)));
+    }
+
+    private function getOrderFromIdentifier($orderIdentifier)
+    {
+        list($caseNumber, $orderType) = explode('-', $orderIdentifier);
+
+        $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
+
+        $repo = $orderType == 'PF' ? OrderPf::class : OrderHw::class;
+
+        return $this->em->getRepository($repo)->findOneBy(['client' => $client->getId()]);
+    }
 }

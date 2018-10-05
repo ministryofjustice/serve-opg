@@ -52,6 +52,7 @@ class CsvImporterService
             'Forename',
             'Surname',
             'Ord Type',
+            'Made Date',
             'Issue Date',
         ], true);
         $rows = $csvToArray->getData();

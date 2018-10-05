@@ -16,6 +16,7 @@ class FeatureContext extends MinkContext
     use RegionLinksTrait;
     use FormTrait;
     use DebugTrait;
+    use SiriusTrait;
 
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/

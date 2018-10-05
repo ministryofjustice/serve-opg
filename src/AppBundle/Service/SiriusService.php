@@ -2,10 +2,12 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Controller\BehatController;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Document;
 use AppBundle\Entity\Order;
+use AppBundle\Entity\User;
 use Application\Factory\GuzzleClient;
 use Aws\CommandPool;
 use Aws\Exception\AwsException;
@@ -59,7 +61,6 @@ class SiriusService
 
     public function serveOrder(Order $order)
     {
-        return;
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
         try {
@@ -77,29 +78,30 @@ class SiriusService
             }
             $this->em->flush();
 
-            // Begin API call to Sirius
-            $loginResponse = $this->login();
+            if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
+                // Begin API call to Sirius
+                $loginResponse = $this->login();
 
-            $this->logger->debug('Sirius login response' . print_r($loginResponse));
-            if ($loginResponse->getStatusCode() == 200) {
-                // generate JSON payload of order
-                $payload = $this->generateOrderPayload($order);
+                $this->logger->debug('Sirius login response' . print_r($loginResponse));
+                if ($loginResponse->getStatusCode() == 200) {
+                    // generate JSON payload of order
+                    $payload = $this->generateOrderPayload($order);
 
-                if ($payload) {
-                    $order->setPayloadServed($payload);
+                    if ($payload) {
+                        $order->setPayloadServed($payload);
 
-                    // Make API call
-                    $this->logger->info('Begin API call:');
+                        // Make API call
+                        $this->logger->info('Begin API call:');
 
-    //                    $apiResponse = $this->sendOrderToSirius($payload);
-    //                    $order->setApiResponse(json_encode($apiResponse->toArray()));
+                        $apiResponse = $this->sendOrderToSirius($payload);
+                        $order->setApiResponse(json_encode($apiResponse->toArray()));
 
-                    $this->logger->debug('Sirius API response' . print_r($apiResponse));
+                        $this->logger->debug('Sirius API response' . print_r($apiResponse));
+                    }
                 }
-           }
 
-            $this->logout();
-
+                $this->logout();
+            }
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . print_r(Psr7\str($e->getRequest())));
             if ($e->hasResponse()) {

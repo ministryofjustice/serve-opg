@@ -161,11 +161,7 @@
 
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
-<<<<<<< HEAD
-                <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
-=======
-                <td class="govuk-table__cell behat-region-document-{{ docType }}-filename {{ docIsRequired and not doc ? 'govuk-error-message' }}">
->>>>>>> 5827ca83753af8a045ef74b78643e1d67997aebf
+                <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename {{ docIsRequired and not doc ? 'govuk-error-message' }}">
                     {% if doc %}
                         {{ doc.filename }}
                     {% else %}
