@@ -94,3 +94,5 @@ services:
           allow_redirects: false
 
     GuzzleHttp\ClientInterface: "@GuzzleHttp\\Client"
+
+    AppBundle\Service\SecureUserProvider: ~
