@@ -124,9 +124,9 @@ docker-compose run --rm app php app/console doctrine:schema:update --force
 # Launch specific behat feature
 //TODO find an aesier way
 comment out "entrypoint" and "command" in behat container
-docker-compose up behat
-docker-compose exec behat bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
-
+docker-compose up -d behat
+docker-compose exec behat bin/behat -c tests/behat/behat.yml tests/behat/features/00-init.feature
+docker-compose stop behat
 
 # Quality Analysis Tools
 The Docker image `jakzal/phpqa` contains many useful QA tools
