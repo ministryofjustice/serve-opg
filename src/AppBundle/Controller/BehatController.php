@@ -97,8 +97,6 @@ class BehatController extends Controller
     }
 
     /**
-     * //TODO protect from running on production ?
-     *
      * @Route("/reset-behat-orders")
      */
     public function indexAction(Request $request)
@@ -116,6 +114,18 @@ class BehatController extends Controller
         }
 
         return new Response(implode("\n", array_filter($ret)));
+    }
+
+    /**
+     * @Route("/reset-brute-force-attempts-logger/{user}")
+     */
+    public function resetBruteForceAction(Request $request, $user)
+    {
+        $this->securityChecks();
+
+        //TODO
+
+        return new Response("$user attempts reset done");
     }
 
 }
