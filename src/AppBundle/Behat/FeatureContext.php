@@ -33,15 +33,14 @@ class FeatureContext extends MinkContext
         $this->assertResponseContains(getenv("APP_VERSION"));
     }
 
-
     /**
-     * @Given I am logged in as behat user
+     * @Given I log in as :user with password :password
      */
-    public function iAmLoggedInAsBehatUser()
+    public function iLogInAs($user, $password)
     {
         $this->visit("/login");
-        $this->fillField('login_username', BehatController::BEHAT_EMAIL);
-        $this->fillField('login_password', BehatController::BEHAT_PASSWORD);
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', $password);
         $this->pressButton('login_submit');
     }
 

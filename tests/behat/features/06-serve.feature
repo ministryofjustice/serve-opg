@@ -1,7 +1,7 @@
 Feature: serve order
 
   Scenario: Serve PA order
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-12345678-pa"
     # summary page
     Then the url should match "order/\d+/summary"
@@ -17,7 +17,7 @@ Feature: serve order
     And I should see "test-cop1a.pdf" in the "order-12345678-pa" region
 
   Scenario: Serve HW order
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-12345678-hw"
     # summary page
     Then the url should match "order/\d+/summary"

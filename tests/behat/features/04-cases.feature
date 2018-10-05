@@ -1,19 +1,19 @@
 Feature: cases
 
   Scenario: upload CSV
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/upload-csv"
-    When I attach the file "behat-cases.csv" to "csv_upload_form_file"
+    And I attach the file "behat-cases.csv" to "csv_upload_form_file"
     And I click on "submit"
     Then the form should be valid
     And I should see the "order-12345678-pa" region
     And I should see the "order-12345678-hw" region
-    Then the response status code should be 200
+    And the response status code should be 200
 
 
   Scenario: PA order: set assets, subtype, appointment type
-    Given I am logged in as behat user
-    When I follow "order-12345678-pa"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    And I follow "order-12345678-pa"
     # check form validation
     When I fill in the following:
       | order_form_hasAssetsAboveThreshold |  |
@@ -38,7 +38,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: HW order: set subtype, appointment type
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-12345678-hw"
     # check form validation
     When I fill in the following:
@@ -61,7 +61,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: test search
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     # fake q
     When I fill in "search" with "NOT EXISTING"
     And I press "search_submit"

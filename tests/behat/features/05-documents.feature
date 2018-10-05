@@ -1,7 +1,7 @@
 Feature: documents
 
   Scenario: PA: add documents
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-12345678-pa"
     Then the url should match "/order/\d+/summary"
 
@@ -60,7 +60,7 @@ Feature: documents
     And I should not see the "documents-additional-filenames" region
 
   Scenario: HW: add COP3, COP4, CO documents
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-12345678-hw"
     Then the url should match "/order/\d+/summary"
     # Add COP3 PNG
