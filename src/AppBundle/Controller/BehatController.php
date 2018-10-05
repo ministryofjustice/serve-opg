@@ -117,13 +117,14 @@ class BehatController extends Controller
     }
 
     /**
-     * @Route("/reset-brute-force-attempts-logger/{user}")
+     * @Route("/reset-brute-force-attempts-logger")
      */
-    public function resetBruteForceAction(Request $request, $user)
+    public function resetBruteForceAction(Request $request)
     {
         $this->securityChecks();
 
-        //TODO
+        $user = self::BEHAT_EMAIL;
+        //TODO only for behat user
 
         return new Response("$user attempts reset done");
     }
