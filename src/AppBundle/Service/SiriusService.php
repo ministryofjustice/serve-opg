@@ -112,7 +112,6 @@ class SiriusService
                 $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
                 $order->setApiResponse(Psr7\str($e->getResponse()));
             }
-            $this->em->persist($order);
             $this->em->flush();
 
             throw $e;
