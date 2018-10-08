@@ -68,6 +68,8 @@ class SiriusService
     {
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
+        $payload = [];
+        $apiResponse = [];
         try {
             // init cookie jar to pass session token between requests
             $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
@@ -77,19 +79,14 @@ class SiriusService
             $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
             $documents = $this->sendDocuments($documents);
 
-            // persist documents with new location added
-            foreach ($documents as $document) {
-                $this->em->persist($document);
-            }
             $this->em->flush();
 
             if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
 
                 // Begin API call to Sirius
-                $loginResponse = $this->login();
+                $apiResponse = $this->login();
 
-                $this->logger->debug('Sirius login response: statusCode: ' . $loginResponse->getStatusCode());
-                if ($loginResponse->getStatusCode() == 200) {
+                if ($apiResponse->getStatusCode() == 200) {
                     // generate JSON payload of order
                     $payload = $this->generateOrderPayload($order);
 
@@ -100,7 +97,6 @@ class SiriusService
                         $this->logger->debug('Begin API call:');
 
                         $apiResponse = $this->sendOrderToSirius($payload);
-                        $order->setApiResponse(json_encode($apiResponse->toArray()));
 
                         $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
                     }
@@ -110,14 +106,21 @@ class SiriusService
             }
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
+            $order->setPayloadServed($payload);
+
             if ($e->hasResponse()) {
                 $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
+                $order->setApiResponse(Psr7\str($e->getResponse()));
             }
+            $this->em->persist($order);
+            $this->em->flush();
+
             throw $e;
         } catch (\Exception $e) {
             $this->logger->error('General Exception thrown: ' . $e->getMessage());
             throw $e;
         }
+
     }
 
     /**

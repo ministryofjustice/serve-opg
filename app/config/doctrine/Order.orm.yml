@@ -39,6 +39,14 @@ AppBundle\Entity\Order:
         column: made_at
         type: datetime
         nullable: false
+      payloadServed:
+        column: payload_served
+        type: json_array
+        nullable: true
+      apiResponse:
+        column: api_response
+        type: json_array
+        nullable: true
       issuedAt:
         column: issued_at
         type: datetime
