@@ -61,8 +61,7 @@ class SiriusServiceTest extends MockeryTestCase
             ->once()
             ->with($documents)
             ->andReturn($documents);
-
-        $this->mockEntityManager->shouldReceive('persist')->times(count($documents));
+        
         $this->mockEntityManager->shouldReceive('flush')->once();
 
         $this->sut->serveOrder($mockOrder);
