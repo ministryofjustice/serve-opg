@@ -39,7 +39,7 @@ class OrderForm extends AbstractType
                 'order.subType.DIRECTION' => Order::SUBTYPE_DIRECTION,
                 'order.subType.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER,
                 'order.subType.NEW_APPLICATION' => Order::SUBTYPE_NEW,
-                'order.subType.REPLACEMENT' => Order::SUBTYPE_REPLACEMENT,
+                'order.subType.REPLACEMENT_OF_DISCHARGED_DEPUTY' => Order::SUBTYPE_REPLACEMENT,
                 'order.subType.TRUSTEE' => Order::SUBTYPE_TRUSTEE,
                 'order.subType.VARIATION' => Order::SUBTYPE_VARIATION,
             ]
