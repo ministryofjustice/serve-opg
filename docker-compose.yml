@@ -64,7 +64,7 @@ services:
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       DC_SIRIUS_URL: 'https://frontend-datamigration.dev.sirius.opg.digital/'
-      SIRIUS_PUBLIC_API_EMAIL: manager@opgtest.com
+      SIRIUS_PUBLIC_API_EMAIL: publicapi@opgtest.com
       SIRIUS_PUBLIC_API_PASSWORD: Password1
 
       # file scanner
@@ -155,7 +155,7 @@ services:
       DC_DB_PASS: dcdb2018!
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
-  
+
 
   phpunit:
     image: php:7.2-fpm-alpine
