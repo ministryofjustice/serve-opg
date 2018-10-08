@@ -2,7 +2,7 @@
 security:
     providers:
       webservice:
-        id: AppBundle\Service\SecureUserProvider
+        id: AppBundle\Service\Security\SecureUserProvider
     encoders:
           AppBundle\Entity\User:
             algorithm: bcrypt

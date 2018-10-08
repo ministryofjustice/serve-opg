@@ -1,9 +1,10 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\Security;
 
 
 use AppBundle\Entity\User;
+use AppBundle\Service\Security\LoginAttempts\Checker as LoginAttemptsChecker;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -11,6 +12,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+// replace with https://symfony.com/doc/3.4/security/custom_authentication_provider.html
 class SecureUserProvider implements UserProviderInterface
 {
     /**
@@ -19,12 +21,14 @@ class SecureUserProvider implements UserProviderInterface
     private $repo;
 
     /**
-     * SecureUserProvider constructor.
-     * @param EntityManager $em
+     * @var LoginAttemptsChecker
      */
-    public function __construct(EntityManager $em)
+    private $loginAttemptsChecker;
+
+    public function __construct(EntityManager $em, LoginAttemptsChecker $loginAttemptsChecker)
     {
         $this->repo = $em->getRepository(User::class);
+        $this->loginAttemptsChecker = $loginAttemptsChecker;
     }
 
     /**
@@ -34,11 +38,16 @@ class SecureUserProvider implements UserProviderInterface
     {
         $user = $this->repo->findOneBy(['email' => $username]);
 
-        if ($user instanceof User) {
-            return $user;
+        if (!$user instanceof User) {
+            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
 
-        throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
+        if ($this->loginAttemptsChecker->isUserLocked($username)){
+            throw new \Exception('locked');
+        }
+        $this->loginAttemptsChecker->registerUserLoginFailure($username, time());
+
+        return $user;
     }
 
     /**
