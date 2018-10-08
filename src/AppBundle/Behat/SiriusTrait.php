@@ -15,7 +15,7 @@ trait SiriusTrait
         $documentsList = explode("|", $this->getDocumentsList($orderIdentifier));
 
         /** @to-do use ENV variable for needle */
-        $needle = 'sirius_test_bucket';
+        $needle = getenv('SIRIUS_S3_BUCKET_NAME');
 
         foreach ($documentsList as $docLocation) {
             if (!strpos($docLocation, $needle)) {
