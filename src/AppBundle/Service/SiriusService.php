@@ -69,21 +69,21 @@ class SiriusService
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
         try {
+            // init cookie jar to pass session token between requests
+            $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
+
+            // send DC docs to Sirius
+            $documents = $order->getDocuments();
+            $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
+            $documents = $this->sendDocuments($documents);
+
+            // persist documents with new location added
+            foreach ($documents as $document) {
+                $this->em->persist($document);
+            }
+            $this->em->flush();
+
             if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
-
-                // init cookie jar to pass session token between requests
-                $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
-
-                // send DC docs to Sirius
-                $documents = $order->getDocuments();
-                $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
-                $documents = $this->sendDocuments($documents);
-
-                // persist documents with new location added
-                foreach ($documents as $document) {
-                    $this->em->persist($document);
-                }
-                $this->em->flush();
 
                 // Begin API call to Sirius
                 $loginResponse = $this->login();
