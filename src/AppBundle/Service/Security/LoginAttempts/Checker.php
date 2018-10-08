@@ -2,6 +2,8 @@
 
 namespace AppBundle\Service\Security\LoginAttempts;
 
+use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
+
 class Checker
 {
     /**
@@ -22,25 +24,24 @@ class Checker
     {
         $this->storage = $storage;
     }
+//
+//    public function isUserLocked($userId)
+//    {
+//        $attempts = $this->storage->getAttempts($userId);
+//        //TODO implement with TDD
+//        return false;
+//    }
 
-    public function registerUserLoginFailure($userId, $timestamp)
+//    public function resetAttempts($userId)
+//    {
+//        $this->storage->resetAttempts($userId);
+//    }
+
+    public function onAuthenticationFailure(AuthenticationFailureEvent $e)
     {
-        $this->storage->storeAttempt($userId, $timestamp);
-
-//        print_r($this->storage->getAttempts($userId));
-
+        $username = $e->getAuthenticationToken()->getUser();
+        $this->storage->storeAttempt($username, time());
+        print_r($this->storage->getAttempts($username));
     }
-
-    public function isUserLocked($userId)
-    {
-        //TODO
-        return false;
-    }
-
-    public function resetAttempts($userId)
-    {
-        $this->storage->resetAttempts($userId);
-    }
-
 
 }

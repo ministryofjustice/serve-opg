@@ -30,7 +30,9 @@ class DynamoDbStorage extends Storage
 
     public function getAttempts($userId)
     {
-        return json_decode($this->connection->read($userId)['data'], true) ?: [];
+        $data = $this->connection->read($userId)['data'] ?? null;
+
+        return json_decode($data, true) ?? [];
     }
 
     public function resetAttempts($userId)

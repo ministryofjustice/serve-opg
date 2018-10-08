@@ -95,9 +95,10 @@ services:
     GuzzleHttp\ClientInterface: "@GuzzleHttp\\Client"
 
     AppBundle\Service\Security\LoginAttempts\Checker:
-      public: true
       arguments:
         $attemptsConfig: { '5': '600', '10': '3600', 50: '86700'}
+      tags:
+        - { name: kernel.event_listener, event: 'security.authentication.failure', method: 'onAuthenticationFailure' }
 
     attemptsDynamoConnection:
       class: Common\SessionConnectionCreatingTable
