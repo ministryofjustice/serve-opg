@@ -25,22 +25,22 @@ class Checker
 
     public function registerUserLoginFailure($userId, $timestamp)
     {
+        $this->storage->storeAttempt($userId, $timestamp);
+
+//        print_r($this->storage->getAttempts($userId));
 
     }
 
     public function isUserLocked($userId)
     {
-
+        //TODO
+        return false;
     }
 
-    public function resetAttempts()
+    public function resetAttempts($userId)
     {
-
+        $this->storage->resetAttempts($userId);
     }
-
-
-
-
 
 
 }

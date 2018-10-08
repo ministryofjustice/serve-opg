@@ -2,11 +2,40 @@
 
 namespace AppBundle\Service\Security\LoginAttempts;
 
+use Common\SessionConnectionCreatingTable;
+
 class DynamoDbStorage extends Storage
 {
+    /**
+     * @var SessionConnectionCreatingTable
+     */
+    private $connection;
+
+    /**
+     * DynamoDbStorage constructor.
+     * @param SessionConnectionCreatingTable $connection
+     */
+    public function __construct(SessionConnectionCreatingTable $connection)
+    {
+        $this->connection = $connection;
+    }
+
     public function storeAttempt($userId, $timestamp)
     {
-        // TODO: Implement storeAttempt() method.
+        $data = $this->getAttempts($userId);
+        $data[] = $timestamp;
+
+        $this->connection->write($userId, json_encode($data), true);
+    }
+
+    public function getAttempts($userId)
+    {
+        return json_decode($this->connection->read($userId)['data'], true) ?: [];
+    }
+
+    public function resetAttempts($userId)
+    {
+        return $this->connection->write($userId, []);
     }
 
 }

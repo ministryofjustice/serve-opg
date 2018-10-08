@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\Security\LoginAttempts\Checker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,13 +21,21 @@ class ManageController extends Controller
     private $em;
 
     /**
-     * UserController constructor.
-     * @param EntityManager $em
+     * @var Checker
      */
-    public function __construct(EntityManager $em)
+    private $loginChecker;
+
+    /**
+     * ManageController constructor.
+     * @param EntityManager $em
+     * @param Checker $loginChecker
+     */
+    public function __construct(EntityManager $em, Checker $loginChecker)
     {
         $this->em = $em;
+        $this->loginChecker = $loginChecker;
     }
+
 
     /**
      * @Route("/availability")
@@ -36,6 +45,10 @@ class ManageController extends Controller
     public function availabilityAction()
     {
         $errors = [];
+
+        $this->loginChecker->registerUserLoginFailure('test', time());
+        $this->loginChecker->isUserLocked('elvis@gmail');
+
 
         if ($errors) {
             return new Response('<h1>ERRORS</h1><li>' . implode('</li><li>', $errors) . '</li></ul> ', 500);

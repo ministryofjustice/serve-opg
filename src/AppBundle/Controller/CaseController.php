@@ -6,6 +6,7 @@ use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\User;
 use AppBundle\Repository\OrderRepository;
+use AppBundle\Service\Security\LoginAttempts\Checker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,6 +43,8 @@ class CaseController extends Controller
      */
     public function indexAction(Request $request)
     {
+
+
         $limit = 50;
 
         $filters = [

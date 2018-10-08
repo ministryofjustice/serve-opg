@@ -1,8 +1,10 @@
 # https://symfony.com/doc/current/security.html
 security:
     providers:
-      webservice:
-        id: AppBundle\Service\Security\SecureUserProvider
+      our_db_provider:
+        entity:
+          class: AppBundle\Entity\User
+          property: email
     encoders:
           AppBundle\Entity\User:
             algorithm: bcrypt
