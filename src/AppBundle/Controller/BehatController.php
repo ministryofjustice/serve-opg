@@ -134,7 +134,7 @@ class BehatController extends Controller
 
         $documents = $order->getDocuments();
         foreach($documents as $document) {
-            $ret[] = $document->getStorageReference();
+            $ret[] = $document->getRemoteStorageReference();
         }
 
         return new Response(implode("|", array_filter($ret)));

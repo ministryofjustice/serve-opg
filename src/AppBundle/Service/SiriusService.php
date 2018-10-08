@@ -24,7 +24,8 @@ use Psr\Log\LoggerInterface;
 
 class SiriusService
 {
-    const SIRIUS_DATE_FORMAT = 'd/m/Y';
+    const SIRIUS_DATE_FORMAT = 'Y-m-d';
+
     /**
      * @var EntityManager
      */
@@ -68,21 +69,22 @@ class SiriusService
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
         try {
-            // init cookie jar to pass session token between requests
-            $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
-
-            // send DC docs to Sirius
-            $documents = $order->getDocuments();
-            $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
-            $documents = $this->sendDocuments($documents);
-
-            // persist documents with new location added
-            foreach ($documents as $document) {
-                $this->em->persist($document);
-            }
-            $this->em->flush();
-
             if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
+
+                // init cookie jar to pass session token between requests
+                $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
+
+                // send DC docs to Sirius
+                $documents = $order->getDocuments();
+                $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
+                $documents = $this->sendDocuments($documents);
+
+                // persist documents with new location added
+                foreach ($documents as $document) {
+                    $this->em->persist($document);
+                }
+                $this->em->flush();
+
                 // Begin API call to Sirius
                 $loginResponse = $this->login();
 
@@ -95,7 +97,7 @@ class SiriusService
                         $order->setPayloadServed($payload);
 
                         // Make API call
-                        $this->logger->info('Begin API call:');
+                        $this->logger->debug('Begin API call:');
 
                         $apiResponse = $this->sendOrderToSirius($payload);
                         $order->setApiResponse(json_encode($apiResponse->toArray()));
@@ -107,12 +109,13 @@ class SiriusService
                 $this->logout();
             }
         } catch (RequestException $e) {
-            $this->logger->error('RequestException: Request -> ' . print_r(Psr7\str($e->getRequest())));
+            $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             if ($e->hasResponse()) {
-                $this->logger->error('RequestException: Reponse <- ' . print_r(Psr7\str($e->getResponse())));
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
             }
+            throw $e;
         } catch (\Exception $e) {
-            $this->logger->error('General Exception thrown: ' . print_r($e->getMessage()));
+            $this->logger->error('General Exception thrown: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -143,9 +146,9 @@ class SiriusService
             'cookies' => $this->cookieJar
         ];
 
-//        $this->logger->debug('Attempting to login to ' .
-//            $this->httpClient->getConfig('base_uri') .
-//            ', with ' . print_r($params));
+        $this->logger->debug('Logging in to ' .
+            $this->httpClient->getConfig('base_uri') .
+            ', with params => ' . json_encode($params));
         return $this->httpClient->post(
             'auth/login',
             $params

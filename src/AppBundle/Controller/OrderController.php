@@ -98,8 +98,9 @@ class OrderController extends Controller
                 $this->orderService->serve($order);
 
                 $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
+
             } catch (\Exception $e) {
-                $request->getSession()->getFlashBag()->add('error', 'Order ' . $orderId . 'could not be served at the moment');
+                $request->getSession()->getFlashBag()->add('notice', 'Order ' . $orderId . ' could not be served at the moment');
             }
 
             return $this->redirectToRoute('case-list');

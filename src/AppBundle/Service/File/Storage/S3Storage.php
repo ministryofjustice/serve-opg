@@ -187,11 +187,8 @@ class S3Storage implements StorageInterface
                 PromiseInterface $aggregatePromise
             )  use ($logger, $documentsIterator) {
 
-                // delete current document from local s3
-                $this->delete($documentsIterator[$iterKey]->getStorageReference());
-
                 // update current document being processed with new location
-                $documentsIterator[$iterKey]->setStorageReference($result->get('@metadata')['effectiveUri']);
+                $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
                 $logger->debug("Completed {$iterKey}: {$result}");
             },
             // Invoke this function for each failed transfer

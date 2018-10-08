@@ -6,12 +6,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Document
 {
-        const TYPE_COP1A = 'COP1A'; // required by PF
+    const TYPE_COP1A = 'COP1A'; // required by PF
     const TYPE_COP1C = 'COP1C'; // displayed by PF, but not required
     const TYPE_COP3 = 'COP3'; // required by PF and HW
     const TYPE_COP4 = 'COP4'; // required by PF and HW
     const TYPE_COURT_ORDER = 'COURT_ORDER'; //required by PF and HW
-
     const TYPE_ADDITIONAL = 'OTHER'; // not required
 
     const FILE_NAME_MAX_LENGTH = 255;
@@ -60,6 +59,11 @@ class Document
      * @var string
      */
     private $storageReference;
+
+    /***
+     * @var string
+     */
+    private $remoteStorageReference;
 
     /**
      * @var \DateTime
@@ -200,6 +204,22 @@ class Document
         $this->storageReference = $storageReference;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemoteStorageReference()
+    {
+        return $this->remoteStorageReference;
+    }
+
+    /**
+     * @param string $remoteStorageReference
+     */
+    public function setRemoteStorageReference($remoteStorageReference)
+    {
+        $this->remoteStorageReference = $remoteStorageReference;
     }
 
     /**
