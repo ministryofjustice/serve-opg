@@ -37,7 +37,7 @@ class DynamoDbStorage extends Storage
 
     public function resetAttempts($userId)
     {
-        return $this->connection->write($userId, []);
+        return $this->connection->delete($userId);
     }
 
 }

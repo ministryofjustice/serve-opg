@@ -20,20 +20,15 @@ class ManageController extends Controller
      */
     private $em;
 
-    /**
-     * @var Checker
-     */
-    private $loginChecker;
 
     /**
      * ManageController constructor.
      * @param EntityManager $em
      * @param Checker $loginChecker
      */
-    public function __construct(EntityManager $em, Checker $loginChecker)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->loginChecker = $loginChecker;
     }
 
 
@@ -45,10 +40,6 @@ class ManageController extends Controller
     public function availabilityAction()
     {
         $errors = [];
-
-        $this->loginChecker->registerUserLoginFailure('test', time());
-        $this->loginChecker->isUserLocked('elvis@gmail');
-
 
         if ($errors) {
             return new Response('<h1>ERRORS</h1><li>' . implode('</li><li>', $errors) . '</li></ul> ', 500);
