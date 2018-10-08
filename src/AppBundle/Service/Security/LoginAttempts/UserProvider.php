@@ -110,7 +110,6 @@ class UserProvider implements UserProviderInterface
     {
         $username = $e->getAuthenticationToken()->getUser();
         $this->storage->storeAttempt($username, time());
-        print_r($this->storage->getAttempts($username));
     }
 
     /**
