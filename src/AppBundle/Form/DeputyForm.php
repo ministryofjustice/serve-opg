@@ -24,9 +24,9 @@ class DeputyForm extends AbstractType
                 'required' => false,
                 'choices' => [
                     'pleaseSelect' => '',
-                    'deputy.type.lay' => Deputy::DEPUTY_TYPE_LAY,
-                    'deputy.type.pa' => Deputy::DEPUTY_TYPE_PA,
-                    'deputy.type.prof' => Deputy::DEPUTY_TYPE_PROF
+                    'deputy.type.LAY' => Deputy::DEPUTY_TYPE_LAY,
+                    'deputy.type.PUBLIC_AUTHORITY' => Deputy::DEPUTY_TYPE_PA,
+                    'deputy.type.PROFESSIONAL' => Deputy::DEPUTY_TYPE_PROF
                 ]
             ])
             ->add('forename', TextType::class, [
