@@ -3,7 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\User;
-use AppBundle\Service\Security\LoginAttempts\BruteForceAttackDetectedException;
+use AppBundle\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use AppBundle\Service\Security\LoginAttempts\MockAttemptsStorage;
 use Doctrine\ORM\EntityRepository;
 use Mockery as m;
