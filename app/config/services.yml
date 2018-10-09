@@ -98,10 +98,10 @@ services:
     AppBundle\Service\Security\LoginAttempts\UserProvider:
       arguments:
         $rules:
-           # 5 failed attempts in the last 60 seconds => lock for 10 minutes
+           # 5 failed attempts in the last 60 seconds => lock for 10 minutes. Update behat test (tests/behat/features/00-security.feature) in case of changes
            - [5, 60, 600]
-           # 20 failed attempts in the last 5 mins => lock for 30 minutes
-           - [20, 600, 1800]
+           # 10 failed attempts in the last 5 mins => lock for 30 minutes
+           - [10, 600, 1800]
            # 50 failed attempts in the last 30 mins => lock for 24h
            - [50, 1800, 86400]
       tags:

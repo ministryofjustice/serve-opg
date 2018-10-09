@@ -70,7 +70,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testBruteForceLockNotReached()
     {
-        $this->storage->shouldReceive('hasToWait')->with(5, 100, 200, m::any())->andReturn(false);
+        $this->storage->shouldReceive('hasToWait')->with($this->userName, 5, 100, 200, m::any())->andReturn(false);
 
         $sut = new UserProvider($this->em, $this->storage, [[5, 100, 200]]);
 
@@ -82,7 +82,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testBruteForceLockReached()
     {
-        $this->storage->shouldReceive('hasToWait')->with(5, 100, 200, m::any())->andReturn(200);
+        $this->storage->shouldReceive('hasToWait')->with($this->userName, 5, 100, 200, m::any())->andReturn(200);
 
         $sut = new UserProvider($this->em, $this->storage, [[5, 100, 200]]);
 

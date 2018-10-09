@@ -74,6 +74,7 @@ docker-compose run --rm phpunit
 
 # specific test
 docker-compose run --rm --entrypoint="/bin/sh" phpunit
+# (inside the container)
 bin/phpunit -c tests/phpunit/ tests/phpunit/Service/UserProviderTest.php
 
 ```
@@ -130,7 +131,8 @@ docker-compose run --rm app php app/console doctrine:schema:update --force
 
 ```
 docker-compose run --rm --entrypoint="/bin/sh" behat
-docker-compose exec behat bin/behat -c tests/behat/behat.yml tests/behat/features/00-init.feature
+# (inside the container)
+bin/behat -c tests/behat/behat.yml tests/behat/features/00-init.feature
 ```
 
 # Quality Analysis Tools
