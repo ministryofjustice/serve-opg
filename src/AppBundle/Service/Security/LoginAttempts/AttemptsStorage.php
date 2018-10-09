@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service\Security\LoginAttempts;
 
-abstract class AttemptsStorage
+class AttemptsStorage
 {
     private $attempts;
 
@@ -32,6 +32,11 @@ abstract class AttemptsStorage
 
     public function hasToWait($maxAttempts, $timeRange, $waitFor, $currentTime)
     {
+        if (empty($this->attempts)) {
+            return false;
+        }
+
+
         return false;
     }
 }
