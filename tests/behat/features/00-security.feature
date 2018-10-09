@@ -16,8 +16,8 @@ Feature: security checks
       Then I should be on "/login"
 
     Scenario: after 5 attempts to login with the wrong password, I'm locked for 10 minutes
-      Given I go to "/behat/reset-brute-force-attempts-logger"
-      And I go to "/logout"
+      Given I go to "/logout"
+      And I go to "/behat/reset-brute-force-attempts-logger"
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
       Then I should see "Invalid credentials" in the "form-errors" region
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
@@ -31,7 +31,7 @@ Feature: security checks
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
       Then I should see the "form-errors" region
       But I should not see "Invalid credentials" in the "form-errors" region
-      #And I should see "locked" in the "form-errors" region
+      #And I should see "Locked" in the "form-errors" region
       # reset attempts
       When I go to "/behat/reset-brute-force-attempts-logger"
       And I log in as "behat@digital.justice.gov.uk" with password "wrong password"

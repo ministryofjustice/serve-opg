@@ -41,15 +41,46 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
         if (empty($config['table_name'])) {
             throw new \InvalidArgumentException(__METHOD__.': table_name missing');
         }
-        $tableName = $config['table_name'];
+        $this->tableName = $config['table_name'];
         if (empty($config['hash_key'])) {
             throw new \InvalidArgumentException(__METHOD__.': hash_key missing');
         }
-        $hashKey = $config['hash_key'];
+        $this->hashKey = $config['hash_key'];
 
         parent::__construct($client, $config = []);
-
-        $dtc = new DynamoDbUtilities($client);
-        $dtc->createHashTableIfNotExisting($tableName, $hashKey);
     }
+
+    public function read($id)
+    {
+        $dtc = new DynamoDbUtilities($this->client);
+        $dtc->createHashTableIfNotExisting($this->tableName, $this->hashKey);
+
+        return parent::read($id);
+    }
+
+    public function write($id, $data, $isChanged)
+    {
+        $dtc = new DynamoDbUtilities($this->client);
+        $dtc->createHashTableIfNotExisting($this->tableName, $this->hashKey);
+
+        return parent::write($id, $data, $isChanged); 
+    }
+
+    public function delete($id)
+    {
+        $dtc = new DynamoDbUtilities($this->client);
+        $dtc->createHashTableIfNotExisting($this->tableName, $this->hashKey);
+
+        return parent::delete($id); 
+    }
+
+    public function deleteExpired()
+    {
+        $dtc = new DynamoDbUtilities($this->client);
+        $dtc->createHashTableIfNotExisting($this->tableName, $this->hashKey);
+
+        parent::deleteExpired(); 
+    }
+
+
 }
