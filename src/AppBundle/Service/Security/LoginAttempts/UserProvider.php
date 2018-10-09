@@ -43,7 +43,7 @@ class UserProvider implements UserProviderInterface
     {
         foreach($this->rules as $rule) {
             list($maxAttempts, $timeRange, $waitFor) = $rule;
-            if ($waitFor = $this->storage->hasToWait($maxAttempts, $timeRange, $waitFor, time())) {
+            if ($waitFor = $this->storage->hasToWait($username. $maxAttempts, $timeRange, $waitFor, time())) {
                 $e = new BruteForceAttackDetectedException($waitFor);
                 $e->setHasToWaitForSeconds($waitFor);
                 throw $e;
