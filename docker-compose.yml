@@ -37,7 +37,8 @@ services:
     depends_on:
       - dynamodb
       - postgres
-      - "s3"
+      - s3
+      - sirius-api
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
@@ -63,7 +64,7 @@ services:
 
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
-      DC_SIRIUS_URL: 'https://frontend-datamigration.dev.sirius.opg.digital/'
+      DC_SIRIUS_URL: 'http://sirius-api:4010/'
       SIRIUS_PUBLIC_API_EMAIL: publicapi@opgtest.com
       SIRIUS_PUBLIC_API_PASSWORD: Password1
 
@@ -89,6 +90,15 @@ services:
         number=6554033T&name=Angela Walker&type=PF
         number=98848454&name=Justine Henderson&type=PF
         number=14564190&name=Marcus Cruz&type=PF
+
+  sirius-api:
+    image: stoplight/prism
+    volumes:
+      - .:/tmp
+    command:
+      - mock
+      - --spec
+      - /tmp/api.public.v1.yaml
 
   dynamodb:
     image: dwmkerr/dynamodb
@@ -175,7 +185,7 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
-      DC_SIRIUS_URL: 'https://frontend-datamigration.dev.sirius.opg.digital/'
+      DC_SIRIUS_URL: 'http://sirius-api:4010/'
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
   qa:
