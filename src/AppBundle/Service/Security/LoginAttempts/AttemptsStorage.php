@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service\Security\LoginAttempts;
 
-class MockAbstractStorage extends AbstractStorage
+abstract class AttemptsStorage
 {
     private $attempts;
 
@@ -30,4 +30,8 @@ class MockAbstractStorage extends AbstractStorage
         unset($this->attempts[$userId]);
     }
 
+    public function hasToWait($maxAttempts, $timeRange, $waitFor, $currentTime)
+    {
+        return false;
+    }
 }

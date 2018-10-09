@@ -4,7 +4,7 @@ namespace AppBundle\Service\Security\LoginAttempts;
 
 use Common\SessionConnectionCreatingTable;
 
-class DynamoDbAbstractStorage extends AbstractStorage
+class DynamoDbAttemptsStorage extends AttemptsStorage
 {
     /**
      * @var SessionConnectionCreatingTable
@@ -12,7 +12,7 @@ class DynamoDbAbstractStorage extends AbstractStorage
     private $connection;
 
     /**
-     * DynamoDbAbstractStorage constructor.
+     * DynamoDbAttemptsStorage constructor.
      * @param SessionConnectionCreatingTable $connection
      */
     public function __construct(SessionConnectionCreatingTable $connection)

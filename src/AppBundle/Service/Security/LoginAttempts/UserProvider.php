@@ -4,7 +4,6 @@ namespace AppBundle\Service\Security\LoginAttempts;
 
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -20,7 +19,7 @@ class UserProvider implements UserProviderInterface
     private $em;
 
     /**
-     * @var AbstractStorage
+     * @var AttemptsStorage
      */
     private $storage;
 
@@ -31,9 +30,9 @@ class UserProvider implements UserProviderInterface
 
     /**
      * Checker constructor.
-     * @param AbstractStorage $storage
+     * @param AttemptsStorage $storage
      */
-    public function __construct(EntityManager $em, AbstractStorage $storage, $rules = [])
+    public function __construct(EntityManager $em, AttemptsStorage $storage, $rules = [])
     {
         $this->em = $em;
         $this->storage = $storage;

@@ -4,10 +4,10 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\User;
 use AppBundle\Service\Security\LoginAttempts\BruteForceAttackDetectedException;
-use AppBundle\Service\Security\LoginAttempts\MockAbstractStorage;
+use AppBundle\Service\Security\LoginAttempts\MockAttemptsStorage;
 use Doctrine\ORM\EntityRepository;
 use Mockery as m;
-use AppBundle\Service\Security\LoginAttempts\AbstractStorage;
+use AppBundle\Service\Security\LoginAttempts\AttemptsStorage;
 use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,7 +24,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
             ->andReturn($this->userRepo)
             ->getMock();
 
-        $this->storage = m::mock(AbstractStorage::class);
+        $this->storage = m::mock(AttemptsStorage::class);
 
         // user data
         $this->userName = 'username@provider.com';
