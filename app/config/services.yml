@@ -43,7 +43,8 @@ services:
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
 
-    Common\SessionConnectionCreatingTable:
+    dynamoDb.connection.session:
+       class: Common\SessionConnectionCreatingTable
        arguments:
          $config:
             table_name: 'sessions'
@@ -54,7 +55,7 @@ services:
 
     dynamo_session_handler:
       class: Aws\DynamoDb\SessionHandler
-      arguments: [ "@Common\\SessionConnectionCreatingTable" ]
+      arguments: [ "@dynamoDb.connection.session" ]
 
     Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
@@ -96,12 +97,18 @@ services:
 
     AppBundle\Service\Security\LoginAttempts\UserProvider:
       arguments:
-        $attemptsConfig: { '5': '600', '10': '3600', 50: '86700'}
+        $rules:
+           # 5 failed attempts in the last 60 seconds => lock for 10 minutes
+           - [5, 60, 600]
+           # 20 failed attempts in the last 5 mins => lock for 30 minutes
+           - [20, 600, 1800]
+           # 50 failed attempts in the last 30 mins => lock for 24h
+           - [50, 1800, 86400]
       tags:
         - { name: kernel.event_listener, event: 'security.authentication.failure', method: 'onAuthenticationFailure' }
         - { name: kernel.event_listener, event: 'security.authentication.success', method: 'onAuthenticationSuccess' }
 
-    attemptsDynamoConnection:
+    dynamoDb.connection.bruteForceAttempts:
       class: Common\SessionConnectionCreatingTable
       arguments:
         $config:
@@ -111,10 +118,10 @@ services:
           min_lock_retry_microtime: 500
           max_lock_retry_microtime: 5000
 
-    AppBundle\Service\Security\LoginAttempts\DynamoDbStorage:
+    AppBundle\Service\Security\LoginAttempts\DynamoDbAttemptsStorage:
       arguments:
-        $connection: "@attemptsDynamoConnection"
+        $connection: "@dynamoDb.connection.bruteForceAttempts"
 
     # attempts checker configured to use the dynamoDb storage
-    AppBundle\Service\Security\LoginAttempts\Storage:
-      alias: AppBundle\Service\Security\LoginAttempts\DynamoDbStorage
+    AppBundle\Service\Security\LoginAttempts\AttemptsStorage:
+      alias: AppBundle\Service\Security\LoginAttempts\DynamoDbAttemptsStorage

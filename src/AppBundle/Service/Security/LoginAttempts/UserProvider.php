@@ -28,10 +28,6 @@ class UserProvider implements UserProviderInterface
      */
     private $rules;
 
-    /**
-     * Checker constructor.
-     * @param AttemptsStorage $storage
-     */
     public function __construct(EntityManager $em, AttemptsStorage $storage, $rules = [])
     {
         $this->em = $em;
