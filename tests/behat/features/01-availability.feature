@@ -3,7 +3,8 @@ Feature: prechecks
 
     Scenario: check app status
         Given I go to "/manage/availability"
-        And the response status code should be 200
+        Then the response status code should be 200
+        And sirius should be available
 
     Scenario: check app version
         When I go to "/manage/version"

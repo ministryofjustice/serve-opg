@@ -62,5 +62,15 @@ class FeatureContext extends MinkContext
         }
     }
 
-
+    /**
+     * @Then sirius should be available
+     **/
+     public function sirusIsAvailable()
+     {
+         $html = $this->getSession()->getPage()->getContent();
+         $htmlDecoded = json_decode($html, true);
+         if ($htmlDecoded['sirius'] == 'unavailable') {
+             throw new \Exception("sirius: ". $htmlDecoded['sirius']);
+         }
+     }
 }
