@@ -20,24 +20,24 @@ class UserProvider implements UserProviderInterface
     private $em;
 
     /**
-     * @var Storage
+     * @var AbstractStorage
      */
     private $storage;
 
     /**
      * @var array
      */
-    private $attemptsConfig;
+    private $rules;
 
     /**
      * Checker constructor.
-     * @param Storage $storage
+     * @param AbstractStorage $storage
      */
-    public function __construct(EntityManager $em, Storage $storage, $attemptsConfig = [])
+    public function __construct(EntityManager $em, AbstractStorage $storage, $rules = [])
     {
         $this->em = $em;
         $this->storage = $storage;
-        $this->attemptsConfig = $attemptsConfig;
+        $this->rules = $rules;
     }
 
     /**
@@ -45,14 +45,14 @@ class UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        // max attempts check
-//        $attempts = $this->storage->getAttempts($username);
-//        foreach ($this->attemptsConfig as $range => $wait) {
-//            //TODO
-//            if (false) {
-//                throw new BruteForceAttackDetectedException('');
-//            }
-//        }
+        foreach($this->rules as $rule) {
+            list($maxAttempts, $timeRange, $waitFor) = $rule;
+            if ($waitFor = $this->storage->hasToWait($maxAttempts, $timeRange, $waitFor, time())) {
+                $e = new BruteForceAttackDetectedException($waitFor);
+                $e->setHasToWaitForSeconds($waitFor);
+                throw $e;
+            }
+        }
 
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
 
@@ -95,7 +95,7 @@ class UserProvider implements UserProviderInterface
      */
     public function onAuthenticationFailure(AuthenticationFailureEvent $e)
     {
-        if (empty($this->attemptsConfig)) {
+        if (empty($this->rules)) {
             return;
         }
         $username = $e->getAuthenticationToken()->getUser();
@@ -109,7 +109,7 @@ class UserProvider implements UserProviderInterface
      */
     public function onAuthenticationSuccess(AuthenticationEvent $e)
     {
-        if (empty($this->attemptsConfig)) {
+        if (empty($this->rules)) {
             return;
         }
 

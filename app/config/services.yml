@@ -68,7 +68,7 @@ services:
       arguments:
         $bucketName: "%env(DC_S3_BUCKET_NAME)%"
 
-    AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
+    AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\AbstractStorage\\S3Storage"
     AppBundle\Service\File\Checker\ClamAVChecker: ~
     AppBundle\Service\File\Checker\PdfChecker: ~
     AppBundle\Service\File\Checker\JpgChecker: ~
