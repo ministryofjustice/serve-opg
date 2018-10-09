@@ -175,6 +175,8 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
+      DC_SIRIUS_URL: 'https://frontend-datamigration.dev.sirius.opg.digital/'
+      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
   qa:
     image: jakzal/phpqa:alpine
