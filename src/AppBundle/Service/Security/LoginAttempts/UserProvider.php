@@ -15,9 +15,9 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserProvider implements UserProviderInterface
 {
     /**
-     * @var EntityRepository
+     * @var EntityManager
      */
-    private $userRepo;
+    private $em;
 
     /**
      * @var Storage
@@ -35,23 +35,10 @@ class UserProvider implements UserProviderInterface
      */
     public function __construct(EntityManager $em, Storage $storage, $attemptsConfig = [])
     {
-        $this->userRepo = $em->getRepository(User::class);
+        $this->em = $em;
         $this->storage = $storage;
         $this->attemptsConfig = $attemptsConfig;
     }
-//
-//    public function isUserLocked($userId)
-//    {
-//        $attempts = $this->storage->getAttempts($userId);
-//        //TODO implement with TDD
-//        return false;
-//    }
-
-//    public function resetAttempts($userId)
-//    {
-//        $this->storage->resetAttempts($userId);
-//    }
-
 
     /**
      * {@inheritdoc}
@@ -59,15 +46,15 @@ class UserProvider implements UserProviderInterface
     public function loadUserByUsername($username)
     {
         // max attempts check
-        $attempts = $this->storage->getAttempts($username);
-        foreach ($this->attemptsConfig as $range => $wait) {
-            //TODO
-            if (false) {
-                throw new BruteForceAttackDetectedException('');
-            }
-        }
+//        $attempts = $this->storage->getAttempts($username);
+//        foreach ($this->attemptsConfig as $range => $wait) {
+//            //TODO
+//            if (false) {
+//                throw new BruteForceAttackDetectedException('');
+//            }
+//        }
 
-        $user = $this->userRepo->findOneBy(['email' => $username]);
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
 
         if (!$user instanceof User) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
@@ -85,7 +72,7 @@ class UserProvider implements UserProviderInterface
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        $refreshedUser = $this->userRepo->find($user->getId());
+        $refreshedUser = $this->em->getRepository(User::class)->find($user->getId());
         if ($refreshedUser instanceof User) {
             return $refreshedUser;
         }
@@ -108,6 +95,9 @@ class UserProvider implements UserProviderInterface
      */
     public function onAuthenticationFailure(AuthenticationFailureEvent $e)
     {
+        if (empty($this->attemptsConfig)) {
+            return;
+        }
         $username = $e->getAuthenticationToken()->getUser();
         $this->storage->storeAttempt($username, time());
     }
@@ -119,6 +109,10 @@ class UserProvider implements UserProviderInterface
      */
     public function onAuthenticationSuccess(AuthenticationEvent $e)
     {
+        if (empty($this->attemptsConfig)) {
+            return;
+        }
+
         $user = $e->getAuthenticationToken()->getUser();
         if ($user instanceof User) {
             $this->storage->resetAttempts($user->getEmail());
