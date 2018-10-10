@@ -72,8 +72,6 @@ class SiriusService
 
         $payload = [];
         $apiResponse = [];
-        $isBehatTest = (bool) $order->getClient()->getCaseNumber() == BehatController::BEHAT_CASE_NUMBER;
-
         try {
             // init cookie jar to pass session token between requests
             $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
@@ -85,8 +83,10 @@ class SiriusService
 
             $this->em->flush();
 
+            if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
+
                 // Begin API call to Sirius
-                $apiResponse = $this->login($isBehatTest);
+                $apiResponse = $this->login();
 
                 if ($apiResponse->getStatusCode() == 200) {
                     // generate JSON payload of order
@@ -104,8 +104,8 @@ class SiriusService
                     }
                 }
 
-                $this->logout($isBehatTest);
-
+                $this->logout();
+            }
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
@@ -140,9 +140,8 @@ class SiriusService
     /**
      * Login to Sirius
      */
-    private function login($isBehatTest = false)
+    private function login()
     {
-
         $params = [
             'form_params' => [
                 'email'    => getenv('SIRIUS_PUBLIC_API_EMAIL'),
@@ -154,10 +153,6 @@ class SiriusService
         $this->logger->debug('Logging in to ' .
             $this->httpClient->getConfig('base_uri') .
             ', with params => ' . json_encode($params));
-        if ($isBehatTest) {
-            $return = new Psr7\Response();
-            return $return->withStatus(200, 'Login OK');
-        }
         return $this->httpClient->post(
             'auth/login',
             $params
@@ -199,12 +194,8 @@ class SiriusService
     /**
      * Logout from Sirius API
      */
-    private function logout($isBehatTest = false)
+    private function logout()
     {
-        if ($isBehatTest) {
-            $return = new Psr7\Response();
-            return $return->withStatus(200, 'Logout OK');
-        }
         return $this->httpClient->post(
             'auth/logout'
         );
