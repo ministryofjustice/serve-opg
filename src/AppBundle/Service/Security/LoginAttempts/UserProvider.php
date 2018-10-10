@@ -4,6 +4,7 @@ namespace AppBundle\Service\Security\LoginAttempts;
 
 use AppBundle\Entity\User;
 use AppBundle\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
+use Common\BruteForceChecker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,19 +24,25 @@ class UserProvider implements UserProviderInterface
     private $em;
 
     /**
-     * @var AttemptsStorage
+     * @var AttemptsStorageInterface
      */
     private $storage;
+
+    /**
+     * @var BruteForceChecker
+     */
+    private $bruteForceChecker;
 
     /**
      * @var array
      */
     private $rules;
 
-    public function __construct(EntityManager $em, AttemptsStorage $storage, $rules = [])
+    public function __construct(EntityManager $em, AttemptsStorageInterface $storage, BruteForceChecker $bruteForceChecker, $rules = [])
     {
         $this->em = $em;
         $this->storage = $storage;
+        $this->bruteForceChecker = $bruteForceChecker;
         $this->rules = $rules;
     }
 
@@ -55,7 +62,7 @@ class UserProvider implements UserProviderInterface
         foreach($this->rules as $rule) {
             // fetch all the rules and check if for any of those, the user has to wait
             list($maxAttempts, $timeRange, $waitFor) = $rule;
-            if ($waitFor = $this->storage->hasToWait($username, $maxAttempts, $timeRange, $waitFor, time())) {
+            if ($waitFor = $this->bruteForceChecker->hasToWait($this->storage->getAttempts($username), $maxAttempts, $timeRange, $waitFor, time())) {
                 $waits[] = $waitFor;
             }
         }

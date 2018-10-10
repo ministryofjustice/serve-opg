@@ -5,9 +5,10 @@ namespace AppBundle\Service;
 use AppBundle\Entity\User;
 use AppBundle\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use AppBundle\Service\Security\LoginAttempts\MockAttemptsStorage;
+use Common\BruteForceChecker;
 use Doctrine\ORM\EntityRepository;
 use Mockery as m;
-use AppBundle\Service\Security\LoginAttempts\AttemptsStorage;
+use AppBundle\Service\Security\LoginAttempts\AttemptsStorageInterface;
 use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,7 +25,8 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
             ->andReturn($this->userRepo)
             ->getMock();
 
-        $this->storage = m::mock(AttemptsStorage::class);
+        $this->storage = m::mock(AttemptsStorageInterface::class);
+        $this->bruteForceChecker = m::mock(BruteForceChecker::class);
 
         // user data
         $this->userName = 'username@provider.com';
@@ -50,7 +52,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testEmptyConfigLoadExistingUser()
     {
-        $sut = new UserProvider($this->em, $this->storage);
+        $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker);
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => $this->userName])->andReturn($this->user);
 
@@ -60,7 +62,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testEmptyConfigLoadMissingUserThrowsException()
     {
-        $sut = new UserProvider($this->em, $this->storage);
+        $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker);
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => 'nonExisting@provider.com'])->andReturn(false);
 
@@ -70,9 +72,10 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testBruteForceLockNotReached()
     {
-        $this->storage->shouldReceive('hasToWait')->with($this->userName, 5, 100, 200, m::any())->andReturn(false);
+        $this->storage->shouldReceive('getAttempts')->with($this->userName)->andReturn([1,2,3]);
+        $this->bruteForceChecker->shouldReceive('hasToWait')->with([1,2,3], 5, 100, 200, m::any())->andReturn(false);
 
-        $sut = new UserProvider($this->em, $this->storage, [[5, 100, 200]]);
+        $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, [[5, 100, 200]]);
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => $this->userName])->andReturn($this->user);
 
@@ -82,9 +85,10 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testBruteForceLockReached()
     {
-        $this->storage->shouldReceive('hasToWait')->with($this->userName, 5, 100, 200, m::any())->andReturn(200);
+        $this->storage->shouldReceive('getAttempts')->with($this->userName)->andReturn([1,2,3]);
+        $this->bruteForceChecker->shouldReceive('hasToWait')->with([1,2,3], 5, 100, 200, m::any())->andReturn(200);
 
-        $sut = new UserProvider($this->em, $this->storage, [[5, 100, 200]]);
+        $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, [[5, 100, 200]]);
 
 
         $this->setExpectedException(BruteForceAttackDetectedException::class);
@@ -100,14 +104,15 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
     public function testonAuthenticationFailureEmptyConfig()
     {
         $this->storage->shouldReceive('storeAttempt')->never();
-        $sut = new UserProvider($this->em, $this->storage, []);
+
+        $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, []);
         $sut->onAuthenticationFailure($this->authenticationFailureEvent);
     }
 
     public function testonAuthenticationFailureStoresAttempt()
     {
         $this->storage->shouldReceive('storeAttempt')->with($this->userName, m::any())->once();
-        $sut = new UserProvider($this->em, $this->storage, [[5, 100, 200]]);
+        $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, [[5, 100, 200]]);
         $sut->onAuthenticationFailure($this->authenticationFailureEvent);
     }
 

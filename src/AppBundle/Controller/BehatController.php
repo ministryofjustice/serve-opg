@@ -9,7 +9,7 @@ use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use AppBundle\Service\ClientService;
 use AppBundle\Service\OrderService;
-use AppBundle\Service\Security\LoginAttempts\AttemptsStorage;
+use AppBundle\Service\Security\LoginAttempts\AttemptsStorageInterface;
 use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Finder\Exception\AccessDeniedException;

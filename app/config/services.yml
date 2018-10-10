@@ -59,6 +59,8 @@ services:
 
     Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
+    Common\BruteForceChecker: ~
+
     AppBundle\Service\S3Client:
       arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
 
@@ -124,5 +126,5 @@ services:
         $connection: "@dynamoDb.connection.bruteForceAttempts"
 
     # attempts checker configured to use the dynamoDb storage
-    AppBundle\Service\Security\LoginAttempts\AttemptsStorage:
+    AppBundle\Service\Security\LoginAttempts\AttemptsStorageInterface:
       alias: AppBundle\Service\Security\LoginAttempts\DynamoDbAttemptsStorage

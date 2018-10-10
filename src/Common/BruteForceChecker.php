@@ -1,51 +1,12 @@
 <?php
 
-namespace AppBundle\Service\Security\LoginAttempts;
+namespace Common;
 
-class AttemptsStorage
+
+class BruteForceChecker
 {
-    private $attempts;
-
-    public function __construct()
-    {
-        $this->attempts = [];
-    }
-
     /**
-     * @param string $userId
-     * @param integer $timestamp
-     */
-    public function storeAttempt($userId, $timestamp)
-    {
-        if (!isset($this->attempts[$userId])) {
-            $this->attempts[$userId] = [];
-        }
-
-        $this->attempts[$userId][] = $timestamp;
-    }
-
-    /**
-     * @param string $userId
-     *
-     * @return array of timestamps with the attempts for that userId
-     */
-    public function getAttempts($userId)
-    {
-        return $this->attempts[$userId] ?: [];
-    }
-
-    /**
-     * @param string $userId
-     */
-    public function resetAttempts($userId)
-    {
-        unset($this->attempts[$userId]);
-    }
-
-    /**
-     * //TODO move to static method into Common util class, and and change this class into an interface, only implemented by dynamoDb
-     *
-     * @param string $userId
+     * @param array $userAttempts [timestamp1, timestamp2, ...]
      * @param integer $maxAttempts
      * @param integer $timeRange seconds
      * @param integer $lockFor seconds
@@ -53,9 +14,8 @@ class AttemptsStorage
      *
      * @return bool|int
      */
-    public function hasToWait($userId, $maxAttempts, $timeRange, $lockFor, $currentTime)
+    public function hasToWait(array $userAttempts, $maxAttempts, $timeRange, $lockFor, $currentTime)
     {
-        $userAttempts = $this->getAttempts($userId);
         $userAttemptsCount = count($userAttempts);
         if (empty($userAttempts) || count($userAttempts) <= 1 || $maxAttempts<=1 || $userAttemptsCount < $maxAttempts) {
             return false;

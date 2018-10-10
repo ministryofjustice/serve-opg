@@ -1,11 +1,16 @@
 <?php
 
-namespace AppBundle\Service;
+namespace Common;
 
-use AppBundle\Service\Security\LoginAttempts\AttemptsStorage;
-
-class AttemptsStorageTest extends \PHPUnit_Framework_TestCase
+class BruteForceCheckerTest extends \PHPUnit_Framework_TestCase
 {
+    private $sut;
+
+    public function setUp()
+    {
+        $this->sut = new BruteForceChecker();
+    }
+
     public static function hasToWaitProvider()
     {
         $attempts = [1, 2, 3, 4, 5, 6, 1001, 1002, 1003];
@@ -34,14 +39,9 @@ class AttemptsStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testhasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime, $expectedWaitFor)
     {
-        $sut = new AttemptsStorage();
-        foreach ($attemptTimeStamps as $attemptTimeStamp) {
-            $sut->storeAttempt('userid', $attemptTimeStamp);
-        }
 
-        $actual = $sut->hasToWait('userid', $maxAttempts, $timeRange, $lockFor, $currentTime);
+        $actual =  $this->sut->hasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime);
         $this->assertEquals($expectedWaitFor, $actual);
-
     }
 
 }
