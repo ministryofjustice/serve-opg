@@ -83,7 +83,7 @@ class SiriusService
 
             $this->em->flush();
 
-            if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
+//            if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
 
                 // Begin API call to Sirius
                 $apiResponse = $this->login();
@@ -105,7 +105,7 @@ class SiriusService
                 }
 
                 $this->logout();
-            }
+//            }
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
