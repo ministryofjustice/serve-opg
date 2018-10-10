@@ -99,7 +99,7 @@ services:
       arguments:
         $rules:
            # 5 failed attempts in the last 60 seconds => lock for 10 minutes.
-          # Update behat test (tests/behat/features/00-security.feature) in case this setting get changed
+          # Update behat test (tests/behat/features/00-security.feature) in case this setting is changed
            - [5, 60, 600]
            # 10 failed attempts in the last 5 mins => lock for 30 minutes
            - [10, 600, 1800]
