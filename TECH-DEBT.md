@@ -7,6 +7,7 @@
   - `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";`
 - dynamoDB required for app to startup
 - move fakes3 license key to env var
+- smoke test for behat controller in production
 
 # Solved
 - ~~add time based assets directory~~
