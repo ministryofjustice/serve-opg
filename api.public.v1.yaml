@@ -14,6 +14,20 @@ consumes:
 produces:
   - application/json
 paths:
+  /auth/login:
+    summary: log in
+    description: >
+      **NOTE** this endpoint is not guaranteed in the upstream contract, but is added locally as it's essential functionality
+    post:
+      responses:
+        200:
+  /auth/logout:
+    summary: log out
+    description: >
+      **NOTE** this endpoint is not guaranteed in the upstream contract, but is added locally as it's essential functionality
+    post:
+      responses:
+        200:
   /orders:
     post:
       description: Creates a new Client, order and deputies in Sirius and attaches a set of documents to the order. Each request must use a unique CASREC number
