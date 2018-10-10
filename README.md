@@ -115,9 +115,9 @@ gulp watch
 #Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 
-# Drop schema and recreate (local dev only)
+# Drop the data before schema update (mainl during local development)
 docker-compose run --rm app php app/console doctrine:schema:drop --force
-docker-compose run --rm app php app/console doctrine:schema:update --force
+
 ```
 
 

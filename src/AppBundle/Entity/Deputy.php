@@ -11,9 +11,9 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 class Deputy
 {
 
-    const DEPUTY_TYPE_LAY = 'lay';
-    const DEPUTY_TYPE_PA = 'pa';
-    const DEPUTY_TYPE_PROF = 'prof';
+    const DEPUTY_TYPE_LAY = 'LAY';
+    const DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
+    const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
 
     /**
      * @var int|null

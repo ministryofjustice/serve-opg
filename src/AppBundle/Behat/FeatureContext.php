@@ -16,6 +16,7 @@ class FeatureContext extends MinkContext
     use RegionLinksTrait;
     use FormTrait;
     use DebugTrait;
+    use SiriusTrait;
 
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
@@ -65,5 +66,15 @@ class FeatureContext extends MinkContext
         }
     }
 
-
+    /**
+     * @Then sirius should be available
+     **/
+     public function sirusIsAvailable()
+     {
+         $html = $this->getSession()->getPage()->getContent();
+         $htmlDecoded = json_decode($html, true);
+         if ($htmlDecoded['sirius'] == 'unavailable') {
+             throw new \Exception("sirius: ". $htmlDecoded['sirius']);
+         }
+     }
 }

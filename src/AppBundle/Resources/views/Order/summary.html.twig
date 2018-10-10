@@ -20,7 +20,7 @@
         <tbody class="govuk-table__body">
 
         {# assets question only for PA orders #}
-        {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PA') %}
+        {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PF') %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
                     Are the bond or assets above £21,000?
@@ -94,7 +94,7 @@
                     {% if deputy.emailAddress %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" scope="row">Email address</td>
-                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-emailAddress">{{ deputy.emailAddress }}</td>
+                                <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-emailAddress">{{ deputy.emailAddress }}</td>
                         </tr>
                     {% endif %}
                     {% if deputy.dateOfBirth %}
@@ -161,7 +161,7 @@
 
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
-                <td class="govuk-table__cell behat-region-document-{{ docType }}-filename {{ docIsRequired and not doc ? 'govuk-error-message' }}">
+                <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename {{ docIsRequired and not doc ? 'govuk-error-message' }}">
                     {% if doc %}
                         {{ doc.filename }}
                     {% else %}
@@ -172,11 +172,11 @@
                         {% endif %}
                     {% endif %}
                 </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType }}-actions">
+                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType | lower }}-actions">
                     {% if doc | length %}
-                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType }} govuk-link govuk-!-font-weight-bold">Remove</a>
+                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">Remove</a>
                     {% else %}
-                        <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType }} govuk-link govuk-!-font-weight-bold">
+                        <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">
                             <span class="govuk-icon govuk-icon--plus behat-link"></span>Add file
                         </a>
                     {% endif %}
@@ -221,9 +221,9 @@
 
 
 
-    <p class="govuk-!-margin-bottom-9 behat-region-documents-additional">
+    <p class="govuk-!-margin-bottom-9 behat-region-documents-other">
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-additional">
+           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
            <span class="govuk-icon govuk-icon--plus"></span>Add file
        </a>
     </p>
