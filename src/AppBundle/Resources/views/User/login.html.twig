@@ -14,7 +14,7 @@
                 <li>
                     <div class="behat-region-form-errors">
                         {% if lockedForSeconds %}
-                            Too many failed attempts. User locked for {{ (lockedForSeconds / 60) | round(1, 'ceil') }} minutes
+                            Too many failed attempts. User locked for {{ (lockedForSeconds / 60) | round(0, 'ceil') }} minutes
                         {% else %}
                             {{ error.messageKey|trans(error.messageData, 'security') }}
                         {% endif %}
