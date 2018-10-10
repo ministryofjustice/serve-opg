@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,15 +31,14 @@ class UserController extends Controller
     /**
      * @Route("/login", name="login")
      */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils)
+    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up)
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
-
         return $this->render('AppBundle:User:login.html.twig', array(
-            'error'         => $error,
+            'error' => $error,
+            'lockedForSeconds' => $error ? $up->usernameLockedForSeconds($error->getToken()->getUsername()) : false
         ));
     }
 

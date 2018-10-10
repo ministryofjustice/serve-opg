@@ -5,10 +5,13 @@ namespace AppBundle\Service\Security\LoginAttempts;
 use AppBundle\Entity\User;
 use AppBundle\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -37,17 +40,37 @@ class UserProvider implements UserProviderInterface
     }
 
     /**
+     * Return the highest timestamp when the user can be unlocked,
+     * based on the rules and previous attempts from the same username, stored in the storage (e.g. dynamoDb)
+     *
+     * Return false,if *
+     *
+     * @param $username
+     *
+     * @return bool|int
+     */
+    public function usernameLockedForSeconds($username)
+    {
+        $waits = [];
+        foreach($this->rules as $rule) {
+            // fetch all the rules and check if for any of those, the user has to wait
+            list($maxAttempts, $timeRange, $waitFor) = $rule;
+            if ($waitFor = $this->storage->hasToWait($username, $maxAttempts, $timeRange, $waitFor, time())) {
+                $waits[] = $waitFor;
+            }
+        }
+
+        return $waits ? max($waits) : false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function loadUserByUsername($username)
     {
-        foreach($this->rules as $rule) {
-            list($maxAttempts, $timeRange, $waitFor) = $rule;
-            if ($waitFor = $this->storage->hasToWait($username, $maxAttempts, $timeRange, $waitFor, time())) {
-                $e = new BruteForceAttackDetectedException($waitFor);
-                $e->setHasToWaitForSeconds($waitFor);
-                throw $e;
-            }
+        if ($this->usernameLockedForSeconds($username)) {
+            // throw a generic exception in case of brute force is detected, prior to query the db. The view will query this service re-calling the method and detect if locked
+            throw new BruteForceAttackDetectedException();
         }
 
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
@@ -87,14 +110,15 @@ class UserProvider implements UserProviderInterface
     /**
      * Store failing attempt
      *
-     * @param AuthenticationFailureEvent $e
+     * @param AuthenticationFailureEvent $event
      */
-    public function onAuthenticationFailure(AuthenticationFailureEvent $e)
+    public function onAuthenticationFailure(AuthenticationFailureEvent $event)
     {
         if (empty($this->rules)) {
             return;
         }
-        $username = $e->getAuthenticationToken()->getUser();
+
+        $username = $event->getAuthenticationToken()->getUser();
         if ($username) {
             $this->storage->storeAttempt($username, time());
         }
@@ -113,10 +137,13 @@ class UserProvider implements UserProviderInterface
 
         $user = $e->getAuthenticationToken()->getUser();
         if ($user instanceof User) {
-            $this->storage->resetAttempts($user->getEmail());
-
+            $this->resetUsernameAttempts($user->getEmail());
         }
     }
 
+    public function resetUsernameAttempts($userId)
+    {
+        $this->storage->resetAttempts($userId);
+    }
 
 }

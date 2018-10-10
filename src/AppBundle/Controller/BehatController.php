@@ -10,6 +10,7 @@ use AppBundle\Entity\User;
 use AppBundle\Service\ClientService;
 use AppBundle\Service\OrderService;
 use AppBundle\Service\Security\LoginAttempts\AttemptsStorage;
+use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,9 +52,9 @@ class BehatController extends Controller
 
 
     /**
-     * @var AttemptsStorage
+     * @var UserProvider
      */
-    private $attemptsStorage;
+    private $userProvider;
 
     /**
      * BehatController constructor.
@@ -61,15 +62,15 @@ class BehatController extends Controller
      * @param ClientService $clientService
      * @param OrderService $orderService
      * @param UserPasswordEncoderInterface $encoder
-     * @param AttemptsStorage $attemptsStorage
+     * @param UserProvider $userProvider
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, AttemptsStorage $attemptsStorage)
+    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider)
     {
         $this->em = $em;
         $this->clientService = $clientService;
         $this->orderService = $orderService;
         $this->encoder = $encoder;
-        $this->attemptsStorage = $attemptsStorage;
+        $this->userProvider = $userProvider;
     }
 
     /**
@@ -132,7 +133,7 @@ class BehatController extends Controller
     {
         $this->securityChecks();
 
-        $this->attemptsStorage->resetAttempts(self::BEHAT_EMAIL);
+        $this->userProvider->resetUsernameAttempts(self::BEHAT_EMAIL);
 
         return new Response(self::BEHAT_EMAIL ." attempts reset done");
     }

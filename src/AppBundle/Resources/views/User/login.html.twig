@@ -12,7 +12,13 @@
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
                 <li>
-                    <div class="behat-region-form-errors">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    <div class="behat-region-form-errors">
+                        {% if lockedForSeconds %}
+                            Too many failed attempts. User locked for {{ (lockedForSeconds / 60) | round(1, 'ceil') }} minutes
+                        {% else %}
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        {% endif %}
+                    </div>
                 </li>
             </ul>
         </div>
