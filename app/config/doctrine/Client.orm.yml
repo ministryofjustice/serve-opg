@@ -11,7 +11,7 @@ AppBundle\Entity\Client:
       caseNumber:
         column: case_number
         type: string
-        length: 25
+        length: 8
         nullable: false
         unique: true
       clientName:

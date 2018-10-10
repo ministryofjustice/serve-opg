@@ -31,11 +31,13 @@ class DeputyForm extends AbstractType
             ])
             ->add('forename', TextType::class, [
                 'label' => 'First name',
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('surname', TextType::class, [
                 'label' => 'Last name',
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('dateOfBirth', BirthdayType::class, [
                 'label' => 'Date of birth',
@@ -49,34 +51,44 @@ class DeputyForm extends AbstractType
             ])
             ->add('emailAddress', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('daytimeContactNumber', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('eveningContactNumber', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('mobileContactNumber', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine1', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine2', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine3', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressTown', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressCounty', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
 //            ->add('addressCountry', TextType::class)
             ->add('addressPostcode', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('saveAndContinue', SubmitType::class);
     }
