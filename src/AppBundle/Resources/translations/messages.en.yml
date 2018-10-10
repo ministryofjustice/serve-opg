@@ -1,30 +1,30 @@
 pleaseSelect: Please select...
 
-order.pa: Property and finance
-order.hw: Health and welfare
+order.PF: Property and finance
+order.HW: Health and welfare
 
 order.hasAssets.yes: 'Yes'
 order.hasAssets.no: 'No'
 
-order.subType.new: 'New Application'
-order.subType.replacement: 'Replacement of discharged deputy'
-order.subType.interim-order: 'Interim order'
-order.subType.trustee: 'Trustee'
-order.subType.variation: 'Variation'
-order.subType.direction: 'Direction'
+order.subType.NEW_APPLICATION: 'New Application'
+order.subType.REPLACEMENT_OF_DISCHARGED_DEPUTY: 'Replacement of discharged deputy'
+order.subType.INTERIM_ORDER: 'Interim order'
+order.subType.TRUSTEE: 'Trustee'
+order.subType.VARIATION: 'Variation'
+order.subType.DIRECTION: 'Direction'
 
-order.appointmentType.sole: 'Sole'
-order.appointmentType.joint: 'Joint'
-order.appointmentType.js: 'Joint and several'
+order.appointmentType.SOLE: 'Sole'
+order.appointmentType.JOINT: 'Joint'
+order.appointmentType.JOINT_AND_SEVERAL: 'Joint and several'
 
 order.served: 'Order served to OPG'
 
-deputy.type.lay: 'Lay'
-deputy.type.pa: 'Public authority'
-deputy.type.prof: 'Professional'
+deputy.type.LAY: 'Lay'
+deputy.type.PUBLIC_AUTHORITY: 'Public authority'
+deputy.type.PROFESSIONAL: 'Professional'
 
-document.type.cop1a: COP 1A
-document.type.cop1c: COP 1C
-document.type.cop3: COP 3
-document.type.cop4: COP 4
-document.type.co: Court order
+document.type.COP1A: COP 1A
+document.type.COP1C: COP 1C
+document.type.COP3: COP 3
+document.type.COP4: COP 4
+document.type.COURT_ORDER: Court order

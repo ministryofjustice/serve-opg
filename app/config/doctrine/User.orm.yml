@@ -10,10 +10,10 @@ AppBundle\Entity\User:
     fields:
       email:
         type: string
-        length: 60
+        length: 255
         nullable: false
         unique: true
       password:
         type: string
-        length: 60
+        length: 255
         nullable: false

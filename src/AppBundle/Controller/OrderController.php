@@ -47,7 +47,7 @@ class OrderController extends Controller
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $form = $this->createForm(OrderForm::class, $order, [
-            'show_assets_question' => $order->getType() == Order::TYPE_PA
+            'show_assets_question' => $order->getType() == Order::TYPE_PF
         ]);
         $form->handleRequest($request);
 

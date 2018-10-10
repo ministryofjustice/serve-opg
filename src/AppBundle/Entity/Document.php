@@ -6,13 +6,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Document
 {
-    const TYPE_COP1A = 'cop1a'; // required by PF
-    const TYPE_COP1C = 'cop1c'; // displayed by PF, but not required
-    const TYPE_COP3 = 'cop3'; // required by PF and HW
-    const TYPE_COP4 = 'cop4'; // required by PF and HW
-    const TYPE_COURT_ORDER = 'co'; //required by PF and HW
-
-    const TYPE_ADDITIONAL = 'additional'; // not required
+    const TYPE_COP1A = 'COP1A'; // required by PF
+    const TYPE_COP1C = 'COP1C'; // displayed by PF, but not required
+    const TYPE_COP3 = 'COP3'; // required by PF and HW
+    const TYPE_COP4 = 'COP4'; // required by PF and HW
+    const TYPE_COURT_ORDER = 'COURT_ORDER'; //required by PF and HW
+    const TYPE_ADDITIONAL = 'OTHER'; // not required
 
     const FILE_NAME_MAX_LENGTH = 255;
     const MAX_UPLOAD_PER_ORDER = 100;
@@ -60,6 +59,11 @@ class Document
      * @var string
      */
     private $storageReference;
+
+    /***
+     * @var string
+     */
+    private $remoteStorageReference;
 
     /**
      * @var \DateTime
@@ -200,6 +204,22 @@ class Document
         $this->storageReference = $storageReference;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemoteStorageReference()
+    {
+        return $this->remoteStorageReference;
+    }
+
+    /**
+     * @param string $remoteStorageReference
+     */
+    public function setRemoteStorageReference($remoteStorageReference)
+    {
+        $this->remoteStorageReference = $remoteStorageReference;
     }
 
     /**
