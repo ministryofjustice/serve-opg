@@ -47,7 +47,7 @@ class OrderController extends Controller
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $form = $this->createForm(OrderForm::class, $order, [
-            'show_assets_question' => $order->getType() == Order::TYPE_PA
+            'show_assets_question' => $order->getType() == Order::TYPE_PF
         ]);
         $form->handleRequest($request);
 
@@ -94,9 +94,14 @@ class OrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->orderService->serve($order);
+            try {
+                $this->orderService->serve($order);
 
-            $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
+                $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
+
+            } catch (\Exception $e) {
+                $request->getSession()->getFlashBag()->add('notice', 'Order ' . $orderId . ' could not be served at the moment');
+            }
 
             return $this->redirectToRoute('case-list');
         }

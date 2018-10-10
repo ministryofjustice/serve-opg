@@ -19,7 +19,11 @@ AppBundle\Entity\Document:
       storageReference:
         type: string
         length: 255
-      createdAt:
+      remoteStorageReference:
+        type: string
+        length: 255
+        nullable: true
+        createdAt:
         column: created_at
         type: datetime
         nullable: false

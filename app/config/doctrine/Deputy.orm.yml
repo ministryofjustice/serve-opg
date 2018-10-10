@@ -11,7 +11,7 @@ AppBundle\Entity\Deputy:
       deputyType:
         column: deputy_type
         type: string
-        length: 4
+        length: 255
       forename:
         column: forename
         type: string

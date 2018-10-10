@@ -2,9 +2,16 @@
 
 namespace AppBundle\Service\File\Storage;
 
+use Aws\CommandInterface;
+use Aws\CommandPool;
+use Aws\Exception\AwsException;
+use Aws\Result;
+use Aws\ResultInterface;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Aws\S3\S3ClientInterface;
+use Doctrine\Common\Collections\Collection;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -31,7 +38,12 @@ class S3Storage implements StorageInterface
     /**
      * @var string
      */
-    private $bucketName;
+    private $localBucketName;
+
+    /**
+     * @var string
+     */
+    private $remoteBucketName;
 
     /**
      * @var LoggerInterface
@@ -40,16 +52,33 @@ class S3Storage implements StorageInterface
 
     /**
      * S3Storage constructor.
-     *
-     * @param S3Client $s3Client (Aws library)
-     * @param $bucketName S3 bucket name
+     * @param S3ClientInterface $s3Client
+     * @param $localBucketName
+     * @param $remoteBucketName
      * @param LoggerInterface $logger
      */
-    public function __construct(S3ClientInterface $s3Client, $bucketName, LoggerInterface $logger)
+    public function __construct(S3ClientInterface $s3Client, $localBucketName, $remoteBucketName, LoggerInterface $logger)
     {
         $this->s3Client = $s3Client;
-        $this->bucketName = $bucketName;
+        $this->localBucketName = $localBucketName;
+        $this->remoteBucketName = $remoteBucketName;
         $this->logger = $logger;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocalBucketName()
+    {
+        return $this->localBucketName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemoteBucketName()
+    {
+        return $this->remoteBucketName;
     }
 
     /**
@@ -58,8 +87,6 @@ class S3Storage implements StorageInterface
      * header('Content-Disposition: attachment; filename="' . $_GET['filename'] .'"');
      * readfile(<this method>);
      *
-     *
-     * @param $bucketName
      * @param $key
      *
      * @throws FileNotFoundException is the file is not found
@@ -70,7 +97,7 @@ class S3Storage implements StorageInterface
     {
         try {
             $result = $this->s3Client->getObject([
-                'Bucket' => $this->bucketName,
+                'Bucket' => $this->localBucketName,
                 'Key'    => $key
             ]);
 
@@ -94,7 +121,7 @@ class S3Storage implements StorageInterface
         //$this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
 
         return $this->s3Client->deleteObject([
-            'Bucket' => $this->bucketName,
+            'Bucket' => $this->localBucketName,
             'Key'    => $key
         ]);
     }
@@ -107,12 +134,84 @@ class S3Storage implements StorageInterface
     public function store($key, $body)
     {
         return $this->s3Client->putObject([
-            'Bucket'   => $this->bucketName,
+            'Bucket'   => $this->localBucketName,
             'Key'      => $key,
             'Body'     => $body,
             'ServerSideEncryption' => 'AES256',
             'Metadata' => []
         ]);
+    }
+
+    /**
+     * Move S3 Objects To new bucket
+     * @param Collection $documents
+     * @return \Generator
+     */
+    public function moveDocuments(Collection $documents)
+    {
+        // set up variables used in closures
+        $s3Client = $this->s3Client;
+        $logger = $this->logger;
+        $documentsIterator = $documents->getIterator();
+
+        // Create a generator that converts the source objects into
+        // Aws\CommandInterface objects. This generator accepts the iterator that
+        // yields files and the name of the bucket to upload the files to.
+        $commandGenerator = function (\Iterator $documentsIterator, $targetBucket) use ($s3Client) {
+            foreach ($documentsIterator as $document) {
+                // Yield a command that will be executed by the pool
+                yield $s3Client->getCommand('CopyObject', [
+                    'Bucket'     => $targetBucket,
+                    'Key'        => $document->getStorageReference(),
+                    'CopySource' => urlencode($this->getLocalBucketName() . '/' . $document->getStorageReference())
+                ]);
+            }
+        };
+
+        // Create the generator using the collection iterator
+        $commands = $commandGenerator($documentsIterator, $this->getRemoteBucketName());
+        
+        // Create a pool and provide an optional array of configuration
+        $pool = new CommandPool($s3Client, $commands, [
+            // Only send 5 files at a time (this is set to 25 by default)
+            'concurrency' => 5,
+            'preserve_iterator_keys' => true,
+            // Invoke this function before executing each command
+            'before' => function (CommandInterface $cmd, $iterKey) use ($logger) {
+                $logger->debug("About to send {$iterKey}: " . print_r($cmd->toArray(), true));
+            },
+            // Invoke this function for each successful transfer
+            'fulfilled' => function (
+                ResultInterface $result,
+                $iterKey,
+                PromiseInterface $aggregatePromise
+            )  use ($logger, $documentsIterator) {
+
+                // update current document being processed with new location
+                $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
+                $logger->debug("Completed {$iterKey}: {$result}");
+            },
+            // Invoke this function for each failed transfer
+            'rejected' => function (
+                AwsException $reason,
+                $iterKey,
+                PromiseInterface $aggregatePromise
+            ) use ($logger, $documents) {
+                $logger->error("Failed to send {$iterKey}: {$reason}\n");
+            },
+        ]);
+
+        // Initiate the pool transfers
+        $promise = $pool->promise();
+
+        // Force the pool to complete synchronously
+        $promise->wait();
+
+        $promise->then(function() use ($logger) {
+            $logger->info("Transfer complete");
+        });
+
+        return $documents;
     }
 
     /**
@@ -139,7 +238,7 @@ class S3Storage implements StorageInterface
 
         $this->log('info', "Retrieving tagset for $key from S3");
         $existingTags = $this->s3Client->getObjectTagging([
-            'Bucket' => $this->bucketName,
+            'Bucket' => $this->localBucketName,
             'Key' => $key
         ]);
 
@@ -149,7 +248,7 @@ class S3Storage implements StorageInterface
 
         // Update tags in S3
         $this->s3Client->putObjectTagging([
-            'Bucket' => $this->bucketName,
+            'Bucket' => $this->localBucketName,
             'Key' => $key,
             'Tagging' => [
                 'TagSet' => $newTagset

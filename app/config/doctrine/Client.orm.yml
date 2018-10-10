@@ -17,7 +17,7 @@ AppBundle\Entity\Client:
       clientName:
         column: client_name
         type: string
-        length: 60
+        length: 255
         nullable: false
       createdAt:
         column: created_at

@@ -6,24 +6,24 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 abstract class Order
 {
-    const TYPE_PA = 'pa';
-    const TYPE_HW = 'hw';
+    const TYPE_PF = 'PF';
+    const TYPE_HW = 'HW';
     const TYPE_BOTH = 'both';
 
-    const SUBTYPE_NEW = 'new';
-    const SUBTYPE_REPLACEMENT = 'replacement';
-    const SUBTYPE_INTERIM_ORDER = 'interim-order';
-    const SUBTYPE_TRUSTEE = 'trustee';
-    const SUBTYPE_VARIATION = 'variation';
-    const SUBTYPE_DIRECTION = 'direction';
+    const SUBTYPE_NEW = 'NEW_APPLICATION';
+    const SUBTYPE_REPLACEMENT = 'REPLACEMENT_OF_DISCHARGED_DEPUTY';
+    const SUBTYPE_INTERIM_ORDER = 'INTERIM_ORDER';
+    const SUBTYPE_TRUSTEE = 'TRUSTEE';
+    const SUBTYPE_VARIATION = 'VARIATION';
+    const SUBTYPE_DIRECTION = 'DIRECTION';
 
     const HAS_ASSETS_YES = 'yes';
     const HAS_ASSETS_NO = 'no';
     const HAS_ASSETS_NA = 'na';
 
-    const APPOINTMENT_TYPE_SOLE = 'sole';
-    const APPOINTMENT_TYPE_JOINT = 'joint';
-    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'js';
+    const APPOINTMENT_TYPE_SOLE = 'SOLE';
+    const APPOINTMENT_TYPE_JOINT = 'JOINT';
+    const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'JOINT_AND_SEVERAL';
 
     /**
      * @return array
@@ -76,9 +76,18 @@ abstract class Order
     private $appointmentType;
 
     /**
+     * Date order was created in DC database
+     *
      * @var \DateTime
      */
     private $createdAt;
+
+    /**
+     * Date order was first made outside DC
+     *
+     * @var \DateTime
+     */
+    private $madeAt;
 
     /**
      * @var \DateTime
@@ -91,13 +100,29 @@ abstract class Order
     private $servedAt;
 
     /**
-     * @param Client $client
-     * @param \DateTime $issuedAt
+     * JSON string served to the API
+     *
+     * @var string
      */
-    public function __construct(Client $client, \DateTime $issuedAt)
+    private $payloadServed;
+
+    /**
+     * API response as a string
+     *
+     * @var string
+     */
+    private $apiResponse;
+
+    /**
+     * @param Client $client
+     * @param \DateTime $madeAt Date Order was first made, outside DC
+     * @param \DateTime $issuedAts
+     */
+    public function __construct(Client $client, \DateTime $madeAt, \DateTime $issuedAt)
     {
         $this->client = $client;
-        $this->issuedAt =$issuedAt;
+        $this->madeAt = $madeAt;
+        $this->issuedAt = $issuedAt;
 
         $this->createdAt = new \DateTime();
         $this->deputies = new ArrayCollection();
@@ -168,7 +193,6 @@ abstract class Order
      */
     abstract public function getType();
 
-
     /**
      * @return null|string
      */
@@ -231,6 +255,14 @@ abstract class Order
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getMadeAt(): \DateTime
+    {
+        return $this->madeAt;
     }
 
     /**
@@ -339,6 +371,44 @@ abstract class Order
         if (!$this->deputies->contains($deputy)) {
             $this->deputies->removeElement($deputy);
         }
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayloadServed()
+    {
+        return $this->payloadServed;
+    }
+
+    /**
+     * @param string $payloadServed
+     *
+     * @return $this
+     */
+    public function setPayloadServed($payloadServed)
+    {
+        $this->payloadServed = $payloadServed;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiResponse()
+    {
+        return $this->apiResponse;
+    }
+
+    /**
+     * @param string $apiResponse
+     *
+     * @return $this
+     */
+    public function setApiResponse($apiResponse)
+    {
+        $this->apiResponse = $apiResponse;
         return $this;
     }
 }
