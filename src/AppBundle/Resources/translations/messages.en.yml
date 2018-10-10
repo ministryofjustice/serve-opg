@@ -17,6 +17,8 @@ order.appointmentType.sole: 'Sole'
 order.appointmentType.joint: 'Joint'
 order.appointmentType.js: 'Joint and several'
 
+order.served: 'Order served to OPG'
+
 deputy.type.lay: 'Lay'
 deputy.type.pa: 'Public authority'
 deputy.type.prof: 'Professional'

@@ -12,6 +12,8 @@ Feature: serve order
     # case list page: assert order is in "pending tab"
     Then I should be on "/case"
     And I should not see the "order-12345678-pa" region
+    And I should see "Order served to OPG" in the "flash" region
+    And I should see "12345678" in the "flash" region
     When I click on "served-tab"
     Then I should see the "order-12345678-pa" region
     And I should see "test-cop1a.pdf" in the "order-12345678-pa" region
@@ -28,6 +30,8 @@ Feature: serve order
     # case list page: assert order is in "pending tab"
     Then I should be on "/case"
     And I should not see the "order-12345678-hw" region
+    And I should see "Order served to OPG" in the "flash" region
+    And I should see "12345678" in the "flash" region
     When I click on "served-tab"
     Then I should see the "order-12345678-hw" region
     And I should see "test-other.jpg" in the "order-12345678-hw" region
