@@ -23,7 +23,6 @@ class ManageController extends Controller
     /**
      * ManageController constructor.
      * @param EntityManager $em
-     * @param Checker $loginChecker
      */
     public function __construct(EntityManager $em)
     {
