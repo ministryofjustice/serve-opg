@@ -39,6 +39,8 @@ AppBundle\Entity\Order:
         column: made_at
         type: datetime
         nullable: false
+        options:
+          default: 01-01-2017
       payloadServed:
         column: payload_served
         type: json_array
