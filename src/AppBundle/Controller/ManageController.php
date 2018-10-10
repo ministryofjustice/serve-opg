@@ -51,7 +51,11 @@ class ManageController extends Controller
      */
     public function versionAction()
     {
-        return $this->json(['version' => getenv("APP_VERSION")]);
+        return $this->json([
+            'application' => getenv("APP_VERSION"),
+            'web' => getenv("WEB_VERSION"),
+            'infrastructure' => getenv("INFRA_VERSION")
+        ]);
     }
 
     /**

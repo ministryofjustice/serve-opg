@@ -5,8 +5,8 @@ Feature: prechecks
         Given I go to "/manage/availability"
         And the response status code should be 200
 
-    Scenario: check app version
+    Scenario: check deployed versions
         When I go to "/manage/version"
-        Then the current version should be shown
+        Then the current versions should be shown
         And the response status code should be 200
         And the Content-Type response header should be application/json

@@ -43,7 +43,9 @@ services:
       - ./src:/var/www/src:ro
       - ./web:/var/www/web
     environment:
-      APP_VERSION: 0-local
+      APP_VERSION: 0-local-app
+      WEB_VERSION: 0-local-web
+      INFRA_VERSION: 0-local-infra
       # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
@@ -134,7 +136,9 @@ services:
     depends_on:
       - loadbalancer
     environment:
-      APP_VERSION: 0-local
+      APP_VERSION: 0-local-app
+      WEB_VERSION: 0-local-web
+      INFRA_VERSION: 0-local-infra
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
