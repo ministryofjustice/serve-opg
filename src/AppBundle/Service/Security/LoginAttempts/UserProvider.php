@@ -68,6 +68,10 @@ class UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
+        if (empty($username)) {
+            throw new UsernameNotFoundException('Missing username');
+        }
+
         if ($this->usernameLockedForSeconds($username)) {
             // throw a generic exception in case of brute force is detected, prior to query the db. The view will query this service re-calling the method and detect if locked
             throw new BruteForceAttackDetectedException();

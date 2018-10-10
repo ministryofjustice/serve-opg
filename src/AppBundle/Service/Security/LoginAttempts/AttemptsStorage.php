@@ -11,6 +11,10 @@ class AttemptsStorage
         $this->attempts = [];
     }
 
+    /**
+     * @param string $userId
+     * @param integer $timestamp
+     */
     public function storeAttempt($userId, $timestamp)
     {
         if (!isset($this->attempts[$userId])) {
@@ -30,12 +34,17 @@ class AttemptsStorage
         return $this->attempts[$userId] ?: [];
     }
 
+    /**
+     * @param string $userId
+     */
     public function resetAttempts($userId)
     {
         unset($this->attempts[$userId]);
     }
 
     /**
+     * //TODO move to static method into Common util class, and and change this class into an interface, only implemented by dynamoDb
+     *
      * @param string $userId
      * @param integer $maxAttempts
      * @param integer $timeRange seconds
