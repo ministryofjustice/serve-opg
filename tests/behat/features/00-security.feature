@@ -19,21 +19,18 @@ Feature: security checks
       Given I go to "/logout"
       And I go to "/behat/reset-brute-force-attempts-logger"
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
-      Then I should see "Invalid credentials" in the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
-      Then I should see "Invalid credentials" in the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
-      Then I should see "Invalid credentials" in the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
-      Then I should see "Invalid credentials" in the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
-      Then I should see "Invalid credentials" in the "form-errors" region
+      Then I should see the "form-errors" region
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
       Then I should see the "form-errors" region
-      But I should not see "Invalid credentials" in the "form-errors" region
-      And I should see "User locked until" in the "form-errors" region
-      # reset attempts
-      When I go to "/behat/reset-brute-force-attempts-logger"
+      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      Then I should see the "form-errors" region
+      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      Then I should see the "form-errors" region
+      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      Then I should see the "form-locked-error" region
+      # reset attempts and confirm that the error is now due to erorrs
+      When I go to "/logout"
+      And I go to "/behat/reset-brute-force-attempts-logger"
       And I log in as "behat@digital.justice.gov.uk" with password "wrong password"
-      Then I should see "Invalid credentials" in the "form-errors" region
+      Then I should not see the "form-locked-error" region
 

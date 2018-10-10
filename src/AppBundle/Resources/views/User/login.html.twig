@@ -12,13 +12,16 @@
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
                 <li>
-                    <div class="behat-region-form-errors">
-                        {% if lockedForSeconds %}
-                            Too many failed attempts. User locked for {{ (lockedForSeconds / 60) | round(0, 'ceil') }} minutes
-                        {% else %}
-                            {{ error.messageKey|trans(error.messageData, 'security') }}
-                        {% endif %}
-                    </div>
+                    {% if lockedForSeconds %}
+                        <div class="behat-region-form-locked-error">
+                         Too many failed attempts. User locked for {{ (lockedForSeconds / 60) | round(0, 'ceil') }} minutes
+                        </div>
+                    {% else %}
+                        <div class="behat-region-form-errors">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
                 </li>
             </ul>
         </div>
