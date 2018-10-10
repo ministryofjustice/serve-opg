@@ -83,29 +83,27 @@ class SiriusService
 
             $this->em->flush();
 
-//            if ($order->getClient()->getCaseNumber() != BehatController::BEHAT_CASE_NUMBER) {
+            // Begin API call to Sirius
+            $apiResponse = $this->login();
 
-                // Begin API call to Sirius
-                $apiResponse = $this->login();
+            if ($apiResponse->getStatusCode() == 200) {
+                // generate JSON payload of order
+                $payload = $this->generateOrderPayload($order);
 
-                if ($apiResponse->getStatusCode() == 200) {
-                    // generate JSON payload of order
-                    $payload = $this->generateOrderPayload($order);
+                if ($payload) {
+                    $order->setPayloadServed($payload);
 
-                    if ($payload) {
-                        $order->setPayloadServed($payload);
+                    // Make API call
+                    $this->logger->debug('Begin API call:');
 
-                        // Make API call
-                        $this->logger->debug('Begin API call:');
+                    $apiResponse = $this->sendOrderToSirius($payload);
 
-                        $apiResponse = $this->sendOrderToSirius($payload);
-
-                        $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
-                    }
+                    $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
                 }
+            }
 
-                $this->logout();
-//            }
+            $this->logout();
+
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
