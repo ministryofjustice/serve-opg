@@ -20,7 +20,6 @@ class ManageController extends Controller
      */
     private $em;
 
-
     /**
      * ManageController constructor.
      * @param EntityManager $em
@@ -30,7 +29,6 @@ class ManageController extends Controller
     {
         $this->em = $em;
     }
-
 
     /**
      * @Route("/availability")

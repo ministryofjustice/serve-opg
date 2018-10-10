@@ -3,10 +3,6 @@ security:
     providers:
       webservice:
         id: AppBundle\Service\Security\LoginAttempts\UserProvider
-#      our_db_provider:
-#        entity:
-#          class: AppBundle\Entity\User
-#          property: email
     encoders:
           AppBundle\Entity\User:
             algorithm: bcrypt

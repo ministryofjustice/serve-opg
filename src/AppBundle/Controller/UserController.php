@@ -38,7 +38,9 @@ class UserController extends Controller
 
         return $this->render('AppBundle:User:login.html.twig', array(
             'error' => $error,
-            'lockedForSeconds' => $error ? $up->usernameLockedForSeconds($error->getToken()->getUsername()) : false
+            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
+                ? $up->usernameLockedForSeconds($username)
+                : false
         ));
     }
 

@@ -43,8 +43,6 @@ class CaseController extends Controller
      */
     public function indexAction(Request $request)
     {
-
-
         $limit = 50;
 
         $filters = [
