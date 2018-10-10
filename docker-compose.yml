@@ -79,7 +79,6 @@ services:
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
         email=sean.privett@digital.justice.gov.uk&password=Abcd1234
-        email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
         email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
         email=robert.ford@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
