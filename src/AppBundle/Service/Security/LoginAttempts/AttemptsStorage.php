@@ -51,7 +51,7 @@ class AttemptsStorage
      * @param integer $lockFor seconds
      * @param integer $currentTime timestamp (seconds)
      *
-     * @return bool
+     * @return bool|int
      */
     public function hasToWait($userId, $maxAttempts, $timeRange, $lockFor, $currentTime)
     {
@@ -70,15 +70,11 @@ class AttemptsStorage
             $attemptsInRange = array_filter($attemptsGroup, function ($el) use ($from) {
                 return $el >= $from;
             });
-            if (count($attemptsInRange) === $maxAttempts) {
-                $locks[] = $lastAttemptAt + $lockFor;
+            if (count($attemptsInRange) === $maxAttempts && $currentTime <= $lastAttemptAt + $lockFor) {
+                $locks[] = $lastAttemptAt + $lockFor - $currentTime;
             }
         }
 
-        $highestLock = max($locks);
-
-        return $currentTime < $highestLock
-            ?   $highestLock - $currentTime
-            : false;
+        return $locks ? max($locks) : false;
     }
 }
