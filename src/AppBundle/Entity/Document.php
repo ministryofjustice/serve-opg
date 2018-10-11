@@ -79,7 +79,7 @@ class Document
     {
         $this->order = $order;
         $this->type = $type;
-        $this->createdAt = new \DateTime();
+        $this->setCreatedAt(new \DateTime());
     }
 
     /**
@@ -241,9 +241,16 @@ class Document
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
 }
