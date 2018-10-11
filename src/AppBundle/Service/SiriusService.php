@@ -107,8 +107,6 @@ class SiriusService
             }
 
             $this->logout();
-            $this->em->persist($order);
-            $this->em->flush();
 
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
@@ -118,8 +116,6 @@ class SiriusService
                 $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
                 $order->setApiResponse(Psr7\str($e->getResponse()));
             }
-            $this->em->persist($order);
-            $this->em->flush();
             throw $e;
         } catch (\Exception $e) {
             $this->logger->error('General Exception thrown: ' . $e->getMessage());

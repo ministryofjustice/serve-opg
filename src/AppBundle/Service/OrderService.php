@@ -42,8 +42,8 @@ class OrderService
             $this->siriusService->serveOrder($order);
 
             $order->setServedAt(new \DateTime());
-            $this->em->flush($order);
-
+            $this->em->persist($order);
+            $this->em->flush();
         } catch (\Exception $e) {
             throw $e;
         }
