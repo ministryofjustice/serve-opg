@@ -1,13 +1,13 @@
 Feature: deputy
 
   Scenario: HW: add invalid deputy data
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
     Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
     And the url should match "order/\d+/deputy/add"
         # check form validation
-    When I fill in the following:
+    And I fill in the following:
       | deputy_form_deputyType | LAY |
     And I press "deputy_form_saveAndContinue"
     Then the following fields should have an error:
@@ -17,7 +17,7 @@ Feature: deputy
       | deputy_form_deputyType | PUBLIC_AUTHORITY |
     And I press "deputy_form_saveAndContinue"
     Then the response status code should be 200
-    Then the following fields should have an error:
+    And the following fields should have an error:
       | deputy_form_forename         |
       | deputy_form_surname          |
     When I fill in the following:
@@ -29,7 +29,7 @@ Feature: deputy
       | deputy_form_surname          |
 
   Scenario: HW order: add valid deputy data
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
     When I follow "add-deputy"
       # check form validation
@@ -62,7 +62,7 @@ Feature: deputy
     And the order should be unservable
 
   Scenario: HW order: edit deputy data
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
     Then I follow "edit-deputy-1"
   # check form validation
@@ -96,7 +96,7 @@ Feature: deputy
 
 
   Scenario: HW order: remove deputy
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
     Then I follow "add-deputy"
     When I fill in the following:
@@ -133,7 +133,7 @@ Feature: deputy
 
 
   Scenario: PA order: add one deputy (just type, first and lastname)
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-PF"
     When I follow "add-deputy"
       # check form validation

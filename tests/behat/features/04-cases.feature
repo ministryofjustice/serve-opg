@@ -1,9 +1,9 @@
 Feature: cases
 
   Scenario: upload CSV
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/upload-csv"
-    When I attach the file "behat-cases.csv" to "csv_upload_form_file"
+    And I attach the file "behat-cases.csv" to "csv_upload_form_file"
     And I click on "submit"
     Then the form should be valid
     And I should see the "order-93559316-PF" region
@@ -12,7 +12,7 @@ Feature: cases
 
 
   Scenario: PA order: set assets, subtype, appointment type
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-PF"
     # check form validation
     When I fill in the following:
@@ -38,7 +38,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: HW order: set subtype, appointment type
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
     # check form validation
     When I fill in the following:
@@ -61,7 +61,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: test search
-    Given I am logged in as behat user
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     # fake q
     When I fill in "search" with "NOT EXISTING"
     And I press "search_submit"

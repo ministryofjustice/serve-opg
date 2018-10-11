@@ -1,4 +1,14 @@
 # src/AppBundle/Resources/config/validation.yml
+
+AppBundle\Entity\User:
+  properties:
+    email:
+    - Email:
+        message: The email "{{ value }}" is not a valid email.
+        checkMX: false
+        checkHost: false
+
+
 AppBundle\Entity\Order:
   properties:
     hasAssetsAboveThreshold:
