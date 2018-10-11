@@ -94,14 +94,14 @@ class OrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $this->orderService->serve($order);
+            $this->orderService->serve($order);
 
-                $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
-
-            } catch (\Exception $e) {
-                $request->getSession()->getFlashBag()->add('notice', 'Order ' . $orderId . ' could not be served at the moment');
-            }
+            $client = $order->getClient();
+            $translator = $this->get('translator');
+            $request->getSession()->getFlashBag()->add('success',
+                array(
+                    'title' => $translator->trans("order.served"),
+                    'body' => $translator->trans('caseNumber', [], 'labels'). ": " . $client->getCaseNumber() . '<br>' . $translator->trans('client', [], 'labels') . ': ' . $client->getClientName()));
 
             return $this->redirectToRoute('case-list');
         }

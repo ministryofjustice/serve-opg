@@ -91,7 +91,7 @@ class DocumentController extends Controller
                         $document,
                         $uploadedFile
                     );
-                    //$request->getSession()->getFlashBag()->add('notice', 'File uploaded');
+                   $request->getSession()->getFlashBag()->add('notification', 'File uploaded');
 
                     $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
                     $document->setFilename($fileName);
@@ -99,7 +99,7 @@ class DocumentController extends Controller
                     $this->em->persist($document);
                     $this->em->flush($document);
                 } else {
-                    $request->getSession()->getFlashBag()->add('notice', 'File could not be uploaded');
+                   $request->getSession()->getFlashBag()->add('notification', 'File could not be uploaded');
                 }
 
                 return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
