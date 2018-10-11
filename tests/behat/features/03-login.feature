@@ -16,13 +16,14 @@ Feature: login
       | login_password | password |
     And I press "login_submit"
     Then I should be on "/login"
-    Then I should see "Invalid credentials" in the "form-errors" region
+    And I should see "Invalid credentials" in the "form-errors" region
         # wrong password
     When I fill in the following:
       | login_username | behat@digital.justice.gov.uk |
       | login_password | passwordWRONG |
     And I press "login_submit"
     Then I should be on "/login"
+    And I should see "Invalid credentials" in the "form-errors" region
     # correct
     When I fill in the following:
       | login_username | behat@digital.justice.gov.uk |

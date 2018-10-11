@@ -15,6 +15,8 @@ Software to download and install
 Launch all the following commands from the project directory
 ```bash
 
+git config core.autocrlf true
+
 # Generate self-signed certificate for the local loadbalancer
 ./generate_certs.sh
 
@@ -75,6 +77,10 @@ DigiCOP uses PHPUnit and Behats to test the application
 Run php unit
 ```bash
 docker-compose run --rm phpunit
+
+# specific test
+docker-compose run --rm --entrypoint="bin/phpunit -c tests/phpunit/ tests/phpunit/Service/UserProviderTest.php" phpunit
+
 ```
 
 ## Integration Testing
@@ -126,11 +132,10 @@ docker-compose run --rm app php app/console doctrine:schema:drop --force
 
 
 # Launch specific behat feature
-//TODO find an aesier way
-comment out "entrypoint" and "command" in behat container
-docker-compose up behat
-docker-compose exec behat bin/behat -c tests/behat/behat.yml tests/behat/features/03-cases.feature
 
+```
+docker-compose run --rm --entrypoint="bin/behat -c tests/behat/behat.yml tests/behat/features/00-security.feature:18" behat
+```
 
 # Quality Analysis Tools
 The Docker image `jakzal/phpqa` contains many useful QA tools
