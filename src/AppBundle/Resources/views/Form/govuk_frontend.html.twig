@@ -90,9 +90,23 @@
     </div>
 {%- endblock birthday_widget -%}
 
-{% block _deputy_form_dateOfBirth %}
-    day
-{%- endblock _deputy_form_dateOfBirth -%}
+{% block _deputy_form_addressLine1_row %}
+    <p class="debug-label">Custom: addressLine1_row</p>
+    <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        <label for="addressLine1" class="govuk-label">Building and street <span class="govuk-visually-hidden">line 1 of 2</span></label>
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock _deputy_form_addressLine1_row %}
+
+{% block _deputy_form_addressLine2_row %}
+    <p class="debug-label">Custom: addressLine2_row</p>
+    <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        <label for="addressLine2" class="govuk-label"><span class="govuk-visually-hidden">Building and street line 2 of 2</span></label>
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock _deputy_form_addressLine2_row %}
 
 
 {# Select #}

@@ -60,6 +60,7 @@ class DeputyForm extends AbstractType
                 'required' => false,
             ])
             ->add('addressLine1', TextType::class, [
+                'label' => 'Building and street',
                 'required' => false,
             ])
             ->add('addressLine2', TextType::class, [
