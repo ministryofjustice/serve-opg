@@ -21,7 +21,7 @@ class ManageController extends Controller
     private $em;
 
     /**
-     * UserController constructor.
+     * ManageController constructor.
      * @param EntityManager $em
      * @param SiriusService $siriusService
      */
