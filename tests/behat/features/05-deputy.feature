@@ -134,7 +134,7 @@ Feature: deputy
 
   Scenario: PA order: add one deputy (just type, first and lastname)
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-PA"
+    When I follow "order-93559316-PF"
     When I follow "add-deputy"
       # check form validation
     When I fill in the following:
