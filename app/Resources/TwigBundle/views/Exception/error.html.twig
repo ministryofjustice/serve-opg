@@ -1,13 +1,16 @@
-{% trans_default_domain "error" %}
+{% set showNavigation = false %}
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
-{# displayable exception display the exact message thrown from the controller#}
-{% if exception is defined and exception.code == constant('\\AppBundle\\Exception\\DisplayableException::EXCEPTION_CODE') %}
-    {% set message =  'generic.titleForDisplayableException' | trans({'%message%': exception.message}) | capitalize %}
- {% else %}
-    {% set message = 'generic.title' | trans %}
- {% endif %}
- 
- {% include 'TwigBundle:Exception:template.html.twig' with {
-    message: message,
-    description: 'generic.description' | trans
- } %}
+{% block htmlTitle %}Sorry, there is a problem with the service{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+{% endblock %}
+
+{% block content %}
+    <p>
+        Try again later.
+    </p>
+    <p>
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+{% endblock %}

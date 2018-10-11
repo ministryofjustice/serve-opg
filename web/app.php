@@ -8,11 +8,7 @@ $loader = require __DIR__ . '/../vendor/autoload.php';
 
 if ($isLocal) {
     ini_set('display_errors', 'on');
-    ini_set('date.timezone', 'Europe/London');
     Debug::enable();
-}
-
-if ($isLocal) {
     $kernel = new AppKernel('dev', true);
 } else {
     $kernel = new AppKernel('prod', false);
