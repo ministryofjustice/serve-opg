@@ -37,13 +37,16 @@ services:
     depends_on:
       - dynamodb
       - postgres
-      - "s3"
+      - s3
+      - sirius-api
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
       - ./web:/var/www/web
     environment:
-      APP_VERSION: 0-local
+      APP_VERSION: 0-local-app
+      WEB_VERSION: 0-local-web
+      INFRA_VERSION: 0-local-infra
       # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
@@ -60,27 +63,43 @@ services:
       DC_S3_BUCKET_NAME: test_bucket
       DC_S3_REGION: eu-west-1
       DC_S3_ENDPOINT: 'http://s3:4569'
+
+      # Sirius public API configuratiion
+      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
+      DC_SIRIUS_URL: 'http://sirius-api:4010/'
+      SIRIUS_PUBLIC_API_EMAIL: publicapi@opgtest.com
+      SIRIUS_PUBLIC_API_PASSWORD: Password1
+
       # file scanner
       DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
       DC_FILE_SCANNER_SSL_VERIFY: 1
       DC_BEHAT_CONTROLLER_ENABLED: 1
+
       # fixtures
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
         email=sean.privett@digital.justice.gov.uk&password=Abcd1234
-        email=biggs.thorarensen@digital.justice.gov.uk&password=Abcd1234
         email=shaun.lizzio@digital.justice.gov.uk&password=Abcd1234
         email=robert.ford@digital.justice.gov.uk&password=Abcd1234
       DC_FIXURES_CASES: |
-        number=12345671&name=Peter Bloggs&type=both
-        number=22345672&name=Victoria Brady&type=pa
-        number=32345673&name=Thomas Jefferson&type=hw
-        number=42345674&name=Susan Grindle&type=both
-        number=62345676&name=Lia Shelton&type=pa
-        number=72345677&name=Abdullah Lang&type=pa
-        number=52345675&name=Angela Walker&type=pa
-        number=92345679&name=Justine Henderson&type=pa
-        number=82345678&name=Marcus Cruz&type=pa
+        number=4865226T&name=Peter Bloggs&type=both
+        number=88744573&name=Victoria Brady&type=PF
+        number=1267847T&name=Thomas Jefferson&type=HW
+        number=9258173T&name=Susan Grindle&type=both
+        number=03427488&name=Lia Shelton&type=PF
+        number=51934429&name=Abdullah Lang&type=PF
+        number=6554033T&name=Angela Walker&type=PF
+        number=98848454&name=Justine Henderson&type=PF
+        number=14564190&name=Marcus Cruz&type=PF
+
+  sirius-api:
+    image: stoplight/prism
+    volumes:
+      - .:/tmp
+    command:
+      - mock
+      - --spec
+      - /tmp/api.public.v1.yaml
 
   dynamodb:
     image: dwmkerr/dynamodb
@@ -134,7 +153,9 @@ services:
     depends_on:
       - loadbalancer
     environment:
-      APP_VERSION: 0-local
+      APP_VERSION: 0-local-app
+      WEB_VERSION: 0-local-web
+      INFRA_VERSION: 0-local-infra
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
@@ -145,6 +166,8 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
+      # Sirius public API configuratiion
+      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
 
   phpunit:
@@ -167,6 +190,8 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
+      DC_SIRIUS_URL: 'http://sirius-api:4010/'
+      SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
   qa:
     image: jakzal/phpqa:alpine

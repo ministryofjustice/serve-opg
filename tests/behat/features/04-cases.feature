@@ -6,14 +6,14 @@ Feature: cases
     And I attach the file "behat-cases.csv" to "csv_upload_form_file"
     And I click on "submit"
     Then the form should be valid
-    And I should see the "order-12345678-pa" region
-    And I should see the "order-12345678-hw" region
-    And the response status code should be 200
+    And I should see the "order-93559316-PF" region
+    And I should see the "order-93559316-HW" region
+    Then the response status code should be 200
 
 
   Scenario: PA order: set assets, subtype, appointment type
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    And I follow "order-12345678-pa"
+    When I follow "order-93559316-PF"
     # check form validation
     When I fill in the following:
       | order_form_hasAssetsAboveThreshold |  |
@@ -27,8 +27,8 @@ Feature: cases
     # fill form in with valid data
     When I fill in the following:
       | order_form_hasAssetsAboveThreshold | no          |
-      | order_form_subType                 | replacement |
-      | order_form_appointmentType         | js          |
+      | order_form_subType                 | REPLACEMENT_OF_DISCHARGED_DEPUTY  |
+      | order_form_appointmentType         | JOINT_AND_SEVERAL          |
     And I press "order_form_submit"
     Then the response status code should be 200
     And each text should be present in the corresponding region:
@@ -38,8 +38,13 @@ Feature: cases
     And the order should be unservable
 
   Scenario: HW order: set subtype, appointment type
+<<<<<<< HEAD
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-12345678-hw"
+=======
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    When I follow "order-93559316-HW"
+>>>>>>> 7eb356fc4858df7f9647be52519934fe5f6e2c08
     # check form validation
     When I fill in the following:
       | order_form_subType                 |  |
@@ -50,8 +55,8 @@ Feature: cases
       | order_form_appointmentType         |
     # fill form in with valid data
     When I fill in the following:
-      | order_form_subType         | interim-order |
-      | order_form_appointmentType | sole          |
+      | order_form_subType         | INTERIM_ORDER |
+      | order_form_appointmentType | SOLE          |
     And I press "order_form_submit"
     Then the response status code should be 200
     And I should not see the "has-assets" region
@@ -65,17 +70,17 @@ Feature: cases
     # fake q
     When I fill in "search" with "NOT EXISTING"
     And I press "search_submit"
-    Then I should not see the "order-12345678-pa" region
-    And I should not see the "order-12345678-hw" region
+    Then I should not see the "order-93559316-PF" region
+    And I should not see the "order-93559316-HW" region
     # real search
-    When I fill in "q" with "12345678"
+    When I fill in "q" with "93559316"
     And I press "search_submit"
     # served tab has no results
     And I click on "served-tab"
-    Then I should not see the "order-12345678-pa" region
-    And I should not see the "order-12345678-hw" region
+    Then I should not see the "order-93559316-PF" region
+    And I should not see the "order-93559316-HW" region
     # pending tab has results
     When I click on "pending-tab"
-    Then I should see the "order-12345678-pa" region
-    And I should see the "order-12345678-hw" region
+    Then I should see the "order-93559316-PF" region
+    And I should see the "order-93559316-HW" region
 

@@ -18,10 +18,35 @@ services:
     AppBundle\Controller\CsvController: ~
 
     AppBundle\Service\ClientService: ~
+    AppBundle\Service\CsvImporterService: ~
     AppBundle\Service\OrderService: ~
+
     AppBundle\Service\DeputyService: ~
     AppBundle\Service\DocumentService: ~
-    AppBundle\Service\CsvImporterService: ~
+    AppBundle\Service\SiriusService:
+        arguments:
+            [
+              "@doctrine.orm.entity_manager",
+              "@AppBundle\\Service\\SiriusClient",
+              "@AppBundle\\Service\\File\\Storage\\S3Storage",
+              "@logger"
+            ]
+
+    AppBundle\Service\SiriusClient:
+        class: AppBundle\Service\SiriusClient
+        arguments:
+            [
+              base_uri: "%env(DC_SIRIUS_URL)%",
+              cookies: true,
+              verify: 0,
+              proxy: "",
+              debug: "false",
+              headers:
+                  Content-Type: multipart-form-data,
+              version: "1.1",
+              timeout: 10,
+              allow_redirects: "true  "
+            ]
 
     # twig extensions
     AppBundle\Twig\AssetsExtension:
@@ -69,7 +94,9 @@ services:
 
     AppBundle\Service\File\Storage\S3Storage:
       arguments:
-        $bucketName: "%env(DC_S3_BUCKET_NAME)%"
+        $s3Client: "@AppBundle\\Service\\S3Client"
+        $localBucketName: "%env(DC_S3_BUCKET_NAME)%"
+        $remoteBucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
 
     AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
     AppBundle\Service\File\Checker\ClamAVChecker: ~
@@ -81,6 +108,7 @@ services:
     AppBundle\Service\File\Types\Pdf: ~
     AppBundle\Service\File\Types\Jpg: ~
     AppBundle\Service\File\Types\Png: ~
+
 
     GuzzleHttp\Client:
       arguments:

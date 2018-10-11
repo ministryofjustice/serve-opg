@@ -17,12 +17,18 @@ class OrderService
     private $em;
 
     /**
+     * @var SiriusService
+     */
+    private $siriusService;
+
+    /**
      * OrderService constructor.
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, SiriusService $siriusService)
     {
         $this->em = $em;
+        $this->siriusService = $siriusService;
     }
 
     public function serve(Order $order)
@@ -30,6 +36,10 @@ class OrderService
         if (!$order->readyToServe()) {
             throw new \RuntimeException("Order not ready to be served");
         }
+
+        // Make API call to Sirius
+        $this->siriusService->serveOrder($order);
+
         $order->setServedAt(new \DateTime());
         $this->em->flush($order);
     }
@@ -61,12 +71,12 @@ class OrderService
      *
      * @return Order
      */
-    public function upsert(Client $client, string $orderClass, \DateTime $issuedAt)
+    public function upsert(Client $client, string $orderClass, \DateTime $madeAt, \DateTime $issuedAt)
     {
         /* @var $order Order */
         $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
         if (!$order) {
-            $order = new $orderClass($client, $issuedAt);
+            $order = new $orderClass($client, $madeAt, $issuedAt);
             $this->em->persist($order);
             $this->em->flush($client);
         }

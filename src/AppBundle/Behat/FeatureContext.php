@@ -16,6 +16,7 @@ class FeatureContext extends MinkContext
     use RegionLinksTrait;
     use FormTrait;
     use DebugTrait;
+    use SiriusTrait;
 
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
@@ -26,11 +27,15 @@ class FeatureContext extends MinkContext
     }
 
     /**
-     * @Then the current version should be shown
+     * @Then the current versions should be shown
      */
-    public function theCurrentVersionIsShown()
+    public function theCurrentVersionsAreShown()
     {
-        $this->assertResponseContains(getenv("APP_VERSION"));
+        $this->assertResponseContains(json_encode([
+            'application' => getenv("APP_VERSION"),
+            'web' => getenv("WEB_VERSION"),
+            'infrastructure' => getenv("INFRA_VERSION")
+        ]));
     }
 
     /**
@@ -60,5 +65,15 @@ class FeatureContext extends MinkContext
         }
     }
 
-
+    /**
+     * @Then sirius should be available
+     **/
+     public function sirusIsAvailable()
+     {
+         $html = $this->getSession()->getPage()->getContent();
+         $htmlDecoded = json_decode($html, true);
+         if ($htmlDecoded['sirius'] == 'unavailable') {
+             throw new \Exception("sirius: ". $htmlDecoded['sirius']);
+         }
+     }
 }

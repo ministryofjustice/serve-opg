@@ -9,7 +9,7 @@ class OrderPf extends Order
      */
     public function getType()
     {
-        return Order::TYPE_PA;
+        return Order::TYPE_PF;
     }
 
     public function getAcceptedDocumentTypes()

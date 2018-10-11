@@ -2,7 +2,7 @@ Feature: deputy
 
   Scenario: HW: add invalid deputy data
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-hw"
+    When I follow "order-93559316-HW"
     Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
     And the url should match "order/\d+/deputy/add"
@@ -14,14 +14,14 @@ Feature: deputy
       | deputy_form_forename |
       | deputy_form_surname  |
     When I fill in the following:
-      | deputy_form_deputyType | pa |
+      | deputy_form_deputyType | PUBLIC_AUTHORITY |
     And I press "deputy_form_saveAndContinue"
     Then the response status code should be 200
     And the following fields should have an error:
       | deputy_form_forename         |
       | deputy_form_surname          |
     When I fill in the following:
-      | deputy_form_deputyType | prof |
+      | deputy_form_deputyType | PROFESSIONAL |
     And I press "deputy_form_saveAndContinue"
     Then the response status code should be 200
     Then the following fields should have an error:
@@ -30,11 +30,11 @@ Feature: deputy
 
   Scenario: HW order: add valid deputy data
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-hw"
+    When I follow "order-93559316-HW"
     When I follow "add-deputy"
       # check form validation
     When I fill in the following:
-      | deputy_form_deputyType           | lay                                         |
+      | deputy_form_deputyType           | LAY                                         |
       | deputy_form_forename             | Dep                                         |
       | deputy_form_surname              | Uty                                         |
       | deputy_form_emailAddress         | behat-12345678-depy1@digital.justice.gov.uk |
@@ -63,11 +63,11 @@ Feature: deputy
 
   Scenario: HW order: edit deputy data
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-hw"
+    When I follow "order-93559316-HW"
     Then I follow "edit-deputy-1"
   # check form validation
     When I fill in the following:
-      | deputy_form_deputyType           | lay                                         |
+      | deputy_form_deputyType           | LAY                                         |
       | deputy_form_forename             | DepE                                         |
       | deputy_form_surname              | UtyE                                          |
       | deputy_form_emailAddress         | behat-12345678-depy1E@digital.justice.gov.uk |
@@ -97,10 +97,10 @@ Feature: deputy
 
   Scenario: HW order: remove deputy
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-hw"
+    When I follow "order-93559316-HW"
     Then I follow "add-deputy"
     When I fill in the following:
-      | deputy_form_deputyType           | lay                                         |
+      | deputy_form_deputyType           | LAY                                         |
       | deputy_form_forename             | Dep2                                         |
       | deputy_form_surname              | Uty2                                         |
       | deputy_form_emailAddress         | behat-12345678-depy2@digital.justice.gov.uk |
@@ -138,7 +138,7 @@ Feature: deputy
     When I follow "add-deputy"
       # check form validation
     When I fill in the following:
-      | deputy_form_deputyType | lay |
+      | deputy_form_deputyType | LAY |
       | deputy_form_forename   | PaDep |
       | deputy_form_surname   | Uty |
     And I press "deputy_form_saveAndContinue"

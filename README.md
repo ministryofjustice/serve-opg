@@ -15,6 +15,8 @@ Software to download and install
 Launch all the following commands from the project directory
 ```bash
 
+git config core.autocrlf true
+
 # Generate self-signed certificate for the local loadbalancer
 ./generate_certs.sh
 
@@ -33,8 +35,12 @@ docker-compose up -d --build loadbalancer
 # --build Build images before starting containers
 # -d Detached mode: Run containers in the background
 
-# Migrate database
+# Migrate database (not needed anymore, as added in the Dockerfile)
 docker-compose run --rm app php app/console doctrine:schema:update --force
+
+# Add sample users and cases (local env only). 
+# See docker-compose.yml app container, DC_FIXURES_USERS variable 
+docker-compose run --rm app php app/console doctrine:fixtures:load --append
 
 # enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
@@ -119,9 +125,9 @@ gulp watch
 #Copy a file into the container
 docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
 
-# Drop schema and recreate (local dev only)
+# Drop the data before schema update (mainl during local development)
 docker-compose run --rm app php app/console doctrine:schema:drop --force
-docker-compose run --rm app php app/console doctrine:schema:update --force
+
 ```
 
 

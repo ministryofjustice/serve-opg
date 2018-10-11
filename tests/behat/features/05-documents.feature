@@ -2,12 +2,12 @@ Feature: documents
 
   Scenario: PA: add documents
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-pa"
+    When I follow "order-93559316-PF"
     Then the url should match "/order/\d+/summary"
 
     # Add COP1A PDF
     When I click on "add-document-cop1a" in the "documents-cop1a-actions" region
-    Then the url should match "/order/\d+/document/cop1a/add"
+    Then the url should match "/order/\d+/document/COP1A/add"
     When I attach the file "test-cop1a.pdf" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
@@ -28,15 +28,15 @@ Feature: documents
     And the order should be unservable
 
     # Add Court order
-    When I click on "add-document-co" in the "documents-co-actions" region
+    When I click on "add-document-court_order" in the "documents-court_order-actions" region
     When I attach the file "test-court-order.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
     And the order should be servable
 
     # Add Other additional document
-    When I click on "add-document-additional" in the "documents-additional" region
-    Then the url should match "/order/\d+/document/additional/add"
+    When I click on "add-document-other" in the "documents-other" region
+    Then the url should match "/order/\d+/document/OTHER/add"
     When I attach the file "test-other.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
@@ -51,7 +51,7 @@ Feature: documents
       | test-cop1c.jpg        | document-cop1c-filename |
       | test-cop3.png         | document-cop3-filename  |
       | test-cop4.pdf         | document-cop4-filename  |
-      | test-court-order.jpg  | document-co-filename |
+      | test-court-order.jpg  | document-court_order-filename |
       | test-other.jpg        | documents-additional-filenames  |
 
     # Remove test-other.jpg
@@ -61,7 +61,7 @@ Feature: documents
 
   Scenario: HW: add COP3, COP4, CO documents
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-hw"
+    When I follow "order-93559316-HW"
     Then the url should match "/order/\d+/summary"
     # Add COP3 PNG
     When I click on "add-document-cop3" in the "documents-cop3-actions" region
@@ -76,14 +76,13 @@ Feature: documents
     Then the form should be valid
     And the order should be unservable
     # Add Court order
-    When I click on "add-document-co" in the "documents-co-actions" region
-    When I attach the file "test-cop1c.jpg" to "document_form_file"
+    When I click on "add-document-court_order" in the "documents-court_order-actions" region
+    When I attach the file "test-court-order.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
     And the order should be servable
-    # Add additional docuiment
-    # Add Other additional document
-    When I click on "add-document-additional" in the "documents-additional" region
+    # Add additional document
+    When I click on "add-document-other" in the "documents-other" region
     When I attach the file "test-other.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
