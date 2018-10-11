@@ -31,12 +31,12 @@ docker-compose run --rm composer
 docker-compose run --rm npm
 
 # Build app
-docker-compose up -d --build loadbalancer
+docker-compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
 # -d Detached mode: Run containers in the background
 
 # Migrate database (not needed anymore, as added in the Dockerfile)
-docker-compose run --rm app php app/console doctrine:schema:update --force
+docker-compose run --rm app php app/console doctrine:schema:update --force --dump-sql
 
 # Add sample users and cases (local env only). 
 # See docker-compose.yml app container, DC_FIXURES_USERS variable 
