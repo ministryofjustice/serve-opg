@@ -18,6 +18,7 @@ Feature: security checks
     Scenario: after 5 attempts to login with the wrong password, I'm locked for 10 minutes
       Given I go to "/logout"
       And I go to "/behat/reset-brute-force-attempts-logger"
+      And the response status code should be 200
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
       Then I should see the "form-errors" region
       When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
@@ -31,6 +32,7 @@ Feature: security checks
       # reset attempts and confirm that the error is now due to erorrs
       When I go to "/logout"
       And I go to "/behat/reset-brute-force-attempts-logger"
+      And the response status code should be 200
       And I log in as "behat@digital.justice.gov.uk" with password "wrong password"
       Then I should not see the "form-locked-error" region
 

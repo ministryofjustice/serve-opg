@@ -155,6 +155,10 @@ class UserProvider implements UserProviderInterface
     public function resetUsernameAttempts($userId)
     {
         $this->storage->resetAttempts($userId);
+
+        if ($this->storage->getAttempts($userId)) {
+            throw new \Exception("Cannot wipe attempts for $userId");
+        }
     }
 
 }

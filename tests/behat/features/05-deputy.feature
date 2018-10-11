@@ -8,7 +8,7 @@ Feature: deputy
     And the url should match "order/\d+/deputy/add"
         # check form validation
     And I fill in the following:
-      | deputy_form_deputyType | lay |
+      | deputy_form_deputyType | LAY |
     And I press "deputy_form_saveAndContinue"
     Then the following fields should have an error:
       | deputy_form_forename |
@@ -134,7 +134,7 @@ Feature: deputy
 
   Scenario: PA order: add one deputy (just type, first and lastname)
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-pa"
+    When I follow "order-12345678-PA"
     When I follow "add-deputy"
       # check form validation
     When I fill in the following:

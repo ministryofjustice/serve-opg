@@ -84,7 +84,7 @@ class BehatController extends Controller
     /**
      * @Route("/behat-user-upsert")
      */
-    public function userReset(Request $request)
+    public function userUpsert(Request $request)
     {
         $this->securityChecks();
 
@@ -107,7 +107,7 @@ class BehatController extends Controller
     /**
      * @Route("/reset-behat-orders")
      */
-    public function indexAction(Request $request)
+    public function resetBehatOrdersAction(Request $request)
     {
         $this->securityChecks();
 
