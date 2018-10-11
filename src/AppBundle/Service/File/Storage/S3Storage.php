@@ -163,7 +163,8 @@ class S3Storage implements StorageInterface
                 yield $s3Client->getCommand('CopyObject', [
                     'Bucket'     => $targetBucket,
                     'Key'        => $document->getStorageReference(),
-                    'CopySource' => urlencode($this->getLocalBucketName() . '/' . $document->getStorageReference())
+                    'CopySource' => urlencode($this->getLocalBucketName() . '/' . $document->getStorageReference()),
+                    'ServerSideEncryption' => 'AES256'
                 ]);
             }
         };
