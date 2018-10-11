@@ -1,13 +1,16 @@
-{% trans_default_domain "error" %}
+{% set showNavigation = false %}
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
-{# displayable exception display the exact message thrown from the controller#}
-{% if exception is defined and exception.code == constant('\\AppBundle\\Exception\\DisplayableException::EXCEPTION_CODE') %}
-    {% set message =  'generic.titleForDisplayableException' | trans({'%message%': exception.message}) | capitalize %}
- {% else %}
-    {% set message = 'generic.title' | trans %}
- {% endif %}
- 
- {% include 'TwigBundle:Exception:template.html.twig' with {
-    message: message,
-    description: 'generic.description' | trans
- } %}
+{% block htmlTitle %}{{ status_text }}{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">{{ status_text }}</h1>
+{% endblock %}
+
+{% block content %}
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+    </p>
+    <p>
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+{% endblock %}
