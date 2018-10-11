@@ -59,6 +59,11 @@ AppBundle\Entity\Deputy:
         type: string
         length: 255
         nullable: true
+      addressTown:
+        column: address_town
+        type: string
+        length: 255
+        nullable: true
       addressCounty:
         column: address_county
         type: string

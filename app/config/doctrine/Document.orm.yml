@@ -10,7 +10,7 @@ AppBundle\Entity\Document:
     fields:
       type:
         type: string
-        length: 50
+        length: 100
         nullable: false
       fileName:
         type: string
@@ -23,7 +23,7 @@ AppBundle\Entity\Document:
         type: string
         length: 255
         nullable: true
-      createdAt:
+        createdAt:
         column: created_at
         type: datetime
         nullable: false
