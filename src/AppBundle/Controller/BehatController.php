@@ -9,9 +9,9 @@ use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use AppBundle\Service\ClientService;
 use AppBundle\Service\OrderService;
+use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,19 +48,27 @@ class BehatController extends Controller
      */
     private $encoder;
 
+
+    /**
+     * @var UserProvider
+     */
+    private $userProvider;
+
     /**
      * BehatController constructor.
      * @param EntityManager $em
      * @param ClientService $clientService
      * @param OrderService $orderService
      * @param UserPasswordEncoderInterface $encoder
+     * @param UserProvider $userProvider
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder)
+    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider)
     {
         $this->em = $em;
         $this->clientService = $clientService;
         $this->orderService = $orderService;
         $this->encoder = $encoder;
+        $this->userProvider = $userProvider;
     }
 
     /**
@@ -76,7 +84,7 @@ class BehatController extends Controller
     /**
      * @Route("/behat-user-upsert")
      */
-    public function userReset(Request $request)
+    public function userUpsert(Request $request)
     {
         $this->securityChecks();
 
@@ -97,11 +105,9 @@ class BehatController extends Controller
     }
 
     /**
-     * //TODO protect from running on production ?
-     *
      * @Route("/reset-behat-orders")
      */
-    public function indexAction(Request $request)
+    public function resetBehatOrdersAction(Request $request)
     {
         $this->securityChecks();
 
@@ -119,8 +125,18 @@ class BehatController extends Controller
     }
 
     /**
-     * //TODO protect from running on production ?
-     *
+     * @Route("/reset-brute-force-attempts-logger")
+     */
+    public function resetBruteForceAction(Request $request)
+    {
+        $this->securityChecks();
+
+        $this->userProvider->resetUsernameAttempts(self::BEHAT_EMAIL);
+
+        return new Response(self::BEHAT_EMAIL ." attempts reset done");
+    }
+
+    /**
      * @Route("/document-list/{orderIdentifier}")
      */
     public function orderDocumentsList(Request $request, $orderIdentifier)

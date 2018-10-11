@@ -15,3 +15,5 @@ var
 web/behat
 **/.DS_Store
 s3
+.dd-*.sh
+
