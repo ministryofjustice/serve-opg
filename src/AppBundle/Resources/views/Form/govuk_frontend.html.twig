@@ -50,7 +50,7 @@
         </legend>
 
         <span id="dob-hint" class="govuk-hint">
-            For example, 31 3 1980
+            {{ 'deputy.dateOfBirth.hint' | trans([], 'forms') }}
         </span>
 
         {{ form_errors(form) }}
@@ -66,7 +66,7 @@
     <div class="govuk-date-input__item">
         <div class="govuk-form-group">
             <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_day">
-                Day
+                {{ 'deputy.dateOfBirth.day' | trans([], 'forms') }}
             </label>
             {{ form_widget(form.day, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-2'} }) }}
         </div>
@@ -74,16 +74,15 @@
     <div class="govuk-date-input__item">
         <div class="govuk-form-group">
             <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_month">
-                Month
+                {{ 'deputy.dateOfBirth.month' | trans([], 'forms') }}
             </label>
-
             {{ form_widget(form.month, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-2'} }) }}
         </div>
     </div>
     <div class="govuk-date-input__item">
         <div class="govuk-form-group">
             <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_year">
-                Year
+                {{ 'deputy.dateOfBirth.year' | trans([], 'forms') }}
             </label>
             {{ form_widget(form.year, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-4'} }) }}
         </div>
@@ -93,7 +92,7 @@
 {% block _deputy_form_addressLine1_row %}
     <p class="debug-label">Custom: addressLine1_row</p>
     <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
-        <label for="addressLine1" class="govuk-label">Building and street <span class="govuk-visually-hidden">line 1 of 2</span></label>
+        <label for="addressLine1" class="govuk-label">{{ 'deputy.addressLine1.label' | trans([], 'forms') }} <span class="govuk-visually-hidden">{{ 'deputy.addressLine1.hidden' | trans([], 'forms') }}</span></label>
         {{ form_errors(form) }}
         {{ form_widget(form) }}
     </div>
@@ -102,7 +101,7 @@
 {% block _deputy_form_addressLine2_row %}
     <p class="debug-label">Custom: addressLine2_row</p>
     <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
-        <label for="addressLine2" class="govuk-label"><span class="govuk-visually-hidden">Building and street line 2 of 2</span></label>
+        <label for="addressLine2" class="govuk-label"><span class="govuk-visually-hidden">{{ 'deputy.addressLine2' | trans([], 'forms') }}</span></label>
         {{ form_errors(form) }}
         {{ form_widget(form) }}
     </div>

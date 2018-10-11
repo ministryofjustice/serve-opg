@@ -17,10 +17,6 @@ order.appointmentType.SOLE: 'Sole'
 order.appointmentType.JOINT: 'Joint'
 order.appointmentType.JOINT_AND_SEVERAL: 'Joint and several'
 
-deputy.type.LAY: 'Lay'
-deputy.type.PUBLIC_AUTHORITY: 'Public authority'
-deputy.type.PROFESSIONAL: 'Professional'
-
 document.type.COP1A: COP 1A
 document.type.COP1C: COP 1C
 document.type.COP3: COP 3
