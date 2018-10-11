@@ -38,13 +38,8 @@ Feature: cases
     And the order should be unservable
 
   Scenario: HW order: set subtype, appointment type
-<<<<<<< HEAD
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
-    When I follow "order-12345678-hw"
-=======
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
->>>>>>> 7eb356fc4858df7f9647be52519934fe5f6e2c08
     # check form validation
     When I fill in the following:
       | order_form_subType                 |  |
