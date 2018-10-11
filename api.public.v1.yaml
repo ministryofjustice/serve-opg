@@ -205,7 +205,7 @@ definitions:
     properties:
       type:
         type: string
-        enum: [COP1A, COP1C, COP3, COP4, COURT_ORDER, OTHER]
+        enum: [COP1A, COP3, COP4, COURT_ORDER, OTHER]
         description: The type of the document supporting the order
       filename:
         type: string
