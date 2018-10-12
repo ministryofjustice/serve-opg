@@ -18,7 +18,6 @@ order.appointmentType.JOINT: 'Joint'
 order.appointmentType.JOINT_AND_SEVERAL: 'Joint and several'
 
 document.type.COP1A: COP 1A
-document.type.COP1C: COP 1C
 document.type.COP3: COP 3
 document.type.COP4: COP 4
 document.type.COURT_ORDER: Court order

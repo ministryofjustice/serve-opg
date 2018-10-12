@@ -58,7 +58,7 @@ Feature: deputy
       | behat-12345678-depy1@digital.justice.gov.uk   | deputy1-emailAddress |
       | 1 November 1999                               | deputy1-dateOfBirth  |
       | lay                                           | deputy1-deputyType   |
-      | Emb house, victoria road, London, London, SW1 | deputy1-address      |
+      | Emb house, victoria road, London, London, London, SW1 | deputy1-address      |
     And the order should be unservable
 
   Scenario: HW order: edit deputy data
@@ -91,7 +91,7 @@ Feature: deputy
       | behat-12345678-depy1E@digital.justice.gov.uk          | deputy1-emailAddress |
       | 1 November 1999                                       | deputy1-dateOfBirth  |
       | lay                                                   | deputy1-deputyType   |
-      | Emb houseE, victoria roadE, LondonE1, LondonE3, SW1 E | deputy1-address      |
+      | Emb houseE, victoria roadE, LondonE1, LondonE2, LondonE3, SW1 E | deputy1-address      |
     And the order should be unservable
 
 
@@ -124,7 +124,7 @@ Feature: deputy
       | behat-12345678-depy2@digital.justice.gov.uk           | deputy2-emailAddress |
       | 1 November 1999                                       | deputy2-dateOfBirth  |
       | lay                                                   | deputy2-deputyType   |
-      | Emb house, victoria road, district, Surrey, SW1 | deputy2-address      |
+      | Emb house, victoria road, district, London, Surrey, SW1 | deputy2-address      |
     Then I follow "delete-deputy-2"
     And I press "confirmation_form_submit"
     Then the response status code should be 200

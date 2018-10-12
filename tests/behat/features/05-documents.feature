@@ -41,19 +41,6 @@ Feature: documents
     And I click on "submit"
     Then the form should be valid
 
-    # Add COP1C JPG (not required)
-    When I click on "add-document-cop1c" in the "documents-cop1c-actions" region
-    When I attach the file "test-cop1c.jpg" to "document_form_file"
-    And I click on "submit"
-    Then the form should be valid
-    And each text should be present in the corresponding region:
-      | test-cop1a.pdf        | document-cop1a-filename |
-      | test-cop1c.jpg        | document-cop1c-filename |
-      | test-cop3.png         | document-cop3-filename  |
-      | test-cop4.pdf         | document-cop4-filename  |
-      | test-court-order.jpg  | document-court_order-filename |
-      | test-other.jpg        | documents-additional-filenames  |
-
     # Remove test-other.jpg
     When I click on "delete-documents-button" in the "documents-additional-actions" region
     Then the url should match "/order/\d+/summary"

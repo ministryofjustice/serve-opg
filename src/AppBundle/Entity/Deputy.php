@@ -504,6 +504,7 @@ class Deputy
             $this->getAddressLine1(),
             $this->getAddressLine2(),
             $this->getAddressLine3(),
+            $this->getAddressTown(),
             $this->getAddressCounty(),
             $this->getAddressPostcode(),
             $this->getAddressCountry()

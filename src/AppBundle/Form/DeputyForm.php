@@ -34,12 +34,14 @@ class DeputyForm extends AbstractType
             ->add('forename', TextType::class, [
                 'label' => 'deputy.forename',
                 'translation_domain' => 'forms',
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('surname', TextType::class, [
                 'label' => 'deputy.surname',
                 'translation_domain' => 'forms',
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('dateOfBirth', BirthdayType::class, [
                 'label' => 'deputy.dateOfBirth.label',
@@ -50,52 +52,60 @@ class DeputyForm extends AbstractType
                     'day' => 'Day','month' => 'Month' , 'year' => 'Year'
                 ),
                 'format' => 'dd-MM-yyyy',
-                'invalid_message' => 'Please enter a valid date of birth'
             ])
             ->add('emailAddress', TextType::class, [
                 'label' => 'deputy.emailAddress',
                 'translation_domain' => 'forms',
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('daytimeContactNumber', TextType::class, [
                 'label' => 'deputy.daytimeContactNumber',
                 'translation_domain' => 'forms',
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('eveningContactNumber', TextType::class, [
                 'label' => 'deputy.eveningContactNumber',
                 'translation_domain' => 'forms',
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('mobileContactNumber', TextType::class, [
                 'label' => 'deputy.mobileContactNumber',
                 'translation_domain' => 'forms',
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine1', TextType::class, [
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine2', TextType::class, [
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine3', TextType::class, [
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressTown', TextType::class, [
                 'label' => 'deputy.addressTown',
                 'translation_domain' => 'forms',
-                'required' => false
+                'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('addressCounty', TextType::class, [
                 'label' => 'deputy.addressCounty',
                 'translation_domain' => 'forms',
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
-//            ->add('addressCountry', TextType::class)
             ->add('addressPostcode', TextType::class, [
                 'label' => 'deputy.addressPostcode',
                 'translation_domain' => 'forms',
                 'required' => false,
+                'attr' => ['maxlength'=> 255]
             ])
             ->add('saveAndContinue', SubmitType::class);
     }
