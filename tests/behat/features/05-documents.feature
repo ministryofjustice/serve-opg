@@ -27,14 +27,6 @@ Feature: documents
     When I attach the file "test-court-order.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
-    And the order should be unservable
-    And the url should match "/order/\d+/summary#documents"
-
-#    Add COP4 because we have a PA deputy to make the order servable
-    When I click on "add-document-cop4" in the "documents-cop4-actions" region
-    When I attach the file "test-cop4.pdf" to "document_form_file"
-    And I click on "submit"
-    Then the form should be valid
     And the order should be servable
     And the url should match "/order/\d+/summary#documents"
 
@@ -63,20 +55,23 @@ Feature: documents
     Then the form should be valid
     And the order should be unservable
     And the url should match "/order/\d+/summary#documents"
-#    # Add COP4 PDF
-#    When I click on "add-document-cop4" in the "documents-cop4-actions" region
-#    When I attach the file "test-cop4.pdf" to "document_form_file"
-#    And I click on "submit"
-#    Then the form should be valid
-#    And the order should be unservable
-#    And the url should match "/order/\d+/summary#documents"
+
     # Add Court order
     When I click on "add-document-court_order" in the "documents-court_order-actions" region
     When I attach the file "test-court-order.jpg" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
-    And the order should be servable
     And the url should match "/order/\d+/summary#documents"
+    And the order should be unservable
+
+    # Add COP4 because we dont have a PA deputy to make the order servable
+    When I click on "add-document-cop4" in the "documents-cop4-actions" region
+    When I attach the file "test-cop4.pdf" to "document_form_file"
+    And I click on "submit"
+    Then the form should be valid
+    And the url should match "/order/\d+/summary#documents"
+    And the order should be servable
+
     # Add additional document
     When I click on "add-document-other" in the "documents-other" region
     When I attach the file "test-other.jpg" to "document_form_file"
