@@ -16,5 +16,3 @@ web/behat
 **/.DS_Store
 s3
 .dd-*.sh
-create_buckets.sh
-
