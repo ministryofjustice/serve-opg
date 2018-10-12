@@ -24,6 +24,9 @@ git config core.autocrlf true
 sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain certs/web.crt
 
+# Generate the S3 buckets for localstack
+./create_buckets.sh
+
 # Vendor php dependencies
 docker-compose run --rm composer
 

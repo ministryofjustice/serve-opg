@@ -10,6 +10,7 @@ jobs:
       - run:
           name: Build Dependencies
           command: |
+            ./create_buckets.sh
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
