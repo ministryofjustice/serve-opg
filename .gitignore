@@ -16,6 +16,3 @@ web/behat
 **/.DS_Store
 s3
 .dd-*.sh
-create_buckets.sh
-s3/s3_api_calls.json   
-
