@@ -1,0 +1,26 @@
+deputy:
+  type:
+    label: Deputy type
+    pleaseSelect: Please select
+    LAY: 'Lay'
+    PUBLIC_AUTHORITY: 'Public authority'
+    PROFESSIONAL: 'Professional'
+  forename: First name
+  surname: Last name
+  dateOfBirth:
+    label: Date of birth
+    hint: For example, 31 3 1980
+    day: Day
+    month: Month
+    year: Year
+  emailAddress: Email address
+  daytimeContactNumber: Daytime contact number
+  eveningContactNumber: Evening contact number
+  mobileContactNumber: Mobile contact number
+  addressLine1:
+    label: Building and street
+    hidden: line 1 of 2
+  addressLine2: Building and street line 2 of 2
+  addressTown: Town or city
+  addressCounty: County
+  addressPostcode: Postcode
