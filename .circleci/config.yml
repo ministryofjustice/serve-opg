@@ -10,6 +10,11 @@ jobs:
       - run:
           name: Build Dependencies
           command: |
+            # Create the s3 buckets
+            # & wait for the server to become available
+            docker-compose up -d localstack && sleep 2
+            ./create_buckets.sh
+
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
