@@ -106,7 +106,7 @@ services:
       - 4569:4569
       - 8080:8080 # http://0.0.0.0:8080 to check deployed buckets and objects
     environment:
-      - SERVICES=s3:4569,dynamodb:8000
+      - SERVICES=s3:4569,dynamodb:8000,secretsmanager:4584
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     volumes:
