@@ -17,6 +17,5 @@ abstract class AbstractControllerTestCase extends WebTestCase
     public function setUp()
     {
         $this->client = static::createClient(['environment' => 'test', 'debug' => true]);
-
     }
 }
