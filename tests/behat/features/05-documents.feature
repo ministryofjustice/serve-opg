@@ -4,6 +4,7 @@ Feature: documents
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-PF"
     Then the url should match "/order/\d+/summary"
+    And I should not see the "documents-cop4-actions" region
 
     # Add COP1A PDF
     When I click on "add-document-cop1a" in the "documents-cop1a-actions" region
@@ -48,6 +49,8 @@ Feature: documents
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I follow "order-93559316-HW"
     Then the url should match "/order/\d+/summary"
+    And I should see the "documents-cop4-actions" region
+
     # Add COP3 PNG
     When I click on "add-document-cop3" in the "documents-cop3-actions" region
     When I attach the file "test-cop3.png" to "document_form_file"
