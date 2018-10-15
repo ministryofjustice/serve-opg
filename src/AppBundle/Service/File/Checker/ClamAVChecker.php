@@ -196,7 +196,6 @@ class ClamAVChecker implements FileCheckerInterface
             $extra += [
             'file_scanner_code' => $response['file_scanner_code'],
             'file_scanner_result' => $response['file_scanner_result'], //could be omitted
-            'file_scanner_message' => $response['file_scanner_message'],
             'file_scanner_message' => $response['file_scanner_message']
             ];
         }
