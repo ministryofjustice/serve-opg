@@ -197,7 +197,7 @@ class S3Storage implements StorageInterface
                 AwsException $reason,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            ) use ($logger, $documents) {
+            ) use ($logger) {
                 $logger->error("Failed to send {$iterKey}: {$reason}\n");
             },
         ]);
