@@ -58,5 +58,4 @@ trait DebugTrait
     {
         die($code);
     }
-
 }

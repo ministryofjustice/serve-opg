@@ -54,7 +54,7 @@ class OrderRepository extends EntityRepository
     {
         if ($filters['type'] == 'pending') {
             $qb->where('o.servedAt IS NULL');
-        } else if ( $filters['type'] == 'served') {
+        } elseif ($filters['type'] == 'served') {
             $qb->where('o.servedAt IS NOT NULL');
         }
 
@@ -63,5 +63,4 @@ class OrderRepository extends EntityRepository
             ->setParameter('cn', $filters['q']);
         }
     }
-
 }

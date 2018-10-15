@@ -43,10 +43,10 @@ class Document
 //     *     groups={"document"}
 //     * )
 
-     /**
-     *
-     * @var UploadedFile
-     */
+    /**
+    *
+    * @var UploadedFile
+    */
     private $file;
 
     /**

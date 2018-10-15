@@ -103,7 +103,6 @@ class SiriusService
             }
 
             $this->logout();
-
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
@@ -119,7 +118,6 @@ class SiriusService
             $this->logger->error('General Exception thrown: ' . $e->getMessage());
             throw $e;
         }
-
     }
 
     /**

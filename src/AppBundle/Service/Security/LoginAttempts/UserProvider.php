@@ -59,7 +59,7 @@ class UserProvider implements UserProviderInterface
     public function usernameLockedForSeconds($username)
     {
         $waits = [];
-        foreach($this->rules as $rule) {
+        foreach ($this->rules as $rule) {
             // fetch all the rules and check if for any of those, the user has to wait
             list($maxAttempts, $timeRange, $waitFor) = $rule;
             if ($waitFor = $this->bruteForceChecker->hasToWait($this->storage->getAttempts($username), $maxAttempts, $timeRange, $waitFor, time())) {
@@ -160,5 +160,4 @@ class UserProvider implements UserProviderInterface
             throw new \Exception("Cannot wipe attempts for $userId");
         }
     }
-
 }

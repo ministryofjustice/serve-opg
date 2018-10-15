@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class Deputy
 {
-
     const DEPUTY_TYPE_LAY = 'LAY';
     const DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
     const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
@@ -122,8 +121,8 @@ class Deputy
 //    ) {
 //        $this->order = $order;
 //        $this->deputyType = $deputyType;
-////        $this->constructPersonalDetails($deputyDetails);
-////        $this->constructAddressDetails($addressDetails);
+    ////        $this->constructPersonalDetails($deputyDetails);
+    ////        $this->constructAddressDetails($addressDetails);
 //
 //
 //    }
@@ -510,6 +509,4 @@ class Deputy
             $this->getAddressCountry()
         ]));
     }
-
-
 }

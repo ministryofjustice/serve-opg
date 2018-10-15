@@ -104,7 +104,6 @@ class DocumentController extends Controller
 
                 return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), '_fragment' => 'documents']);
             } catch (\Exception $e) {
-
                 $errorToErrorTranslationKey = [
                     RiskyFileException::class => 'risky',
                     VirusFoundException::class => 'virusFound',
@@ -144,6 +143,4 @@ class DocumentController extends Controller
 
         return $this->redirectToRoute('order-summary', ['orderId' => $orderId, '_fragment' => 'documents']);
     }
-
-
 }
