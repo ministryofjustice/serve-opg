@@ -12,7 +12,7 @@ class OrderRepository extends EntityRepository
      *
      * @return integer
      */
-    public function getOrdersCount($filters)
+    public function getOrdersCount(array $filters)
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
@@ -48,9 +48,9 @@ class OrderRepository extends EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param aray $filters
+     * @param array $filters
      */
-    private function applyFilters(QueryBuilder $qb, $filters)
+    private function applyFilters(QueryBuilder $qb, array $filters)
     {
         if ($filters['type'] == 'pending') {
             $qb->where('o.servedAt IS NULL');
