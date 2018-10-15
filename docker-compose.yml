@@ -67,7 +67,7 @@ services:
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
-      SIRIUS_PUBLIC_API_EMAIL: publicapi@opgtest.com
+      SIRIUS_PUBLIC_API_EMAIL: foo
       SIRIUS_PUBLIC_API_PASSWORD: Password1
 
       # file scanner

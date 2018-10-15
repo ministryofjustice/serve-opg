@@ -41,7 +41,9 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
-        $sm = $this->secretsManagerClient->describeSecret(["SecretId" => "foo"])["@metadata"]['statusCode'];
+        $sm = $this->secretsManagerClient->describeSecret([
+            "SecretId" => getenv('SIRIUS_PUBLIC_API_EMAIL')
+        ])["@metadata"]['statusCode'];
         $sirius = $this->siriusService->ping();
         return $this->json([
             'sirius' => $sirius,
