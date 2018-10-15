@@ -49,6 +49,11 @@ class SiriusService
     private $cookieJar;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * SiriusService constructor.
      *
      * @param ClientInterface $httpClient Used for Sirius API call
