@@ -7,6 +7,7 @@ use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Document;
 use AppBundle\Entity\OrderPf;
 use AppBundle\Service\File\Storage\S3Storage;
+use Aws\SecretsManager\SecretsManagerClient;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\ClientInterface;
@@ -28,6 +29,7 @@ class SiriusServiceTest extends MockeryTestCase
     private $mockEntityManager;
     private $mockHttpClient;
     private $mockS3Storage;
+    private $mockSecretsManager;
 
     public function setUp()
     {
@@ -35,6 +37,8 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockHttpClient = $this->generateMockHttpClient();
         $this->mockS3Storage = m::mock(S3Storage::class);
         $this->mockLogger = m::mock(LoggerInterface::class);
+        $this->mockSecretsManager = m::mock(SecretsManagerClient::class);
+        $this->mockSecretsManager->shouldReceive('getSecretValue');
         $this->mockLogger->shouldReceive('info','debug','error','warning')->zeroOrMoreTimes()->with(m::type('string'))->andReturn('');
 
         $this->mockHttpClient->shouldReceive('getConfig')->with('base_uri')->andReturn('FAKE-SIRIUS-URL');
@@ -43,7 +47,8 @@ class SiriusServiceTest extends MockeryTestCase
             $this->mockEntityManager,
             $this->mockHttpClient,
             $this->mockS3Storage,
-            $this->mockLogger
+            $this->mockLogger,
+            $this->mockSecretsManager
         );
     }
 
