@@ -10,6 +10,9 @@ jobs:
       - run:
           name: Build Dependencies
           command: |
+            pip install --quiet awscli
+            pyenv rehash
+            
             # Create the s3 buckets
             # & wait for the server to become available
             docker-compose up -d localstack && sleep 2
