@@ -112,7 +112,7 @@ class ClamAVChecker implements FileCheckerInterface
 
                 if ($statusResponse === false) {
                     $this->log(Logger::CRITICAL, 'Scanner response could not be decoded');
-                    throw new \RunTimeException('Unable to contact file scanner');
+                    throw new \RuntimeException('Unable to contact file scanner');
                 }
 
                 sleep(1);
@@ -128,7 +128,7 @@ class ClamAVChecker implements FileCheckerInterface
         } catch (\Exception $e) {
             $this->log(Logger::CRITICAL, 'Scanner exception: ' . $e->getCode() . ' - ' . $e->getMessage());
 
-            throw new \RunTimeException($e);
+            throw new \RuntimeException($e);
         }
     }
 
@@ -196,7 +196,6 @@ class ClamAVChecker implements FileCheckerInterface
             $extra += [
             'file_scanner_code' => $response['file_scanner_code'],
             'file_scanner_result' => $response['file_scanner_result'], //could be omitted
-            'file_scanner_message' => $response['file_scanner_message'],
             'file_scanner_message' => $response['file_scanner_message']
             ];
         }

@@ -80,5 +80,4 @@ trait FormTrait
             $this->assertFieldContains($field, $value);
         }
     }
-
 }

@@ -79,5 +79,4 @@ class DynamoDbTableCreator
         // The static variable is set to avoid unnecessary subsequent "listTable" queries
         self::$tableCreated = true;
     }
-
 }
