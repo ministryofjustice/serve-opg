@@ -45,5 +45,4 @@ if ($frame == 'page') {
       </FRAMESET>
     </HTML>
     <?php
-
 }

@@ -2,6 +2,7 @@
 
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
+
 $isLocal = file_exists(__DIR__ . '/../.enableDevMode');
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
