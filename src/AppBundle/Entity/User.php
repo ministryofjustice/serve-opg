@@ -101,6 +101,4 @@ class User implements UserInterface, EquatableInterface
     {
         // TODO: Implement eraseCredentials() method.
     }
-
-
 }

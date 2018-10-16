@@ -41,6 +41,7 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockSecretsManager->shouldReceive('getSecretValue');
         $this->mockLogger->shouldReceive('info','debug','error','warning')->zeroOrMoreTimes()->with(m::type('string'))->andReturn('');
 
+
         $this->mockHttpClient->shouldReceive('getConfig')->with('base_uri')->andReturn('FAKE-SIRIUS-URL');
 
         $this->sut = new SiriusService(
@@ -70,7 +71,6 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockEntityManager->shouldReceive('flush')->once();
 
         $this->sut->serveOrder($mockOrder);
-
     }
 
     /**

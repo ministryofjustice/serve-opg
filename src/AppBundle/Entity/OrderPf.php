@@ -28,5 +28,4 @@ class OrderPf extends Order
             && !empty($this->getAppointmentType())
             && !empty($this->getHasAssetsAboveThreshold());
     }
-
 }

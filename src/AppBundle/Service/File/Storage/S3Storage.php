@@ -186,7 +186,7 @@ class S3Storage implements StorageInterface
                 ResultInterface $result,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            )  use ($logger, $documentsIterator) {
+            ) use ($logger, $documentsIterator) {
 
                 // update current document being processed with new location
                 $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
@@ -197,7 +197,7 @@ class S3Storage implements StorageInterface
                 AwsException $reason,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            ) use ($logger, $documents) {
+            ) use ($logger) {
                 $logger->error("Failed to send {$iterKey}: {$reason}\n");
             },
         ]);
@@ -208,7 +208,7 @@ class S3Storage implements StorageInterface
         // Force the pool to complete synchronously
         $promise->wait();
 
-        $promise->then(function() use ($logger) {
+        $promise->then(function () use ($logger) {
             $logger->info("Transfer complete");
         });
 

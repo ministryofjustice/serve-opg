@@ -65,22 +65,20 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
     {
         $this->tableCreator->createHashTableIfNotExisting();
 
-        return parent::write($id, $data, $isChanged); 
+        return parent::write($id, $data, $isChanged);
     }
 
     public function delete($id)
     {
         $this->tableCreator->createHashTableIfNotExisting();
 
-        return parent::delete($id); 
+        return parent::delete($id);
     }
 
     public function deleteExpired()
     {
         $this->tableCreator->createHashTableIfNotExisting();
 
-        parent::deleteExpired(); 
+        parent::deleteExpired();
     }
-
-
 }

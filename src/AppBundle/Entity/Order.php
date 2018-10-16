@@ -129,7 +129,6 @@ abstract class Order
         $this->documents = new ArrayCollection();
 
         $client->addOrder($this);
-
     }
 
     /**
@@ -313,7 +312,7 @@ abstract class Order
      */
     public function getDocumentsByType($type)
     {
-        return $this->documents->filter(function($doc) use ($type) {
+        return $this->documents->filter(function ($doc) use ($type) {
             return $doc->getType() == $type;
         });
     }
@@ -353,7 +352,7 @@ abstract class Order
     public function getDeputyById($deputyId)
     {
         $result = $this->getDeputies()->filter(
-            function(Deputy $deputy) use ($deputyId) {
+            function (Deputy $deputy) use ($deputyId) {
                 return $deputy->getId() == $deputyId;
             }
         );

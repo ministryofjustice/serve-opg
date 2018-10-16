@@ -21,5 +21,4 @@ interface AttemptsStorageInterface
      * @param string $userId
      */
     public function resetAttempts($userId);
-
 }
