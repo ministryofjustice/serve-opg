@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\PasswordResetForm;
 use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,6 +42,39 @@ class UserController extends Controller
             'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
                 ? $up->usernameLockedForSeconds($username)
                 : false
+        ));
+    }
+
+    /**
+     * @Route("/password-reset/request", name="password-reset-request")
+     */
+    public function passwordResetRequest(Request $request)
+    {
+        $form = $this->createForm(PasswordResetForm::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // find user
+            // token
+            // generate token
+            // click and reset
+
+
+            return $this->redirectToRoute('password-reset-sent');
+        }
+
+        return $this->render('AppBundle:User:password-reset-request.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/password-reset/sent", name="password-reset-sent")
+     */
+    public function passwordResetSent(Request $request)
+    {
+        return $this->render('AppBundle:User:password-reset-sent.html.twig', array(
         ));
     }
 
