@@ -102,9 +102,8 @@ class DocumentController extends Controller
                    $request->getSession()->getFlashBag()->add('notification', 'File could not be uploaded');
                 }
 
-                return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+                return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), '_fragment' => 'documents']);
             } catch (\Exception $e) {
-
                 $errorToErrorTranslationKey = [
                     RiskyFileException::class => 'risky',
                     VirusFoundException::class => 'virusFound',
@@ -142,8 +141,6 @@ class DocumentController extends Controller
             $this->addFlash('error', 'Document could not be removed.');
         }
 
-        return $this->redirectToRoute('order-summary', ['orderId' => $orderId]);
+        return $this->redirectToRoute('order-summary', ['orderId' => $orderId, '_fragment' => 'documents']);
     }
-
-
 }

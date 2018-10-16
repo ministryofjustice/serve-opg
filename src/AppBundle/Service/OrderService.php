@@ -100,13 +100,14 @@ class OrderService
         foreach ($order->getDocuments() as $document) {
             $this->em->remove($document);
         }
+        $this->em->flush();
+
         $order
             ->setServedAt(null)
             ->setSubType(null)
             ->setHasAssetsAboveThreshold(null)
             ->setAppointmentType(null);
 
-        $this->em->flush();
+        $this->em->flush($order);
     }
-
 }

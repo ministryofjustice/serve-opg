@@ -29,5 +29,4 @@ class ManageControllerTest extends AbstractControllerTestCase
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
-
 }

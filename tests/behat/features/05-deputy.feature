@@ -46,7 +46,6 @@ Feature: deputy
       | deputy_form_mobileContactNumber  | +447933333333                               |
       | deputy_form_addressLine1         | Emb house                                   |
       | deputy_form_addressLine2         | victoria road                               |
-      | deputy_form_addressLine3         | London                                      |
       | deputy_form_addressTown          | London                                      |
       | deputy_form_addressCounty        | London                                      |
       | deputy_form_addressPostcode      | SW1                                         |
@@ -79,7 +78,6 @@ Feature: deputy
       | deputy_form_mobileContactNumber  | +447933333339                               |
       | deputy_form_addressLine1         | Emb houseE                                  |
       | deputy_form_addressLine2         | victoria roadE                               |
-      | deputy_form_addressLine3         | LondonE1                                      |
       | deputy_form_addressTown          | LondonE2                                      |
       | deputy_form_addressCounty        | LondonE3                                      |
       | deputy_form_addressPostcode      | SW1 E                                         |
@@ -91,7 +89,7 @@ Feature: deputy
       | behat-12345678-depy1E@digital.justice.gov.uk          | deputy1-emailAddress |
       | 1 November 1999                                       | deputy1-dateOfBirth  |
       | lay                                                   | deputy1-deputyType   |
-      | Emb houseE, victoria roadE, LondonE1, LondonE3, SW1 E | deputy1-address      |
+      | Emb houseE, victoria roadE, LondonE2, LondonE3, SW1 E | deputy1-address      |
     And the order should be unservable
 
 
@@ -112,7 +110,6 @@ Feature: deputy
       | deputy_form_mobileContactNumber  | +447933333333                               |
       | deputy_form_addressLine1         | Emb house                                   |
       | deputy_form_addressLine2         | victoria road                               |
-      | deputy_form_addressLine3         | District                                      |
       | deputy_form_addressTown          | London                                      |
       | deputy_form_addressCounty        | Surrey                                      |
       | deputy_form_addressPostcode      | SW1                                         |
@@ -124,7 +121,7 @@ Feature: deputy
       | behat-12345678-depy2@digital.justice.gov.uk           | deputy2-emailAddress |
       | 1 November 1999                                       | deputy2-dateOfBirth  |
       | lay                                                   | deputy2-deputyType   |
-      | Emb house, victoria road, district, Surrey, SW1 | deputy2-address      |
+      | Emb house, victoria road, London, Surrey, SW1           | deputy2-address      |
     Then I follow "delete-deputy-2"
     And I press "confirmation_form_submit"
     Then the response status code should be 200

@@ -31,39 +31,40 @@
 
     {# TODO: Cookie banner should be here. Look at app-cookie-banner on GDS #}
 
-    {% block header %}
-        <header class="govuk-header" role="banner" data-module="header">
-            <div class="govuk-header__container govuk-width-container">
+    <header class="govuk-header" role="banner" data-module="header">
+        <div class="govuk-header__container govuk-width-container">
 
-                <div class="govuk-header__content">
+            <div class="govuk-header__content">
 
-                    <a href="/" class="govuk-header__link govuk-header__link--service-name">DigiCop</a>
+                <a href="/" class="govuk-header__link govuk-header__link--service-name">DigiCop</a>
 
-                    <button role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
-                    <nav>
-                        <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
-                            {% set currentRoute = app.request.attributes.get('_route') %}
-                            {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-                                <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
-                                    <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
-                                </li>
-                            {% else %}
-                                <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
-                                    <a class="govuk-header__link" href="{{ path('case-list') }}">Cases</a>
-                                </li>
-                                <li class="govuk-header__navigation-item {{ currentRoute =='upload-csv' ? 'govuk-header__navigation-item--active' : '' }}">
-                                    <a class="govuk-header__link" href="{{ path('upload-csv') }}">Upload cases</a>
-                                </li>
-                                <li class="govuk-header__navigation-item">
-                                    <a class="govuk-header__link" href="/logout">Sign out</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                </div>
+                <button role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
+                <nav>
+                    <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
+                    {% block navLinks %}
+                        {% set currentRoute = app.request.attributes.get('_route') %}
+                        {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
+                            </li>
+                        {% else %}
+                            <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('case-list') }}">Cases</a>
+                            </li>
+                            <li class="govuk-header__navigation-item {{ currentRoute =='upload-csv' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('upload-csv') }}">Upload cases</a>
+                            </li>
+                            <li class="govuk-header__navigation-item">
+                                <a class="govuk-header__link" href="/logout">Sign out</a>
+                            </li>
+                        {% endif %}
+                     {% endblock %}
+                    </ul>
+                </nav>
+
             </div>
-        </header>
-    {% endblock %}
+        </div>
+    </header>
 
     {% block main %}
         <div class="govuk-width-container">
@@ -75,35 +76,17 @@
             <main class="govuk-main-wrapper" id="main-content" role="main">
                 {% block validationSummary %}{% endblock %}
 
-                {% block notification %}
-                    {% for flashMessage in app.session.flashbag.get('notification') %}
-                        {{ macro.notification('notification', flashMessage)  }}
+                {% for notificationType in [
+                    'notification',
+                    'info',
+                    'success',
+                    'error',
+                    'important'
+                ] %}
+                    {% for flashMessage in app.session.flashbag.get(notificationType) %}
+                        {{ macro.notification(notificationType, flashMessage) }}
                     {% endfor %}
-                {% endblock %}
-
-                {% block info %}
-                    {% for flashMessage in app.session.flashbag.get('info') %}
-                        {{ macro.notification('info', flashMessage)  }}
-                    {% endfor %}
-                {% endblock %}
-
-                {% block success %}
-                    {% for flashMessage in app.session.flashbag.get('success') %}
-                        {{ macro.notification('success', flashMessage)  }}
-                    {% endfor %}
-                {% endblock %}
-
-                {% block errors %}
-                    {% for flashMessage in app.session.flashbag.get('error') %}
-                        {{ macro.notification('error', flashMessage)  }}
-                    {% endfor %}
-                {% endblock %}
-
-                {% block important %}
-                    {% for flashMessage in app.session.flashbag.get('important') %}
-                        {{ macro.notification('important', flashMessage)  }}
-                    {% endfor %}
-                {% endblock %}
+                {% endfor %}
 
                 {% block pageTitle %}{% endblock %}
                 {% block content %}{% endblock %}

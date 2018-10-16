@@ -35,5 +35,4 @@ trait SiriusTrait
 
         return $this->getSession()->getPage()->getContent();
     }
-
 }

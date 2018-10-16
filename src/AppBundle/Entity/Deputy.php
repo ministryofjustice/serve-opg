@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class Deputy
 {
-
     const DEPUTY_TYPE_LAY = 'LAY';
     const DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
     const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
@@ -101,66 +100,14 @@ class Deputy
      */
     private $addressCountry;
 
-
     /**
      * Deputy constructor.
      * @param Order $order
-     * @param null $orderType
-     * @param null $deputyType
-     * @param array $deputyDetails
-     * @param array $addressDetails
-     * @param null $deputyAnswerQ2_6
-     * @param null $deputyS4Response
      */
-//    public function __construct(
-//        Order $order,
-//        $deputyType = null,
-//        $deputyDetails = [],
-//        $addressDetails = [],
-//        $deputyAnswerQ2_6 = null,
-//        $deputyS4Response    = null
-//    ) {
-//        $this->order = $order;
-//        $this->deputyType = $deputyType;
-////        $this->constructPersonalDetails($deputyDetails);
-////        $this->constructAddressDetails($addressDetails);
-//
-//
-//    }
-
-    /**
-     * Assign personal details to deputy object
-     *
-     * @param $personalDetails
-     */
-//    private function constructPersonalDetails($deputyDetails) {
-//        if (!empty($deputyDetails)) {
-//            if (isset($deputyDetails['organisationName'])) {
-//                $this->organisationName = $deputyDetails['organisationName'];
-//            }
-//            $this->forename = $deputyDetails['forename'];
-//            $this->surname = $deputyDetails['surname'];
-//            $this->emailAddress = $deputyDetails['emailAddress'];
-//            $this->contactNumber = $deputyDetails['contactNumber'];
-//        }
-//    }
-
-    /**
-     * Assign address details to deputy object
-     *
-     * @param $addressDetails
-     */
-//    private function constructAddressDetails($addressDetails) {
-//        if (!empty($addressDetails)) {
-//            $this->addressLine1 = $addressDetails['addressLine1'];
-//            $this->addressLine2 = $addressDetails['addressLine2'];
-//            $this->addressLine3 = $addressDetails['addressLine3'];
-//            $this->addressTown = $addressDetails['addressTown'];
-//            $this->addressCounty = $addressDetails['addressCounty'];
-//            $this->addressPostcode = $addressDetails['addressPostcode'];
-//            $this->addressCountry = $addressDetails['addressCountry'];
-//        }
-//    }
+    public function __construct(Order $order)
+    {
+        $this->order = $order;
+    }
 
     /**
      * @return int|null
@@ -504,11 +451,10 @@ class Deputy
             $this->getAddressLine1(),
             $this->getAddressLine2(),
             $this->getAddressLine3(),
+            $this->getAddressTown(),
             $this->getAddressCounty(),
             $this->getAddressPostcode(),
             $this->getAddressCountry()
         ]));
     }
-
-
 }

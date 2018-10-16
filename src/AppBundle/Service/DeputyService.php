@@ -60,6 +60,4 @@ class DeputyService
 //        $this->em->flush();
 //
 //    }
-
-
 }
