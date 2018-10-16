@@ -39,6 +39,7 @@ jobs:
             ./generate_certs.sh
             docker-compose up --build -d loadbalancer
             docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug
+            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
             docker-compose run --rm app php app/console doctrine:fixtures:load --append
             docker-compose run --rm behat
 
