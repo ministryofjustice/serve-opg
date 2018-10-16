@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 abstract class Order
 {
@@ -149,6 +150,31 @@ abstract class Order
         }
 
         return true;
+    }
+
+    /**
+     * Has at least one deputy by type
+     *
+     * @param $deputyType
+     * @return int|void
+     */
+    protected function hasDeputyByType($deputyType)
+    {
+        return $this->getDeputiesByType($deputyType)->count();
+    }
+
+    /**
+     * Returns a list of deputies by type
+     *
+     * @param $deputyType
+     * @return ArrayCollection|\Doctrine\Common\Collections\Collection|static
+     */
+    public function getDeputiesByType($deputyType)
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('deputyType', $deputyType));
+
+        return $this->getDeputies()->matching($criteria);
     }
 
     /**

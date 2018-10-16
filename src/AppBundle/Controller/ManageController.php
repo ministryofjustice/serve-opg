@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Service\SiriusService;
+use Aws\SecretsManager\SecretsManagerClient;
 
 /**
  * @Route("/manage")
@@ -29,11 +30,13 @@ class ManageController extends Controller
      * ManageController constructor.
      * @param EntityManager $em
      * @param SiriusService $siriusService
+     * @param SecretsManagerClient $secretsManagerClient
      */
-    public function __construct(EntityManager $em, SiriusService $siriusService)
+    public function __construct(EntityManager $em, SiriusService $siriusService, SecretsManagerClient $secretsManagerClient)
     {
         $this->em = $em;
         $this->siriusService = $siriusService;
+        $this->secretsManagerClient = $secretsManagerClient;
     }
 
     /**
@@ -43,8 +46,14 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
-        $status = $this->siriusService->ping();
-        return $this->json(['sirius' => $status]);
+        $sm = $this->secretsManagerClient->describeSecret([
+            "SecretId" => getenv('SIRIUS_PUBLIC_API_EMAIL')
+        ])["@metadata"]['statusCode'];
+        $sirius = $this->siriusService->ping();
+        return $this->json([
+            'sirius' => $sirius,
+            'sm' => $sm
+        ]);
     }
 
     /**

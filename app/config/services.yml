@@ -24,13 +24,8 @@ services:
     AppBundle\Service\DeputyService: ~
     AppBundle\Service\DocumentService: ~
     AppBundle\Service\SiriusService:
-        arguments:
-            [
-              "@doctrine.orm.entity_manager",
-              "@AppBundle\\Service\\SiriusClient",
-              "@AppBundle\\Service\\File\\Storage\\S3Storage",
-              "@logger"
-            ]
+      arguments:
+        $httpClient: "@AppBundle\\Service\\SiriusClient"
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient
@@ -58,6 +53,13 @@ services:
       tags:
       - { name: twig.extension }
 
+    Aws\SecretsManager\SecretsManagerClient:
+      class: Aws\SecretsManager\SecretsManagerClient
+      arguments:
+        - region: 'eu-west-1'
+          version: 'latest'
+          validate: true
+          endpoint: "%env(SM_ENDPOINT)%"
 
     # Dynamo Db (session) config
     Aws\DynamoDb\DynamoDbClient:
