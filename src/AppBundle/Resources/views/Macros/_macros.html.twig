@@ -19,3 +19,28 @@
         </div>
     {% endif %}
 {% endmacro %}
+
+{% macro notification(alertType, message) %}
+<div class="push--top behat-region-flash">
+    <div class="govuk-alert {{ alertType is defined ? 'govuk-alert--' ~ alertType }}">
+        {% if alertType is defined %}
+        <span class="govuk-icon govuk-icon--{{ alertType }}"></span>
+        {% endif %}
+        <div class="govuk-alert__message">
+            {% if message is iterable %}
+                <h2 class="govuk-heading-s">{{ message.title | trans }}</h2>
+                <p>
+                    {{ message.caseNumber is defined ? 'order.caseNumber' | trans({'%caseNumber%': message.caseNumber}) }}
+                    {{ (message.caseNumber is defined and message.clientName is defined) ? '<br/>'}}
+                    {{ message.clientName is defined ? 'order.clientName' | trans({'%clientName%': message.clientName})}}
+                </p>
+                {% if message.body is defined %}
+                    <p>{{ message.body | trans }}</p>
+                {% endif %}
+            {%  else %}
+                <p>{{ message | trans }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}

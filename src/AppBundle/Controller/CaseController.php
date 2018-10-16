@@ -54,8 +54,8 @@ class CaseController extends Controller
             'orders' => $this->orderRepo->getOrders($filters, $limit),
             'filters' => $filters,
             'counts' => [
-                'pending' => $this->orderRepo->getOrdersCount(['type'=>'pending'] + $filters),
-                'served' => $this->orderRepo->getOrdersCount(['type'=>'served'] + $filters),
+                'pending' => $this->orderRepo->getOrdersCount(['type' => 'pending'] + $filters),
+                'served' => $this->orderRepo->getOrdersCount(['type' => 'served'] + $filters),
             ]
         ]);
     }
