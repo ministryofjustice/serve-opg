@@ -17,7 +17,9 @@ jobs:
             # & wait for the server to become available
             docker-compose up -d localstack
             docker-compose run --rm waitforit -address=http://localstack:4569 -debug
-            ./create_buckets.sh
+            docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
+            docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
+            docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name foo --secret-string bar
 
             # Vendor php dependencies
             docker-compose run --rm composer
