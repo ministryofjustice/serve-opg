@@ -9,7 +9,7 @@ Software to download and install
 -   [docker](https://docs.docker.com/install/)
 -   [docker-compose](https://docs.docker.com/compose/install/)
 -   [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [aws client](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+-   [aws client](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
 # Usage
 ## Build
