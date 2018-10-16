@@ -17,14 +17,11 @@ order.appointmentType.SOLE: 'Sole'
 order.appointmentType.JOINT: 'Joint'
 order.appointmentType.JOINT_AND_SEVERAL: 'Joint and several'
 
-order.served: 'Order served to OPG'
-
-deputy.type.LAY: 'Lay'
-deputy.type.PUBLIC_AUTHORITY: 'Public authority'
-deputy.type.PROFESSIONAL: 'Professional'
+order.caseNumber: 'Order number: %caseNumber%'
+order.clientName: 'Client: %clientName%'
+order.served.title: 'Order served to OPG'
 
 document.type.COP1A: COP 1A
-document.type.COP1C: COP 1C
 document.type.COP3: COP 3
 document.type.COP4: COP 4
 document.type.COURT_ORDER: Court order

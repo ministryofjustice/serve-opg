@@ -20,24 +20,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro notification(alertType,message) %}
-
-    {% set type = 'notification' %}
-
-    {% if alertType is defined %}
-        {% if alertType == 'success' %}
-            {% set type = 'success' %}
-        {% elseif alertType == 'error' %}
-            {% set type = 'error' %}
-        {% elseif alertType == 'info' %}
-            {% set type = 'info' %}
-        {% elseif alertType == 'important' %}
-            {% set type = 'important' %}
-        {% elseif alertType == 'loader' %}
-            {% set type = 'loader' %}
-        {% endif %}
-    {% endif %}
-
+{% macro notification(alertType, message) %}
 <div class="push--top behat-region-flash">
     <div class="govuk-alert {{ alertType is defined ? 'govuk-alert--' ~ alertType }}">
         {% if alertType is defined %}
@@ -45,10 +28,17 @@
         {% endif %}
         <div class="govuk-alert__message">
             {% if message is iterable %}
-                <h2 class="govuk-heading-s">{{ message.title }}</h2>
-                <p>{{ message.body | raw }}</p>
+                <h2 class="govuk-heading-s">{{ message.title | trans }}</h2>
+                <p>
+                    {{ message.caseNumber is defined ? 'order.caseNumber' | trans({'%caseNumber%': message.caseNumber}) }}
+                    {{ (message.caseNumber is defined and message.clientName is defined) ? '<br/>'}}
+                    {{ message.clientName is defined ? 'order.clientName' | trans({'%clientName%': message.clientName})}}
+                </p>
+                {% if message.body is defined %}
+                    <p>{{ message.body | trans }}</p>
+                {% endif %}
             {%  else %}
-                <p>{{ message | raw }}</p>
+                <p>{{ message | trans }}</p>
             {% endif %}
         </div>
     </div>
