@@ -9,6 +9,7 @@ Software to download and install
 -   [docker](https://docs.docker.com/install/)
 -   [docker-compose](https://docs.docker.com/compose/install/)
 -   [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [aws client](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
 # Usage
 ## Build
@@ -24,7 +25,7 @@ git config core.autocrlf true
 sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain certs/web.crt
 
-# Generate the S3 buckets for localstack
+# Generate the S3 buckets for localstack (needs aws client, see prerequisites)
 ./create_buckets.sh
 
 # Vendor php dependencies
