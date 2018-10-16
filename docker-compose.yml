@@ -2,6 +2,16 @@
 version: '3'
 
 services:
+  aws:
+    image: infrastructureascode/aws-cli
+    environment:
+      AWS_ACCESS_KEY_ID: foo
+      AWS_SECRET_ACCESS_KEY: bar
+    entrypoint:
+      - aws
+    depends_on:
+      - localstack
+
   loadbalancer:
     image: jwilder/nginx-proxy
     ports:
