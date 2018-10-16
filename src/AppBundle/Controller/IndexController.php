@@ -25,5 +25,4 @@ class IndexController extends Controller
         return $this->render('AppBundle:Index:design.html.twig', [
         ]);
     }
-
 }

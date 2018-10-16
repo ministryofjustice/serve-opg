@@ -81,6 +81,4 @@ class FeatureContext extends MinkContext
         $this->assertResponseNotContains("\"$service\":$status");
         $this->assertResponseNotContains("\"$service\":\"$status\"");
     }
-
-
 }

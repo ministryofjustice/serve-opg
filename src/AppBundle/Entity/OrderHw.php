@@ -26,5 +26,4 @@ class OrderHw extends Order
         return !empty($this->getSubType())
             && !empty($this->getAppointmentType());
     }
-
 }

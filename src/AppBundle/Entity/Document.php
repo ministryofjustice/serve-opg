@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Document
@@ -43,10 +44,10 @@ class Document
 //     *     groups={"document"}
 //     * )
 
-     /**
-     *
-     * @var UploadedFile
-     */
+    /**
+    *
+    * @var UploadedFile
+    */
     private $file;
 
     /**

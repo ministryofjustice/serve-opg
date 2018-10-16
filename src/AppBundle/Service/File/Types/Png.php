@@ -15,7 +15,7 @@ class Png extends UploadableFile
         PngChecker $fileChecker,
         LoggerInterface $logger
     ) {
-        $this->logger = $logger;
+        parent::__construct($logger);
         $this->fileCheckers = [$virusChecker, $fileChecker];
     }
 }

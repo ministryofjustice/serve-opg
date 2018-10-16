@@ -12,7 +12,6 @@ class IndexControllerTest extends AbstractControllerTestCase
     {
         $this->client->request('GET', '/');
 
-        $this->assertEquals(302 , $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
     }
-
 }
