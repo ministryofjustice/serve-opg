@@ -23,6 +23,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use AppBundle\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
+use Aws\SecretsManager\SecretsManagerClient;
 
 class SiriusService
 {
@@ -63,12 +64,14 @@ class SiriusService
         EntityManager $em,
         ClientInterface $httpClient,
         StorageInterface $S3storage,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        SecretsManagerClient $secretsManagerClient
     ) {
         $this->em = $em;
         $this->httpClient = $httpClient;
         $this->S3Storage = $S3storage;
         $this->logger = $logger;
+        $this->secretsManagerClient = $secretsManagerClient;
     }
 
     public function serveOrder(Order $order)
@@ -143,10 +146,14 @@ class SiriusService
      */
     private function login()
     {
+        $password = $this->secretsManagerClient->getSecretValue([
+            "SecretId" => getenv('SIRIUS_PUBLIC_API_EMAIL')
+        ])['SecretString'];
+
         $params = [
             'form_params' => [
                 'email'    => getenv('SIRIUS_PUBLIC_API_EMAIL'),
-                'password' => getenv('SIRIUS_PUBLIC_API_PASSWORD'),
+                'password' => $password,
             ],
             'cookies' => $this->cookieJar
         ];
