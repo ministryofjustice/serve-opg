@@ -8,6 +8,11 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 class User implements UserInterface, EquatableInterface
 {
     /**
+     * @var string
+     */
+    const REFRESH_TOKEN_IF_OLDER_THAN = '48 hours ago';
+
+    /**
      * @var int
      */
     private $id;
@@ -21,6 +26,16 @@ class User implements UserInterface, EquatableInterface
      * @var string
      */
     private $password;
+
+    /**
+     * @var \DateTime|null
+     */
+    private $activationTokenCreatedAt;
+
+    /**
+     * @var string
+     */
+    private $activationToken;
 
     /**
      * User constructor.
@@ -101,4 +116,39 @@ class User implements UserInterface, EquatableInterface
     {
         // TODO: Implement eraseCredentials() method.
     }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getActivationTokenCreatedAt()
+    {
+        return $this->activationTokenCreatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivationToken(): string
+    {
+        return $this->activationToken;
+    }
+
+    /**
+     * @param string $activationToken
+     */
+    public function setActivationToken(string $activationToken): void
+    {
+        $this->activationToken = $activationToken;
+        $this->activationTokenCreatedAt = new \DateTime();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTokenValid()
+    {
+        $tokenValidFrom = new \DateTime(self::REFRESH_TOKEN_IF_OLDER_THAN);
+        return $this->getActivationTokenCreatedAt() && $this->getActivationTokenCreatedAt() >= $tokenValidFrom;
+    }
+
 }
