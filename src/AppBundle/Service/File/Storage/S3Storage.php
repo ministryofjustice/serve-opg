@@ -165,7 +165,8 @@ class S3Storage implements StorageInterface
                     'Key'        => $document->getStorageReference(),
                     'CopySource' => urlencode($this->getLocalBucketName() . '/' . $document->getStorageReference()),
                     'SSEKMSKeyId' => getenv('SIRIUS_KMS_KEY_ARN'),
-                    'ServerSideEncryption' => 'aws:kms'
+                    'ServerSideEncryption' => 'aws:kms',
+                    'ACL' => 'bucket-owner-full-control'
                 ]);
             }
         };
