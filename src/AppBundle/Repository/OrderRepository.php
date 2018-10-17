@@ -35,11 +35,31 @@ class OrderRepository extends EntityRepository
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
-            ->select('o,c')
+            ->select("o, c")
+            ->select("
+                (
+                    CASE WHEN (o.servedAt IS NULL) THEN 
+                        (CAST(CONCAT(to_char(issued_at, 'YYYYMMDD')) AS INTEGER))
+                    ELSE 
+                        (CAST(CONCAT('-', to_char(served_at, 'YYYYMMDD')) AS INTEGER))
+                    END
+                ) AS custom_ordering
+            ")
             ->leftJoin('o.client', 'c')
             ->setMaxResults($maxResults)
-            ->orderBy('o.issuedAt', 'DESC')
-        ;
+            ->orderBy('o.custom_ordering', 'ASC');
+
+
+//        SELECT o.id AS order_id, c.id AS client_id, o.issued_at, o.served_at,
+//                (CASE
+//                    WHEN (o.served_at IS NULL) THEN
+//                        CAST(CONCAT(to_char(issued_at, 'YYYYMMDD')) AS INTEGER)
+//                    ELSE
+//                        CAST(CONCAT('-', to_char(served_at, 'YYYYMMDD')) AS INTEGER)
+//                 END
+//                ) as custom_ordering
+//                 FROM dc_order o, client c where o.client_id = c.id
+//                 ORDER BY custom_ordering ASC');
 
         $this->applyFilters($qb, $filters);
 
