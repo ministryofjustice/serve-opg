@@ -75,6 +75,11 @@ services:
       DC_FILE_SCANNER_SSL_VERIFY: 1
       DC_BEHAT_CONTROLLER_ENABLED: 1
 
+      # email sender
+      DC_MAILER_SENDER: "digicop@digital.justice.gov.uk"
+      DC_MAILER_HOST: localhost
+      DC_MAILER_PORT: 25
+
       # fixtures
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234

@@ -27,6 +27,24 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
 
+    Swift_Transport:
+      class: Swift_SmtpTransport
+      arguments: [ "%env(DC_MAILER_HOST)", "%env(DC_MAILER_PORT)" ]
+      calls:
+        - [ setEncryption, [ "tls"]]
+        #- [ setUsername, [ "%smtp_default_user%"]]
+        #- [ setPassword, [ "%smtp_default_password%"]]
+
+    Swift_Mailer:
+      class: Swift_Mailer
+#    Swift_Transport:
+#      class: Swift_SmtpTransport
+
+    AppBundle\Service\MailService:
+      arguments:
+        $fromEmail: "%env(DC_MAILER_SENDER)%"
+        $fromName: "Digicop"
+
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient
         arguments:
