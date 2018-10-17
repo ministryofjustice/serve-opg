@@ -26,7 +26,7 @@ AppBundle\Entity\Document:
       createdAt:
         column: created_at
         type: datetime
-        nullable: false
+        nullable: true
     manyToOne:
       order:
         targetEntity: Order
