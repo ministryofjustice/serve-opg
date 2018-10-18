@@ -15,9 +15,9 @@ class OrderHw extends Order
     public function getAcceptedDocumentTypes()
     {
         return [
+            Document::TYPE_COURT_ORDER => true,
             Document::TYPE_COP3 => true,
             Document::TYPE_COP4 => true,
-            Document::TYPE_COURT_ORDER => true,
         ];
     }
 

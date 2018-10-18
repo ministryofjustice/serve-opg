@@ -15,6 +15,7 @@ class OrderPf extends Order
     public function getAcceptedDocumentTypes()
     {
         $requiredDocs = [
+            Document::TYPE_COURT_ORDER => true,
             Document::TYPE_COP1A => true,
             Document::TYPE_COP3 => true
         ];
@@ -24,8 +25,6 @@ class OrderPf extends Order
         {
             $requiredDocs[Document::TYPE_COP4] = true;
         }
-
-        $requiredDocs[Document::TYPE_COURT_ORDER] = true;
 
         return $requiredDocs;
     }

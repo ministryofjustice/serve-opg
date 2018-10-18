@@ -36,6 +36,11 @@ class OrderRepository extends EntityRepository
         $config = $this->_em->getConfiguration();
         $config->addCustomNumericFunction('CAST', 'Common\Query\Cast');
 
+        /**
+         * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
+         * Negative dates as a integer result in a custom ordering field allow different ordering on the two order tabs,
+         * (served and pending)
+         */
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select("o, c")
@@ -47,8 +52,7 @@ class OrderRepository extends EntityRepository
                         )
                     ELSE
                         cast_as_integer(
-                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))
-                           
+                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))    
                         )
                     END
                 ) AS HIDDEN custom_ordering
@@ -57,17 +61,6 @@ class OrderRepository extends EntityRepository
             ->leftJoin('o.client', 'c')
             ->setMaxResults($maxResults)
             ->orderBy('custom_ordering', 'ASC');
-
-//        SELECT o.id AS order_id, c.id AS client_id, o.issued_at, o.served_at,
-//                (CASE
-//                    WHEN (o.served_at IS NULL) THEN
-//                        CAST(CONCAT(to_char(issued_at, 'YYYYMMDD')) AS INTEGER)
-//                    ELSE
-//                        CAST(CONCAT('-', to_char(served_at, 'YYYYMMDD')) AS INTEGER)
-//                 END
-//                ) as custom_ordering
-//                 FROM dc_order o, client c where o.client_id = c.id
-//                 ORDER BY custom_ordering ASC');
 
         $this->applyFilters($qb, $filters);
 

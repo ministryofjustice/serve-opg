@@ -106,7 +106,7 @@ class OrderController extends Controller
                     )
                 );
             } catch (\Exception $e) {
-                $request->getSession()->getFlashBag()->add('notice', 'Order ' . $orderId . ' could not be served at the moment');
+                $request->getSession()->getFlashBag()->add('notification', 'Order ' . $orderId . ' could not be served at the moment');
             }
 
 
