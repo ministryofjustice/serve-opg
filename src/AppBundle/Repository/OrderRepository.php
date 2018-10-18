@@ -42,9 +42,9 @@ class OrderRepository extends EntityRepository
             ->select("
                 (
                     CASE WHEN (o.servedAt IS NULL) THEN 
-                        (CAST(CONCAT(to_char(issued_at, 'YYYYMMDD')) AS INTEGER))
+                        (CAST(CONCAT(TO_CHAR(issued_at, 'YYYYMMDD')) AS INTEGER))
                     ELSE 
-                        (CAST(CONCAT('-', to_char(served_at, 'YYYYMMDD')) AS INTEGER))
+                        (CAST(CONCAT('-', TO_CHAR(served_at, 'YYYYMMDD')) AS INTEGER))
                     END
                 ) AS custom_ordering
             ")
