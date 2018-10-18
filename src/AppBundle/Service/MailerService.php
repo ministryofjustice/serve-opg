@@ -5,7 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\User;
 use Symfony\Component\Routing\RouterInterface;
 
-class MailService
+class MailerService
 {
     /**
      * @var \Swift_Mailer
@@ -28,7 +28,7 @@ class MailService
     private $router;
 
     /**
-     * MailService constructor.
+     * MailerService constructor.
      *
      * @param \Swift_Mailer $mailer
      * @param RouterInterface $router
@@ -59,7 +59,7 @@ class MailService
             ->setTo($user->getEmail(), $user->getUsername())
             ->setFrom($this->fromEmail, $this->fromName)
             ->setSubject('Digicop set user password') // need hybrid title for first activation and normal password reset
-            ->setBody($activationLink); // need hybrid body for first activation and normal password reset
+            ->setBody('Hi, this is the link to reset your password: ' . $activationLink); // need hybrid body for first activation and normal password reset
 
         return $this->mailer->send($swiftMessage);
     }

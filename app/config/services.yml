@@ -40,7 +40,7 @@ services:
 #    Swift_Transport:
 #      class: Swift_SmtpTransport
 
-    AppBundle\Service\MailService:
+    AppBundle\Service\MailerService:
       arguments:
         $fromEmail: "%env(DC_MAILER_SENDER)%"
         $fromName: "Digicop"
