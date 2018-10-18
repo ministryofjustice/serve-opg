@@ -19,10 +19,9 @@ parameters:
     env(DC_S3_ENDPOINT): ''
     env(DC_S3_BUCKET_NAME): "MUST_BE_DEFINED"
 
-    # smtp default config
-    env(DC_MAILER_SENDER): "digicop@digital.justice.gov.uk"
-    env(DC_MAILER_HOST): mailhog
-    env(DC_MAILER_PORT): 1025
+    # notify
+    env(DC_NOTIFY_API_KEY): "MUST_BE_DEFINED"
+
 
 
 

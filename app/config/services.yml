@@ -27,21 +27,26 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
 
-    Swift_Transport:
-      class: Swift_SmtpTransport
-      arguments: [ "%env(DC_MAILER_HOST)%", "%env(DC_MAILER_PORT)%" ]
-      #calls:
-       # - [ setEncryption, [ "tls"]]
-        #- [ setUsername, [ "%smtp_default_user%"]]
-        #- [ setPassword, [ "%smtp_default_password%"]]
-
-    Swift_Mailer:
-      class: Swift_Mailer
-
-    AppBundle\Service\MailerService:
+    # Notify (used for email sending)
+    # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
+    # Consider creating a NotifyClient extending and setting the options if needed
+    guzzleClient:
+      class: GuzzleHttp\Client
       arguments:
-        $fromEmail: "%env(DC_MAILER_SENDER)%"
-        $fromName: "Digicop"
+        $config:
+          - timeout: 10
+
+    notificationHttpClient:
+        class: Http\Adapter\Guzzle6\Client
+        arguments:
+          $client: "@guzzleClient"
+
+    Alphagov\Notifications\Client:
+      arguments:
+        $config:
+          apiKey: "%env(DC_NOTIFY_API_KEY)%"
+          httpClient: "@notificationHttpClient"
+    AppBundle\Service\MailSender: ~
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient

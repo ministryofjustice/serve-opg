@@ -6,7 +6,7 @@ use AppBundle\Entity\User;
 use AppBundle\Form\PasswordChangeForm;
 use AppBundle\Form\PasswordResetForm;
 use AppBundle\Repository\UserRepository;
-use AppBundle\Service\MailerService;
+use AppBundle\Service\MailSender;
 use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,26 +18,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class UserController extends Controller
 {
-
     /**
      * @var EntityManager
      */
     private $em;
 
     /**
-     * @var MailerService
+     * @var MailSender
      */
-    private $mailerService;
+    private $mailerSender;
 
     /**
      * UserController constructor.
      * @param EntityManager $em
-     * @param MailerService $mailService
+     * @param MailSender $mailService
      */
-    public function __construct(EntityManager $em, MailerService $mailService)
+    public function __construct(EntityManager $em, MailSender $mailService)
     {
         $this->em = $em;
-        $this->mailerService = $mailService;
+        $this->mailerSender = $mailService;
     }
 
 
@@ -70,7 +69,7 @@ class UserController extends Controller
             $user = $userRepo->findOneByEmail($form->getData()['email']);
             if ($user) {
                 $userRepo->refreshActivationTokenIfNeeded($user);
-                $this->mailerService->sendPasswordResetEmail($user);
+                $this->mailerSender->sendPasswordResetEmail($user);
             }
 
 
