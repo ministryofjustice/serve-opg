@@ -66,14 +66,19 @@ class FeatureContext extends MinkContext
     }
 
     /**
-     * @Then sirius should be available
-     **/
-     public function sirusIsAvailable()
-     {
-         $html = $this->getSession()->getPage()->getContent();
-         $htmlDecoded = json_decode($html, true);
-         if ($htmlDecoded['sirius'] == 'unavailable') {
-             throw new \Exception("sirius: ". $htmlDecoded['sirius']);
-         }
-     }
+     * @Then :service status should be :status
+     */
+    public function statusShouldBe($service, $status)
+    {
+        $this->assertResponseContains("\"$service\":$status");
+    }
+
+    /**
+     * @Then :service status should not be :status
+     */
+    public function statusShouldNotBe($service, $status)
+    {
+        $this->assertResponseNotContains("\"$service\":$status");
+        $this->assertResponseNotContains("\"$service\":\"$status\"");
+    }
 }

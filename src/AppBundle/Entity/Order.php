@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 abstract class Order
 {
@@ -129,7 +130,6 @@ abstract class Order
         $this->documents = new ArrayCollection();
 
         $client->addOrder($this);
-
     }
 
     /**
@@ -150,6 +150,31 @@ abstract class Order
         }
 
         return true;
+    }
+
+    /**
+     * Has at least one deputy by type
+     *
+     * @param $deputyType
+     * @return int|void
+     */
+    protected function hasDeputyByType($deputyType)
+    {
+        return $this->getDeputiesByType($deputyType)->count();
+    }
+
+    /**
+     * Returns a list of deputies by type
+     *
+     * @param $deputyType
+     * @return ArrayCollection|\Doctrine\Common\Collections\Collection|static
+     */
+    public function getDeputiesByType($deputyType)
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('deputyType', $deputyType));
+
+        return $this->getDeputies()->matching($criteria);
     }
 
     /**
@@ -313,7 +338,7 @@ abstract class Order
      */
     public function getDocumentsByType($type)
     {
-        return $this->documents->filter(function($doc) use ($type) {
+        return $this->documents->filter(function ($doc) use ($type) {
             return $doc->getType() == $type;
         });
     }
@@ -353,7 +378,7 @@ abstract class Order
     public function getDeputyById($deputyId)
     {
         $result = $this->getDeputies()->filter(
-            function(Deputy $deputy) use ($deputyId) {
+            function (Deputy $deputy) use ($deputyId) {
                 return $deputy->getId() == $deputyId;
             }
         );

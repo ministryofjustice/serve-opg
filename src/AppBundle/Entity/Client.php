@@ -95,7 +95,7 @@ class Client
     public function hasOrder(string $type)
     {
         $orderTypes = [];
-        foreach($this->getOrders() as $order) {
+        foreach ($this->getOrders() as $order) {
             $orderTypes[] = $order->getType();
         }
 
@@ -111,6 +111,4 @@ class Client
             $this->orders->add($order);
         }
     }
-
-
 }

@@ -94,14 +94,21 @@ class OrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             try {
                 $this->orderService->serve($order);
-
-                $request->getSession()->getFlashBag()->add('notice', 'Order served to OPG');
-
+                $client = $order->getClient();
+                $request->getSession()->getFlashBag()->add('success',
+                    array(
+                        'title' => 'order.served.title',
+                        'clientName' => $client->getClientName(),
+                        'caseNumber' => $client->getCaseNumber()
+                    )
+                );
             } catch (\Exception $e) {
                 $request->getSession()->getFlashBag()->add('notice', 'Order ' . $orderId . ' could not be served at the moment');
             }
+
 
             return $this->redirectToRoute('case-list');
         }
@@ -110,6 +117,5 @@ class OrderController extends Controller
             'order' => $order,
             'form' => $form->createView()
         ]);
-
     }
 }

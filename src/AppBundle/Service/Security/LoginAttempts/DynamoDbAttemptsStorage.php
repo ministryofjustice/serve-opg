@@ -39,5 +39,4 @@ class DynamoDbAttemptsStorage implements AttemptsStorageInterface
     {
         return $this->connection->delete($userId);
     }
-
 }

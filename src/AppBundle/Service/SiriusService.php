@@ -23,6 +23,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use AppBundle\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
+use Aws\SecretsManager\SecretsManagerClient;
 
 class SiriusService
 {
@@ -49,6 +50,11 @@ class SiriusService
     private $cookieJar;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * SiriusService constructor.
      *
      * @param ClientInterface $httpClient Used for Sirius API call
@@ -58,12 +64,14 @@ class SiriusService
         EntityManager $em,
         ClientInterface $httpClient,
         StorageInterface $S3storage,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        SecretsManagerClient $secretsManagerClient
     ) {
         $this->em = $em;
         $this->httpClient = $httpClient;
         $this->S3Storage = $S3storage;
         $this->logger = $logger;
+        $this->secretsManagerClient = $secretsManagerClient;
     }
 
     public function serveOrder(Order $order)
@@ -98,12 +106,15 @@ class SiriusService
 
                     $apiResponse = $this->sendOrderToSirius($payload);
 
+                    if ($apiResponse instanceof Psr7\Response) {
+                        $order->setApiResponse(Psr7\str($apiResponse));
+                    }
+
                     $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
                 }
             }
 
             $this->logout();
-
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
@@ -112,14 +123,16 @@ class SiriusService
                 $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
                 $order->setApiResponse(Psr7\str($e->getResponse()));
             }
-            $this->em->flush();
-
             throw $e;
         } catch (\Exception $e) {
             $this->logger->error('General Exception thrown: ' . $e->getMessage());
+
+            $order->setApiResponse($e->getTraceAsString());
+            $this->em->persist($order);
+            $this->em->flush();
+
             throw $e;
         }
-
     }
 
     /**
@@ -140,10 +153,14 @@ class SiriusService
      */
     private function login()
     {
+        $password = $this->secretsManagerClient->getSecretValue([
+            "SecretId" => getenv('SIRIUS_PUBLIC_API_EMAIL')
+        ])['SecretString'];
+
         $params = [
             'form_params' => [
                 'email'    => getenv('SIRIUS_PUBLIC_API_EMAIL'),
-                'password' => getenv('SIRIUS_PUBLIC_API_PASSWORD'),
+                'password' => $password,
             ],
             'cookies' => $this->cookieJar
         ];

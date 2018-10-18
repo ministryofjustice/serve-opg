@@ -7,12 +7,6 @@
 
 {% block content %}
 
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="push--top">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
-
     <div class="govuk-form-group">
         <form method="GET" action="{{ path(app.request.attributes.get('_route')) }}">
             <fieldset class="govuk-fieldset">
@@ -30,12 +24,13 @@
             Contents
         </h2>
         <ul class="govuk-tabs__list">
-                <a class="govuk-tabs__tab behat-link-pending-tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
+            <li class="govuk-tabs__list-item" role="presentation">
+                <a class="govuk-tabs__tab behat-link-pending-tab {{ filters.type == 'pending' ? 'govuk-tabs__tab--selected' }}" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
                     Pending ({{ counts.pending }})
                 </a>
             </li>
-            <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab behat-link- behat-link-served-tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
+            <li class="govuk-tabs__list-item" role="presentation">
+                <a class="govuk-tabs__tab behat-link- behat-link-served-tab {{ filters.type == 'served' ? 'govuk-tabs__tab--selected' }}" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
                     Served Recently ({{ counts.served }})
                 </a>
             </li>

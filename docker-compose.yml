@@ -2,6 +2,16 @@
 version: '3'
 
 services:
+  aws:
+    image: infrastructureascode/aws-cli
+    environment:
+      AWS_ACCESS_KEY_ID: foo
+      AWS_SECRET_ACCESS_KEY: bar
+    entrypoint:
+      - aws
+    depends_on:
+      - localstack
+
   loadbalancer:
     image: jwilder/nginx-proxy
     ports:
@@ -51,6 +61,7 @@ services:
       AWS_SECRET_ACCESS_KEY: bar
       # end still needed
       DYNAMODB_ENDPOINT: http://localstack:8000
+      SM_ENDPOINT: http://localstack:4584
       DC_SYMFONY_SECRET: dc2018!
       # db
       DC_DB_HOST: postgres
@@ -66,8 +77,8 @@ services:
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
-      SIRIUS_PUBLIC_API_EMAIL: publicapi@opgtest.com
-      SIRIUS_PUBLIC_API_PASSWORD: Password1
+      SIRIUS_PUBLIC_API_EMAIL: foo
+      SIRIUS_KMS_KEY_ARN: arn:aws:kms:eu-west-1:012345678901:alias/foo
 
       # file scanner
       DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
@@ -104,9 +115,10 @@ services:
     image: localstack/localstack
     ports:
       - 4569:4569
+      - 4584:4584
       - 8080:8080 # http://0.0.0.0:8080 to check deployed buckets and objects
     environment:
-      - SERVICES=s3:4569,dynamodb:8000
+      - SERVICES=s3:4569,dynamodb:8000,secretsmanager:4584
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     volumes:

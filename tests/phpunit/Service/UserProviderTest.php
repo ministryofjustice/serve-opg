@@ -97,7 +97,6 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
         $sut->loadUserByUsername($this->userName);
 
         $this->assertEquals(200, $this->getExpectedException()->getHasToWaitForSeconds());
-
     }
 
 
@@ -121,5 +120,4 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
     {
         m::close();
     }
-
 }

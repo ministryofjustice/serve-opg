@@ -10,10 +10,16 @@ jobs:
       - run:
           name: Build Dependencies
           command: |
+            pip install --quiet awscli
+            pyenv rehash
+
             # Create the s3 buckets
             # & wait for the server to become available
-            docker-compose up -d localstack && sleep 2
-            ./create_buckets.sh
+            docker-compose up -d localstack
+            docker-compose run --rm waitforit -address=http://localstack:4569 -debug
+            docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
+            docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
+            docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name foo --secret-string bar
 
             # Vendor php dependencies
             docker-compose run --rm composer
@@ -35,6 +41,7 @@ jobs:
             ./generate_certs.sh
             docker-compose up --build -d loadbalancer
             docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug
+            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
             docker-compose run --rm app php app/console doctrine:fixtures:load --append
             docker-compose run --rm behat
 

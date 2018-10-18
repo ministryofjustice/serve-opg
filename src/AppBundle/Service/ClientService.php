@@ -37,5 +37,4 @@ class ClientService
 
         return $client;
     }
-
 }

@@ -39,9 +39,7 @@ class BruteForceCheckerTest extends \PHPUnit_Framework_TestCase
      */
     public function testhasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime, $expectedWaitFor)
     {
-
         $actual =  $this->sut->hasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime);
         $this->assertEquals($expectedWaitFor, $actual);
     }
-
 }

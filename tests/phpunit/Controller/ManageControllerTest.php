@@ -8,14 +8,6 @@ use Mockery as m;
 
 class ManageControllerTest extends AbstractControllerTestCase
 {
-    public function testAvailability()
-    {
-        $this->client->request('GET', '/manage/availability');
-
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-    }
-
-
     public function testPingdom()
     {
         $this->client->request('GET', '/manage/availability/pingdom');
@@ -29,5 +21,4 @@ class ManageControllerTest extends AbstractControllerTestCase
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
-
 }
