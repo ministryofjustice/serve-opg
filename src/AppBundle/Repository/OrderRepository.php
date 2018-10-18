@@ -33,6 +33,9 @@ class OrderRepository extends EntityRepository
      */
     public function getOrders(array $filters, $maxResults)
     {
+        $config = $this->_em->getConfiguration();
+        $config->addCustomNumericFunction('CAST', 'Common\Query\Cast');
+
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select("o, c")
