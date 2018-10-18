@@ -194,6 +194,9 @@ services:
       - -c
       - tests/phpunit
     environment:
+      APP_VERSION: 0-local-app
+      WEB_VERSION: 0-local-web
+      INFRA_VERSION: 0-local-infra
       DC_SYMFONY_SECRET: dcphpunit2018!
       DC_DYNAMODB_KEY: key
       DC_DYNAMODB_SECRET: secret
