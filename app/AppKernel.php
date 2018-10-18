@@ -8,7 +8,7 @@ class AppKernel extends Kernel
 {
     public function __construct($environment, $debug)
     {
-        date_default_timezone_set('Europe/London');
+        date_default_timezone_set('UTC');
         ini_set('session.hash_function', 'sha256');
         ini_set('session.entropy_length', '32');
 

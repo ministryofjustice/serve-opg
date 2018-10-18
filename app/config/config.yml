@@ -40,6 +40,10 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+      version_app: "%env(APP_VERSION)%"
+      version_web: "%env(WEB_VERSION)%"
+      version_infra: "%env(INFRA_VERSION)%"
 
 # Swiftmailer Configuration
 swiftmailer:
