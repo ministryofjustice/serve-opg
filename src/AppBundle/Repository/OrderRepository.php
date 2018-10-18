@@ -39,19 +39,24 @@ class OrderRepository extends EntityRepository
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select("o, c")
-            ->select("
+            ->addSelect("
                 (
-                    CASE WHEN (o.servedAt IS NULL) THEN 
-                        (CAST(CONCAT(TO_CHAR(issued_at, 'YYYYMMDD')) AS INTEGER))
-                    ELSE 
-                        (CAST(CONCAT('-', TO_CHAR(served_at, 'YYYYMMDD')) AS INTEGER))
+                    CASE WHEN (o.servedAt IS NULL) THEN
+                        cast_as_integer(
+                            to_date(o.issuedAt, 'YYYYMMDD')
+                        )
+                    ELSE
+                        cast_as_integer(
+                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))
+                           
+                        )
                     END
-                ) AS custom_ordering
+                ) AS HIDDEN custom_ordering
             ")
+
             ->leftJoin('o.client', 'c')
             ->setMaxResults($maxResults)
-            ->orderBy('o.custom_ordering', 'ASC');
-
+            ->orderBy('custom_ordering', 'ASC');
 
 //        SELECT o.id AS order_id, c.id AS client_id, o.issued_at, o.served_at,
 //                (CASE

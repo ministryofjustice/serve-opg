@@ -92,7 +92,9 @@ doctrine:
         is_bundle: false
     dql:
       string_functions:
-        cast: Common\Query\Cast
+        cast_as_integer: Common\Query\CastAsInteger
+        str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
+        to_date: DoctrineExtensions\Query\Postgresql\DateFormat
       numeric_functions:
       datetime_functions:
     #        metadata_cache_driver: apcu
