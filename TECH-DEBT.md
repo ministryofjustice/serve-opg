@@ -6,8 +6,8 @@
   - `add_header X-Content-Type-Options nosniff;`
   - `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";`
 - dynamoDB required for app to startup
-- move fakes3 license key to env var
 - smoke test for behat controller in production
+- move create buckets step
 
 # Solved
 - ~~add time based assets directory~~
@@ -22,3 +22,5 @@
 - ~~use arrays for cmd/entrypoint in compose files~~
 - ~~push version back to git~~
 - ~~make version available to app~~
+- ~~move fakes3 license key to env var~~
+

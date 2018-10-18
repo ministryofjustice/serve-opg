@@ -25,8 +25,10 @@ git config core.autocrlf true
 sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain certs/web.crt
 
-# Generate the S3 buckets for localstack (needs aws client, see prerequisites)
-./create_buckets.sh
+# Create aws resources for localstack
+docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
+docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name foo --secret-string bar
 
 # Vendor php dependencies
 docker-compose run --rm composer
