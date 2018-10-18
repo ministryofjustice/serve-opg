@@ -29,16 +29,14 @@ services:
 
     Swift_Transport:
       class: Swift_SmtpTransport
-      arguments: [ "%env(DC_MAILER_HOST)", "%env(DC_MAILER_PORT)" ]
-      calls:
-        - [ setEncryption, [ "tls"]]
+      arguments: [ "%env(DC_MAILER_HOST)%", "%env(DC_MAILER_PORT)%" ]
+      #calls:
+       # - [ setEncryption, [ "tls"]]
         #- [ setUsername, [ "%smtp_default_user%"]]
         #- [ setPassword, [ "%smtp_default_password%"]]
 
     Swift_Mailer:
       class: Swift_Mailer
-#    Swift_Transport:
-#      class: Swift_SmtpTransport
 
     AppBundle\Service\MailerService:
       arguments:

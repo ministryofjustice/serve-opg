@@ -23,7 +23,7 @@ security:
 
     access_control:
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/password-reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/passwordreset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/manage/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/behat/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

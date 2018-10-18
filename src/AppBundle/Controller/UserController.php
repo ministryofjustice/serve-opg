@@ -58,7 +58,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/password-reset/request", name="password-reset-request")
+     * @Route("/passwordreset/request", name="password-reset-request")
      */
     public function passwordResetRequest(Request $request)
     {
@@ -83,7 +83,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/password-reset/change/{token}", name="password-change")
+     * @Route("/passwordreset/change/{token}", name="password-change")
      */
     public function passwordChange(Request $request, $token)
     {
@@ -108,7 +108,7 @@ class UserController extends Controller
 
 
     /**
-     * @Route("/password-reset/sent", name="password-reset-sent")
+     * @Route("/passwordreset/sent", name="password-reset-sent")
      */
     public function passwordResetSent(Request $request)
     {

@@ -17,6 +17,7 @@ class FeatureContext extends MinkContext
     use FormTrait;
     use DebugTrait;
     use SiriusTrait;
+    use MailHogTrait;
 
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
