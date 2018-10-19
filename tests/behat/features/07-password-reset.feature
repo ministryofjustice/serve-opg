@@ -1,7 +1,6 @@
 Feature: password reset
 
-  Scenario: Reset password
-
+  Scenario: Send password link
     Given I go to "/logout"
     And I go to "/login"
     And I reset the email log
@@ -27,7 +26,8 @@ Feature: password reset
     And I fill in "password_reset_form_email" with "behat@digital.justice.gov.uk"
     And I press "password_reset_form_submit"
     Then I should be on "/passwordreset/sent"
-    # click on link
+
+  Scenario: Click on link, change password and login with new credentials
     When I click on the link in the email sent to "behat@digital.justice.gov.uk"
     # empty password
     When I fill in the following:
