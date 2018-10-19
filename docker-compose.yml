@@ -38,6 +38,8 @@ services:
       - localstack
       - postgres
       - sirius-api
+      # DONT COMMIT
+      - notify
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro
@@ -74,6 +76,7 @@ services:
       DC_BEHAT_CONTROLLER_ENABLED: 1
       # notify (team and whitelist key)
       DC_NOTIFY_API_KEY: "team_and_whitelist-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-d6bd98e6-6c7f-4ed9-9454-bab9ef5fc8ef"
+      DC_NOTIFY_API_BASE_URL: "https://api.notifications.service.gov.uk"
       # fixtures (users and cases. Not needed here for behat testing)
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
@@ -153,6 +156,7 @@ services:
       - --stop-on-failure
     depends_on:
       - loadbalancer
+      - notify
     environment:
       APP_VERSION: 0-local-app
       WEB_VERSION: 0-local-web
@@ -169,9 +173,18 @@ services:
       DC_DB_PASS: dcdb2018!
       # Notify test key (doesn't send any email)
       DC_NOTIFY_API_KEY: "test-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-93a167f0-e5bc-439f-8750-6f79fec8b5f1"
+      DC_NOTIFY_API_BASE_URL: "http://notify:8081"
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
+  notify:
+    build:
+      context: ./docker/notify
+      dockerfile: Dockerfile
+    volumes:
+      - ./docker/notify:/var/www/app
+    ports:
+      - 8081:8081
 
   phpunit:
     build:

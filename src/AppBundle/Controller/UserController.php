@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -29,16 +30,22 @@ class UserController extends Controller
     private $mailerSender;
 
     /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $encoder;
+
+    /**
      * UserController constructor.
      * @param EntityManager $em
-     * @param MailSender $mailService
+     * @param MailSender $mailerSender
+     * @param UserPasswordEncoderInterface $encoder
      */
-    public function __construct(EntityManager $em, MailSender $mailService)
+    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
-        $this->mailerSender = $mailService;
+        $this->mailerSender = $mailerSender;
+        $this->encoder = $encoder;
     }
-
 
     /**
      * @Route("/login", name="login")
@@ -96,8 +103,13 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pass = $this->encoder->encodePassword($user, $form->getData()['password']);
+            $user->setPassword($pass);
+            $this->em->flush($user);
 
-            //TODO change password and redirect to login page with flash message. don't log in, expenisive
+            $request->getSession()->getFlashBag()->add('notice', 'Password changed. Please login using the new password');
+
+            return $this->redirectToRoute('login');
         }
 
         return $this->render('AppBundle:User:password-change.html.twig', [

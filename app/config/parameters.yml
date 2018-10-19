@@ -21,6 +21,7 @@ parameters:
 
     # notify
     env(DC_NOTIFY_API_KEY): "MUST_BE_DEFINED"
+    env(DC_NOTIFY_API_BASE_URL): "https://api.notifications.service.gov.uk"
 
 
 

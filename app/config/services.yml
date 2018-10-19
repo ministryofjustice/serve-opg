@@ -35,6 +35,7 @@ services:
       arguments:
         $config:
           - timeout: 10
+          - verify: 0
 
     notificationHttpClient:
         class: Http\Adapter\Guzzle6\Client
@@ -44,7 +45,8 @@ services:
     Alphagov\Notifications\Client:
       arguments:
         $config:
-          apiKey: "%env(DC_NOTIFY_API_KEY)%"
+          apiKey: "test-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-93a167f0-e5bc-439f-8750-6f79fec8b5f1"
+          baseUrl: "%env(DC_NOTIFY_API_BASE_URL)%"
           httpClient: "@notificationHttpClient"
     AppBundle\Service\MailSender: ~
 

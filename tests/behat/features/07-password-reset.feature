@@ -3,8 +3,8 @@ Feature: password reset
   Scenario: Reset password
 
     Given I go to "/logout"
-    And I reset the email log
     And I go to "/login"
+    And I reset the email log
     When I click on "password-reset"
     # empty form content
     When I fill in "password_reset_form_email" with ""

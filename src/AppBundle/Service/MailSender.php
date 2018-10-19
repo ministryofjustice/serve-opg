@@ -17,6 +17,12 @@ use Symfony\Component\Routing\RouterInterface;
 class MailSender
 {
     /**
+     * @var null
+     */
+    private $lastEmailId = null;
+
+
+    /**
      * @var Client
      */
     private $notifyClient;
@@ -38,7 +44,6 @@ class MailSender
         $this->router = $router;
     }
 
-
     /**
      * @param User $user
      *
@@ -52,10 +57,20 @@ class MailSender
 
         $activationLink = $this->router->generate('password-change', ['token'=>$user->getActivationToken()], RouterInterface::ABSOLUTE_URL);
 
+        $this->lastEmailId = null;
         return $this->notifyClient->sendEmail($user->getEmail(), 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a', [
             'activationLink' => $activationLink
         ]);
     }
 
+    /**
+     * @param $notificationId
+     *
+     * @return null|array [body, email_address, sent_at, status = delivered, subject, template=>[id]]
+     */
+    public function getLastEmailStatus($notificationId)
+    {
+        return $this->notifyClient->getNotification($notificationId);
+    }
 
 }
