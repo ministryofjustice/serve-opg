@@ -33,9 +33,6 @@ class OrderRepository extends EntityRepository
      */
     public function getOrders(array $filters, $maxResults)
     {
-        $config = $this->_em->getConfiguration();
-        $config->addCustomNumericFunction('CAST', 'Common\Query\Cast');
-
         /**
          * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
          * Negative dates as a integer result in a custom ordering field allow different ordering on the two order tabs,

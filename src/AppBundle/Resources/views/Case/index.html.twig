@@ -50,8 +50,6 @@
                                 <th class="govuk-table__header" scope="col">Order date</th>
                                 <th class="govuk-table__header" scope="col">Order issued</th>
                             {% else %}
-                                <th class="govuk-table__header" scope="col">Issued date</th>
-
                                 <th class="govuk-table__header" scope="col">Date served</th>
                                 <th class="govuk-table__header" scope="col">Documents</th>
                             {% endif %}
@@ -81,9 +79,6 @@
                                     </td>
                                 {% else %}
 
-                                    <td class="govuk-table__cell">
-                                        {{ order.issuedAt | date('d/m/Y') }}
-                                    </td>
                                     <td class="govuk-table__cell">
                                         {{ order.servedAt | date('d/m/Y') }}
                                     </td>
