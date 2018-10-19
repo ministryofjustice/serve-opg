@@ -84,7 +84,6 @@ doctrine:
     charset:  UTF8
       #options:
     #sslmode: require
-
   orm:
     auto_generate_proxy_classes: "%kernel.debug%"
     proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"
@@ -95,7 +94,13 @@ doctrine:
         dir: "%kernel.root_dir%/config/doctrine"
         prefix: AppBundle\Entity
         is_bundle: false
-
+    dql:
+      string_functions:
+        cast_as_integer: Common\Query\CastAsInteger
+        str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
+        to_date: DoctrineExtensions\Query\Postgresql\DateFormat
+      numeric_functions:
+      datetime_functions:
     #        metadata_cache_driver: apcu
 
 

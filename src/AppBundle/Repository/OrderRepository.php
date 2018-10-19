@@ -33,13 +33,31 @@ class OrderRepository extends EntityRepository
      */
     public function getOrders(array $filters, $maxResults)
     {
+        /**
+         * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
+         * Negative dates as a integer result in a custom ordering field allow different ordering on the two order tabs,
+         * (served and pending)
+         */
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
-            ->select('o,c')
+            ->select("o, c")
+            ->addSelect("
+                (
+                    CASE WHEN (o.servedAt IS NULL) THEN
+                        cast_as_integer(
+                            to_date(o.issuedAt, 'YYYYMMDD')
+                        )
+                    ELSE
+                        cast_as_integer(
+                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))    
+                        )
+                    END
+                ) AS HIDDEN custom_ordering
+            ")
+
             ->leftJoin('o.client', 'c')
             ->setMaxResults($maxResults)
-            ->orderBy('o.issuedAt', 'DESC')
-        ;
+            ->orderBy('custom_ordering', 'ASC');
 
         $this->applyFilters($qb, $filters);
 

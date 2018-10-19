@@ -72,15 +72,17 @@
                                 <td class="govuk-table__cell">{{ client.clientName }}</td>
                                 {% if filters.type == 'pending' %}
                                     <td class="govuk-table__cell">
-                                        {{ order.createdAt | date('d/m/Y') }}
+                                        {{ order.madeAt | date('d/m/Y') }}
                                     </td>
                                     <td class="govuk-table__cell">
                                         {{ order.issuedAt | date('d/m/Y') }}
                                     </td>
                                 {% else %}
+
                                     <td class="govuk-table__cell">
                                         {{ order.servedAt | date('d/m/Y') }}
                                     </td>
+
                                     <td class="govuk-table__cell">
                                         <details class="govuk-details govuk-!-margin-bottom-0">
                                             <summary class="govuk-details__summary">
