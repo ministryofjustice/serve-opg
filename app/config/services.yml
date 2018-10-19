@@ -35,7 +35,6 @@ services:
       arguments:
         $config:
           - timeout: 10
-          - verify: 0
 
     notificationHttpClient:
         class: Http\Adapter\Guzzle6\Client

@@ -19,6 +19,7 @@ if ($method == 'POST' && $uri == '/v2/notifications/email') {
     file_put_contents($mailLogPath, serialize($logData));
     echo json_encode([
         'id' => $mailId,
+        'reference' => 'notify-mock'
     ]);
     die;
 } else if ($method == 'GET' && $uri == '/mock-data') {
