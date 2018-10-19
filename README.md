@@ -100,6 +100,14 @@ docker-compose run --rm app php app/console doctrine:fixtures:load --purge-with-
 docker-compose run --rm behat
 ```
 
+### Notify mocking
+Notify is mocked via a custom script.
+Requests to the service can be seen at 
+
+`http://localhost:8081/mock-data`
+
+Behat `NotifyTrait` takes care of resetting / accessing those emails from steps in the behat context.
+
 # Debugging
 Login to Database
 ```bash

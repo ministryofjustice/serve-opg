@@ -1,31 +1,49 @@
 <?php
 
 /**
- * Simple AlphaGov notification mock service, that stores the email params into the disk, and returns them back when asked
+ * Simple AlphaGov notification mock service, accepting `sendEmail()`
+ *  (`POST /v2/notifications/email`) calls,
+ *  storing them into in a temporary file,
+ *  and returning them from the `/mock-data` endpoint (GET/DELETE)
+ *
+ * , that stores the email params into the disk, and returns them back when asked
+ * https://github.com/alphagov/notifications-php-client
  */
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 $body = json_decode(file_get_contents('php://input'), true);
 $mailLogPath = '/tmp/mail.log';
 
+// initialize log file
 if (!file_exists($mailLogPath)) {
     file_put_contents($mailLogPath, serialize([]));
 }
 $logData = unserialize(file_get_contents($mailLogPath));
 
+
+// route request
+$ret = [
+    'error' => 'no commands matched',
+    'debug-data' => $_SERVER
+];
 if ($method == 'POST' && $uri == '/v2/notifications/email') {
     $mailId = time() . rand(1, PHP_INT_MAX);
     $logData[$mailId] = $body;
     file_put_contents($mailLogPath, serialize($logData));
-    echo json_encode([
+    $ret = [
         'id' => $mailId,
         'reference' => 'notify-mock'
-    ]);
-    die;
+    ];
 } else if ($method == 'GET' && $uri == '/mock-data') {
-    echo json_encode($logData);
-    die;
+    $ret = $logData;
 } else if ($method == 'DELETE' && $uri == '/mock-data') {
     file_put_contents($mailLogPath, serialize([]));
-    die;
+    $ret = 'mock data deleted';
+} else {
+    $ret = [
+        'error' => 'no commands matched',
+        'debug_data' => $_SERVER
+    ];
 }
+
+echo json_encode($ret);
