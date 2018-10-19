@@ -47,6 +47,15 @@ docker-compose run --rm app php app/console doctrine:schema:update --force --dum
 # See docker-compose.yml app container, DC_FIXURES_USERS variable 
 docker-compose run --rm app php app/console doctrine:fixtures:load --append
 
+# Generates status of migrations
+docker-compose run --rm app php app/console doctrine:migrations:status
+
+# Generate migration script between entities and schema
+docker-compose run --rm app php app/console doctrine:migrations:diff
+
+# Generate blank migration script
+docker-compose run --rm app php app/console doctrine:migrations:generate
+
 # enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
 
