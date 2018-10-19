@@ -17,6 +17,10 @@ order.appointmentType.SOLE: 'Sole'
 order.appointmentType.JOINT: 'Joint'
 order.appointmentType.JOINT_AND_SEVERAL: 'Joint and several'
 
+order.caseNumber: 'Order number: %caseNumber%'
+order.clientName: 'Client: %clientName%'
+order.served.title: 'Order served to OPG'
+
 document.type.COP1A: COP 1A
 document.type.COP3: COP 3
 document.type.COP4: COP 4

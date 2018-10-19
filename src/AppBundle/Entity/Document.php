@@ -79,7 +79,7 @@ class Document
     {
         $this->order = $order;
         $this->type = $type;
-        $this->setCreatedAt(new \DateTime());
+        //$this->setCreatedAt(new \DateTime());
     }
 
     /**

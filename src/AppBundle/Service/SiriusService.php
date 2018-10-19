@@ -106,6 +106,10 @@ class SiriusService
 
                     $apiResponse = $this->sendOrderToSirius($payload);
 
+                    if ($apiResponse instanceof Psr7\Response) {
+                        $order->setApiResponse(Psr7\str($apiResponse));
+                    }
+
                     $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
                 }
             }
@@ -119,11 +123,14 @@ class SiriusService
                 $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
                 $order->setApiResponse(Psr7\str($e->getResponse()));
             }
-            $this->em->flush();
-
             throw $e;
         } catch (\Exception $e) {
             $this->logger->error('General Exception thrown: ' . $e->getMessage());
+
+            $order->setApiResponse($e->getTraceAsString());
+            $this->em->persist($order);
+            $this->em->flush();
+
             throw $e;
         }
     }
