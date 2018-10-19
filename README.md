@@ -56,6 +56,9 @@ docker-compose run --rm app php app/console doctrine:migrations:diff
 # Generate blank migration script
 docker-compose run --rm app php app/console doctrine:migrations:generate
 
+# Example: run migration version 20181019141515
+docker-compose run --rm app php app/console doctrine:migrations:execute 20181019141515
+
 # enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
 
