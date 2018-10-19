@@ -49,7 +49,7 @@ services:
       - postgres
       - sirius-api
     volumes:
-      - ./app:/var/www/app:ro
+      - ./app:/var/www/app
       - ./src:/var/www/src:ro
       - ./web:/var/www/web
     environment:
