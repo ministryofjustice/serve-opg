@@ -76,10 +76,7 @@ class UserController extends Controller
             $user = $userRepo->findOneByEmail($form->getData()['email']);
             if ($user) {
                 $userRepo->refreshActivationTokenIfNeeded($user);
-                $ret = $this->mailerSender->sendPasswordResetEmail($user);
-                if ($ret['reference'] = 'notify-mock') {
-                    throw new \Exception(print_r($ret, true));
-                }
+                $this->mailerSender->sendPasswordResetEmail($user);
             }
 
             return $this->redirectToRoute('password-reset-sent');
