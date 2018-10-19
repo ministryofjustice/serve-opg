@@ -48,8 +48,6 @@ services:
       - localstack
       - postgres
       - sirius-api
-      # DONT COMMIT
-      - notify
     volumes:
       - ./app:/var/www/app:ro
       - ./src:/var/www/src:ro

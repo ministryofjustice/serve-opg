@@ -97,16 +97,17 @@ class BehatController extends Controller
 
         // add user if not existing
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => self::BEHAT_EMAIL]);
-        if ($user) {
-            $ret = "User " . self::BEHAT_EMAIL . " already present";
-        } else {
+        if (!$user) {
             $user = new User(self::BEHAT_EMAIL);
-            $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
-            $user->setPassword($encodedPassword);
             $this->em->persist($user);
-            $this->em->flush($user);
-            $ret = "User " . self::BEHAT_EMAIL . " created";
+            $ret = "User " . self::BEHAT_EMAIL . " already present, password reset";
         }
+
+        $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
+        $user->setPassword($encodedPassword);
+
+        $this->em->flush($user);
+        $ret = "User " . self::BEHAT_EMAIL . " created";
 
         return new Response($ret);
     }
@@ -121,11 +122,11 @@ class BehatController extends Controller
         $ret = [];
 
         // empty orders for behat client
-        $client  = $this->em->getRepository(Client::class)->findBy(['caseNumber'=>self::BEHAT_CASE_NUMBER]);
+        $client = $this->em->getRepository(Client::class)->findBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
         $clientOrders = $this->em->getRepository(Order::class)->findBy(['client' => $client]);
         foreach ($clientOrders as $order) {
             $this->orderService->emptyOrder($order);
-            $ret[] = get_class($order). " for client " . self::BEHAT_CASE_NUMBER . " present and emptied (docs, deputies)";
+            $ret[] = get_class($order) . " for client " . self::BEHAT_CASE_NUMBER . " present and emptied (docs, deputies)";
         }
 
         return new Response(implode("\n", array_filter($ret)));
@@ -140,7 +141,7 @@ class BehatController extends Controller
 
         $this->userProvider->resetUsernameAttempts(self::BEHAT_EMAIL);
 
-        return new Response(self::BEHAT_EMAIL ." attempts reset done");
+        return new Response(self::BEHAT_EMAIL . " attempts reset done");
     }
 
     /**
@@ -177,13 +178,13 @@ class BehatController extends Controller
         do {
             sleep(1);
             $status = $this->mailerSender->getLastEmailStatus($notificationId);
-        } while($status != 'delivered' && $attempts++ < 5);
+        } while ($status != 'delivered' && $attempts++ < 5);
 
         if ($status != 'delivered') {
             throw new \RuntimeException("Email failed to deliver after $attempts attempts");
         }
 
-        preg_match('#https?://[\/\w-]+#', $status['body'],$links);
+        preg_match('#https?://[\/\w-]+#', $status['body'], $links);
         if (empty($links)) {
             throw new \RuntimeException("No link found in the email");
         }

@@ -19,8 +19,13 @@ class PasswordChangeForm extends AbstractType
     {
         $builder
             ->add('password', RepeatedType::class, [
+                //'label' => 'password.label',
+                'translation_domain' => 'forms',
                 'type' => PasswordType::class,
-                //'invalid_message' => ''
+                'required'=>false,
+                'constraints' => [
+                    new NotBlank(),
+                ]
             ])
             ->add('submit', SubmitType::class);
     }

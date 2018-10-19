@@ -29,3 +29,29 @@ Feature: password reset
     Then I should be on "/passwordreset/sent"
     # click on link
     When I click on the link in the email sent to "behat@digital.justice.gov.uk"
+    # empty password
+    When I fill in the following:
+      | password_change_form_password_first   |  |
+      | password_change_form_password_second  |  |
+    And I press "password_change_form_submit"
+    Then the form should be invalid
+      #password mismatch
+    When I fill in the following:
+      | password_change_form_password_first   | Abcd1234 |
+      | password_change_form_password_second  | Abcd12345 |
+    And I press "password_change_form_submit"
+    Then the form should be invalid
+      # (nolowercase, nouppercase, no number skipped as already tested in "set password" scenario)
+      # correct !!
+    When I fill in the following:
+      | password_change_form_password_first   | Abcd12345 |
+      | password_change_form_password_second  | Abcd12345 |
+    And I press "password_change_form_submit"
+    Then the form should be valid
+    # login with old password
+    When I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Then the form should be invalid
+    # login with new password
+    When I log in as "behat@digital.justice.gov.uk" with password "Abcd12345"
+    Then the form should be valid
+    And I should be on "/case"

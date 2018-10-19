@@ -103,8 +103,8 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pass = $this->encoder->encodePassword($user, $form->getData()['password']);
-            $user->setPassword($pass);
+            $newPassordEncoded = $this->encoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($newPassordEncoded);
             $this->em->flush($user);
 
             $request->getSession()->getFlashBag()->add('notice', 'Password changed. Please login using the new password');

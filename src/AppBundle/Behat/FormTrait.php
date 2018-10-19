@@ -13,7 +13,7 @@ trait FormTrait
     public function theFormShouldBeOrNotBeValid($shouldBe)
     {
         $this->assertResponseStatus(200);
-        $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error');
+        $hasErrors = $this->getSession()->getPage()->has('css', '.govuk-error-summary');
 
         if ($shouldBe == 'valid' && $hasErrors) {
             throw new \RuntimeException('Errors found in the form. Zero expected');

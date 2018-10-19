@@ -28,8 +28,3 @@ if ($method == 'POST' && $uri == '/v2/notifications/email') {
     file_put_contents($mailLogPath, serialize([]));
     die;
 }
-
-error_log(print_r($_POST, 1));
-error_log(print_r($_REQUEST, 1));
-error_log(print_r($_SERVER, 1));
-
