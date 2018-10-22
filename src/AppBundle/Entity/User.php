@@ -10,7 +10,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @var string
      */
-    const REFRESH_TOKEN_IF_OLDER_THAN = '48 hours ago';
+    const TOKEN_EXPIRY = '48 hours ago';
 
     /**
      * @var int
@@ -147,8 +147,8 @@ class User implements UserInterface, EquatableInterface
      */
     public function isTokenValid()
     {
-        $tokenValidFrom = new \DateTime(self::REFRESH_TOKEN_IF_OLDER_THAN);
-        return $this->getActivationTokenCreatedAt() && $this->getActivationTokenCreatedAt() >= $tokenValidFrom;
+        return $this->getActivationTokenCreatedAt()
+            && $this->getActivationTokenCreatedAt() >= new \DateTime(self::TOKEN_EXPIRY);
     }
 
 }

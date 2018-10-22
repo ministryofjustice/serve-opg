@@ -30,7 +30,7 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * Recreate random token if empty or older than elf::REFRESH_TOKEN_IF_OLDER_THAN
+     * Recreate random token if empty or older than elf::TOKEN_EXPIRY
      *
      * @param User $user
      * @return bool true if changed, false if not
