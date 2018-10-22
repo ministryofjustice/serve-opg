@@ -56,11 +56,6 @@ class BehatController extends Controller
     private $userProvider;
 
     /**
-     * @var MailSender
-     */
-    private $mailerSender;
-
-    /**
      * BehatController constructor.
      * @param EntityManager $em
      * @param ClientService $clientService
@@ -68,14 +63,13 @@ class BehatController extends Controller
      * @param UserPasswordEncoderInterface $encoder
      * @param UserProvider $userProvider
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider, MailSender $mailerSender)
+    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider)
     {
         $this->em = $em;
         $this->clientService = $clientService;
         $this->orderService = $orderService;
         $this->encoder = $encoder;
         $this->userProvider = $userProvider;
-        $this->mailerSender = $mailerSender;
     }
 
     /**
@@ -164,34 +158,7 @@ class BehatController extends Controller
         return new Response(implode("|", array_filter($ret)));
     }
 
-    /**
-     * @Route("/open-link-in-last-email")
-     */
-    public function openLinkInLastEmail()
-    {
-        $this->securityChecks();
 
-        $notificationId = 'TODO. take from DB ?';
-
-        // ping notify for the last email being sent
-        $attempts = 0;
-        do {
-            sleep(1);
-            $status = $this->mailerSender->getLastEmailStatus($notificationId);
-        } while ($status != 'delivered' && $attempts++ < 5);
-
-        if ($status != 'delivered') {
-            throw new \RuntimeException("Email failed to deliver after $attempts attempts");
-        }
-
-        preg_match('#https?://[\/\w-]+#', $status['body'], $links);
-        if (empty($links)) {
-            throw new \RuntimeException("No link found in the email");
-        }
-
-        return new RedirectResponse($links[0]);
-
-    }
 
     private function getOrderFromIdentifier($orderIdentifier)
     {
