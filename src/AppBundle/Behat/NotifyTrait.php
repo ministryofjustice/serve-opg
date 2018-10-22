@@ -54,7 +54,7 @@ trait NotifyTrait
     /**
      * @When I click on the link in the email sent to :to
      */
-    public function IclikLinkEmaiSentTo($to)
+    public function IclickOnLinkInEmaiSentTo($to)
     {
         $messages = $this->getNotifyMockSentMails();
         foreach($messages as $message) {
