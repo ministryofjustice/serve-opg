@@ -73,6 +73,8 @@ class FileCheckerFactory
     }
 
     /**
+     * Sets the uploaded file to the file Object created based on mime type
+     *
      * @param UploadedFile $uploadedFile
      *
      * @return UploadableFile
@@ -83,19 +85,47 @@ class FileCheckerFactory
             preg_match('/(\.exe)(\.bin)(\.bat)(\.jss)(\.zip)(\.php)/i', $uploadedFile->getClientOriginalName())) {
             throw new InvalidFileTypeException(s);
         }
-        switch ($uploadedFile->getMimeType()) {
-            case 'application/pdf':
+        $mimeType = $uploadedFile->getMimeType();
+
+        switch (true) {
+            case ($mimeType == 'application/pdf'):
                 return $this->pdf->setUploadedFile($uploadedFile);
-            case 'application/msword':
+            case ($mimeType == 'application/msword' || $this->isWordDoc($uploadedFile)):
                 return $this->doc->setUploadedFile($uploadedFile);
-            case 'image/png':
+            case ($mimeType == 'image/png'):
                 return  $this->png->setUploadedFile($uploadedFile);
-            case 'image/jpeg':
+            case ($mimeType == 'image/jpeg'):
                 return $this->jpg->setUploadedFile($uploadedFile);
-            case 'image/tiff':
+            case ($mimeType == 'image/tiff'):
                 return $this->tif->setUploadedFile($uploadedFile);
             default:
                 throw new InvalidFileTypeException();
         }
+    }
+
+    /**
+     * Is file a word docx file?
+     *
+     * @param UploadedFile $uploadedFile
+     * @return bool
+     */
+    private function isWordDoc(UploadedFile $uploadedFile)
+    {
+        // specific check to handle word X documents but not other files with same mime type
+        $mimeType = $uploadedFile->getMimeType();
+
+        if (
+            // Old word docs
+            ('application/msword' == $mimeType && ('doc' == $uploadedFile->getExtension())) ||
+            // New word documents
+            (
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document' == $mimeType &&
+                ('docx' == $uploadedFile->getClientOriginalExtension() && ('' == $uploadedFile->getExtension()))
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

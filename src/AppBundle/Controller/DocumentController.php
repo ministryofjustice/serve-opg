@@ -93,7 +93,7 @@ class DocumentController extends Controller
                         $document,
                         $uploadedFile
                     );
-                   $request->getSession()->getFlashBag()->add('success  ', 'File uploaded');
+                   $request->getSession()->getFlashBag()->add('success', 'File uploaded');
 
                     $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
                     $document->setFilename($fileName);
