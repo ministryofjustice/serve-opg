@@ -19,7 +19,9 @@ trait NotifyTrait
      */
     private function getNotifyMockSentMails()
     {
-        return json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
+        $ret =  json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
+        print_r($ret);
+        return $ret;
     }
 
     /**
@@ -28,7 +30,7 @@ trait NotifyTrait
     public function iResetTheEmailLog()
     {
         $stream = stream_context_create(['http' => ['method' => 'DELETE']]);
-        file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
+        echo file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
 
         if (count($this->getNotifyMockSentMails()) > 0) {
             throw new \RuntimeException("error resetting email");
@@ -64,7 +66,7 @@ trait NotifyTrait
             }
         }
 
-        throw new \RuntimeException("No email sent to $to");
+        throw new \RuntimeException("No email sent to $to. Messages: ".print_r($messages, true));
     }
 
 
