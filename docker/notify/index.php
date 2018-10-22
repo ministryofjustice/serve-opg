@@ -39,11 +39,6 @@ if ($method == 'POST' && $uri == '/v2/notifications/email') {
 } else if ($method == 'DELETE' && $uri == '/mock-data') {
     file_put_contents($mailLogPath, serialize([]));
     $ret = 'mock data deleted';
-} else {
-    $ret = [
-        'error' => 'no commands matched',
-        'debug_data' => $_SERVER
-    ];
 }
 
 echo json_encode($ret);
