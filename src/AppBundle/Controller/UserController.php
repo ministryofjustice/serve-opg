@@ -95,9 +95,12 @@ class UserController extends Controller
     public function passwordChange(Request $request, $token)
     {
         $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
-        $user = $userRepo->findOneByValidToken($token);
+        $user = $userRepo->findOneBy(['activationToken' => $token]); /* @var $user User */
         if (!$user) {
-            throw new NotFoundHttpException('Token invalid');
+            throw new NotFoundHttpException('User not found');
+        }
+        if (!$user->isTokenValid()) {
+            throw new NotFoundHttpException('User not found');
         }
 
         $form = $this->createForm(PasswordChangeForm::class, $user);

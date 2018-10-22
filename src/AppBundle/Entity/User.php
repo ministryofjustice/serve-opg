@@ -143,6 +143,8 @@ class User implements UserInterface, EquatableInterface
     }
 
     /**
+     * Return true if the token is present and create after the TOKEN_EXPIRY value of the constant
+     *
      * @return bool
      */
     public function isTokenValid()
