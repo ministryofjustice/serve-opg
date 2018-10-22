@@ -24,3 +24,9 @@ deputy:
   addressTown: Town or city
   addressCounty: County
   addressPostcode: Postcode
+
+
+user:
+  passwordReset:
+    email.label: Email Address
+    submit.label: Reset your password

@@ -17,8 +17,7 @@ class PasswordResetForm extends AbstractType
     {
         $builder
             ->add('email', TextType::class, [
-                'label' => 'Email',
-                'translation_domain' => 'forms',
+                'label' => 'user.passwordReset.email.label',
                 'required' => false,
                 'attr' => ['maxlength'=> 255],
                 'constraints' => [
@@ -26,11 +25,15 @@ class PasswordResetForm extends AbstractType
                     new Email(),
                 ]
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class ,[
+                'label' => 'user.passwordReset.submit.label',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([]);
+        $resolver->setDefaults([
+            'translation_domain' => 'forms',
+        ]);
     }
 }
