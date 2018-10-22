@@ -73,7 +73,7 @@ class UserController extends Controller
         $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userRepo->findOneByEmail($form->getData()['email']);
+            $user = $userRepo->findOneByEmail($form->getData()['email']); /* @var $user User */
             if ($user) {
                 $userRepo->refreshActivationTokenIfNeeded($user);
                 $this->mailerSender->sendPasswordResetEmail($user);

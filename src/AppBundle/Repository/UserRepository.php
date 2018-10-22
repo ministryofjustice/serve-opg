@@ -10,16 +10,6 @@ class UserRepository extends EntityRepository
     /**
      * @param string $email
      *
-     * @return User|false
-     */
-    public function findOneByEmail($email)
-    {
-        return $this->findOneBy(['email' => $email]);
-    }
-
-    /**
-     * @param string $email
-     *
      * @return User|false User or false if not found, or token is expired
      */
     public function findOneByValidToken($token)
