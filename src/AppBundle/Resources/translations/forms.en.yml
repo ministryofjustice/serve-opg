@@ -30,3 +30,7 @@ user:
   passwordReset:
     email.label: Email Address
     submit.label: Reset your password
+  passwordChange:
+    password.label: Password
+    passwordConfirm.label: Confirm password
+    submit.label: Save password

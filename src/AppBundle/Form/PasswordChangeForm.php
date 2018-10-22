@@ -19,19 +19,23 @@ class PasswordChangeForm extends AbstractType
     {
         $builder
             ->add('password', RepeatedType::class, [
-                //'label' => 'password.label',
-                'translation_domain' => 'forms',
+                'first_options' => ['label' => 'user.passwordChange.password.label'],
+                'second_options' => ['label' => 'user.passwordChange.passwordConfirm.label'],
                 'type' => PasswordType::class,
-                'required'=>false,
+                'required' => false,
                 'constraints' => [
                     new NotBlank(),
                 ]
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label' => 'user.passwordChange.submit.label',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([]);
+        $resolver->setDefaults([
+            'translation_domain' => 'forms',
+        ]);
     }
 }
