@@ -11,7 +11,6 @@
  */
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
-$body = json_decode(file_get_contents('php://input'), true);
 $mailLogPath = '/tmp/mail.log';
 
 // initialize log file
@@ -20,7 +19,6 @@ if (!file_exists($mailLogPath)) {
 }
 $logData = unserialize(file_get_contents($mailLogPath));
 
-
 // route request
 $ret = [
     'error' => 'no commands matched',
@@ -28,7 +26,8 @@ $ret = [
 ];
 if ($method == 'POST' && $uri == '/v2/notifications/email') {
     $mailId = time() . rand(1, PHP_INT_MAX);
-    $logData[$mailId] = $body;
+    $decodedBody = json_decode(file_get_contents('php://input'), true);
+    $logData[$mailId] = $decodedBody;
     file_put_contents($mailLogPath, serialize($logData));
     $ret = [
         'id' => $mailId,
@@ -38,7 +37,7 @@ if ($method == 'POST' && $uri == '/v2/notifications/email') {
     $ret = $logData;
 } else if ($method == 'DELETE' && $uri == '/mock-data') {
     file_put_contents($mailLogPath, serialize([]));
-    $ret = 'mock data deleted';
+    $ret = ['delete'=>1];
 }
 
 echo json_encode($ret);
