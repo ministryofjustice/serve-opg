@@ -105,11 +105,16 @@ services:
     AppBundle\Service\File\Checker\PdfChecker: ~
     AppBundle\Service\File\Checker\JpgChecker: ~
     AppBundle\Service\File\Checker\PngChecker: ~
+    AppBundle\Service\File\Checker\TifChecker: ~
+    AppBundle\Service\File\Checker\DocChecker: ~
     AppBundle\Service\File\Checker\FileCheckerFactory: ~
     AppBundle\Service\File\FileUploader: ~
     AppBundle\Service\File\Types\Pdf: ~
     AppBundle\Service\File\Types\Jpg: ~
     AppBundle\Service\File\Types\Png: ~
+    AppBundle\Service\File\Types\Tif: ~
+    AppBundle\Service\File\Types\Doc: ~
+
 
 
     GuzzleHttp\Client:
