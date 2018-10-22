@@ -41,13 +41,27 @@ services:
         arguments:
           $client: "@guzzleClient"
 
-    Alphagov\Notifications\Client:
+    alphagov.notifications.client.real:
+      class: Alphagov\Notifications\Client
       arguments:
         $config:
           apiKey: "test-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-93a167f0-e5bc-439f-8750-6f79fec8b5f1"
           baseUrl: "%env(DC_NOTIFY_API_BASE_URL)%"
           httpClient: "@notificationHttpClient"
-    AppBundle\Service\MailSender: ~
+
+    alphagov.notifications.client.mock:
+      class: Alphagov\Notifications\Client
+      arguments:
+        $config:
+          apiKey: "test-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-93a167f0-e5bc-439f-8750-6f79fec8b5f1"
+          baseUrl: "%env(DC_NOTIFY_MOCK_ENDPOINT)%"
+          httpClient: "@notificationHttpClient"
+
+    AppBundle\Service\MailSender:
+      arguments:
+        $notifyClient: "@alphagov.notifications.client.real"
+        $mockClient: "@alphagov.notifications.client.mock"
+        $mockClientEnabledEmails: ["behat@digital.justice.gov.uk"]
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient

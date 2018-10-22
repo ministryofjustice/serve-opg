@@ -7,11 +7,19 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 trait NotifyTrait
 {
     /**
+     * @return string
+     */
+    private function getNotifyMockBaseUrl()
+    {
+        return getenv('DC_NOTIFY_MOCK_ENDPOINT');
+    }
+
+    /**
      * @return array
      */
     private function getNotifyMockSentMails()
     {
-        return json_decode(file_get_contents(getenv('DC_NOTIFY_API_BASE_URL') . '/mock-data'), 1);
+        return json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
     }
 
     /**
@@ -20,7 +28,7 @@ trait NotifyTrait
     public function iResetTheEmailLog()
     {
         $stream = stream_context_create(['http' => ['method' => 'DELETE']]);
-        file_get_contents(getenv('DC_NOTIFY_API_BASE_URL') . '/mock-data', false, $stream);
+        file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
 
         if (count($this->getNotifyMockSentMails()) > 0) {
             throw new \RuntimeException("error resetting email");

@@ -33,16 +33,32 @@ class MailSender
     private $router;
 
     /**
+     * @var Client
+     */
+    private $mockClient;
+
+    /**
+     * @var array
+     */
+    private $mockClientEnabledEmails;
+
+    /**
      * MailSender constructor.
      *
      * @param Client $notifyClient
      * @param RouterInterface $router
+     * @param Client $mockClient
+     * @param string $activateMockIfEmailMatches
+     * @param array $mockClientEnabledEmails
      */
-    public function __construct(Client $notifyClient, RouterInterface $router)
+    public function __construct(Client $notifyClient, RouterInterface $router, Client $mockClient, array $mockClientEnabledEmails)
     {
         $this->notifyClient = $notifyClient;
         $this->router = $router;
+        $this->mockClient = $mockClient;
+        $this->mockClientEnabledEmails = $mockClientEnabledEmails;
     }
+
 
     /**
      * @param User $user
@@ -58,9 +74,20 @@ class MailSender
         $activationLink = $this->router->generate('password-change', ['token'=>$user->getActivationToken()], RouterInterface::ABSOLUTE_URL);
 
         $this->lastEmailId = null;
-        return $this->notifyClient->sendEmail($user->getEmail(), 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a', [
+
+        return $this->getNotifyClient($user->getEmail())->sendEmail($user->getEmail(), 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a', [
             'activationLink' => $activationLink
         ]);
+    }
+
+    /**
+     * @param string $emailAddress
+     *
+     * @return Client
+     */
+    private function getNotifyClient($emailAddress)
+    {
+        return in_array($emailAddress, $this->mockClientEnabledEmails) ? $this->mockClient : $this->notifyClient;
     }
 
     /**
