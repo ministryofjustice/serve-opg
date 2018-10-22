@@ -90,14 +90,14 @@ class FileCheckerFactory
         switch (true) {
             case ($mimeType == 'application/pdf'):
                 return $this->pdf->setUploadedFile($uploadedFile);
-            case ($mimeType == 'application/msword' || $this->isWordDoc($uploadedFile)):
-                return $this->doc->setUploadedFile($uploadedFile);
             case ($mimeType == 'image/png'):
                 return  $this->png->setUploadedFile($uploadedFile);
             case ($mimeType == 'image/jpeg'):
                 return $this->jpg->setUploadedFile($uploadedFile);
             case ($mimeType == 'image/tiff'):
                 return $this->tif->setUploadedFile($uploadedFile);
+            case ($this->isWordDoc($uploadedFile)):
+                return $this->doc->setUploadedFile($uploadedFile);
             default:
                 throw new InvalidFileTypeException();
         }
