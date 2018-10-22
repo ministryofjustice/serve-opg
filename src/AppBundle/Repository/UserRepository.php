@@ -20,23 +20,16 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * Recreate random token if empty or older than elf::TOKEN_EXPIRY
+     * Replace user activation token with a new random one
      *
      * @param User $user
-     * @return bool true if changed, false if not
      */
-    public function refreshActivationTokenIfNeeded(User $user)
+    public function refreshActivationToken(User $user)
     {
         // if the token is still valid->
-        if (!$user->isTokenValid()) {
-            $newToken = sha1(time(true) . $user->getId() . $user->getEmail() . rand(17, PHP_INT_MAX));
-            $user->setActivationToken($newToken);
-            $this->_em->flush($user);
-
-            return true;
-        }
-
-        return false;
+        $newToken = sha1(time(true) . $user->getId() . $user->getEmail() . rand(17, PHP_INT_MAX));
+        $user->setActivationToken($newToken);
+        $this->_em->flush($user);
     }
 
 }
