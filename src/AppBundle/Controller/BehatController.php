@@ -94,6 +94,8 @@ class BehatController extends Controller
         if (!$user) {
             $user = new User(self::BEHAT_EMAIL);
             $this->em->persist($user);
+            $ret = "User " . self::BEHAT_EMAIL . " created";
+        } else {
             $ret = "User " . self::BEHAT_EMAIL . " already present, password reset";
         }
 
@@ -101,7 +103,6 @@ class BehatController extends Controller
         $user->setPassword($encodedPassword);
 
         $this->em->flush($user);
-        $ret = "User " . self::BEHAT_EMAIL . " created";
 
         return new Response($ret);
     }
