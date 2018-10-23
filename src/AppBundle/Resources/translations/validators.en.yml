@@ -10,6 +10,7 @@ document:
          risky: "Cannot upload file, risky content found inside. Technical details: %techDetails%"
          virusFound:  "Cannot upload file, virus found inside. Technical details: %techDetails%"
          generic: "Cannot upload file, please try again later. Technical details: %techDetails%"
+         notSupported: "File type is not supported."
 
 user:
    password:

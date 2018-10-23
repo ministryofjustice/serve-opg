@@ -43,3 +43,11 @@ user:
           at least 1 number
     passwordConfirm.label: Confirm password
     submit.label: Save password
+
+document:
+  type:
+    COP1A: COP 1A
+    COP3: COP 3
+    COP4: COP 4
+    COURT_ORDER: court order
+    OTHER: additional

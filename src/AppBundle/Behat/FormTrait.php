@@ -13,14 +13,16 @@ trait FormTrait
     public function theFormShouldBeOrNotBeValid($shouldBe)
     {
         $this->assertResponseStatus(200);
-        $hasErrors = $this->getSession()->getPage()->has('css', '.govuk-error-summary');
+        // added second css for new govuk error groups (see macro: errorSummary)
+        $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error') ||
+                     $this->getSession()->getPage()->has('css', '.govuk-error-summary');
 
         if ($shouldBe == 'valid' && $hasErrors) {
             throw new \RuntimeException('Errors found in the form. Zero expected');
         }
 
         if ($shouldBe == 'invalid' && !$hasErrors) {
-            throw new \RuntimeException('No errors found in form. At elast one expected');
+            throw new \RuntimeException('No errors found in form. At least one expected');
         }
     }
 

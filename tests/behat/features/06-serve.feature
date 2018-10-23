@@ -35,5 +35,6 @@ Feature: serve order
     And I should see "93559316" in the "flash" region
     When I click on "served-tab"
     Then I should see the "order-93559316-HW" region
-    And I should see "test-other.jpg" in the "order-93559316-HW" region
+    And I should see "supported1.docx" in the "order-93559316-HW" region
+    And I should see "supported3.tiff" in the "order-93559316-HW" region
     And the documents for order "93559316-HW" should be transferred
