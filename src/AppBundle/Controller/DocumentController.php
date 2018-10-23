@@ -119,8 +119,6 @@ class DocumentController extends Controller
                     '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $request->headers->get('x-request-id'),
                 ], 'validators');
 
-                $request->getSession()->getFlashBag()->add('notification', 'File could not be uploaded');
-
                 $form->get('file')->addError(new FormError($message));
                 $this->get('logger')->error($e->getMessage()); //fully log exceptions
             }

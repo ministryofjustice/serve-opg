@@ -1,10 +1,15 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
+{% import 'AppBundle:Macros:_macros.html.twig' as macro %}
 
 {% block htmlTitle %} Attach {{ docType | upper }}{% endblock %}
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
     <h1 class="govuk-heading-l">Attach {{ ('document.type.' ~ docType) | trans }}</h1>
+{% endblock %}
+
+{% block validationSummary %}
+    {{ macro.errorSummary(form) }}
 {% endblock %}
 
 {% block content %}

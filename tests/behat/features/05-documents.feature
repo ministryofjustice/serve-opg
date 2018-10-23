@@ -75,9 +75,36 @@ Feature: documents
     And the url should match "/order/\d+/summary#documents"
     And the order should be servable
 
-    # Add additional document
+    # Add additional document docx
     When I click on "add-document-other" in the "documents-other" region
-    When I attach the file "test-other.jpg" to "document_form_file"
+    When I attach the file "supported1.docx" to "document_form_file"
     And I click on "submit"
     Then the form should be valid
     And the url should match "/order/\d+/summary#documents"
+
+    # Add additional document tif
+    When I click on "add-document-other" in the "documents-other" region
+    When I attach the file "supported3.tiff" to "document_form_file"
+    And I click on "submit"
+    Then the form should be valid
+    And the url should match "/order/\d+/summary#documents"
+
+  Scenario: Test unsupported files
+    # Add additional unsupported document
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    When I follow "order-93559316-HW"
+    Then the url should match "/order/\d+/summary"
+    When I click on "add-document-other" in the "documents-other" region
+    When I attach the file "unsupported1.rtf" to "document_form_file"
+    And I click on "submit"
+    Then the form should be invalid
+    When I attach the file "unsupported2.txt" to "document_form_file"
+    And I click on "submit"
+    Then the form should be invalid
+    When I attach the file "unsupported3.xlsx" to "document_form_file"
+    And I click on "submit"
+    Then the form should be invalid
+    When I attach the file "unsupported4.xls" to "document_form_file"
+    And I click on "submit"
+    Then the form should be invalid
+
