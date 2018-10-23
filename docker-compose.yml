@@ -82,9 +82,7 @@ services:
       DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
       DC_FILE_SCANNER_SSL_VERIFY: 1
       DC_BEHAT_CONTROLLER_ENABLED: 1
-      # notify (team and whitelist key)
-      DC_NOTIFY_API_BASE_URL: "https://api.notifications.service.gov.uk"
-      DC_NOTIFY_API_KEY: "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
+      # Alphagov Notification mock endpoint (behat email only)
       DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
       # fixtures (users and cases. Not needed here for behat testing)
       DC_FIXURES_USERS: |
@@ -181,6 +179,7 @@ services:
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
       # used to access the sent email. Note: it must be set in the mock client in the symfony container matching the email used for testing
+      # tells behat at what base URL Notifications mock is responding
       DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
