@@ -50,15 +50,6 @@ docker-compose run --rm app php app/console doctrine:fixtures:load --append
 # Generates status of migrations
 docker-compose run --rm app php app/console doctrine:migrations:status
 
-# Generate migration script between entities and schema
-docker-compose run --rm app php app/console doctrine:migrations:diff
-
-# Generate blank migration script
-docker-compose run --rm app php app/console doctrine:migrations:generate
-
-# Example: run migration version 20181019141515
-docker-compose run --rm app php app/console doctrine:migrations:execute 20181019141515
-
 # enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
 
@@ -133,7 +124,18 @@ docker-compose run npm bash
 gulp watch
 ```
 
+# Database Migrations
+```bash
+# Database migrations
+# Generate migration script between entities and schema
+docker-compose run --rm app php app/console doctrine:migrations:diff
 
+# Generate blank migration script
+docker-compose run --rm app php app/console doctrine:migrations:generate
+
+# Example: run migration version 20181019141515
+docker-compose run --rm app php app/console doctrine:migrations:execute 20181019141515
+```
 
 # Utilities
 
