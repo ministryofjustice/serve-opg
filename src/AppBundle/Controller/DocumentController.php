@@ -6,6 +6,7 @@ use AppBundle\Entity\Document;
 use AppBundle\Entity\Order;
 use AppBundle\Form\DocumentForm;
 use AppBundle\Service\DocumentService;
+use AppBundle\Service\File\Checker\Exception\InvalidFileTypeException;
 use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
 use AppBundle\Service\File\Checker\FileCheckerFactory;
@@ -82,8 +83,9 @@ class DocumentController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $document->getFile();
 
-            $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
             try {
+                $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
+
                 $fileObject->checkFile();
                 if ($fileObject->isSafe()) {
                     $document = $this->fileUploader->uploadFile(
@@ -91,7 +93,7 @@ class DocumentController extends Controller
                         $document,
                         $uploadedFile
                     );
-                   $request->getSession()->getFlashBag()->add('notification', 'File uploaded');
+                   $request->getSession()->getFlashBag()->add('success', 'File uploaded');
 
                     $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
                     $document->setFilename($fileName);
@@ -105,18 +107,18 @@ class DocumentController extends Controller
                 return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), '_fragment' => 'documents']);
             } catch (\Exception $e) {
                 $errorToErrorTranslationKey = [
+                    InvalidFileTypeException::class => 'notSupported',
                     RiskyFileException::class => 'risky',
                     VirusFoundException::class => 'virusFound',
                 ];
-                $errorClass = get_class($e);
-                if (isset($errorToErrorTranslationKey[$errorClass])) {
-                    $errorKey = $errorToErrorTranslationKey[$errorClass];
-                } else {
-                    $errorKey = 'generic';
-                }
+
+                $errorKey = isset($errorToErrorTranslationKey[get_class($e)]) ?
+                    $errorToErrorTranslationKey[get_class($e)] : 'generic';
+
                 $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
                     '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $request->headers->get('x-request-id'),
                 ], 'validators');
+
                 $form->get('file')->addError(new FormError($message));
                 $this->get('logger')->error($e->getMessage()); //fully log exceptions
             }

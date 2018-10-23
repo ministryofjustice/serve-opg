@@ -18,8 +18,8 @@ class AbstractFileChecker
      * Any other checks that are not found by the virus scan go here.
      * Checks file extension.
      *
-     * @param  UploadedFile $file
-     * @return bool
+     * @param UploadableFileInterface $file
+     * @return UploadableFileInterface
      */
     public function checkFile(UploadableFileInterface $file)
     {
@@ -59,6 +59,6 @@ class AbstractFileChecker
      */
     public static function getAcceptedExtensions()
     {
-        return ['pdf', 'jpg', 'jpeg', 'png'];
+        return ['pdf', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'doc', 'docx'];
     }
 }
