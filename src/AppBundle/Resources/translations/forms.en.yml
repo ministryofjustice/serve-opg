@@ -33,6 +33,7 @@ user:
       hint: This must be the address you normally use to sign in to this service
     submit.label: Reset your password
   passwordChange:
-    password.label: Password
+    password:
+      label: Password
     passwordConfirm.label: Confirm password
     submit.label: Save password
