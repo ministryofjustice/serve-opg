@@ -43,7 +43,7 @@ services:
 
     # Notifications client, using Secret manager
     alphagov.notifications.client.real:
-      class: AppBundle\Service\NotificationsClient
+      class: AppBundle\Service\NotificationsClientSecretManager
       arguments:
         $config:
           httpClient: "@notificationHttpClient"

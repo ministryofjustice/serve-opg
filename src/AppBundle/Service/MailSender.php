@@ -21,7 +21,6 @@ class MailSender
      */
     private $lastEmailId = null;
 
-
     /**
      * @var Client
      */
