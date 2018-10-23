@@ -20,7 +20,6 @@ trait NotifyTrait
     private function getNotifyMockSentMails()
     {
         $ret =  json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
-        print_r($ret);
         return $ret;
     }
 
@@ -30,7 +29,7 @@ trait NotifyTrait
     public function iResetTheEmailLog()
     {
         $stream = stream_context_create(['http' => ['method' => 'DELETE']]);
-        echo file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
+        file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
 
         if (count($this->getNotifyMockSentMails()) > 0) {
             throw new \RuntimeException("error resetting email");
