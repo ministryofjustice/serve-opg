@@ -31,6 +31,13 @@ user:
     email.label: Email Address
     submit.label: Reset your password
   passwordChange:
-    password.label: Password
+    password:
+      label: Password
+      hint: "Your password must have:"
+      hintList: |
+          at least 8 characters
+          at least 1 uppercase letter
+          at least 1 lowercase letter
+          at least 1 number
     passwordConfirm.label: Confirm password
     submit.label: Save password

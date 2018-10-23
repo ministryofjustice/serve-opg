@@ -89,6 +89,15 @@ services:
       tags:
       - { name: twig.extension }
 
+    AppBundle\Twig\FormFieldsExtension:
+      tags:
+      - { name: twig.extension }
+
+    # Adds 'help' var to form component
+    AppBundle\Form\Extension\FormTypeExtension:
+      tags:
+        - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
     Aws\SecretsManager\SecretsManagerClient:
       class: Aws\SecretsManager\SecretsManagerClient
       arguments:

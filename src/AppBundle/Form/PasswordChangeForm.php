@@ -19,7 +19,11 @@ class PasswordChangeForm extends AbstractType
     {
         $builder
             ->add('password', RepeatedType::class, [
-                'first_options' => ['label' => 'user.passwordChange.password.label'],
+                'first_options' => [
+                    'label' => 'user.passwordChange.password.label',
+                    'hint' => 'user.passwordChange.password.hint',
+                    'hintList' => 'user.passwordChange.password.hintList'
+                ],
                 'second_options' => ['label' => 'user.passwordChange.passwordConfirm.label'],
                 'type' => PasswordType::class,
                 'required' => false,

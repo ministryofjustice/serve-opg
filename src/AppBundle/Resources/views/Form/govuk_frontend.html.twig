@@ -37,6 +37,19 @@
                 {{- label|trans({}, translation_domain) -}}
             {%- endif -%}
         </label>
+        {% if form.vars.hint ?? false %}
+        <span id="{{ id }}-hint" class="govuk-hint">
+            {{ form.vars.hint | trans([], 'forms') }}
+        </span>
+        {%- endif -%}
+        {% if form.vars.hintList ?? false %}
+        {% set hintList = form.vars.hintList|getHintList('forms') %}
+        <ul class="govuk-list govuk-list--bullet govuk-hint">
+            {%- for item in hintList -%}
+            <li>{{ item }}</li>
+            {%- endfor -%}
+        </ul>
+        {%- endif -%}
     {%- endif -%}
 {%- endblock form_label -%}
 
