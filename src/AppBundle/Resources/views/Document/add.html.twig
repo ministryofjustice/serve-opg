@@ -5,7 +5,7 @@
 {% block htmlTitle %} Attach {{ docType | upper }}{% endblock %}
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
-    <h1 class="govuk-heading-l">Attach {{ ('document.type.' ~ docType) | trans }}</h1>
+    <h1 class="govuk-heading-l">Attach {{ ('document.type.' ~ docType) | trans([], 'forms') }} document</h1>
 {% endblock %}
 
 {% block validationSummary %}
