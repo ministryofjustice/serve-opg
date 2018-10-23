@@ -73,7 +73,8 @@ class UserController extends Controller
         $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userRepo->findOneByEmail($form->getData()['email']); /* @var $user User */
+            $email = $form->getData()['email'];
+            $user = $userRepo->findOneByEmail($email); /* @var $user User */
             if ($user) {
                 if (!$user->isTokenValid()) {
                     $userRepo->refreshActivationToken($user);
@@ -81,7 +82,7 @@ class UserController extends Controller
                 $this->mailerSender->sendPasswordResetEmail($user);
             }
 
-            return $this->redirectToRoute('password-reset-sent');
+            return $this->redirectToRoute('password-reset-sent', ['email'=>$email]);
         }
 
         return $this->render('AppBundle:User:password-reset-request.html.twig', [
@@ -127,8 +128,9 @@ class UserController extends Controller
      */
     public function passwordResetSent(Request $request)
     {
-        return $this->render('AppBundle:User:password-reset-sent.html.twig', array(
-        ));
+        return $this->render('AppBundle:User:password-reset-sent.html.twig', [
+            'email' => $request->get('email')
+        ]);
     }
 
     /**
