@@ -48,7 +48,6 @@ class MailSender
      * @param Client $notifyClient
      * @param RouterInterface $router
      * @param Client $mockClient
-     * @param string $activateMockIfEmailMatches
      * @param array $mockClientEnabledEmails
      */
     public function __construct(Client $notifyClient, RouterInterface $router, Client $mockClient, array $mockClientEnabledEmails)
