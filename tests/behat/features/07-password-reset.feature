@@ -55,3 +55,6 @@ Feature: password reset
     When I log in as "behat@digital.justice.gov.uk" with password "Abcd12345"
     Then the form should be valid
     And I should be on "/case"
+    # assert old activation link is not valdi anymore
+    When I click on the link in the email sent to "behat@digital.justice.gov.uk"
+    Then the response status code should be 404

@@ -33,7 +33,7 @@ class User implements UserInterface, EquatableInterface
     private $activationTokenCreatedAt;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $activationToken;
 
@@ -128,15 +128,15 @@ class User implements UserInterface, EquatableInterface
     /**
      * @return string
      */
-    public function getActivationToken(): string
+    public function getActivationToken()
     {
         return $this->activationToken;
     }
 
     /**
-     * @param string $activationToken
+     * @param string|null $activationToken
      */
-    public function setActivationToken(string $activationToken): void
+    public function setActivationToken($activationToken)
     {
         $this->activationToken = $activationToken;
         $this->activationTokenCreatedAt = new \DateTime();

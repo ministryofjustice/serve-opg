@@ -76,7 +76,7 @@ class UserController extends Controller
             $email = $form->getData()['email'];
             $user = $userRepo->findOneByEmail($email); /* @var $user User */
             if ($user) {
-                if (!$user->isTokenValid()) {
+                if (empty($user->getActivationToken()) || !$user->isTokenValid()) {
                     $userRepo->refreshActivationToken($user);
                 }
                 $this->mailerSender->sendPasswordResetEmail($user);
@@ -101,7 +101,7 @@ class UserController extends Controller
             throw new NotFoundHttpException('User not found');
         }
         if (!$user->isTokenValid()) {
-            throw new NotFoundHttpException('User not found');
+            throw new NotFoundHttpException('token expired');
         }
 
         $form = $this->createForm(PasswordChangeForm::class, $user);
@@ -110,6 +110,7 @@ class UserController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $newPassordEncoded = $this->encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($newPassordEncoded);
+            $user->setActivationToken(null);
             $this->em->flush($user);
 
             $request->getSession()->getFlashBag()->add('notice', 'Password changed. Please login using the new password');
