@@ -76,8 +76,9 @@ services:
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
-      SIRIUS_PUBLIC_API_EMAIL: foo
-      SIRIUS_KMS_KEY_ARN: arn:aws:kms:eu-west-1:012345678901:alias/foo
+      # using the same key as notifications, as the localstack secretmanager mock only supports one key
+      SIRIUS_PUBLIC_API_EMAIL: notification_api_key
+      SIRIUS_KMS_KEY_ARN: arn:aws:kms:eu-west-1:012345678901:alias/notification_api_key
       # file scanner
       DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
       DC_FILE_SCANNER_SSL_VERIFY: 1
