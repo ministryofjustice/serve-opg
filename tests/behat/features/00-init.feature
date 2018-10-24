@@ -14,5 +14,4 @@ Feature: prechecks
 
     Scenario: Login page works OK
         When I go to "/login"
-        And print last response
         Then the response status code should be 200
