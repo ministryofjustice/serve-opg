@@ -107,4 +107,7 @@ Feature: documents
     When I attach the file "unsupported4.xls" to "document_form_file"
     And I click on "submit"
     Then the form should be invalid
+    When I attach the file "unsupported5.jpg.exe" to "document_form_file"
+    And I click on "submit"
+    Then the form should be invalid
 
