@@ -1,8 +1,8 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
-{% block htmlTitle %}Cases{% endblock %}
+{% block htmlTitle %}Orders{% endblock %}
 {% block pageTitle %}
-    <h1 class="govuk-heading-xl">Cases</h1>
+    <h1 class="govuk-heading-xl">Orders</h1>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
         <form method="GET" action="{{ path(app.request.attributes.get('_route')) }}">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-visually-hidden">Search</legend>
-                <label for="search" class="govuk-label">Search by court order number</label>
+                <label for="search" class="govuk-label">Search by case number</label>
                 <input type="text" id="search" name="q" value="{{  filters.q }}" class="govuk-input govuk-!-width-one-half" />
                 <input type="hidden" name="type" value="{{  filters.type }}" />
                 <input class="govuk-button" type="submit" value="Search" id="search_submit" />
@@ -26,12 +26,12 @@
         <ul class="govuk-tabs__list">
             <li class="govuk-tabs__list-item" role="presentation">
                 <a class="govuk-tabs__tab behat-link-pending-tab {{ filters.type == 'pending' ? 'govuk-tabs__tab--selected' }}" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
-                    Pending ({{ counts.pending }})
+                    To do ({{ counts.pending }})
                 </a>
             </li>
             <li class="govuk-tabs__list-item" role="presentation">
                 <a class="govuk-tabs__tab behat-link- behat-link-served-tab {{ filters.type == 'served' ? 'govuk-tabs__tab--selected' }}" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
-                    Served Recently ({{ counts.served }})
+                    Served ({{ counts.served }})
                 </a>
             </li>
         </ul>
@@ -47,7 +47,7 @@
                             <th class="govuk-table__header" scope="col">Order type</th>
                             <th class="govuk-table__header" scope="col">Client</th>
                             {% if filters.type == 'pending' %}
-                                <th class="govuk-table__header" scope="col">Order date</th>
+                                <th class="govuk-table__header" scope="col">Order made</th>
                                 <th class="govuk-table__header" scope="col">Order issued</th>
                             {% else %}
                                 <th class="govuk-table__header" scope="col">Date served</th>
@@ -102,7 +102,7 @@
                 </table>
 
                 <div class="govuk-pagination">
-                    <div class="govuk-pagination__summary">Showing 1 – {{ orders | length }} of {{ counts[filters['type']] }} orders{{ filters.type == 'pending' ? ' to be' }} served</div>
+                    <div class="govuk-pagination__summary">Showing 1 – {{ orders | length }} of {{ counts[filters['type']] }} orders</div>
                 </div>
             {% else %}
                 <p class="govuk-!-font-weight-bold">No orders found</p>
