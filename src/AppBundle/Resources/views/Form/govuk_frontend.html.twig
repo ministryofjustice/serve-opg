@@ -43,10 +43,10 @@
         </span>
         {%- endif -%}
         {% if form.vars.hintList ?? false %}
-        {% set hintList = form.vars.hintList|getHintList('forms') %}
+        {% set hintList = form.vars.hintList | trans([], 'forms') | split("\n") %}
         <ul class="govuk-list govuk-list--bullet govuk-hint">
             {%- for item in hintList -%}
-            <li>{{ item }}</li>
+               {% if item %}<li>{{ item }}</li>{% endif %}
             {%- endfor -%}
         </ul>
         {%- endif -%}
