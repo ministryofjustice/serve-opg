@@ -91,10 +91,6 @@ services:
       tags:
       - { name: twig.extension }
 
-    AppBundle\Twig\FormFieldsExtension:
-      tags:
-      - { name: twig.extension }
-
     # Adds 'help' var to form component
     AppBundle\Form\Extension\FormTypeExtension:
       tags:
