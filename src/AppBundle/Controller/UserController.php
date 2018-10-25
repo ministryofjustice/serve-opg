@@ -113,7 +113,7 @@ class UserController extends Controller
             $user->setActivationToken(null);
             $this->em->flush($user);
 
-            $request->getSession()->getFlashBag()->add('notification', 'Password changed. Please login using the new password');
+            $request->getSession()->getFlashBag()->add('info', 'Password changed. Please sign in using the new password');
 
             return $this->redirectToRoute('login');
         }
