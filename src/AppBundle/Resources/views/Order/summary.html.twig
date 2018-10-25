@@ -23,7 +23,7 @@
         {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PF') %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
-                    Are the bond or assets above £21,000?
+                    Are the bond or assets over £21,000?
                 </td>
                 <td class="govuk-table__cell behat-region-has-assets">
                     {% if order.hasAssetsAboveThreshold %}
