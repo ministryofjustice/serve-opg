@@ -20,7 +20,9 @@ final class Version20181025074445 extends AbstractMigration
         $this->addSql('INSERT INTO dc_user VALUES(5,\'phil.wilson@digital.justice.gov.uk\',\'$2y$12$M6AXd9I0x/hdr2rWs31HDOo1frfSJmd9Wk2WKZ9eHVSvmVgLQ8O3K\')');
         $this->addSql('INSERT INTO dc_user VALUES(6,\'elizabeth.feenan@digital.justice.gov.uk\',\'$2y$12$M6AXd9I0x/hdr2rWs31HDOo1frfSJmd9Wk2WKZ9eHVSvmVgLQ8O3K\')');
         $this->addSql('INSERT INTO dc_user VALUES(7,\'stephen.petch@digital.justice.gov.uk\',\'$2y$12$M6AXd9I0x/hdr2rWs31HDOo1frfSJmd9Wk2WKZ9eHVSvmVgLQ8O3K\')');
+        $this->addSql('ALTER SEQUENCE dc_user_id_seq RESTART WITH 20');
 
+        
     }
 
     public function down(Schema $schema) : void
