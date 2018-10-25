@@ -55,10 +55,18 @@ class SiriusService
     private $logger;
 
     /**
+     * @var SecretsManagerClient
+     */
+    private $secretsManagerClient;
+
+    /**
      * SiriusService constructor.
-     *
-     * @param ClientInterface $httpClient Used for Sirius API call
+     * 
+     * @param EntityManager $em
+     * @param ClientInterface $httpClient  Used for Sirius API call
      * @param StorageInterface $S3storage
+     * @param LoggerInterface $logger
+     * @param SecretsManagerClient $secretsManagerClient
      */
     public function __construct(
         EntityManager $em,

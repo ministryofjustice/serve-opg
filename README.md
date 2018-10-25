@@ -27,7 +27,8 @@ sudo security add-trusted-cert -d -r trustRoot \
 # Create aws resources for localstack
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name foo --secret-string bar
+# API token to send email only to the team 
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name notification_api_key --secret-string "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
 
 # Vendor php dependencies
 docker-compose run --rm composer
@@ -99,6 +100,14 @@ docker-compose run --rm app php app/console doctrine:fixtures:load --purge-with-
 # Run Behat
 docker-compose run --rm behat
 ```
+
+### Notify mocking
+Notify is mocked via a custom script.
+Requests to the service can be seen at 
+
+`http://localhost:8081/mock-data`
+
+Behat `NotifyTrait` takes care of resetting / accessing those emails from steps in the behat context.
 
 # Debugging
 Login to Database

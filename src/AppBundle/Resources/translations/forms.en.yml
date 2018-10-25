@@ -25,6 +25,25 @@ deputy:
   addressCounty: County
   addressPostcode: Postcode
 
+
+user:
+  passwordReset:
+    email:
+      label: Email Address
+      hint: This must be the address you normally use to sign in to this service
+    submit.label: Reset your password
+  passwordChange:
+    password:
+      label: Password
+      hint: "Your password must have:"
+      hintList: |
+          at least 8 characters
+          at least 1 uppercase letter
+          at least 1 lowercase letter
+          at least 1 number
+    passwordConfirm.label: Confirm password
+    submit.label: Save password
+
 document:
   type:
     COP1A: COP 1A

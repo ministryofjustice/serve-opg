@@ -8,10 +8,12 @@ use AppBundle\Entity\OrderHw;
 use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use AppBundle\Service\ClientService;
+use AppBundle\Service\MailSender;
 use AppBundle\Service\OrderService;
 use AppBundle\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,7 +49,6 @@ class BehatController extends Controller
      * @var UserPasswordEncoderInterface
      */
     private $encoder;
-
 
     /**
      * @var UserProvider
@@ -90,16 +91,18 @@ class BehatController extends Controller
 
         // add user if not existing
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => self::BEHAT_EMAIL]);
-        if ($user) {
-            $ret = "User " . self::BEHAT_EMAIL . " already present";
-        } else {
+        if (!$user) {
             $user = new User(self::BEHAT_EMAIL);
-            $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
-            $user->setPassword($encodedPassword);
             $this->em->persist($user);
-            $this->em->flush($user);
             $ret = "User " . self::BEHAT_EMAIL . " created";
+        } else {
+            $ret = "User " . self::BEHAT_EMAIL . " already present, password reset";
         }
+
+        $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
+        $user->setPassword($encodedPassword);
+
+        $this->em->flush($user);
 
         return new Response($ret);
     }
@@ -114,11 +117,11 @@ class BehatController extends Controller
         $ret = [];
 
         // empty orders for behat client
-        $client  = $this->em->getRepository(Client::class)->findBy(['caseNumber'=>self::BEHAT_CASE_NUMBER]);
+        $client = $this->em->getRepository(Client::class)->findBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
         $clientOrders = $this->em->getRepository(Order::class)->findBy(['client' => $client]);
         foreach ($clientOrders as $order) {
             $this->orderService->emptyOrder($order);
-            $ret[] = get_class($order). " for client " . self::BEHAT_CASE_NUMBER . " present and emptied (docs, deputies)";
+            $ret[] = get_class($order) . " for client " . self::BEHAT_CASE_NUMBER . " present and emptied (docs, deputies)";
         }
 
         return new Response(implode("\n", array_filter($ret)));
@@ -133,7 +136,7 @@ class BehatController extends Controller
 
         $this->userProvider->resetUsernameAttempts(self::BEHAT_EMAIL);
 
-        return new Response(self::BEHAT_EMAIL ." attempts reset done");
+        return new Response(self::BEHAT_EMAIL . " attempts reset done");
     }
 
     /**
@@ -155,6 +158,8 @@ class BehatController extends Controller
 
         return new Response(implode("|", array_filter($ret)));
     }
+
+
 
     private function getOrderFromIdentifier($orderIdentifier)
     {

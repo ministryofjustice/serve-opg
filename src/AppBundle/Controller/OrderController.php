@@ -106,7 +106,11 @@ class OrderController extends Controller
                     )
                 );
             } catch (\Exception $e) {
-                $request->getSession()->getFlashBag()->add('error', 'Order ' . $orderId . ' could not be served at the moment');
+                $message = 'Order ' . $orderId . ' could not be served at the moment';
+                if ($this->getParameter('kernel.debug')) {
+                    $message .= '.Details (only on dev mode): '.$e;
+                }
+                $request->getSession()->getFlashBag()->add('error', $message);
             }
 
 

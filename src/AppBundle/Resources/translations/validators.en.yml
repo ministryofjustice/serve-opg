@@ -11,3 +11,13 @@ document:
          virusFound:  "Cannot upload file, virus found inside. Technical details: %techDetails%"
          generic: "Cannot upload file, please try again later. Technical details: %techDetails%"
          notSupported: "File type is not supported."
+
+user:
+   password:
+      doesNotMatch: Passwords do not match
+      notBlank: "You can't leave this blank: please enter a password"
+      minLength: The password must have at least {{ limit }} letters
+      maxLength: The password can't be longer than {{ limit }} letters
+      noLowerCaseChars: The password must have at least one lowercase letter
+      noUpperCaseChars: The password must have at least one capital letter
+      noNumber: The password must have at least one number

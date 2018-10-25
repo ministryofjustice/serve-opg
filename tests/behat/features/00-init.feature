@@ -11,3 +11,7 @@ Feature: prechecks
     Scenario: Reset brute force attempts
         When I go to "/behat/reset-brute-force-attempts-logger"
         Then the response status code should be 200
+
+    Scenario: Login page works OK
+        When I go to "/login"
+        Then the response status code should be 200
