@@ -94,13 +94,16 @@ class OrderService
      */
     public function emptyOrder(Order $order)
     {
+        $orderId = $order->getId();
+        $this->em->clear();
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+
         foreach ($order->getDeputies() as $deputy) {
             $this->em->remove($deputy);
         }
         foreach ($order->getDocuments() as $document) {
             $this->em->remove($document);
         }
-        $this->em->flush();
 
         $order
             ->setServedAt(null)
@@ -108,6 +111,6 @@ class OrderService
             ->setHasAssetsAboveThreshold(null)
             ->setAppointmentType(null);
 
-        $this->em->flush($order);
+        $this->em->flush();
     }
 }
