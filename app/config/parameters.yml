@@ -18,3 +18,5 @@ parameters:
     env(DC_S3_REGION): "eu-west-1"
     env(DC_S3_ENDPOINT): ''
     env(DC_S3_BUCKET_NAME): "MUST_BE_DEFINED"
+
+    env(DC_NOTIFY_MOCK_ENDPOINT): "http://notify:8081"
