@@ -31,7 +31,7 @@ docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://tes
 docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name notification_api_key --secret-string "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
 
 # Vendor php dependencies
-docker-compose run --rm composer
+        docker-compose run --rm composer
 
 # Generate static assets
 docker-compose run --rm npm
@@ -47,6 +47,9 @@ docker-compose run --rm app php app/console doctrine:schema:update --force --dum
 # Add sample users and cases (local env only). 
 # See docker-compose.yml app container, DC_FIXURES_USERS variable 
 docker-compose run --rm app php app/console doctrine:fixtures:load --append
+
+# Generates status of migrations
+docker-compose run --rm app php app/console doctrine:migrations:status
 
 # enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
@@ -130,7 +133,18 @@ docker-compose run npm bash
 gulp watch
 ```
 
+# Database Migrations
+```bash
+# Database migrations
+# Generate migration script between entities and schema
+docker-compose run --rm app php app/console doctrine:migrations:diff
 
+# Generate blank migration script
+docker-compose run --rm app php app/console doctrine:migrations:generate
+
+# Example: run migration version 20181019141515
+docker-compose run --rm app php app/console doctrine:migrations:execute 20181019141515
+```
 
 # Utilities
 

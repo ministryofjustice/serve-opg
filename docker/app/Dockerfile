@@ -20,7 +20,8 @@ COPY src src
 COPY app app
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
-&& php app/console doctrine:schema:update --force --no-interaction \
+&& php app/console doctrine:schema:drop --force --no-interaction \
+&& php app/console doctrine:migrations:migrate --no-interaction \
 && chown -R www-data var \
 && php-fpm
 
