@@ -19,6 +19,7 @@ Feature: password reset
     When I fill in "password_reset_form_email" with "nonexistinguser@digital.justice.gov.uk"
     And I press "password_reset_form_submit"
     Then I should be on "/user/password-reset/sent"
+    And I should not see "Sorry, your password could not be reset at the moment." in the "flash" region
 #    Then there should be no email sent to "nonexistinguser@digital.justice.gov.uk"
 #    # valid email
     When I go to "/login"
