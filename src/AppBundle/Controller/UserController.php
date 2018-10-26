@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Alphagov\Notifications\Exception\NotifyException;
 use AppBundle\Entity\User;
 use AppBundle\Form\PasswordChangeForm;
 use AppBundle\Form\PasswordResetForm;
@@ -79,7 +80,11 @@ class UserController extends Controller
                 if (empty($user->getActivationToken()) || !$user->isTokenValid()) {
                     $userRepo->refreshActivationToken($user);
                 }
-                $this->mailerSender->sendPasswordResetEmail($user);
+                try {
+                    $this->mailerSender->sendPasswordResetEmail($user);
+                } catch (NotifyException $e){
+                    $request->getSession()->getFlashBag()->add('error', 'Sorry, your password could not be reset at the moment.');
+                }
             }
 
             return $this->redirectToRoute('password-reset-sent', ['email'=>$email]);

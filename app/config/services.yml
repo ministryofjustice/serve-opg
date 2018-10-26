@@ -42,26 +42,17 @@ services:
           $client: "@guzzleClient"
 
     # Notifications client, using Secret manager
-    alphagov.notifications.client.real:
-      class: AppBundle\Service\NotificationsClientSecretManager
+    alphagov.notifications.client:
+      class: AppBundle\Service\DigicopNotificationsClient
       arguments:
         $config:
           httpClient: "@notificationHttpClient"
-
-    # Notifications mock client for behat (local URL)
-    alphagov.notifications.client.mock:
-      class: Alphagov\Notifications\Client
-      arguments:
-        $config:
           # API key must be a <whatever>-<4 UUID>-<4 UUID> with valid Version 4 UUID JSON webtoken or an execption is thrown
-          apiKey: "mock-0b6deb72-13ec-45f5-b598-88c7be007000-0b6deb72-13ec-45f5-b598-88c7be007000"
-          #apiKey: "test-  dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1   - 93a167f0-e5bc-439f-8750-6f79fec8b5f1  "
-          baseUrl: "%env(DC_NOTIFY_MOCK_ENDPOINT)%"
-          httpClient: "@notificationHttpClient"
+          apiKey: "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
 
     AppBundle\Service\MailSender:
       arguments:
-        $notifyClient: "@alphagov.notifications.client.real"  
+        $notifyClient: "@alphagov.notifications.client"
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient

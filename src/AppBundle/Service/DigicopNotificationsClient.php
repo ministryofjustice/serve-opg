@@ -8,7 +8,7 @@ use Aws\SecretsManager\SecretsManagerClient;
 /**
  * Alphagov Notifications Client that grabs the apiKey from AWS secret manager
  */
-class NotificationsClientSecretManager extends \Alphagov\Notifications\Client
+class DigicopNotificationsClient extends \Alphagov\Notifications\Client
 {
     /**
      * @var SecretsManagerClient

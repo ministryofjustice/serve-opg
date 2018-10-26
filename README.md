@@ -189,7 +189,11 @@ A recommended set of checks is as follows:
     ```bash
     docker-compose run --rm qa security-checker security:check
     ```
-
+-   notification api key checker
+    ```bash
+    docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager describe-secret-value --secret-id notification_api_key
+    docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager get-secret-value --secret-id notification_api_key
+    ```
 A convenience script is provided for the above set:
 ```bash
 docker-compose run --rm qa ./default_qa_checks.sh
