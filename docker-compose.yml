@@ -84,7 +84,7 @@ services:
       DC_FILE_SCANNER_SSL_VERIFY: 1
       DC_BEHAT_CONTROLLER_ENABLED: 1
       # Alphagov Notification mock endpoint (behat email only)
-      DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
+      #DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
       # fixtures (users and cases. Not needed here for behat testing)
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
@@ -164,7 +164,7 @@ services:
       - --stop-on-failure
     depends_on:
       - loadbalancer
-      - notify
+      #- notify
     environment:
       APP_VERSION: 0-local-app
       WEB_VERSION: 0-local-web
@@ -181,18 +181,18 @@ services:
       DC_DB_PASS: dcdb2018!
       # used to access the sent email. Note: it must be set in the mock client in the symfony container matching the email used for testing
       # tells behat at what base URL Notifications mock is responding
-      DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
+      #DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
-  notify:
-    build:
-      context: ./docker/notify
-      dockerfile: Dockerfile
-    volumes:
-      - ./docker/notify:/var/www/app
-    ports:
-      - 8081:8081
+#  notify:
+#    build:
+#      context: ./docker/notify
+#      dockerfile: Dockerfile
+#    volumes:
+#      - ./docker/notify:/var/www/app
+#    ports:
+#      - 8081:8081
 
   phpunit:
     build:
