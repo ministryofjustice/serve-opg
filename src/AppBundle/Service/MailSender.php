@@ -16,6 +16,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class MailSender
 {
+    const FORGOTTEN_PASSWORD_TEMPLATE_ID = 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a';
+
     /**
      * @var null
      */
@@ -32,29 +34,15 @@ class MailSender
     private $router;
 
     /**
-     * @var Client
-     */
-//    private $mockClient;
-
-    /**
-     * @var array
-     */
-//    private $mockClientEnabledEmails;
-
-    /**
      * MailSender constructor.
      *
      * @param Client $notifyClient
      * @param RouterInterface $router
-     * @param Client $mockClient
-     * @param array $mockClientEnabledEmails
      */
-    public function __construct(Client $notifyClient, RouterInterface $router/*, Client $mockClient, array $mockClientEnabledEmails*/)
+    public function __construct(Client $notifyClient, RouterInterface $router)
     {
         $this->notifyClient = $notifyClient;
         $this->router = $router;
-//        $this->mockClient = $mockClient;
-//        $this->mockClientEnabledEmails = $mockClientEnabledEmails;
     }
 
 
@@ -73,9 +61,13 @@ class MailSender
 
         $this->lastEmailId = null;
 
-        return $this->getNotifyClient($user->getEmail())->sendEmail($user->getEmail(), 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a', [
-            'activationLink' => $activationLink
-        ]);
+        return $this->getNotifyClient()->sendEmail(
+            $user->getEmail(),
+            self::FORGOTTEN_PASSWORD_TEMPLATE_ID,
+            [
+                'activationLink' => $activationLink
+            ]
+        );
     }
 
     /**
@@ -83,10 +75,9 @@ class MailSender
      *
      * @return Client
      */
-    private function getNotifyClient($emailAddress)
+    private function getNotifyClient()
     {
         return $this->notifyClient;
-//        return in_array($emailAddress, $this->mockClientEnabledEmails) ? $this->mockClient : $this->notifyClient;
     }
 
     /**

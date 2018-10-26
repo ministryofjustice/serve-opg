@@ -84,7 +84,7 @@ services:
       DC_FILE_SCANNER_SSL_VERIFY: 1
       DC_BEHAT_CONTROLLER_ENABLED: 1
       # Alphagov Notification mock endpoint (behat email only)
-      #DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
+      DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
       # fixtures (users and cases. Not needed here for behat testing)
       DC_FIXURES_USERS: |
         email=elvis.ciotti@digital.justice.gov.uk&password=Abcd1234
