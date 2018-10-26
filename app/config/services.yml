@@ -61,9 +61,7 @@ services:
 
     AppBundle\Service\MailSender:
       arguments:
-        $notifyClient: "@alphagov.notifications.client.real"
-        $mockClient: "@alphagov.notifications.client.mock"
-        $mockClientEnabledEmails: ["behat@digital.justice.gov.uk"]
+        $notifyClient: "@alphagov.notifications.client.real"  
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient
