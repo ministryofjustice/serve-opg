@@ -77,8 +77,8 @@ class OrderRepository extends EntityRepository
         }
 
         if ($filters['q'] ?? false) {
-            $qb->andWhere('c.caseNumber = :cn')
-            ->setParameter('cn', $filters['q']);
+            $qb->andWhere('UPPER(c.caseNumber) LIKE :cn')
+            ->setParameter('cn', strtoupper(trim($filters['q'])));
         }
     }
 }
