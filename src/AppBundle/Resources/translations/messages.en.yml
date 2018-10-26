@@ -6,7 +6,7 @@ order.HW: Health and welfare
 order.hasAssets.yes: 'Yes'
 order.hasAssets.no: 'No'
 
-order.subType.NEW_APPLICATION: 'New Application'
+order.subType.NEW_APPLICATION: 'New application'
 order.subType.REPLACEMENT_OF_DISCHARGED_DEPUTY: 'Replacement of discharged deputy'
 order.subType.INTERIM_ORDER: 'Interim order'
 order.subType.TRUSTEE: 'Trustee'
