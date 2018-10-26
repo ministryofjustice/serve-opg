@@ -34,12 +34,12 @@ class MailSender
     /**
      * @var Client
      */
-    private $mockClient;
+//    private $mockClient;
 
     /**
      * @var array
      */
-    private $mockClientEnabledEmails;
+//    private $mockClientEnabledEmails;
 
     /**
      * MailSender constructor.
@@ -49,12 +49,12 @@ class MailSender
      * @param Client $mockClient
      * @param array $mockClientEnabledEmails
      */
-    public function __construct(Client $notifyClient, RouterInterface $router, Client $mockClient, array $mockClientEnabledEmails)
+    public function __construct(Client $notifyClient, RouterInterface $router/*, Client $mockClient, array $mockClientEnabledEmails*/)
     {
         $this->notifyClient = $notifyClient;
         $this->router = $router;
-        $this->mockClient = $mockClient;
-        $this->mockClientEnabledEmails = $mockClientEnabledEmails;
+//        $this->mockClient = $mockClient;
+//        $this->mockClientEnabledEmails = $mockClientEnabledEmails;
     }
 
 
@@ -85,7 +85,8 @@ class MailSender
      */
     private function getNotifyClient($emailAddress)
     {
-        return in_array($emailAddress, $this->mockClientEnabledEmails) ? $this->mockClient : $this->notifyClient;
+        return $this->notifyClient;
+//        return in_array($emailAddress, $this->mockClientEnabledEmails) ? $this->mockClient : $this->notifyClient;
     }
 
     /**
