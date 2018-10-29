@@ -57,7 +57,7 @@ class OrderForm extends AbstractType
                     'order.appointmentType.choices.JOINT_AND_SEVERAL' => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
                 ]
             ])
-            ->add('submit', SubmitType::class, ['label' => 'common.saveAndContinue']);
+            ->add('submit', SubmitType::class, ['translation_domain' => 'forms', 'label' => 'common.submit.label']);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -30,7 +30,8 @@ common:
     pleaseSelect: Please select
     yes: Yes
     no: No
-  saveAndContinue: Save and continue
+    submit:
+    label: Save and continue
 
 order:
   hasAssetsAboveThreshold:
