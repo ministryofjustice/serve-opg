@@ -176,20 +176,8 @@ services:
       DC_DB_NAME: digicop
       DC_DB_USER: digicop
       DC_DB_PASS: dcdb2018!
-      # used to access the sent email. Note: it must be set in the mock client in the symfony container matching the email used for testing
-      # tells behat at what base URL Notifications mock is responding
-      #DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
-
-#  notify:
-#    build:
-#      context: ./docker/notify
-#      dockerfile: Dockerfile
-#    volumes:
-#      - ./docker/notify:/var/www/app
-#    ports:
-#      - 8081:8081
 
   phpunit:
     build:

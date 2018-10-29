@@ -82,12 +82,16 @@ class UserController extends Controller
                 }
                 try {
                     $this->mailerSender->sendPasswordResetEmail($user);
+
+                    return $this->redirectToRoute('password-reset-sent', ['email'=>$email]);
+
                 } catch (NotifyException $e){
                     $request->getSession()->getFlashBag()->add('error', 'Sorry, your password could not be reset at the moment.');
-                }
+                    }
+            } else {
+                $request->getSession()->getFlashBag()->add('error', 'Sorry, there was a problem with the email address you entered, please try again');
             }
 
-            return $this->redirectToRoute('password-reset-sent', ['email'=>$email]);
         }
 
         return $this->render('AppBundle:User:password-reset-request.html.twig', [
