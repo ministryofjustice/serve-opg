@@ -16,8 +16,7 @@ class DocumentForm extends AbstractType
         $builder
             ->add('file', FileType::class)
             ->add('submit', SubmitType::class, [
-                'label' => 'common.upload.label',
-                'translation_domain' => 'forms'
+                'label' => 'common.upload.label'
             ]);
     }
 
@@ -25,6 +24,7 @@ class DocumentForm extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Document::class,
+            'translation_domain' => 'forms'
         ));
     }
 }
