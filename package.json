@@ -1,8 +1,8 @@
 {
-  "name": "opg-digicop",
+  "name": "serve-opg",
   "version": "0.0.1",
   "description": "OPG Digital Court of Protection Order Serving Service",
-  "repository": "https://github.com/ministryofjustice/opg-digicop",
+  "repository": "https://github.com/ministryofjustice/serve-opg",
   "devDependencies": {
     "govuk-frontend": "^2.0.0",
     "gulp": "^3.9.1",

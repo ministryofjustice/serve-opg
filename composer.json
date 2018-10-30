@@ -1,8 +1,8 @@
 {
-    "name": "ministryofjustice/opg-digicop/frontend",
+    "name": "ministryofjustice/serve-opg/frontend",
     "license": "MIT",
     "type": "project",
-    "description": "Digicop",
+    "description": "Serve OPG",
     "autoload": {
       "psr-4": {
           "AppBundle\\": "src/AppBundle",
