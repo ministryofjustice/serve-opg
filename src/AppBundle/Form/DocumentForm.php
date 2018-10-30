@@ -15,7 +15,10 @@ class DocumentForm extends AbstractType
     {
         $builder
             ->add('file', FileType::class)
-            ->add('submit', SubmitType::class, ['label' => 'Upload file and attach to order']);
+            ->add('submit', SubmitType::class, [
+                'label' => 'common.upload.label',
+                'translation_domain' => 'forms'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

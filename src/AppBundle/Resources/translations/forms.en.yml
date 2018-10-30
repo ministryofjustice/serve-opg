@@ -30,8 +30,10 @@ common:
     pleaseSelect: Please select
     yes: Yes
     no: No
-    submit:
+  submit:
     label: Save and continue
+  upload:
+    label: Upload file and add to order
 
 order:
   hasAssetsAboveThreshold:

@@ -26,7 +26,7 @@
 
     <h2 class="govuk-heading-m">2. Upload the file</h2>
 
-    {{ form_widget(form.submit, {'label': 'Upload file and add       to order', 'attr': {'class':'behat-link-submit'}} ) }}
+    {{ form_widget(form.submit, {'attr': {'class':'behat-link-submit'}} ) }}
     <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
 
     {{ form_end(form) }}
