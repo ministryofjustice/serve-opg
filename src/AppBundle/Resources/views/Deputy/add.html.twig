@@ -19,16 +19,12 @@
             {{ form_start(form) }}
                 {{ form_row(form.deputyType) }}
 
+                <h2 class="govuk-heading-m">Name</h2>
+
                 {{ form_row(form.forename) }}
                 {{ form_row(form.surname) }}
-                {{ form_row(form.emailAddress) }}
-                {{ form_row(form.dateOfBirth) }}
 
-                {{ form_row(form.daytimeContactNumber) }}
-                {{ form_row(form.eveningContactNumber) }}
-                {{ form_row(form.mobileContactNumber) }}
-
-                <h2 class="govuk-heading-m">Deputy's address</h2>
+                <h2 class="govuk-heading-m">Address</h2>
 
                 {{ form_row(form.addressLine1) }}
                 {{ form_row(form.addressLine2) }}
@@ -36,6 +32,18 @@
                 {{ form_row(form.addressTown) }}
                 {{ form_row(form.addressCounty, { 'attr': {'class': 'govuk-!-width-two-thirds'}}) }}
                 {{ form_row(form.addressPostcode, { 'attr': {'class': 'govuk-input--width-10'}}) }}
+
+                <h2 class="govuk-heading-m">Contact details</h2>
+
+                {{ form_row(form.daytimeContactNumber) }}
+                {{ form_row(form.eveningContactNumber) }}
+                {{ form_row(form.mobileContactNumber) }}
+
+                {{ form_row(form.emailAddress) }}
+
+                <h2 class="govuk-heading-m">Date of birth</h2>
+
+                {{ form_row(form.dateOfBirth) }}
 
                 {{ form_widget(form.saveAndContinue) }}
                 <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
