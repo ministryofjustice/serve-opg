@@ -13,7 +13,9 @@ deputy:
     day: Day
     month: Month
     year: Year
-  emailAddress: Email address
+  emailAddress:
+    label: Email address
+    hint: Always enter the email address if the deputy has given one on the COP4
   daytimeContactNumber: Daytime contact number
   eveningContactNumber: Evening contact number
   mobileContactNumber: Mobile contact number
