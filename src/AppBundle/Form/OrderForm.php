@@ -22,39 +22,42 @@ class OrderForm extends AbstractType
         if ($options['show_assets_question']) {
             $builder
                 ->add('hasAssetsAboveThreshold', ChoiceType::class, [
-                    'label' => 'Are the bond or assets above £21,000?',
+                    'translation_domain' => 'forms',
+                    'label' => 'order.hasAssetsAboveThreshold.label',
                     'required' => false,
                     'choices' => [
-                        'pleaseSelect' => '',
-                        'order.hasAssets.yes'  => Order::HAS_ASSETS_YES,
-                        'order.hasAssets.no' => Order::HAS_ASSETS_NO,
+                        'common.choices.pleaseSelect' => '',
+                        'common.choices.yes'  => Order::HAS_ASSETS_YES,
+                        'common.choices.no' => Order::HAS_ASSETS_NO,
                     ]
                 ]);
         }
         $builder->add('subType', ChoiceType::class, [
-            'label' => 'Order subtype',
+            'translation_domain' => 'forms',
+            'label' => 'order.subType.label',
             'required' => false,
             'choices' => [
-                'pleaseSelect' => '',
-                'order.subType.DIRECTION' => Order::SUBTYPE_DIRECTION,
-                'order.subType.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER,
-                'order.subType.NEW_APPLICATION' => Order::SUBTYPE_NEW,
-                'order.subType.REPLACEMENT_OF_DISCHARGED_DEPUTY' => Order::SUBTYPE_REPLACEMENT,
-                'order.subType.TRUSTEE' => Order::SUBTYPE_TRUSTEE,
-                'order.subType.VARIATION' => Order::SUBTYPE_VARIATION,
+                'common.choices.pleaseSelect' => '',
+                'order.subType.choices.DIRECTION' => Order::SUBTYPE_DIRECTION,
+                'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER,
+                'order.subType.choices.NEW_APPLICATION' => Order::SUBTYPE_NEW,
+                'order.subType.choices.REPLACEMENT_OF_DISCHARGED_DEPUTY' => Order::SUBTYPE_REPLACEMENT,
+                'order.subType.choices.TRUSTEE' => Order::SUBTYPE_TRUSTEE,
+                'order.subType.choices.VARIATION' => Order::SUBTYPE_VARIATION,
             ]
         ])
             ->add('appointmentType', ChoiceType::class, [
+                'translation_domain' => 'forms',
                 'label' => 'Appointment type',
                 'required' => false,
                 'choices' => [
-                    'pleaseSelect' => '',
-                    'order.appointmentType.SOLE' => Order::APPOINTMENT_TYPE_SOLE,
-                    'order.appointmentType.JOINT' => Order::APPOINTMENT_TYPE_JOINT,
-                    'order.appointmentType.JOINT_AND_SEVERAL' => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
+                    'common.choices.pleaseSelect' => '',
+                    'order.appointmentType.choices.SOLE' => Order::APPOINTMENT_TYPE_SOLE,
+                    'order.appointmentType.choices.JOINT' => Order::APPOINTMENT_TYPE_JOINT,
+                    'order.appointmentType.choices.JOINT_AND_SEVERAL' => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
                 ]
             ])
-            ->add('submit', SubmitType::class, ['label' => 'Save and continue']);
+            ->add('submit', SubmitType::class, ['translation_domain' => 'forms', 'label' => 'common.submit.label']);
     }
 
     public function configureOptions(OptionsResolver $resolver)

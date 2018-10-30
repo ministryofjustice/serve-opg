@@ -75,7 +75,7 @@
             <table class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr>
-                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Deputy {{ loop.index }}</th>
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-third behat-region-deputy{{ loop.index }}-fullName">{{ deputy.fullname }}</th>
                         <th scope="col" class="govuk-table__header govuk-table__header--numeric">
                             <a href="{{ path('deputy-edit', {'deputyId': deputy.id, 'orderId': order.id}) }}" class="govuk-!-margin-right-3" id="edit-deputy-{{ loop.index }}">Edit</a>
                             <a href="{{ path('deputy-delete', {'deputyId': deputy.id, 'orderId': order.id}) }}" id="delete-deputy-{{ loop.index }}">Remove</a>
@@ -86,10 +86,6 @@
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" scope="row">Deputy type</td>
                         <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-deputyType">{{ ('deputy.type.' ~ deputy.deputyType) | trans({}, 'forms') }}</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell" scope="row">Name</td>
-                        <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-fullName">{{ deputy.fullname }}</td>
                     </tr>
                     {% if deputy.emailAddress %}
                         <tr class="govuk-table__row">
@@ -144,13 +140,12 @@
     {# ----- DOCUMENTS ----- #}
 
     <h2 id="documents" class="govuk-heading-m govuk-!-margin-top-9">Order documents</h2>
-    <p>Attach the documents listed below and any other relevant documents.</p>
 
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr>
-                <th scope="col" class="govuk-table__header">Document</th>
-                <th scope="col" class="govuk-table__header">File</th>
+                <th scope="col" class="govuk-table__header">Document required</th>
+                <th scope="col" class="govuk-table__header">Document uploaded</th>
                 <th scope="col" class="govuk-table__header"></th>
             </tr>
         </thead>
@@ -160,14 +155,12 @@
             {% set doc = order.getDocumentsByType(docType) | first %}
 
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">{{ ('document.type.' ~ docType) | trans }}</td>
-                <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename {{ docIsRequired and not doc ? 'govuk-error-message' }}">
+                <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
+                <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
                     {% if doc %}
                         {{ doc.filename }}
-                    {% else %}
-                        {% if docIsRequired %}
-                            Required
-                        {% endif %}
+                    {%  else  %}
+                        -
                     {% endif %}
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType | lower }}-actions">
@@ -175,7 +168,7 @@
                         <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">Remove</a>
                     {% else %}
                         <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">
-                            <span class="govuk-icon govuk-icon--plus behat-link"></span>Add file
+                            <span class="govuk-icon govuk-icon--plus behat-link"></span>Add document
                         </a>
                     {% endif %}
                 </td>
@@ -184,18 +177,15 @@
         </tbody>
     </table>
 
-    <h3 class="govuk-heading-s">Other relevant documents</h3>
+    <h3 class="govuk-heading-s">Other relevant documents (optional)</h3>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
     {% if otherDocs | length %}
 
-        <h2 class="govuk-heading-m">Attached documents</h2>
-
         <table class="govuk-table behat-region-documents-additional-filenames">
             <thead class="govuk-table__head">
                 <tr>
-                    <th scope="col" class="govuk-table__header">File</th>
-                    <th scope="col" class="govuk-table__header">Date attached</th>
+                    <th scope="col" class="govuk-table__header">Document uploaded</th>
                     <th scope="col" class="govuk-table__header"></th>
                 </tr>
             </thead>
@@ -207,7 +197,6 @@
                         {% if doc.filename | length %}
                             {{ doc.filename }}
                         {% endif %}</td>
-                    <td class="govuk-table__cell">{{ doc.createdAt | date('j F H:i') }}</td>
                     <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
                         <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
                     </td>
@@ -222,7 +211,7 @@
     <p class="govuk-!-margin-bottom-9 behat-region-documents-other">
         <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
            class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
-           <span class="govuk-icon govuk-icon--plus"></span>Add file
+           <span class="govuk-icon govuk-icon--plus"></span>Add document
        </a>
     </p>
 
@@ -232,7 +221,7 @@
         <div class="govuk-alert govuk-alert--info">
             <span class="govuk-icon govuk-icon--info"></span>
             <div class="govuk-alert__message">
-                <p>To continue, please add one or more deputies and upload all the required order documents.</p>
+                <p>To continue, please add one or more deputies and all the required order documents.</p>
             </div>
         </div>
         <button class="govuk-button" disabled="disabled">Continue</button>

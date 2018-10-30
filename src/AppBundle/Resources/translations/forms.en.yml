@@ -25,7 +25,34 @@ deputy:
   addressCounty: County
   addressPostcode: Postcode
 
+common:
+  choices:
+    pleaseSelect: Please select
+    yes: Yes
+    no: No
+  submit:
+    label: Save and continue
+  upload:
+    label: Upload file and add to order
 
+order:
+  hasAssetsAboveThreshold:
+    label: Are the bond or assets over £21,000?
+  subType:
+    label: Order subtype
+    choices:
+      DIRECTION: Direction
+      INTERIM_ORDER: Interim order
+      NEW_APPLICATION: New application
+      REPLACEMENT_OF_DISCHARGED_DEPUTY: Replacement of discharged deputy
+      TRUSTEE: Trustee
+      VARIATION: Variation
+  appointmentType:
+    label: Appointment type
+    choices:
+      SOLE: Sole
+      JOINT: Joint
+      JOINT_AND_SEVERAL: Joint and several
 user:
   passwordReset:
     email:

@@ -2,10 +2,11 @@
 {% form_theme form 'AppBundle:Form:govuk_frontend.html.twig' %}
 {% import 'AppBundle:Macros:_macros.html.twig' as macro %}
 
-{% block htmlTitle %} Attach {{ docType | upper }}{% endblock %}
+{% block htmlTitle %} Add {{ docType | upper }}{% endblock %}
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
-    <h1 class="govuk-heading-l">Attach {{ ('document.type.' ~ docType) | trans([], 'forms') }} document</h1>
+    <h1 class="govuk-heading-l">Add
+        {{ (docType == 'OTHER') ? ' a document ' : ' the ' ~ ('document.type.' ~ docType) | trans([], 'forms') }}</h1>
 {% endblock %}
 
 {% block validationSummary %}
@@ -25,7 +26,7 @@
 
     <h2 class="govuk-heading-m">2. Upload the file</h2>
 
-    {{ form_widget(form.submit, {'label': 'Upload file and attach to order', 'attr': {'class':'behat-link-submit'}} ) }}
+    {{ form_widget(form.submit, {'attr': {'class':'behat-link-submit'}} ) }}
     <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
 
     {{ form_end(form) }}
