@@ -66,8 +66,8 @@ services:
       # db
       DC_DB_HOST: postgres
       DC_DB_PORT: 5432
-      DC_DB_NAME: digicop
-      DC_DB_USER: digicop
+      DC_DB_NAME: serve-opg
+      DC_DB_USER: serve-opg
       DC_DB_PASS: dcdb2018!
       # S3 (don't define DC_S3_ENDPOINT if AWS credentials are defined in the instance)
       DC_S3_BUCKET_NAME: test_bucket
@@ -128,8 +128,8 @@ services:
     image: postgres:9.6
     environment:
       POSTGRES_HOST: postgres
-      POSTGRES_DB: digicop
-      POSTGRES_USER: digicop
+      POSTGRES_DB: serve-opg
+      POSTGRES_USER: serve-opg
       POSTGRES_PASSWORD: dcdb2018!
 
   composer:
@@ -176,8 +176,8 @@ services:
       DC_SYMFONY_SECRET: dc2018!
       DC_DB_HOST: postgres
       DC_DB_PORT: 5432
-      DC_DB_NAME: digicop
-      DC_DB_USER: digicop
+      DC_DB_NAME: serve-opg
+      DC_DB_USER: serve-opg
       DC_DB_PASS: dcdb2018!
       # used to access the sent email. Note: it must be set in the mock client in the symfony container matching the email used for testing
       # tells behat at what base URL Notifications mock is responding
@@ -214,8 +214,8 @@ services:
       DC_DYNAMODB_SECRET: secret
       DC_DB_HOST: postgres
       DC_DB_PORT: 5432
-      DC_DB_NAME: digicop
-      DC_DB_USER: digicop
+      DC_DB_NAME: serve-opg
+      DC_DB_USER: serve-opg
       DC_DB_PASS: dcdb2018!
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket

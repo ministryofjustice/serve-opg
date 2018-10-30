@@ -12,7 +12,7 @@
 # Solved
 - ~~add time based assets directory~~
 - ~~Testing pipeline not complete. What does this look like?~~
-- ~~Can we remove `getTag` from digicop/src/AppBundle/Twig/AssetsExtension.php ?~~
+- ~~Can we remove `getTag` from serve-opg/src/AppBundle/Twig/AssetsExtension.php ?~~
 - ~~Behat requires database drivers to be installed:~~
   - `An exception occurred in driver: could not find driver (Doctrine\DBAL\Exception\DriverException)`
 - ~~No codeowners file~~
