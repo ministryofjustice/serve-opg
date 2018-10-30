@@ -1,6 +1,6 @@
-# DigiCop
+# Serve OPG
 
-[![CircleCI](https://circleci.com/gh/ministryofjustice/opg-digicop/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/opg-digicop/tree/master)
+[![CircleCI](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master)
 
 Symfony 3.4 & PHP 7.2
 
@@ -80,7 +80,7 @@ docker-compose exec app rm /var/www/.enableDevMode
 ```
 
 # Testing
-DigiCOP uses PHPUnit and Behats to test the application
+Serve OPG uses PHPUnit and Behats to test the application
 
 ## Unit Testing
 Run php unit
@@ -115,7 +115,7 @@ Behat `NotifyTrait` takes care of resetting / accessing those emails from steps 
 # Debugging
 Login to Database
 ```bash
-docker-compose exec postgres psql -U digicop
+docker-compose exec postgres psql -U serve-opg
 ```
 
 Clear Cache
@@ -151,7 +151,7 @@ docker-compose run --rm app php app/console doctrine:migrations:execute 20181019
 
 ```bash
 #Copy a file into the container
-docker cp web/app.php opg-digicop_app_1:/var/www/web/app.php
+docker cp web/app.php serve-opg_app_1:/var/www/web/app.php
 
 # Drop the data before schema update (mainl during local development)
 docker-compose run --rm app php app/console doctrine:schema:drop --force
