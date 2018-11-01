@@ -27,11 +27,12 @@ sudo security add-trusted-cert -d -r trustRoot \
 # Create aws resources for localstack
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
-# API token to send email only to the team 
-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4584 secretsmanager create-secret --name notification_api_key --secret-string "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
+# API token to send email only to the team
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://secretsmanager:5000 secretsmanager create-secret --name notification_api_key --secret-string "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
+
 
 # Vendor php dependencies
-        docker-compose run --rm composer
+docker-compose run --rm composer
 
 # Generate static assets
 docker-compose run --rm npm
@@ -41,11 +42,8 @@ docker-compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
 # -d Detached mode: Run containers in the background
 
-# Migrate database (not needed anymore, as added in the Dockerfile)
-docker-compose run --rm app php app/console doctrine:schema:update --force --dump-sql
-
-# Add sample users and cases (local env only). 
-# See docker-compose.yml app container, DC_FIXURES_USERS variable 
+# Add sample users and cases (local env only).
+# See docker-compose.yml app container, DC_FIXURES_USERS variable
 docker-compose run --rm app php app/console doctrine:fixtures:load --append
 
 # Generates status of migrations
@@ -106,7 +104,7 @@ docker-compose run --rm behat
 
 ### Notify mocking
 Notify is mocked via a custom script.
-Requests to the service can be seen at 
+Requests to the service can be seen at
 
 `http://localhost:8081/mock-data`
 
