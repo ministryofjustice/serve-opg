@@ -1,5 +1,12 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
 AppBundle\Entity\Document:
+    properties:
+      file:
+        - File:
+          maxSize: 20M
+          mimeTypes: [application/pdf, application/x-pdf, image/png, image/jpeg, image/tiff, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document]
+          mimeTypesMessage: "document.file.errors.mimeTypesMessage"
+          maxSizeMessage: "document.file.errors.maxSizeMessage"
     type: entity
     table: "document"
     id:
