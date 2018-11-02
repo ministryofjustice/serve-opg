@@ -5,7 +5,7 @@ RUN apk add --no-cache postgresql-dev \
 && docker-php-ext-install pdo pdo_pgsql
 
 # Add Waitforit to wait on db starting
-ENV WAITFORIT_VERSION="v2.4.0"
+ENV WAITFORIT_VERSION="v2.4.1"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
 && chmod +x /usr/local/bin/waitforit
 
@@ -23,4 +23,3 @@ CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
 && php app/console doctrine:migrations:migrate --no-interaction \
 && chown -R www-data var \
 && php-fpm
-
