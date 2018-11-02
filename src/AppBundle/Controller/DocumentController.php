@@ -75,14 +75,13 @@ class DocumentController extends Controller
         $form = $this->createForm(DocumentForm::class, $document);
 
         //TODO implement redirect with JS and import error message
-        /*if ($request->get('error') == 'tooBig') {
+        if ($request->get('error') == 'tooBig') {
             $message = $this->get('translator')->trans('document.file.errors.maxSizeMessage', [], 'validators');
             $form->get('file')->addError(new FormError($message));
-        }*/
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $document->getFile();
-
             try {
                 $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
 

@@ -6,12 +6,13 @@ document:
       label: Attach a file
       hint: ""
       errors:
-         fileSize: "Your uploaded file exceeded the maximum size of 15M"
+         fileSize: "Your uploaded file exceeded the maximum size of 20Mb"
          risky: "Cannot upload file, risky content found inside. Technical details: %techDetails%"
          virusFound:  "Cannot upload file, virus found inside. Technical details: %techDetails%"
          generic: "Cannot upload file, please try again later. Technical details: %techDetails%"
          notSupported: "File type is not supported."
-
+         maxSizeMessage: "The file you selected to upload is too big. Please check your file size is less than 20Mb."
+         mimeTypesMessage: "Please upload a valid file type. Supported file types include PDF, JPG, PNG, TIF and Word docs"
 user:
    password:
       doesNotMatch: Passwords do not match
