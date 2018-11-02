@@ -133,7 +133,7 @@ services:
       POSTGRES_PASSWORD: dcdb2018!
 
   composer:
-    image: composer:1.7.2
+    image: composer
     volumes:
       - .:/app
     command:
