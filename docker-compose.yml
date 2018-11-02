@@ -140,7 +140,7 @@ services:
       - install
 
   npm:
-    image: node
+    image: node:10.13-stretch
     environment:
       PATH: /app/node_modules/.bin:$PATH
     working_dir: /app
