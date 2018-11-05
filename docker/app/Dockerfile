@@ -18,6 +18,7 @@ COPY web/config.php web/config.php
 COPY vendor vendor
 COPY src src
 COPY app app
+COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
 && php app/console doctrine:migrations:migrate --no-interaction \
