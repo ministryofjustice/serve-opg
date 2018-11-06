@@ -14,8 +14,9 @@ class DocumentForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('file', FileType::class)
-            ->add('submit', SubmitType::class, [
+            ->add('file', FileType::class
+            );
+        $builder->add('submit', SubmitType::class, [
                 'label' => 'common.upload.label'
             ]);
     }
