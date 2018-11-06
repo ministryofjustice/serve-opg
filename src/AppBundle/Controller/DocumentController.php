@@ -73,7 +73,7 @@ class DocumentController extends Controller
 
         $document = new Document($order, $docType);
         $form = $this->createForm(DocumentForm::class, $document);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $document->getFile();
