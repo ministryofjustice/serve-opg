@@ -134,7 +134,12 @@
 
     {# TODO: Add build tag to footer #}
 
-    {% block bodyEnd %}{% endblock %}
+    {% block bodyEnd %}
 
+        {% block popups %}
+            {% include 'AppBundle:Components/Resources:_popups.html.twig' %}
+        {% endblock %}
+
+    {% endblock %}
 </body>
 </html>
