@@ -20,3 +20,7 @@ parameters:
     env(DC_S3_BUCKET_NAME): "MUST_BE_DEFINED"
 
     env(DC_NOTIFY_MOCK_ENDPOINT): "http://notify:8081"
+
+    # for the following two settings, use a multiple of 60
+    session_expire_seconds: 3900
+    session_popup_show_after: 3600
