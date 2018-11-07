@@ -39,8 +39,8 @@ var SessionTimeoutDialog = function (options) {
         }, this.sessionPopupShowAfterMs);
 
         this.countDownLogout = window.setInterval(function () {
-            window.location.reload();
-
+           // click log out button
+           that.element.find('.js-signout-button').click();
         }, this.sessionExpiresMs + this.redirectAfterMs);
     };
 
