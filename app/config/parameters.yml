@@ -22,7 +22,5 @@ parameters:
     env(DC_NOTIFY_MOCK_ENDPOINT): "http://notify:8081"
 
     # for the following two settings, use a multiple of 60
-#    session_expire_seconds: 3900
-#    session_popup_show_after: 3600
-    session_expire_seconds: 90
-    session_popup_show_after: 30
+    session_expire_seconds: 3900
+    session_popup_show_after: 3600
