@@ -19,6 +19,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./certs:/etc/nginx/certs
+      - ./docker/loadbalancer/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro
     depends_on:
       - web
 
@@ -140,7 +141,7 @@ services:
       - install
 
   npm:
-    image: node
+    image: node:10.13-stretch
     environment:
       PATH: /app/node_modules/.bin:$PATH
     working_dir: /app
