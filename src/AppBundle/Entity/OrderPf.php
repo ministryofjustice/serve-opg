@@ -21,7 +21,7 @@ class OrderPf extends Order
             Document::TYPE_COP3 => true
         ];
 
-        // remove COP4 if a PA deputy exists for this order
+        // add COP4 if there are no PAs 
         if (!$this->hasDeputyByType(Deputy::DEPUTY_TYPE_PA))
         {
             $requiredDocs[Document::TYPE_COP4] = true;
