@@ -7,6 +7,8 @@ parameters:
     env(DC_DB_USER): ""
     env(DC_DB_PASS): ""
 
+    env(DC_GA): "DC_ENVIRONMENT"
+
     # allow environment override, but set sensible default
     env(DYNAMODB_ENDPOINT): https://dynamodb.eu-west-1.amazonaws.com:443
     env(SM_ENDPOINT): https://secretsmanager.eu-west-1.amazonaws.com:443

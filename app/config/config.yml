@@ -44,6 +44,7 @@ twig:
       version_app: "%env(APP_VERSION)%"
       version_web: "%env(WEB_VERSION)%"
       version_infra: "%env(INFRA_VERSION)%"
+      environment: "%env(DC_ENVIRONMENT)%"
       session_expires_seconds: %session_expire_seconds%
       session_popup_show_after: %session_popup_show_after%
 
