@@ -40,7 +40,7 @@ class CsvImporterService
      * Case : 8 digits. might end with a T
      * Forename
      * Surname
-     * Ord Type: integer. 2 means HW order
+     * Order Type: integer. 2 means HW order
      * IssuedAt e.g. 15-Aug-2018 or any format accepted by DateTime
      *
      * @return integer added columns
@@ -51,7 +51,7 @@ class CsvImporterService
             'Case',
             'Forename',
             'Surname',
-            'Ord Type',
+            'Order Type',
             'Made Date',
             'Issue Date',
         ], true);
@@ -76,7 +76,7 @@ class CsvImporterService
         $row = array_map('trim', $row);
         $case = strtoupper($row['Case']);
         $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
-        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
+        $orderType = $row['Order Type'] == 2 ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);
