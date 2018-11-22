@@ -102,7 +102,8 @@ class OrderController extends Controller
                     array(
                         'title' => 'order.served.title',
                         'clientName' => $client->getClientName(),
-                        'caseNumber' => $client->getCaseNumber()
+                        'caseNumber' => $client->getCaseNumber(),
+                        'orderType' =>$order->getType()
                     )
                 );
             } catch (\Exception $e) {
@@ -110,7 +111,11 @@ class OrderController extends Controller
                 if ($this->getParameter('kernel.debug')) {
                     $message .= '.Details (only on dev mode): '.$e;
                 }
-                $request->getSession()->getFlashBag()->add('error', $message);
+                $request->getSession()->getFlashBag()->add('error',
+                    array(
+                        'body' => $message,
+                        'orderType' =>$order->getType()
+                    ));
             }
 
 
