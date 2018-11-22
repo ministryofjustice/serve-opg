@@ -103,7 +103,7 @@ class OrderController extends Controller
                         'title' => 'order.served.title',
                         'clientName' => $client->getClientName(),
                         'caseNumber' => $client->getCaseNumber(),
-                        'orderType' =>$order->getType()
+                        'orderType' =>$order->getType() . '-success'
                     )
                 );
             } catch (\Exception $e) {
@@ -114,7 +114,7 @@ class OrderController extends Controller
                 $request->getSession()->getFlashBag()->add('error',
                     array(
                         'body' => $message,
-                        'orderType' =>$order->getType()
+                        'orderType' =>$order->getType() . '-error'
                     ));
             }
 
