@@ -58,7 +58,7 @@ services:
       WEB_VERSION: 0-local-web
       INFRA_VERSION: 0-local-infra
       # Environment
-      DC_ENVIRONMENT: local
+      DC_GTM: null
       # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
