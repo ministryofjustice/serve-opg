@@ -5,7 +5,7 @@
 <head>
 
 
-    {% if gtm is defined  %}
+    {% if gtm is not empty  %}
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -33,7 +33,8 @@
 </head>
 
 <body class="govuk-template__body -debug">
-{% if gtm is defined  %}
+
+{% if gtm is not empty  %}
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN4BQPM{{ gtm }}&gtm_cookies_win=x"
                       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
