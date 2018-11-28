@@ -26,14 +26,18 @@
         {% if alertType is defined %}
         <span class="govuk-icon govuk-icon--{{ alertType }}"></span>
         {% endif %}
-        <div class="govuk-alert__message">
+        <div class="govuk-alert__message" {{ message is iterable and message.orderType is defined ? 'data-order-type="' ~ message.orderType ~ '"' }}>
             {% if message is iterable %}
+                {% if message.title is defined %}
                 <h2 class="govuk-heading-s">{{ message.title | trans }}</h2>
+                {% endif %}
+                {% if message.caseNumber is defined or message.clientName is defined %}
                 <p>
                     {{ message.caseNumber is defined ? 'order.caseNumber' | trans({'%caseNumber%': message.caseNumber}) }}
                     {{ (message.caseNumber is defined and message.clientName is defined) ? '<br/>'}}
                     {{ message.clientName is defined ? 'order.clientName' | trans({'%clientName%': message.clientName})}}
                 </p>
+                {% endif %}
                 {% if message.body is defined %}
                     <p>{{ message.body | trans }}</p>
                 {% endif %}

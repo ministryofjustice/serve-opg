@@ -4,20 +4,16 @@
 <html lang="en" class="govuk-template">
 <head>
 
-    {%  set gtmDevString = '' %}
 
-    {% if 'dev' is same as(app.environment | lower) %}
-        {%  set gtmDevEnvString = 'gtm_auth=gnu1WKVD9fTS0y8ys7fhAQ&gtm_preview=env-5&gtm_cookies_win=x&' %}
-    {% endif %}
-
+    {% if gtm is not empty  %}
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?{{ gtmDevEnvString }}&id='+i+dl;f.parentNode.insertBefore(j,f);
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '{{ gtm }}&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer','GTM-MN4BQPM');</script>
     <!-- End Google Tag Manager -->
-
+    {% endif %}
 
     <meta charset="utf-8" />
     <title>{% block htmlTitle %}{% endblock %} - Serve OPG - GOV.UK</title>
@@ -37,10 +33,13 @@
 </head>
 
 <body class="govuk-template__body -debug">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?{{ gtmDevEnvString }}&id=GTM-MN4BQPM"
-                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+
+{% if gtm is not empty  %}
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN4BQPM{{ gtm }}&gtm_cookies_win=x"
+                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+{% endif %}
 
     {% block bodyStart %}{% endblock %}
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
