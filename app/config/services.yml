@@ -27,6 +27,8 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
 
+    AppBundle\Service\AddressLookup\OrdnanceSurvey: ~
+
     # Notify (used for email sending)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
     # Consider creating a NotifyClient extending and setting the options if needed
@@ -61,7 +63,7 @@ services:
 
     AppBundle\Service\MailSender:
       arguments:
-        $notifyClient: "@alphagov.notifications.client.real"  
+        $notifyClient: "@alphagov.notifications.client.real"
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient

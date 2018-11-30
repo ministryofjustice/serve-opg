@@ -57,8 +57,10 @@ services:
       APP_VERSION: 0-local-app
       WEB_VERSION: 0-local-web
       INFRA_VERSION: 0-local-infra
-      # Environment
+      # Google tag manager
       DC_GTM: null
+      # Address lookup Ordnance Survey (dev key)
+      DC_OS_PLACES_KEY: CcuS4StkQ7Bu1OASs9kEnq0M90ZypsK2
       # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
