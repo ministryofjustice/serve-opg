@@ -27,7 +27,9 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
 
-    AppBundle\Service\AddressLookup\OrdnanceSurvey: ~
+    AppBundle\Service\AddressLookup\OrdnanceSurvey:
+      arguments:
+        $httpClient: "@AppBundle\\Service\\AddressLookup\\HttpClient"
 
     # Notify (used for email sending)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around

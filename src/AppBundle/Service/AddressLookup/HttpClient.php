@@ -7,7 +7,7 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 /**
  * SiriusClient wrapper
  */
-class SiriusClient extends GuzzleHttpClient
+class HttpClient extends GuzzleHttpClient
 {
     /**
      * SiriusClient constructor.

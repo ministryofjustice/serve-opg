@@ -14,8 +14,9 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class UserProviderTest extends \PHPUnit_Framework_TestCase
+class UserProviderTest extends MockeryTestCase
 {
     public function setUp()
     {
@@ -66,7 +67,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => 'nonExisting@provider.com'])->andReturn(false);
 
-        $this->setExpectedException(UsernameNotFoundException::class);
+        $this->expectException(UsernameNotFoundException::class);
         $this->assertEquals($this->user, $sut->loadUserByUsername('nonExisting@provider.com'));
     }
 
@@ -91,7 +92,7 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase
         $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, [[5, 100, 200]]);
 
 
-        $this->setExpectedException(BruteForceAttackDetectedException::class);
+        $this->expectException(BruteForceAttackDetectedException::class);
         $this->userRepo->shouldReceive('findOneBy')->never()->with(['email' => $this->userName]);
 
         $sut->loadUserByUsername($this->userName);
