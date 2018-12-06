@@ -7,37 +7,41 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\AddressLookup\OrdnanceSurveyClient;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Service\AddressLookup\OrdnanceSurvey;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class PostcodeController  extends Controller
+class PostcodeController extends Controller
 {
-
     /**
-     * @var OrdnanceSurvey
+     * @Route("/postcode-lookup", name="postcode-lookup")
      */
-    private $addressLookup;
-
-    public function indexAction()
+    public function postcodeLookupAction(Request $request, OrdnanceSurvey $ordnanceSurvey)
     {
-        $postcode = $this->params()->fromQuery('postcode');
+        $postcode = $request->query->get('postcode');
+
         if (empty($postcode)) {
-            return $this->notFoundAction();
+            return new JsonResponse([ 'error'=> 'Please provide a postcode.']);
         }
         $addresses = [];
         try {
-            $addresses = $this->addressLookup->lookupPostcode($postcode);
-        }catch (\RuntimeException $e) {
-            $this->getLogger()->warn("Exception from postcode lookup: ".$e->getMessage());
+            $addresses = $ordnanceSurvey->lookupPostcode($postcode);
+        }catch (\Exception $e) {
+            $this->get('logger')->error("Exception from postcode lookup: ". $e->getMessage());
+            return new JsonResponse([ 'error'=> $e->getMessage()]);
         }
-        return new JsonModel([
-            'isPostcodeValid' => true,
-            'success'         => (count($addresses) > 0),
-            'addresses'       => $addresses,
-        ]);
-    }
-    public function setAddressLookup(OrdnanceSurvey $addressLookup)
-    {
-        $this->addressLookup = $addressLookup;
+
+        return new JsonResponse([ 'test'=> $addresses]);
+//        return new JsonResponse([
+//            'isPostcodeValid' => true,
+//            'success'         => (count($addresses) > 0),
+//            'addresses'       => $addresses,
+//        ]);
     }
 
 }

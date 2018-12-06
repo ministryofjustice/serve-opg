@@ -1,16 +1,16 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\AddressLookup;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
 
 /**
- * SiriusClient wrapper
+ * HttpClient
  */
-class HttpClient extends GuzzleHttpClient
+class OrdnanceSurveyClient extends GuzzleHttpClient
 {
     /**
-     * SiriusClient constructor.
+     * HttpClient constructor.
      * @param $args array of arguments
      */
     public function __construct($args)

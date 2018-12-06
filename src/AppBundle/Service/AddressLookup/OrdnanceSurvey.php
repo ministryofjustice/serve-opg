@@ -15,21 +15,13 @@ class OrdnanceSurvey
 {
 
     /**
-     * @var HttpClient
+     * @var OrdnanceSurveyClient
      */
     private $httpClient;
 
-    /**
-     * @var string
-     */
-    private $apiKey;
-
-    public function __construct(
-        ClientInterface $httpClient,
-        string $apiKey)
+    public function __construct(ClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
-        $this->apiKey = $apiKey;
     }
 
     /**
@@ -41,14 +33,29 @@ class OrdnanceSurvey
      */
     public function lookupPostcode($postcode)
     {
-        $results = $this->getData($postcode);
-        $addresses = [];
-        foreach ($results as $addressData) {
-            $address = $this->getAddressLines($addressData['DPA']);
-            $address['description'] = $this->getDescription($address);
-            $addresses[] = $address;
-        }
-        return $addresses;
+//        $results = $this->getData($postcode);
+//        $addresses = [];
+//        foreach ($results as $addressData) {
+//            $address = $this->getAddressLines($addressData['DPA']);
+//            $address['description'] = $this->getDescription($address);
+//            $addresses[] = $address;
+//        }
+//        return $addresses;
+
+//        print_r($this->httpClient);
+//
+//        return $this->httpClient->getConfig('key');
+
+        $url = new Uri($this->httpClient->getConfig('base_uri'));
+        $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('key'));
+        $url = URI::withQueryValue($url, 'postcode', $postcode);
+        $url = URI::withQueryValue($url, 'lr', 'EN');
+
+        $request = new Request('GET', $url);
+        $response = $this->httpClient->sendRequest($request);
+
+        print_r($response);
+        return $this->httpClient->getConfig('key');
     }
 
     /**
@@ -58,8 +65,8 @@ class OrdnanceSurvey
      */
     private function getData($postcode)
     {
-        $url = new Uri("https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode");
-        $url = URI::withQueryValue($url, 'key', $this->apiKey);
+        $url = new Uri($this->httpClient->getConfig('base_uri'));
+        $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('key'));
         $url = URI::withQueryValue($url, 'postcode', $postcode);
         $url = URI::withQueryValue($url, 'lr', 'EN');
         $request = new Request('GET', $url);

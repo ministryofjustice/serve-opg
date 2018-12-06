@@ -34,6 +34,9 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
     {
         $this->apiKey = getEnv('DC_OS_PLACES_KEY');
         $this->httpClient = Mockery::mock(ClientInterface::class);
+        $this->httpClient->shouldReceive('getConfig')->with('base_uri');
+        $this->httpClient->shouldReceive('getConfig')->with('key');
+
         $this->response = Mockery::mock(ResponseInterface::class);
     }
     //------------------------------------------------------------------------------------
@@ -63,7 +66,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             })
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient, $this->apiKey);
+        $lookup = new OrdnanceSurvey($this->httpClient);
         $lookup->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseCode()
@@ -72,7 +75,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('sendRequest')
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient, $this->apiKey);
+        $lookup = new OrdnanceSurvey($this->httpClient);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/bad status code/' );
         $lookup->lookupPostcode('SW1A 2AA');
@@ -84,7 +87,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('sendRequest')
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient, $this->apiKey);
+        $lookup = new OrdnanceSurvey($this->httpClient);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/invalid JSON/' );
         $lookup->lookupPostcode('SW1A 2AA');
@@ -98,7 +101,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('sendRequest')
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient, $this->apiKey);
+        $lookup = new OrdnanceSurvey($this->httpClient);
         $result = $lookup->lookupPostcode('SW1A 2AA');
         // We expect an empty array.
         $this->assertInternalType('array', $result);
@@ -140,7 +143,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
     public function testFormatting(){
         $this->setupResponse();
         $this->httpClient->shouldReceive('sendRequest')->once()->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient, $this->apiKey);
+        $lookup = new OrdnanceSurvey($this->httpClient);
         $results = $lookup->lookupPostcode('X1 3XX');
         $this->assertInternalType('array', $results);
         $this->assertCount(count($this->testData), $results);
