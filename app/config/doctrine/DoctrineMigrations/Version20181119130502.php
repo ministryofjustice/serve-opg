@@ -23,10 +23,10 @@ final class Version20181119130502 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DELETE FROM dc_user WHERE id = 8;');
         $this->addSql('DELETE FROM dc_user WHERE id = 9;');
         $this->addSql('DELETE FROM dc_user WHERE id = 10;');
         $this->addSql('DELETE FROM dc_user WHERE id = 11;');
+        $this->addSql('DELETE FROM dc_user WHERE id = 12;');
 
     }
 }
