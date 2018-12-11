@@ -2,7 +2,9 @@
 
 namespace AppBundle\Service;
 
-class ExampleTest extends \PHPUnit_Framework_TestCase
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+
+class ExampleTest extends MockeryTestCase
 {
     public function testExample()
     {

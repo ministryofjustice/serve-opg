@@ -38,12 +38,9 @@ class OrderForm extends AbstractType
             'required' => false,
             'choices' => [
                 'common.choices.pleaseSelect' => '',
-                'order.subType.choices.DIRECTION' => Order::SUBTYPE_DIRECTION,
-                'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER,
                 'order.subType.choices.NEW_APPLICATION' => Order::SUBTYPE_NEW,
                 'order.subType.choices.REPLACEMENT_OF_DISCHARGED_DEPUTY' => Order::SUBTYPE_REPLACEMENT,
-                'order.subType.choices.TRUSTEE' => Order::SUBTYPE_TRUSTEE,
-                'order.subType.choices.VARIATION' => Order::SUBTYPE_VARIATION,
+                'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER
             ]
         ])
             ->add('appointmentType', ChoiceType::class, [

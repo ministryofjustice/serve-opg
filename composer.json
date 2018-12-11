@@ -4,11 +4,11 @@
     "type": "project",
     "description": "Serve OPG",
     "autoload": {
-      "psr-4": {
-          "AppBundle\\": "src/AppBundle",
-          "Common\\": "src/Common"
-      },
-      "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+        "psr-4": {
+            "AppBundle\\": "src/AppBundle",
+            "Common\\": "src/Common"
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
     "require": {
         "php": ">=7.2",
