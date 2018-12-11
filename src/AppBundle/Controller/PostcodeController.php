@@ -36,12 +36,11 @@ class PostcodeController extends Controller
             return new JsonResponse([ 'error'=> $e->getMessage()]);
         }
 
-        return new JsonResponse([ 'test'=> $addresses]);
-//        return new JsonResponse([
-//            'isPostcodeValid' => true,
-//            'success'         => (count($addresses) > 0),
-//            'addresses'       => $addresses,
-//        ]);
+        return new JsonResponse([
+            'isPostcodeValid' => true,
+            'success'         => (count($addresses) > 0),
+            'addresses'       => $addresses,
+        ]);
     }
 
 }

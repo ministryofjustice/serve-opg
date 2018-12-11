@@ -26,7 +26,9 @@
 
                 <h2 class="govuk-heading-m">Address</h2>
 
-                <div class="address-wrapper js-enabled">
+            {% include 'AppBundle:Common:_postcodeLookup.html.twig' with {} %}
+
+            <div class="address-wrapper">
                 {{ form_row(form.addressLine1) }}
                 {{ form_row(form.addressLine2) }}
                 {{ form_row(form.addressLine3.setRendered(false)) }}
@@ -34,8 +36,6 @@
                 {{ form_row(form.addressCounty, { 'attr': {'class': 'govuk-!-width-two-thirds'}}) }}
                 {{ form_row(form.addressPostcode, { 'attr': {'class': 'govuk-input--width-10'}}) }}
                 </div>
-
-                {% include 'AppBundle:Common:_postcodeLookup.html.twig' with {} %}
 
                 <h2 class="govuk-heading-m">Contact details</h2>
                 <p>You can find the telephone numbers and email address on section 1.2 of the COP4.</p>

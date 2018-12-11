@@ -35,23 +35,26 @@
         cacheEls: function (form) {
             this.$form = $(form);
             this.$addressWrapper = $('.address-wrapper', form);
-            this.$postCodeSearchWrapper  = $('.postcode-lookup__search', form);
-            this.$postCodeResultsWrapper  = $('postcode-lookup__results', form);
-            this.$postCodeError  = $('postcode-lookup__error', form);
+            this.$postCodeResultsWrapper = $('.postcode-lookup__results', form);
+            this.$postcodeLabel = $('label[for="postcode-lookup"]', form);
         },
 
         bindEvents: function () {
             this.$form.on('click.GOVUK.PostcodeLookup', '.js-PostcodeLookup__search-btn', this.searchClicked.bind(this));
+            this.$form.on('click.GOVUK.PostcodeLookup', '.js-PostcodeLookup__toggle-address', this.addressToggleClicked.bind(this));
+            this.$form.on('change.moj.Modules.PostcodeLookup', '.js-PostcodeLookup__search-results', this.resultsChanged.bind(this));
         },
 
         init: function () {
+        },
 
+        addressToggleClicked: function (e) {
+            e.preventDefault();
+            this.$addressWrapper.show();
         },
 
         searchClicked: function (e) {
             var $el = $(e.target);
-            var $searchContainer = this.$postCodeSearchWrapper;
-            var $postcodeLabel = $('label[for="postcode-lookup"]');
 
             // store the current query
             this.query = this.$form.find('.js-PostcodeLookup__query').val();
@@ -60,10 +63,10 @@
                 if (this.query !== '') {
                     this.findPostcode(this.query);
                     $el.addClass('govuk-button--disabled');
-                    $postcodeLabel.children('.govuk-error-message').remove();
+                    this.$postcodeLabel.children('.govuk-error-message').remove();
                 } else {
-                    $postcodeLabel.children('.govuk-error-message').remove();
-                    $postcodeLabel
+                    this.$postcodeLabel.children('.govuk-error-message').remove();
+                    this.$postcodeLabel
                         .append("<span class='govuk-error-message'>Please enter a postcode</span>");
                 }
             }
@@ -77,8 +80,8 @@
                 dataType: 'json',
                 timeout: 10000,
                 cache: true,
-                error: this.postcodeError,
-                success: this.postcodeSuccess
+                error: this.postcodeError.bind(this),
+                success: this.postcodeSuccess.bind(this)
             });
         },
 
@@ -99,35 +102,55 @@
         postcodeSuccess: function (response) {
             // not successful
             if (!response.success || response.addresses === null) {
-                var $searchContainer = this.$wrap.find('.js-PostcodeLookup__search');
+                var $searchContainer = this.$form.find('.js-PostcodeLookup__search');
                 var $postcodeLabel = $('label[for="postcode-lookup"]');
 
                 if (response.isPostcodeValid) {
                     $searchContainer.addClass('error');
                     $postcodeLabel.children('.error-message').remove();
-                    $postcodeLabel
-                        .append($(this.errorMessageTpl({
-                            'errorMessage': 'No address found for this postcode. Please try again or enter the address manually.'
-                        })));
+                    this.$postcodeLabel
+                        .append("<span class='govuk-error-message'>No address found for this postcode. Please try again or enter the address manually.</span>");
                 } else {
-                    alert('Enter a valid UK postcode');
+                    this.$postcodeLabel
+                        .append("<span class='govuk-error-message'>Please enter a a valid UK postcode</span>");
                 }
             } else {
                 // successful
+                var $searchResultsSelect = this.$form.find('.js-PostcodeLookup__search-results');
 
-                if (this.$form.find('.js-PostcodeLookup__search-results').length > 0) {
-                    this.$form.find('.js-PostcodeLookup__search-results').parent().replaceWith(this.resultTpl({results: response.addresses}));
-                } else {
-                    this.$form.find('.js-PostcodeLookup__search').after(this.resultTpl({results: response.addresses}));
+                if ($searchResultsSelect.length > 0) {
+                    $searchResultsSelect.find('option').not(':first').remove();
+                    response.addresses.forEach(function (address, index) {
+                        $searchResultsSelect.append('<option ' +
+                            'value="' + index + '" ' +
+                            'data-line1="' + address.addressLine1 + '" ' +
+                            'data-line2="' + address.addressLine2 + '" ' +
+                            'data-line3="' + address.addressTown + '" ' +
+                            'data-postcode="' + address.addressPostcode + '">' + address.description
+                            + '</option>');
+                    });
+                    $searchResultsSelect.focus();
+                    this.$postCodeResultsWrapper.removeClass('govuk-visually-hidden');
                 }
-                this.$form.find('.js-PostcodeLookup__search-results').focus();
             }
             this.$form.find('.js-PostcodeLookup__search-btn').removeClass('govuk-button--disabled');
-        }
+        },
+
+        resultsChanged: function (e) {
+            var $el = $(e.target),
+                val = $el.val();
+
+            var $selectedOption = $el.find(':selected');
+
+            $('[name*="' + this.settings.fieldMappings.line1 + '"]').val($selectedOption.data('line1'));
+            $('[name*="' + this.settings.fieldMappings.line2 + '"]').val($selectedOption.data('line2'));
+            $('[name*="' + this.settings.fieldMappings.line3 + '"]').val($selectedOption.data('line3'));
+            $('[name*="' + this.settings.fieldMappings.postcode + '"]').val($selectedOption.data('postcode')).change();
+
+            this.$addressWrapper.show();
+        },
 
     }
-
-
 
     root.GOVUK.PostcodeLookup = PostcodeLookup;
 

@@ -1,8 +1,26 @@
-.address-wrapper.js-enabled
-,.postcode-lookup__results{
+.postcode-lookup__search
+,.postcode-lookup__toggle{
     display: none;
 }
 
-.postcode-lookup__search.js-enabled {
-    display: block;
+.js-enabled {
+    .address-wrapper {
+        display: none;
+    }
+
+    .postcode-lookup__search
+    ,.postcode-lookup__toggle{
+        display: block;
+    }
+}
+
+.js-PostcodeLookup__search-results{
+    max-width: 100%;
+}
+
+@media (max-width: 640px) {
+    .postcode-button {
+        margin-top: 15px;
+        text-align: center;
+    }
 }
