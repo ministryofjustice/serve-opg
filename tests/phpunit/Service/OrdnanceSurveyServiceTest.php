@@ -7,6 +7,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Service\AddressLookup\OrdnanceSurveyClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Mockery;
@@ -19,46 +20,48 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 {
 
     /**
-     * @var string
-     */
-    private $apiKey;
-    /**
      * @var MockInterface|HttpClientInterface
      */
     private $httpClient;
+
     /**
      * @var MockInterface|ResponseInterface
      */
     private $response;
+
+    private $ordnanceSurveyService;
+
     protected function setUp()
     {
-        $this->apiKey = getEnv('DC_OS_PLACES_KEY');
-        $this->httpClient = Mockery::mock(ClientInterface::class);
+        $this->httpClient = Mockery::mock(OrdnanceSurveyClient::class);
         $this->httpClient->shouldReceive('getConfig')->with('base_uri');
         $this->httpClient->shouldReceive('getConfig')->with('key');
+        $this->httpClient->shouldReceive('getConfig')->with('lr');
 
         $this->response = Mockery::mock(ResponseInterface::class);
+        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient);
     }
     //------------------------------------------------------------------------------------
+
     // Lookup Tests
     public function testHttpLookupUrl()
     {
         $postcode = 'SW1A2AA';
+
         $this->response->shouldReceive('getStatusCode')->andReturn(200);
         $this->response->shouldReceive('getBody')->andReturn(json_encode([
             'results' => []
         ]));
-        $this->httpClient->shouldReceive('sendRequest')
+
+        $this->httpClient->shouldReceive('send')
             ->withArgs(function ($arg) use ($postcode) {
                 // It should be an instance of Request...
                 if (!($arg instanceof Request)) {
                     return false;
                 }
-                // With the API key and postcode in the URL query.
+                // With the postcode in the URL query.
                 $query = $arg->getUri()->getQuery();
-                if (strpos($query, "key={$this->apiKey}") === false) {
-                    return false;
-                }
+
                 if (strpos($query, "postcode={$postcode}") === false) {
                     return false;
                 }
@@ -66,47 +69,48 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             })
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient);
-        $lookup->lookupPostcode($postcode);
+
+        $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseCode()
     {
+        $postcode = 'SW1A 2AA';
         $this->response->shouldReceive('getStatusCode')->andReturn(500);
-        $this->httpClient->shouldReceive('sendRequest')
+        $this->httpClient->shouldReceive('send')
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/bad status code/' );
-        $lookup->lookupPostcode('SW1A 2AA');
+        $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseBody()
     {
+        $postcode = 'SW1A 2AA';
         $this->response->shouldReceive('getStatusCode')->andReturn(200);
         $this->response->shouldReceive('getBody')->andReturn('');   // <- Invalid JSON response
-        $this->httpClient->shouldReceive('sendRequest')
+        $this->httpClient->shouldReceive('send')
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/invalid JSON/' );
-        $lookup->lookupPostcode('SW1A 2AA');
+        $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testValidHttpLookupResponse()
     {
+        $postcode = 'SW1A 2AA';
         $this->response->shouldReceive('getStatusCode')->andReturn(200);
         $this->response->shouldReceive('getBody')->andReturn(json_encode([
             'results' => []
         ]));
-        $this->httpClient->shouldReceive('sendRequest')
+        $this->httpClient->shouldReceive('send')
             ->once()
             ->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient);
-        $result = $lookup->lookupPostcode('SW1A 2AA');
+        $result = $this->ordnanceSurveyService->lookupPostcode($postcode);
         // We expect an empty array.
         $this->assertInternalType('array', $result);
         $this->assertEmpty($result);
     }
+
     //------------------------------------------------------------------------------------
     // Formatting Tests
     private $testData = [
@@ -141,10 +145,10 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         ]));
     }
     public function testFormatting(){
+        $postcode = 'X1 3XX';
         $this->setupResponse();
-        $this->httpClient->shouldReceive('sendRequest')->once()->andReturn($this->response);
-        $lookup = new OrdnanceSurvey($this->httpClient);
-        $results = $lookup->lookupPostcode('X1 3XX');
+        $this->httpClient->shouldReceive('send')->once()->andReturn($this->response);
+        $results = $this->ordnanceSurveyService->lookupPostcode($postcode);
         $this->assertInternalType('array', $results);
         $this->assertCount(count($this->testData), $results);
         // Loop over each entry in the test data

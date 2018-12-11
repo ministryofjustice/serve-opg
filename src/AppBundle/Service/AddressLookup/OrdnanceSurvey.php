@@ -33,29 +33,15 @@ class OrdnanceSurvey
      */
     public function lookupPostcode($postcode)
     {
-//        $results = $this->getData($postcode);
-//        $addresses = [];
-//        foreach ($results as $addressData) {
-//            $address = $this->getAddressLines($addressData['DPA']);
-//            $address['description'] = $this->getDescription($address);
-//            $addresses[] = $address;
-//        }
-//        return $addresses;
+        $results = $this->getData($postcode);
+        $addresses = [];
+        foreach ($results as $addressData) {
+            $address = $this->getAddressLines($addressData['DPA']);
+            $address['description'] = $this->getDescription($address);
+            $addresses[] = $address;
+        }
+        return $addresses;
 
-//        print_r($this->httpClient);
-//
-//        return $this->httpClient->getConfig('key');
-
-        $url = new Uri($this->httpClient->getConfig('base_uri'));
-        $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('key'));
-        $url = URI::withQueryValue($url, 'postcode', $postcode);
-        $url = URI::withQueryValue($url, 'lr', 'EN');
-
-        $request = new Request('GET', $url);
-        $response = $this->httpClient->sendRequest($request);
-
-        print_r($response);
-        return $this->httpClient->getConfig('key');
     }
 
     /**
@@ -68,9 +54,9 @@ class OrdnanceSurvey
         $url = new Uri($this->httpClient->getConfig('base_uri'));
         $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('key'));
         $url = URI::withQueryValue($url, 'postcode', $postcode);
-        $url = URI::withQueryValue($url, 'lr', 'EN');
+        $url = URI::withQueryValue($url, 'lr', $this->httpClient->getConfig('lr'));
         $request = new Request('GET', $url);
-        $response = $this->httpClient->sendRequest($request);
+        $response = $this->httpClient->send($request);
         if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Error retrieving address details: bad status code');
         }
