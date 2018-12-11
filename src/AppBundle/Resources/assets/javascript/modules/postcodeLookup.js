@@ -13,7 +13,6 @@
 
     // Define the class
     var PostcodeLookup = function (el) {
-        console.log('PostcodeLookup');
         this.cacheEls('.js-PostcodeLookup');
         this.bindEvents();
         this.init();

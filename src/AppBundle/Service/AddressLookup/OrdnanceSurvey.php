@@ -73,10 +73,10 @@ class OrdnanceSurvey
     /**
      * Get the address in a standard format of...
      *  [
-     *      'line1' => string
-     *      'line2' => string
-     *      'line3' => string
-     *      'postcode' => string
+     *      'addressLine1' => string
+     *      'addressLine2' => string
+     *      'addressTown' => string
+     *      'addressPostcode' => string
      *  ]
      *
      * @param array $address
