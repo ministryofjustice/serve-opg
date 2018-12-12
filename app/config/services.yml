@@ -28,14 +28,13 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
 
+    # API key set in secrets manager ("SecretId" => 'os_places_api_key')
     OrdnanceSurveyClient:
       class: AppBundle\Service\AddressLookup\OrdnanceSurveyClient
       arguments:
-        - {
-            key: "%env(DC_OS_PLACES_KEY)%",
-            base_uri: "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode",
-            lr: "EN"
-          }
+        $config:
+          base_uri: "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
+          lr: "EN"
 
     AppBundle\Service\AddressLookup\OrdnanceSurvey:
       arguments:

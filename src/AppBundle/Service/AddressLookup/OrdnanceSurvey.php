@@ -49,7 +49,7 @@ class OrdnanceSurvey
     private function getPostcodeData($postcode)
     {
         $url = new Uri($this->httpClient->getConfig('base_uri'));
-        $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('key'));
+        $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('apiKey'));
         $url = URI::withQueryValue($url, 'postcode', $postcode);
         $url = URI::withQueryValue($url, 'lr', $this->httpClient->getConfig('lr'));
         $request = new Request('GET', $url);
