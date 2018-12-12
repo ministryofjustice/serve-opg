@@ -33,7 +33,7 @@ class OrdnanceSurvey
      */
     public function lookupPostcode($postcode)
     {
-        $results = $this->getData($postcode);
+        $results = $this->getPostcodeData($postcode);
         $addresses = [];
         foreach ($results as $addressData) {
             $address = $this->getAddressLines($addressData['DPA']);
@@ -49,7 +49,7 @@ class OrdnanceSurvey
      * @return mixed
      * @throws \Http\Client\Exception
      */
-    private function getData($postcode)
+    private function getPostcodeData($postcode)
     {
         $url = new Uri($this->httpClient->getConfig('base_uri'));
         $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('key'));
