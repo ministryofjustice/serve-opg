@@ -11,6 +11,7 @@ services:
       - aws
     depends_on:
       - localstack
+      - secretsmanager
 
   loadbalancer:
     image: jwilder/nginx-proxy
