@@ -19,6 +19,10 @@ class OrdnanceSurvey
      */
     private $httpClient;
 
+    /**
+     * OrdnanceSurvey constructor.
+     * @param ClientInterface $httpClient
+     */
     public function __construct(ClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
