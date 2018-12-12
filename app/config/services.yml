@@ -16,6 +16,7 @@ services:
     AppBundle\Controller\DocumentController: ~
     AppBundle\Controller\BehatController: ~
     AppBundle\Controller\CsvController: ~
+    AppBundle\Controller\PostcodeController: ~
 
     AppBundle\Service\ClientService: ~
     AppBundle\Service\CsvImporterService: ~
@@ -26,6 +27,18 @@ services:
     AppBundle\Service\SiriusService:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
+
+    # API key set in secrets manager ("SecretId" => 'os_places_api_key')
+    OrdnanceSurveyClient:
+      class: AppBundle\Service\AddressLookup\OrdnanceSurveyClient
+      arguments:
+        $config:
+          base_uri: "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
+          lr: "EN"
+
+    AppBundle\Service\AddressLookup\OrdnanceSurvey:
+      arguments:
+        $httpClient: "@OrdnanceSurveyClient"
 
     # Notify (used for email sending)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
