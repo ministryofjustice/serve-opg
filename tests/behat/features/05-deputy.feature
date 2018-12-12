@@ -143,3 +143,18 @@ Feature: deputy
     And each text should be present in the corresponding region:
       | PfPADep Uty | deputy1-fullName |
     And the order should be unservable
+
+  Scenario: HW order: add one deputy (just type, first and lastname)
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    When I follow "order-93559316-HW"
+    When I follow "add-deputy"
+  # check form validation
+    When I fill in the following:
+      | deputy_form_deputyType | PUBLIC_AUTHORITY |
+      | deputy_form_forename   | PfPADep |
+      | deputy_form_surname   | Uty |
+    And I press "deputy_form_saveAndContinue"
+    Then the form should be valid
+    And each text should be present in the corresponding region:
+      | PfPADep Uty | deputy2-fullName |
+    And the order should be unservable

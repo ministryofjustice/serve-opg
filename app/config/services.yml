@@ -61,7 +61,7 @@ services:
 
     AppBundle\Service\MailSender:
       arguments:
-        $notifyClient: "@alphagov.notifications.client.real"  
+        $notifyClient: "@alphagov.notifications.client.real"
 
     AppBundle\Service\SiriusClient:
         class: AppBundle\Service\SiriusClient

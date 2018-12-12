@@ -3,7 +3,9 @@
 namespace AppBundle\Entity;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Document
 {
@@ -15,6 +17,7 @@ class Document
 
     const FILE_NAME_MAX_LENGTH = 255;
     const MAX_UPLOAD_PER_ORDER = 100;
+    const MAX_UPLOAD_FILE_SIZE = '20M';
 
     /**
      * @var int|null
@@ -30,19 +33,6 @@ class Document
      * @var string|null
      */
     private $type;
-
-//    /**
-//     * // add more validators here if needed
-//     * http://symfony.com/doc/current/reference/constraints/File.html
-//     *
-//     * @Assert\NotBlank(message="Please choose a file", groups={"document"})
-//     * @Assert\File(
-//     *     maxSize = "15M",
-//     *     maxSizeMessage = "document.file.errors.maxSizeMessage",
-//     *     mimeTypes = {"application/pdf", "application/x-pdf", "image/png", "image/jpeg"},
-//     *     mimeTypesMessage = "document.file.errors.mimeTypesMessage",
-//     *     groups={"document"}
-//     * )
 
     /**
     *
@@ -252,5 +242,28 @@ class Document
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    public static function getPermittedMimeTypes()
+    {
+        return self::permittedMimeTypes;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('file', new Assert\File(array(
+            'maxSize' => self::MAX_UPLOAD_FILE_SIZE,
+            'mimeTypes' => [
+                'application/pdf',
+                'application/x-pdf',
+                'image/png',
+                'image/jpeg',
+                'image/tiff',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            ],
+            'mimeTypesMessage' => 'document.file.errors.mimeTypesMessage',
+            'maxSizeMessage' => 'document.file.errors.maxSizeMessage'
+        )));
     }
 }

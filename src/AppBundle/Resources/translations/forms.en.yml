@@ -43,12 +43,9 @@ order:
   subType:
     label: Order subtype
     choices:
-      DIRECTION: Direction
-      INTERIM_ORDER: Interim order
       NEW_APPLICATION: New application
       REPLACEMENT_OF_DISCHARGED_DEPUTY: Replacement of discharged deputy
-      TRUSTEE: Trustee
-      VARIATION: Variation
+      INTERIM_ORDER: Interim order
   appointmentType:
     label: Appointment type
     choices:

@@ -19,6 +19,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./certs:/etc/nginx/certs
+      - ./docker/loadbalancer/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro
     depends_on:
       - web
 
@@ -57,6 +58,10 @@ services:
       APP_VERSION: 0-local-app
       WEB_VERSION: 0-local-web
       INFRA_VERSION: 0-local-infra
+      # Google tag manager
+      DC_GTM: null
+      # Address lookup Ordnance Survey (dev key)
+      DC_OS_PLACES_KEY: CcuS4StkQ7Bu1OASs9kEnq0M90ZypsK2
       # still needed ?
       AWS_ACCESS_KEY_ID: foo
       AWS_SECRET_ACCESS_KEY: bar
@@ -145,7 +150,7 @@ services:
       - install
 
   npm:
-    image: node
+    image: node:10.13-stretch
     environment:
       PATH: /app/node_modules/.bin:$PATH
     working_dir: /app

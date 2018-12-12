@@ -4,17 +4,17 @@
     "type": "project",
     "description": "Serve OPG",
     "autoload": {
-      "psr-4": {
-          "AppBundle\\": "src/AppBundle",
-          "Common\\": "src/Common"
-      },
-      "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+        "psr-4": {
+            "AppBundle\\": "src/AppBundle",
+            "Common\\": "src/Common"
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
     "require": {
         "php": ">=7.2",
-        "symfony/symfony": "3.4.*",
         "twig/extensions": "1.5.*",
         "symfony/swiftmailer-bundle": "2.3.*",
+        "symfony/symfony": "3.4.*",
         "symfony/monolog-bundle": "2.8.*",
         "sensio/framework-extra-bundle": "3.0.*",
         "sensio/distribution-bundle": "5.0.*",
@@ -57,7 +57,6 @@
     },
     "require-dev": {
         "phpstan/phpstan-symfony": "^0.10.0",
-        "symfony/var-dumper": "^4.1",
         "egulias/email-validator": "^1.2.8|~2.0"
     }
 }
