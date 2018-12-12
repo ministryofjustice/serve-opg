@@ -25,7 +25,7 @@ class OrdnanceSurveyClient extends GuzzleHttpClient
     {
         $this->secretsManagerClient = $secretsManagerClient;
 
-        $config['apiKey'] = @$secretsManagerClient->getSecretValue([
+        $config['apiKey'] = $secretsManagerClient->getSecretValue([
             "SecretId" => 'os_places_api_key'
         ])['SecretString'];
         if (empty($config['apiKey'])) {
