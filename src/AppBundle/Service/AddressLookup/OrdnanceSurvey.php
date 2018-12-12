@@ -15,7 +15,7 @@ class OrdnanceSurvey
 {
 
     /**
-     * @var OrdnanceSurveyClient
+     * @var ClientInterface
      */
     private $httpClient;
 
@@ -25,11 +25,8 @@ class OrdnanceSurvey
     }
 
     /**
-     * Return a list of addresses for a given postcode.
-     *
      * @param $postcode
      * @return array
-     * @throws \Http\Client\Exception
      */
     public function lookupPostcode($postcode)
     {
@@ -46,8 +43,8 @@ class OrdnanceSurvey
 
     /**
      * @param $postcode
-     * @return mixed
-     * @throws \Http\Client\Exception
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function getPostcodeData($postcode)
     {

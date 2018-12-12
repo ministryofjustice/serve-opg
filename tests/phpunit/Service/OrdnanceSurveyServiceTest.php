@@ -8,7 +8,6 @@
 namespace AppBundle\Service;
 
 use AppBundle\Service\AddressLookup\OrdnanceSurveyClient;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -20,7 +19,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 {
 
     /**
-     * @var MockInterface|HttpClientInterface
+     * @var MockInterface|OrdnanceSurveyClient
      */
     private $httpClient;
 
