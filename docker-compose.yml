@@ -11,6 +11,7 @@ services:
       - aws
     depends_on:
       - localstack
+      - secretsmanager
 
   loadbalancer:
     image: jwilder/nginx-proxy
@@ -47,6 +48,7 @@ services:
       - 9000:9000
     depends_on:
       - localstack
+      - secretsmanager
       - postgres
       - sirius-api
     volumes:
@@ -66,7 +68,7 @@ services:
       AWS_SECRET_ACCESS_KEY: bar
       # end still needed
       DYNAMODB_ENDPOINT: http://localstack:8000
-      SM_ENDPOINT: http://localstack:4584
+      SM_ENDPOINT: http://secretsmanager:5000
       DC_SYMFONY_SECRET: dc2018!
       # db
       DC_DB_HOST: postgres
@@ -116,14 +118,18 @@ services:
       - --spec
       - /tmp/api.public.v1.yaml
 
+  secretsmanager:
+    image: damacus/moto
+    ports:
+      - 5000:5000
+
   localstack:
     image: localstack/localstack
     ports:
       - 4569:4569
       - 4584:4584
-      - 8080:8080 # http://0.0.0.0:8080 to check deployed buckets and objects
     environment:
-      - SERVICES=s3:4569,dynamodb:8000,secretsmanager:4584
+      - SERVICES=s3:4569,dynamodb:8000
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     volumes:
