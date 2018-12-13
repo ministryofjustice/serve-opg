@@ -3,11 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Client;
+use AppBundle\Entity\Document;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderPf;
 use AppBundle\Entity\User;
 use AppBundle\Form\DeclarationForm;
 use AppBundle\Form\OrderForm;
+use AppBundle\Service\DocumentService;
 use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormView;
@@ -29,14 +31,20 @@ class OrderController extends Controller
     private $orderService;
 
     /**
+     * @var DocumentService
+     */
+    private $documentService;
+
+    /**
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
      */
-    public function __construct(EntityManager $em, OrderService $orderService)
+    public function __construct(EntityManager $em, OrderService $orderService, DocumentService $documentService)
     {
         $this->em = $em;
         $this->orderService = $orderService;
+        $this->documentService = $documentService;
     }
 
     /**
@@ -52,7 +60,23 @@ class OrderController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $this->em->flush($order);
+
+            // Remove documents previously added that aren't applicable to SUBTYPE_INTERIM_ORDER
+            if ($order->getSubType() === order::SUBTYPE_INTERIM_ORDER) {
+                foreach ($order->getDocuments() as $document) {
+                    $documentType = $document->getType();
+                    if ($documentType !== Document::TYPE_COURT_ORDER && $documentType !== Document::TYPE_ADDITIONAL) {
+                        try {
+                            $this->documentService->deleteDocumentById($document->getId());
+                        } catch (\Exception $e) {
+                            $this->get('logger')->error($e->getMessage());
+                            $this->addFlash('error', 'Non applicable document could not be removed from order.');
+                        }
+                    }
+                }
+            }
 
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
