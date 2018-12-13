@@ -7,7 +7,7 @@
 <div id="timeoutPopup" data-role="timeout-popup" class="session-timeout js-session-timeout">
     <div class="session-timeout-dialog">
 
-        <h1 class="heading-large push-half--top">{{ 'component.title' | trans }}</h1>
+        <h1 class="govuk-heading-l push-half--top">{{ 'component.title' | trans }}</h1>
 
         <p>{{ 'component.firstLine' | trans({
                 '%inactiveFor%': (session_popup_show_after / 60) | round(2, 'floor'),
@@ -18,7 +18,7 @@
 
         <form name="session-timeout-form" action="/logout">
             <button type="button" name="continue" class="govuk-button js-ok-button">{{ 'component.ok' | trans }}</button>
-            <button type="submit" name="submit" class="govuk-link--button js-signout-button">{{ 'component.signOut' | trans }}</button>
+            <button type="submit" name="submit" class="govuk-button govuk-button--secondary govuk-!-margin-left-3 js-signout-button">{{ 'component.signOut' | trans }}</button>
         </form>
 
     </div>
