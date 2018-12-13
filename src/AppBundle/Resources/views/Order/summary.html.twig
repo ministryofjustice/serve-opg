@@ -179,6 +179,8 @@
 
     <h3 class="govuk-heading-s">Other relevant documents (optional)</h3>
 
+    <p class="text">If a COP24 has been provided, it must be uploaded.</p>
+
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
     {% if otherDocs | length %}
 
