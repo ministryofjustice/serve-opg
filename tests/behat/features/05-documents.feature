@@ -103,3 +103,19 @@ Feature: documents
     And I click on "submit"
     Then the form should be invalid
 
+  Scenario: PF: Interim order - check required docs
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    When I follow "order-93559317-PF"
+    Then the url should match "/order/\d+/summary"
+    And I should not see the "documents-cop1a-actions" region
+    And I should not see the "documents-cop3-actions" region
+    And I should not see the "documents-cop4-actions" region
+
+  Scenario: HW: Interim order - check required docs
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    When I follow "order-93559317-HW"
+    Then the url should match "/order/\d+/summary"
+    And I should not see the "documents-cop1a-actions" region
+    And I should not see the "documents-cop3-actions" region
+    And I should not see the "documents-cop4-actions" region
+
