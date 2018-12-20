@@ -1,5 +1,8 @@
 Feature: cases
 
+  # IMPORTANT: Any new case Order numbers created or used in *any* tests, must be checked they are present in the test below
+  # and cleared within the 00-init.feature (Reset Behat cases)
+
   Scenario: upload CSV
     Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/upload-csv"
