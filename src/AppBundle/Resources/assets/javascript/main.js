@@ -10,4 +10,5 @@ $(document).ready(function() {
     // new GOVUK.displayOrg();
 
     new GOVUK.PostcodeLookup();
+    new GOVUK.InlineUpload();
 });
