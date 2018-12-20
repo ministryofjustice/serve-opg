@@ -126,7 +126,7 @@ class BehatController extends Controller
             /** @var Order $order */
             foreach ($clientOrders as $order) {
                 $this->orderService->emptyOrder($order);
-                $ret[] = get_class($order) . " for client case: " . $client->getCaseNumber() . " present and emptied (docs, deputies)";
+                $ret[] = get_class($order) . " for client " . $client->getCaseNumber() . " present and emptied (docs, deputies)";
             }
         }
 
