@@ -28,7 +28,9 @@ gulp.task('clean', function () {
 // Compile sass files
 gulp.task('sass', ['clean'], function () {
     return gulp.src([
-            config.sassSrc + '/application.scss'])
+        config.sassSrc + '/application.scss',
+        'node_modules/dropzone/dist/dropzone.css'
+    ])
         .pipe(sass(config.sass).on('error', sass.logError))
         .pipe(gulp.dest(config.webAssets + '/stylesheets'));
 });
@@ -50,6 +52,7 @@ gulp.task('js', ['clean'], function () {
     return gulp.src([
             'node_modules/jquery/dist/jquery.js',
             'node_modules/govuk-frontend/all.js',
+            'node_modules/dropzone/dist/dropzone.js',
             config.jsSrc + '/modules/*.js',
             config.jsSrc + '/main.js'])
         .pipe(concat('application.js'))

@@ -26,7 +26,9 @@
     <link rel="apple-touch-icon" sizes="152x152" href="{{ 'images/govuk-apple-touch-icon-152x152.png' | assetUrl }}">
     <link rel="apple-touch-icon" href="{{ 'images/govuk-apple-touch-icon.png' | assetUrl }}">
 
+    {% block headCSS %}
     <link href="{{ 'stylesheets/application.css'| assetUrl }}"  rel="stylesheet" type="text/css">
+    {% endblock %}
 
     {# The default og:image is added below head so that scrapers see any custom metatags first, and this is just a fallback #}
     <meta property="og:image" content="{{ 'images/govuk-opengraph-image.png' | assetUrl }}">

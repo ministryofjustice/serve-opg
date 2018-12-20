@@ -1,6 +1,12 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
 {% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order summary{% endblock %}
+
+{% block headCSS %}
+    {{ parent() }}
+    <link href="{{ 'stylesheets/dropzone.css'| assetUrl }}"  rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
     <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order summary</h1>
@@ -141,7 +147,7 @@
 
     <h2 id="documents" class="govuk-heading-m govuk-!-margin-top-9">Order documents</h2>
 
-    <table class="govuk-table">
+    <table class="govuk-table" id="documents-mandatory">
         <thead class="govuk-table__head">
             <tr>
                 <th scope="col" class="govuk-table__header">Document required</th>
@@ -155,7 +161,7 @@
             {% set doc = order.getDocumentsByType(docType) | first %}
 
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
+                <td class="govuk-table__cell govuk-!-width-one-third" data-doc-type="{{ docType }}">{{ ('document.type.' ~ docType) | trans }}</td>
                 <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
                     {% if doc %}
                         {{ doc.filename }}
@@ -182,9 +188,9 @@
     <p class="text">If a COP24 has been provided, it must be uploaded.</p>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
+    <table class="govuk-table behat-region-documents-additional-filenames"  id="documents-other">
     {% if otherDocs | length %}
 
-        <table class="govuk-table behat-region-documents-additional-filenames">
             <thead class="govuk-table__head">
                 <tr>
                     <th scope="col" class="govuk-table__header">Document uploaded</th>
@@ -205,17 +211,17 @@
                 </tr>
             {% endfor %}
             </tbody>
-        </table>
-    {% endif %}
+            <tfoot>
+            {% endif %}
+            <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
+                <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+                   class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
+                    <span class="govuk-icon govuk-icon--plus"></span>Add document
+                </a>
+            </td>
+            </tfoot>
+    </table>
 
-
-
-    <p class="govuk-!-margin-bottom-9 behat-region-documents-other">
-        <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
-           <span class="govuk-icon govuk-icon--plus"></span>Add document
-       </a>
-    </p>
 
     {% if order.readyToServe %}
         <a id="serve_order_button" class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
