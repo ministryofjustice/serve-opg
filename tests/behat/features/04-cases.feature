@@ -8,6 +8,8 @@ Feature: cases
     Then the form should be valid
     And I should see the "order-93559316-PF" region
     And I should see the "order-93559316-HW" region
+    And I should see the "order-93559317-PF" region
+    And I should see the "order-93559317-HW" region
     Then the response status code should be 200
 
 

@@ -29,6 +29,7 @@ class BehatController extends Controller
     const BEHAT_PASSWORD = 'Abcd1234';
     // keep in sync with behat-cases.csv
     const BEHAT_CASE_NUMBER = '93559316';
+    const BEHAT_INTERIM_CASE_NUMBER = '93559317';
 
     /**
      * @var EntityManager
@@ -116,12 +117,17 @@ class BehatController extends Controller
 
         $ret = [];
 
-        // empty orders for behat client
-        $client = $this->em->getRepository(Client::class)->findBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
-        $clientOrders = $this->em->getRepository(Order::class)->findBy(['client' => $client]);
-        foreach ($clientOrders as $order) {
-            $this->orderService->emptyOrder($order);
-            $ret[] = get_class($order) . " for client " . self::BEHAT_CASE_NUMBER . " present and emptied (docs, deputies)";
+        // empty orders for behat clients
+        $behatCases = [self::BEHAT_CASE_NUMBER, self::BEHAT_INTERIM_CASE_NUMBER];
+        $clients = $this->em->getRepository(Client::class)->findBy(['caseNumber' => $behatCases]);
+        /** @var Client $client */
+        foreach($clients as $client) {
+            $clientOrders = $this->em->getRepository(Order::class)->findBy(['client' => $client]);
+            /** @var Order $order */
+            foreach ($clientOrders as $order) {
+                $this->orderService->emptyOrder($order);
+                $ret[] = get_class($order) . " for client case: " . $client->getCaseNumber() . " present and emptied (docs, deputies)";
+            }
         }
 
         return new Response(implode("\n", array_filter($ret)));
