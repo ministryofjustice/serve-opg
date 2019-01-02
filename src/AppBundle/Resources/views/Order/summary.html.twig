@@ -160,8 +160,8 @@
         {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
             {% set doc = order.getDocumentsByType(docType) | first %}
 
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-!-width-one-third" data-doc-type="{{ docType }}">{{ ('document.type.' ~ docType) | trans }}</td>
+            <tr class="govuk-table__row" data-doc-type="{{ docType }}">
+                <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
                 <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
                     {% if doc %}
                         {{ doc.filename }}

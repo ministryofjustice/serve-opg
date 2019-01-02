@@ -9,14 +9,14 @@
 }
 
 
-.inline-upload__placeholder {
+.dropzone.inline-upload__placeholder {
     display: flex;
     flex: 1 0 100%;
     align-items: center;
     text-align: center;
     justify-content: center;
     padding: 20px;
-    height: 100px;
+    min-height: 150px;
     border:dotted $govuk-border-width-form-element govuk-colour("grey-2");
     background: rgba(govuk-colour("grey-2"), .1);
     margin-bottom: 20px;
@@ -26,8 +26,13 @@
     }
 }
 
-.inline-upload__placeholder--multiple{
+.dropzone.inline-upload__placeholder--multiple{
     flex: 1 0 42%;
     margin: 20px 20px 0 0;
     width: 100px;
 }
+
+//.dz-max-files-reached {
+//    pointer-events: none;
+//    cursor: default;
+//}
