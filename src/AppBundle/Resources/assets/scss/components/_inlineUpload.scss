@@ -2,6 +2,10 @@
 @import "tools/all";
 @import "helpers/all";
 
+#inline_upload_template{
+    display: none;
+}
+
 .inline-upload__wrapper{
     display: flex;
     flex-wrap: wrap;
@@ -24,6 +28,31 @@
     p{
         margin: 0;
     }
+
+    .dz-preview .dz-details .dz-filename
+    ,.dz-preview .dz-details .dz-size{
+        span{
+            background: none;
+        }
+    }
+
+    .dz-preview .dz-progress
+    {
+        margin-top: 0;
+    }
+
+    .dz-preview .dz-error-mark
+    ,.dz-preview .dz-success-mark{
+
+        top: auto;
+        margin-left: -20px;
+        margin-top: -50px;
+
+        svg{
+            width: 40px;
+            height: 40px;
+        }
+    }
 }
 
 .dropzone.inline-upload__placeholder--multiple{
@@ -32,7 +61,3 @@
     width: 100px;
 }
 
-//.dz-max-files-reached {
-//    pointer-events: none;
-//    cursor: default;
-//}

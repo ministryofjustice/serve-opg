@@ -35,6 +35,7 @@
 
         init: function () {
             Dropzone.autoDiscover = false;
+            this.settings.dropZone.previewTemplate= $('#inline_upload_template').html();
             this.setupDocumentMandatoryUpload();
             this.setupDocumentOtherUpload();
         },
@@ -45,7 +46,6 @@
                 dropZone[0].dropzone.emit("addedfile", existingDocuments[i]);
                 //dropZone[0].dropzone.emit("thumbnail", existingDocuments[i], "/image/url");
                 dropZone[0].dropzone.emit("complete", existingDocuments[i]);
-
                 // remove file size as unknown for existing documents
                 var file = dropZone[0].dropzone.files.slice().pop();
                 var $filePreviewTemplate = $(file.previewTemplate);

@@ -2,11 +2,11 @@
 
 namespace AppBundle\Controller;
 
-class PostcodeControllerTest extends AbstractControllerTestCase
+class InlineUploadControllerTest extends AbstractControllerTestCase
 {
     public function testRequest()
     {
-        $this->client->request('GET', '/postcode-lookup');
+        $this->client->request('GET', '/upload-document');
 
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
     }
