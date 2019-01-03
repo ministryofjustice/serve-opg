@@ -60,12 +60,13 @@
                     var _this = this;
                     var removeButton = Dropzone.createElement(_this.options.removeButton);
 
-                    // Listen to the click event
                     removeButton.addEventListener("click", function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         _this.removeFile(file);
                     });
+
+                    file.previewElement.appendChild(removeButton);
                 }),
                 this.on('success', function(file, data){
                     var _this = this;
@@ -80,12 +81,9 @@
         handleRemoveAction: function () {
             return function (file, _this){
 
-                // Create the remove button
                 var removeButton =  Dropzone.createElement(_this.options.removeButton);
 
-                // Listen to the click event
                 removeButton.addEventListener("click", function (e) {
-                    // Make sure the button click doesn't submit the form:
                     var button = $(this);
                     e.preventDefault();
                     e.stopPropagation();
@@ -115,7 +113,6 @@
                     });
                 });
 
-                // Add the button to the file preview element.
                 file.previewElement.appendChild(removeButton);
             }
         },
