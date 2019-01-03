@@ -160,10 +160,10 @@
         {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
             {% set doc = order.getDocumentsByType(docType) | first %}
 
-            <tr class="govuk-table__row" data-doc-type="{{ docType }}">
+            <tr class="govuk-table__row" data-order-id="{{ order.id }}" data-doc-type="{{ docType }}" {% if doc | length %}data-doc-id="{{ doc.id }}"{% endif %}>
                 <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
                 <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
-                    {% if doc %}
+                    {% if doc | length %}
                         {{ doc.filename }}
                     {%  else  %}
                         -
@@ -188,7 +188,7 @@
     <p class="text">If a COP24 has been provided, it must be uploaded.</p>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
-    <table class="govuk-table behat-region-documents-additional-filenames"  id="documents-other">
+    <table class="govuk-table behat-region-documents-additional-filenames"  id="documents-other" data-order-id="{{ order.id }}" data-doc-type="{{ constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }}">
     {% if otherDocs | length %}
 
             <thead class="govuk-table__head">
@@ -200,7 +200,7 @@
 
             <tbody class="govuk-table__body">
             {% for doc in otherDocs %}
-                <tr class="govuk-table__row">
+                <tr class="govuk-table__row" data-doc-id="{{ doc.id }}">
                     <td class="govuk-table__cell">
                         {% if doc.filename | length %}
                             {{ doc.filename }}
@@ -211,8 +211,8 @@
                 </tr>
             {% endfor %}
             </tbody>
-            <tfoot>
             {% endif %}
+            <tfoot>
             <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
                 <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
                    class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
@@ -226,13 +226,13 @@
     {% if order.readyToServe %}
         <a id="serve_order_button" class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
     {% else %}
-        <div class="govuk-alert govuk-alert--info">
+        <div id="serve_order_notice" class="govuk-alert govuk-alert--info">
             <span class="govuk-icon govuk-icon--info"></span>
             <div class="govuk-alert__message">
                 <p>To continue, please add one or more deputies and all the required order documents.</p>
             </div>
         </div>
-        <button class="govuk-button" disabled="disabled">Continue</button>
+        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button" disabled="disabled">Continue</button>
     {% endif %}
 
 {% endblock %}
