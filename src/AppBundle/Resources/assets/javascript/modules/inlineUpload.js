@@ -24,24 +24,30 @@
                 removeRoute: '/order/{orderId}/document/{id}',
                 acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,.doc,.docx',
                 createImageThumbnails: false,
-                removeButton: '<button>Remove</button>'
+                removeElement: '<a href="#" class="dropzone__file-remove">Remove</a>'
             }
         },
 
         cacheEls: function () {
             this.$documentMandatory = $('#documents-mandatory');
             this.$documentOther = $('#documents-other');
+            this.$dropZoneTemplate = $('#dropzone__template');
+            this.$dropZoneFileTemplate = $('#dropzone__template__file');
         },
 
         init: function () {
+            this.$documentMandatory.addClass('govuk-visually-hidden');
+            this.$documentOther.addClass('govuk-visually-hidden');
+
             this.initDropZone();
             this.setupDocumentMandatoryUpload();
             this.setupDocumentOtherUpload();
         },
 
         initDropZone: function () {
+
             Dropzone.autoDiscover = false;
-            this.settings.dropZone.previewTemplate = $('#inline_upload_template').html();
+            this.settings.dropZone.previewTemplate = this.$dropZoneFileTemplate.html();
             this.settings.dropZone.readyToServe = this.readyToServe();
             this.settings.dropZone.handleRemoveAction = this.handleRemoveAction();
             this.settings.dropZone.init = function () {
@@ -58,15 +64,16 @@
                 });
                 this.on('error', function(file, data) {
                     var _this = this;
-                    var removeButton = Dropzone.createElement(_this.options.removeButton);
+                    var removeElement = Dropzone.createElement(_this.options.removeElement);
 
-                    removeButton.addEventListener("click", function (e) {
+                    removeElement.addEventListener("click", function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         _this.removeFile(file);
                     });
 
-                    file.previewElement.appendChild(removeButton);
+                    $(file.previewElement).find('.dz-progress').hide();
+                    $(file.previewElement).find('.dz-filename').append(removeElement);
                 }),
                 this.on('success', function(file, data){
                     var _this = this;
@@ -81,13 +88,16 @@
         handleRemoveAction: function () {
             return function (file, _this){
 
-                var removeButton =  Dropzone.createElement(_this.options.removeButton);
+                var removeElement =  Dropzone.createElement(_this.options.removeElement);
 
-                removeButton.addEventListener("click", function (e) {
+                removeElement.addEventListener("click", function (e) {
                     var button = $(this);
                     e.preventDefault();
                     e.stopPropagation();
                     button.hide();
+
+                    $(file.previewElement).find('.dz-progress').show();
+                    $(file.previewElement).find('.dz-upload').css('width', '100%');
 
                     $.ajax({
                         url: _this.options.removeRoute
@@ -113,7 +123,8 @@
                     });
                 });
 
-                file.previewElement.appendChild(removeButton);
+                $(file.previewElement).find('.dz-filename').append(removeElement);
+
             }
         },
 
@@ -145,40 +156,40 @@
                 var file = dropZone[0].dropzone.files.slice().pop();
                 var $filePreviewTemplate = $(file.previewTemplate);
                 $('.dz-size', $filePreviewTemplate).remove();
+                // $('.dz-progress', $filePreviewTemplate).remove();
+            $(file.previewElement).find('.dz-progress').hide();
         },
 
         setupDocumentMandatoryUpload: function(){
             var context = this;
-            var dropZoneWrapper = $('<div/>', {
-                'class': 'inline-upload__wrapper govuk-!-margin-bottom-6'
-            });
             var dropZoneSettings = $.extend({}, context.settings.dropZone);
-
-            context.$documentMandatory.addClass('govuk-visually-hidden');
-            context.$documentMandatory.before(dropZoneWrapper);
 
             $('[data-doc-type]', context.$documentMandatory).each(function(){
                 var orderId = $(this).data('order-id');
-                var docType = $(this).data('doc-type');
                 var docId = $(this).data('doc-id');
+                var docType = $(this).data('doc-type');
                 var docTypeNiceName = $('td', this).eq(0).text();
                 var documentName = $('td', this).eq(1).text();
-                var dropZoneId = 'dropZone-' . docType;
-                var dropZonePlaceholder = $('<div/>', {
-                    'id': dropZoneId,
-                    'class': 'dropzone inline-upload__placeholder inline-upload__placeholder--multiple text',
-                    'data-inline-doc-type': docType
-                });
-                var dropZoneCopy = '<p class="dz-default dz-message">Drop <strong>' + docTypeNiceName + '</strong> document here or click to upload.</p>'
+                var dropZoneId = 'dropZone-' + docType;
+                var $dropZonePlaceholder = context.$dropZoneTemplate
+                    .clone()
+                    .attr('id', dropZoneId)
+                    .attr('data-inline-doc-type', docType)
+                    .addClass('dropzone dropzone--multiple');
+                var $dropZoneCopy = $('.dropzone__template__instruction', $dropZonePlaceholder);
+                var $dropZoneButton = $('.govuk-button--secondary', $dropZonePlaceholder);
 
-                dropZonePlaceholder.append(dropZoneCopy);
-                dropZoneWrapper.append(dropZonePlaceholder);
+                $dropZoneCopy.text($dropZoneCopy.text().replace('documents', docTypeNiceName));
+                $dropZoneButton.text($dropZoneButton.text().replace('documents', 'document'));
+
                 dropZoneSettings.url = dropZoneSettings.addRoute
                     .replace('{orderId}', orderId)
                     .replace('{docType}', docType);
                 dropZoneSettings.maxFiles = 1;
 
-                var dropZone = dropZonePlaceholder.dropzone(dropZoneSettings);
+                context.$documentMandatory.before($dropZonePlaceholder);
+
+                var dropZone = $dropZonePlaceholder.dropzone(dropZoneSettings);
 
                 // handle existing file uploads
                 documentName = documentName.replace(/\n/g, " ");
@@ -200,20 +211,20 @@
             var orderId = $(context.$documentOther).data('order-id');
             var docType = $(context.$documentOther).data('doc-type');
             var dropZoneSettings = $.extend({}, context.settings.dropZone);
-            var dropZonePlaceholder = $('<div/>', {
-                'class': 'dropzone inline-upload__placeholder inline-upload__placeholder--required text',
-                'data-inline-doc-type': ''
-            });
-            var dropZoneCopy = '<p class="dz-default dz-message">Drop document here or click to upload.</p>'
+            var dropZoneId = 'dropZone-' + docType;
+            var $dropZonePlaceholder = context.$dropZoneTemplate
+                .clone()
+                .attr('id', dropZoneId)
+                .attr('data-inline-doc-type', docType)
+                .addClass('dropzone');
 
-            dropZonePlaceholder.append(dropZoneCopy);
-            context.$documentOther.addClass('govuk-visually-hidden');
-            context.$documentOther.before(dropZonePlaceholder);
             dropZoneSettings.url = dropZoneSettings.addRoute
                 .replace('{orderId}', orderId)
                 .replace('{docType}', docType);
 
-            var dropZone = dropZonePlaceholder.dropzone(dropZoneSettings);
+            context.$documentOther.before($dropZonePlaceholder);
+
+            var dropZone = $dropZonePlaceholder.dropzone(dropZoneSettings);
 
             $('tbody tr', context.$documentOther).each( function(){
                 var docId = $(this).data('doc-id');
