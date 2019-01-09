@@ -36,8 +36,8 @@
         },
 
         init: function () {
-            this.$documentMandatory.addClass('govuk-visually-hidden');
-            this.$documentOther.addClass('govuk-visually-hidden');
+            // this.$documentMandatory.addClass('govuk-visually-hidden');
+            // this.$documentOther.addClass('govuk-visually-hidden');
 
             this.initDropZone();
             this.setupDocumentMandatoryUpload();
