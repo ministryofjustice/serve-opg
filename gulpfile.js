@@ -28,8 +28,7 @@ gulp.task('clean', function () {
 // Compile sass files
 gulp.task('sass', ['clean'], function () {
     return gulp.src([
-        config.sassSrc + '/application.scss',
-        'node_modules/dropzone/dist/dropzone.css'
+        config.sassSrc + '/application.scss'
     ])
         .pipe(sass(config.sass).on('error', sass.logError))
         .pipe(gulp.dest(config.webAssets + '/stylesheets'));

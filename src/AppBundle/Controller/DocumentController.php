@@ -151,6 +151,7 @@ class DocumentController extends Controller
 
         $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
+
         if($processedDocument["response"] === self::SUCCESS) {
             return new JsonResponse([
                 'success' => true,
@@ -163,7 +164,7 @@ class DocumentController extends Controller
         if($processedDocument["response"] === self::FAIL || $processedDocument["response"] === self::ERROR) {
             return new JsonResponse([
                 'error' => $processedDocument["message"]
-            ]);
+            ], 422);
         }
     }
 
