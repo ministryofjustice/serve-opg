@@ -3,12 +3,19 @@
     display: none;
 }
 
-//.dropzone--multiple{
-//    display: flex;
-//    flex-wrap: wrap;
-//    margin-right: -20px;
-//}
+.dropzone__info {
+    display: none;
+    .js-enabled &{
+        display: block;
+    }
+}
 
+#documents-mandatory
+ ,#documents-other{
+     .js-enabled &{
+         display: none;
+     }
+ }
 
 .dropzone {
     border: 2px dashed black;
