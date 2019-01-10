@@ -30,7 +30,7 @@
 
         cacheEls: function () {
             this.$documentMandatory = $('#documents-mandatory');
-            this.$documentOther = $('#documents-other');
+            this.$documentOther = $('#documents-additional');
             this.$dropZoneTemplate = $('#dropzone__template');
             this.$dropZoneFileTemplate = $('#dropzone__template__file');
         },

@@ -187,38 +187,38 @@
     <p class="text">If a COP24 has been provided, it must be uploaded.</p>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
-    <table class="govuk-table behat-region-documents-additional-filenames"  id="documents-other" data-order-id="{{ order.id }}" data-doc-type="{{ constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }}">
+    <table class="govuk-table"  id="documents-additional" data-order-id="{{ order.id }}" data-doc-type="{{ constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }}">
     {% if otherDocs | length %}
+        <thead class="govuk-table__head behat-region-documents-additional-filenames">
+            <tr>
+                <th scope="col" class="govuk-table__header">Document uploaded</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
+        </thead>
 
-            <thead class="govuk-table__head">
-                <tr>
-                    <th scope="col" class="govuk-table__header">Document uploaded</th>
-                    <th scope="col" class="govuk-table__header"></th>
-                </tr>
-            </thead>
+        <tbody class="govuk-table__body">
+        {% for doc in otherDocs %}
+            <tr class="govuk-table__row" data-doc-id="{{ doc.id }}">
+                <td class="govuk-table__cell">
+                    {% if doc.filename | length %}
+                        {{ doc.filename }}
+                    {% endif %}</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
+                    <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% endif %}
 
-            <tbody class="govuk-table__body">
-            {% for doc in otherDocs %}
-                <tr class="govuk-table__row" data-doc-id="{{ doc.id }}">
-                    <td class="govuk-table__cell">
-                        {% if doc.filename | length %}
-                            {{ doc.filename }}
-                        {% endif %}</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
-                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-            {% endif %}
-            <tfoot>
-            <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
-                <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-                   class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
-                    <span class="govuk-icon govuk-icon--plus"></span>Add document
-                </a>
-            </td>
-            </tfoot>
+        <tfoot>
+        <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
+            <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+               class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
+                <span class="govuk-icon govuk-icon--plus"></span>Add document
+            </a>
+        </td>
+        </tfoot>
     </table>
 
 
