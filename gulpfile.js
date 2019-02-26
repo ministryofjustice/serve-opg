@@ -1,9 +1,8 @@
 'use strict';
 
-const gulp = require("gulp");
-const del = require("del");
+const gulp = require('gulp');
+const del = require('del');
 const plumber = require('gulp-plumber');
-// const clean = require('gulp-clean');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 
@@ -15,11 +14,10 @@ var config = {
 }
 
 function cleanAssets() {
-    return del(["./web/assets/*"]);
+    return del(['./web/assets/*']);
 }
 
 function watchFiles() {
-    gulp.watch(config.sassSrc + '/**/*.scss');
     gulp.watch(config.sassSrc + '/**/*.scss');
     gulp.watch(config.sassSrc + '/*.scss');
     gulp.watch(config.jsSrc + '/**/*.js');
@@ -28,11 +26,11 @@ function watchFiles() {
 
 function css() {
     return gulp
-        .src(config.sassSrc + "/application.scss")
+        .src(config.sassSrc + '/application.scss')
         .pipe(plumber())
         .pipe(sass({
             includePaths: ['node_modules/govuk-frontend'],
-            outputStyle: "expanded"
+            outputStyle: 'expanded'
         }))
         .pipe(gulp.dest(config.webAssets + '/stylesheets'))
 }
@@ -62,19 +60,6 @@ function concatJs() {
         .pipe(concat('application.js'))
         .pipe(gulp.dest(config.webAssets + '/js'))
 }
-
-// Watch sass
-// gulp.task('watch', function () {
-//     gulp.watch([
-//             config.sassSrc + '/**/*.scss',
-//             config.sassSrc + '/*.scss',
-//             config.jsSrc + '/**/*.js',
-//             config.jsSrc + '/*.js'
-//         ], {
-//             interval: 1000
-//         },
-//         ['default']);
-// });
 
 const build = gulp.series(cleanAssets, govukImagesAndFonts, gulp.parallel(css, images, concatJs))
 const watch = gulp.parallel(watchFiles);
