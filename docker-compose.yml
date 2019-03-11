@@ -44,8 +44,6 @@ services:
       context: .
       dockerfile: docker/app/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
-    ports:
-      - 9000:9000
     depends_on:
       - localstack
       - secretsmanager
