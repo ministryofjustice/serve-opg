@@ -39,7 +39,7 @@ common:
 
 order:
   hasAssetsAboveThreshold:
-    label: Are the bond or assets over £21,000?
+    label: Is the bond over £21,000?
   subType:
     label: Order subtype
     choices:
