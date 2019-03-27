@@ -44,9 +44,9 @@ final class Version20190327111207 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DELETE FROM dc_user WHERE id = 15;');
-        $this->addSql('DELETE FROM dc_user WHERE id = 16;');
-        $this->addSql('DELETE FROM dc_user WHERE id = 17;');
-        $this->addSql('DELETE FROM dc_user WHERE id = 18;');
+        $this->addSql("DELETE FROM dc_user WHERE email = 'thomas.withers@digital.justice.gov.uk';");
+        $this->addSql("DELETE FROM dc_user WHERE email = 'kass.asgher@justice.gov.uk';");
+        $this->addSql("DELETE FROM dc_user WHERE email = 'suleman.patel@justice.gov.uk';");
+        $this->addSql("DELETE FROM dc_user WHERE email = 'raliat.odusanya@justice.gov.uk';");
     }
 }
