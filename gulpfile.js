@@ -53,6 +53,7 @@ function concatJs() {
         .src([
             'node_modules/jquery/dist/jquery.js',
             'node_modules/govuk-frontend/all.js',
+            'node_modules/dropzone/dist/dropzone.js',
             config.jsSrc + '/modules/*.js',
             config.jsSrc + '/main.js'
         ])

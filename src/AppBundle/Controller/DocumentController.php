@@ -17,6 +17,7 @@ use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -47,6 +48,10 @@ class DocumentController extends Controller
      */
     private $fileCheckerFactory;
 
+    const SUCCESS = 1;
+    const FAIL = 0;
+    const ERROR = 2;
+
     /**
      * DocumentController constructor.
      * @param EntityManager $em
@@ -64,6 +69,105 @@ class DocumentController extends Controller
         $this->fileCheckerFactory = $fileCheckerFactory;
     }
 
+    private function processDocument(Order $order, Document $document, $file, $requestId) {
+
+        $response = array(
+            'response' => self::FAIL,
+            'message' => '',
+        );
+
+        try {
+            $fileObject = $this->fileCheckerFactory->factory($file);
+
+            $fileObject->checkFile();
+            if ($fileObject->isSafe()) {
+                $document = $this->fileUploader->uploadFile(
+                    $order,
+                    $document,
+                    $file
+                );
+
+                $fileName = $file->getClientOriginalName();
+                $document->setFilename($fileName);
+
+                $this->em->persist($document);
+                $this->em->flush($document);
+
+                $response["response"] = self::SUCCESS;
+                $response["id"] = $document->getId();
+                $response["message"] = 'File uploaded';
+            } else {
+                $response["message"] = 'File could not be uploaded';
+            }
+
+        } catch (\Exception $e) {
+            $errorToErrorTranslationKey = [
+                InvalidFileTypeException::class => 'notSupported',
+                RiskyFileException::class => 'risky',
+                VirusFoundException::class => 'virusFound',
+            ];
+
+            $errorKey = isset($errorToErrorTranslationKey[get_class($e)]) ?
+                $errorToErrorTranslationKey[get_class($e)] : 'generic';
+
+            $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
+                '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $requestId,
+            ], 'validators');
+
+            $this->get('logger')->error($e->getMessage()); //fully log exceptions
+
+            $response["response"] = self::ERROR;
+            $response["message"] = $message;
+        }
+
+        return $response;
+    }
+
+    private function removeDocument($id) {
+
+        $response = self::FAIL;
+
+        try {
+            $this->documentService->deleteDocumentById($id);
+            $response = self::SUCCESS;
+
+        } catch (\Exception $e) {
+            $this->get('logger')->error($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    /**
+     * @Route("/order/{orderId}/document/{docType}", methods={"POST"})
+     */
+    public function postAction(Request $request, $orderId, $docType)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        $document = new Document($order, $docType);
+
+        $uploadedFile = $request->files->get('file');
+
+        $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
+
+
+        if($processedDocument["response"] === self::SUCCESS) {
+            return new JsonResponse([
+                'success' => true,
+                'id' => $processedDocument["id"],
+                'orderId' => $orderId,
+                'readyToServe' => $order->readyToServe()
+            ]);
+        }
+
+        if($processedDocument["response"] === self::FAIL || $processedDocument["response"] === self::ERROR) {
+            return new JsonResponse([
+                'error' => $processedDocument["message"]
+            ], 422);
+        }
+    }
+
     /**
      * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
      */
@@ -77,45 +181,21 @@ class DocumentController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $document->getFile();
-            try {
-                $fileObject = $this->fileCheckerFactory->factory($uploadedFile);
+            $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
-                $fileObject->checkFile();
-                if ($fileObject->isSafe()) {
-                    $document = $this->fileUploader->uploadFile(
-                        $order,
-                        $document,
-                        $uploadedFile
-                    );
-                   $request->getSession()->getFlashBag()->add('success', 'File uploaded');
-
-                    $fileName = $request->files->get('document_form')['file']->getClientOriginalName();
-                    $document->setFilename($fileName);
-
-                    $this->em->persist($document);
-                    $this->em->flush($document);
-                } else {
-                   $request->getSession()->getFlashBag()->add('notification', 'File could not be uploaded');
-                }
-
+            if($processedDocument["response"] === self::SUCCESS) {
+                $request->getSession()->getFlashBag()->add('success', $processedDocument["message"]);
                 return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), '_fragment' => 'documents']);
-            } catch (\Exception $e) {
-                $errorToErrorTranslationKey = [
-                    InvalidFileTypeException::class => 'notSupported',
-                    RiskyFileException::class => 'risky',
-                    VirusFoundException::class => 'virusFound',
-                ];
-
-                $errorKey = isset($errorToErrorTranslationKey[get_class($e)]) ?
-                    $errorToErrorTranslationKey[get_class($e)] : 'generic';
-
-                $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
-                    '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $request->headers->get('x-request-id'),
-                ], 'validators');
-
-                $form->get('file')->addError(new FormError($message));
-                $this->get('logger')->error($e->getMessage()); //fully log exceptions
             }
+
+            if($processedDocument["response"] === self::FAIL) {
+                $request->getSession()->getFlashBag()->add('notification', $processedDocument["message"]);
+            }
+
+            if($processedDocument["response"] === self::ERROR) {
+                $form->get('file')->addError(new FormError($processedDocument["message"]));
+            }
+
         }
 
         return $this->render('AppBundle:Document:add.html.twig', [
@@ -130,13 +210,24 @@ class DocumentController extends Controller
      */
     public function removeAction(Request $request, $orderId, $id)
     {
-        try {
-            $this->documentService->deleteDocumentById($id);
-        } catch (\Exception $e) {
-            $this->get('logger')->error($e->getMessage());
+        if ($this->removeDocument($id) === self::FAIL) {
             $this->addFlash('error', 'Document could not be removed.');
         }
 
         return $this->redirectToRoute('order-summary', ['orderId' => $orderId, '_fragment' => 'documents']);
+    }
+
+    /**
+     * @Route("/order/{orderId}/document/{id}", methods={"DELETE"})
+     */
+    public function deleteAction(Request $request, $orderId, $id)
+    {
+        $documentRemoved = $this->removeDocument($id);
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        return new JsonResponse([
+            'success' => $documentRemoved,
+            'readyToServe' => $order->readyToServe()
+        ]);
     }
 }

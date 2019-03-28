@@ -1,6 +1,7 @@
 {% extends 'AppBundle:Layouts:base-template.html.twig' %}
 
 {% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order summary{% endblock %}
+
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
     <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order summary</h1>
@@ -141,7 +142,9 @@
 
     <h2 id="documents" class="govuk-heading-m govuk-!-margin-top-9">Order documents</h2>
 
-    <table class="govuk-table">
+    <p class="text dropzone__info">You can only upload JPG, PNG, TIFF, PDF and Word Doc files, and they cannot be larger than 20MB.</p>
+
+    <table class="govuk-table" id="documents-mandatory">
         <thead class="govuk-table__head">
             <tr>
                 <th scope="col" class="govuk-table__header">Document required</th>
@@ -154,10 +157,10 @@
         {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
             {% set doc = order.getDocumentsByType(docType) | first %}
 
-            <tr class="govuk-table__row">
+            <tr class="govuk-table__row" data-order-id="{{ order.id }}" data-doc-type="{{ docType }}" {% if doc | length %}data-doc-id="{{ doc.id }}"{% endif %}>
                 <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
                 <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
-                    {% if doc %}
+                    {% if doc | length %}
                         {{ doc.filename }}
                     {%  else  %}
                         -
@@ -179,54 +182,77 @@
 
     <h3 class="govuk-heading-s">Other relevant documents (optional)</h3>
 
+    <p class="text dropzone__info">You can only upload JPG, PNG, TIFF, PDF and Word Doc files, and they cannot be larger than 20MB.</p>
+
     <p class="text">If a COP24 has been provided, it must be uploaded.</p>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
+    <table class="govuk-table"  id="documents-additional" data-order-id="{{ order.id }}" data-doc-type="{{ constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }}">
     {% if otherDocs | length %}
+        <thead class="govuk-table__head behat-region-documents-additional-filenames">
+            <tr>
+                <th scope="col" class="govuk-table__header">Document uploaded</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
+        </thead>
 
-        <table class="govuk-table behat-region-documents-additional-filenames">
-            <thead class="govuk-table__head">
-                <tr>
-                    <th scope="col" class="govuk-table__header">Document uploaded</th>
-                    <th scope="col" class="govuk-table__header"></th>
-                </tr>
-            </thead>
-
-            <tbody class="govuk-table__body">
-            {% for doc in otherDocs %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">
-                        {% if doc.filename | length %}
-                            {{ doc.filename }}
-                        {% endif %}</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
-                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <tbody class="govuk-table__body">
+        {% for doc in otherDocs %}
+            <tr class="govuk-table__row" data-doc-id="{{ doc.id }}">
+                <td class="govuk-table__cell">
+                    {% if doc.filename | length %}
+                        {{ doc.filename }}
+                    {% endif %}</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
+                    <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
     {% endif %}
 
+        <tfoot>
+        <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
+            <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+               class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
+                <span class="govuk-icon govuk-icon--plus"></span>Add document
+            </a>
+        </td>
+        </tfoot>
+    </table>
 
-
-    <p class="govuk-!-margin-bottom-9 behat-region-documents-other">
-        <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
-           class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
-           <span class="govuk-icon govuk-icon--plus"></span>Add document
-       </a>
-    </p>
 
     {% if order.readyToServe %}
         <a id="serve_order_button" class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
     {% else %}
-        <div class="govuk-alert govuk-alert--info">
+        <div id="serve_order_notice" class="govuk-alert govuk-alert--info">
             <span class="govuk-icon govuk-icon--info"></span>
             <div class="govuk-alert__message">
                 <p>To continue, please add one or more deputies and all the required order documents.</p>
             </div>
         </div>
-        <button class="govuk-button" disabled="disabled">Continue</button>
+        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button" disabled="disabled">Continue</button>
     {% endif %}
 
+{% endblock %}
+
+{% block bodyEnd %}
+<div id="dropzone__template">
+    <div class="dz-default dz-message govuk-body">
+        <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
+        <div class="govuk-grid-column-one-half"></div>
+        <span class="dropzone__template__instruction">Drag and drop documents here</span>
+        <div class="govuk-!-font-weight-bold">or</div>
+        <button class="govuk-button govuk-button--secondary">Choose documents</button>
+    </div>
+</div>
+<div id="dropzone__template__file">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-details govuk-body">
+            <div class="dz-filename"><span data-dz-name=""></span> <span class="dz-size" data-dz-size=""></span></div>
+            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+            <div class="dz-error-message govuk-error-message"><span data-dz-errormessage=""></span></div>
+        </div>
+    </div>
+</div>
 {% endblock %}

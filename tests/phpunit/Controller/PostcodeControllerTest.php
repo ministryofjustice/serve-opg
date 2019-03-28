@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 class PostcodeControllerTest extends AbstractControllerTestCase
 {
-    public function testHomePage()
+    public function testRequest()
     {
         $this->client->request('GET', '/postcode-lookup');
 

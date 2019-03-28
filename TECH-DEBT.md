@@ -8,6 +8,7 @@
 - dynamoDB required for app to startup
 - smoke test for behat controller in production
 - move create buckets step
+- update CircleCI machine
 
 # Solved
 - ~~add time based assets directory~~
