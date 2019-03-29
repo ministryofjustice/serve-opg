@@ -22,7 +22,7 @@
             dropZone: {
                 addRoute: '/order/{orderId}/document/{docType}',
                 removeRoute: '/order/{orderId}/document/{id}',
-                acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,.doc,.docx',
+                acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,.doc,.docx,.tif',
                 createImageThumbnails: false,
                 removeElement: '<a href="#" class="dropzone__file-remove">Remove</a>'
             }
