@@ -36,3 +36,7 @@ Feature: security checks
       And I log in as "behat@digital.justice.gov.uk" with password "wrong password"
       Then I should not see the "form-locked-error" region
 
+    Scenario: Login Autocomplete disabled
+      Given I go to "/login"
+      When the response status code should be 200
+      Then auto complete should be disabled
