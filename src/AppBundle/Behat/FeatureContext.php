@@ -82,4 +82,13 @@ class FeatureContext extends MinkContext
         $this->assertResponseNotContains("\"$service\":$status");
         $this->assertResponseNotContains("\"$service\":\"$status\"");
     }
+
+    /**
+     * @Then auto complete should be disabled
+     */
+    public function autoCompleteDisabled()
+    {
+        $page = $this->getSession()->getPage()->find('css', '#login')->getAttribute('autocomplete');
+        $this->assertResponseContains('off');
+    }
 }
