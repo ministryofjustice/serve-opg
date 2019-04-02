@@ -17,10 +17,12 @@ services:
     AppBundle\Controller\BehatController: ~
     AppBundle\Controller\CsvController: ~
     AppBundle\Controller\PostcodeController: ~
+    AppBundle\Controller\ReportController: ~
 
     AppBundle\Service\ClientService: ~
     AppBundle\Service\CsvImporterService: ~
     AppBundle\Service\OrderService: ~
+    AppBundle\Service\ReportService: ~
 
     AppBundle\Service\DeputyService: ~
     AppBundle\Service\DocumentService: ~
