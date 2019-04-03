@@ -38,8 +38,8 @@ class ReportService
         $ordersCsv = [];
 
         foreach ($orders as $order) {
-            $ordersCsv[] = ["Date Served" => $order->getServedAt()->format('Y-m-d'),
-                "Case Number" => $order->getClient()->getCaseNumber(),
+            $ordersCsv[] = ["DateServed" => $order->getServedAt()->format('Y-m-d'),
+                "CaseNumber" => $order->getClient()->getCaseNumber(),
                 "AppointmentType" => $order->getAppointmentType(),
                 "OrderType" => $order->getType()];
         }
