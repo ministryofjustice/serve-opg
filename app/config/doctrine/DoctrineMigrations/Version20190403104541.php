@@ -13,27 +13,28 @@ final class Version20190403104541 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
+
         $result =  $this->connection
             ->fetchColumn("SELECT count(*) FROM dc_user WHERE dc_user.email = 'edward.ndubisi@justice.gov.uk'");
 
         if (!$result) {
-            $this->addSql("INSERT INTO dc_user VALUES('19', 'edward.ndubisi@justice.gov.uk','set-me-up')");
+            $this->addSql("INSERT INTO dc_user VALUES(nextval('dc_user_id_seq'), 'edward.ndubisi@justice.gov.uk','set-me-up')");
         }
         $result =  $this->connection
             ->fetchColumn("SELECT COUNT(*) FROM dc_user WHERE dc_user.email = 'paul.mcqueen@digital.justice.gov.uk'");
 
         if (!$result) {
-            $this->addSql("INSERT INTO dc_user VALUES('20', 'paul.mcqueen@digital.justice.gov.uk','set-me-up')");
+            $this->addSql("INSERT INTO dc_user VALUES(nextval('dc_user_id_seq'), 'paul.mcqueen@digital.justice.gov.uk','set-me-up')");
         }
 
         $result =  $this->connection
             ->fetchColumn("SELECT COUNT(*) FROM dc_user WHERE dc_user.email =  'alex.saunders@digital.justice.gov.uk'");
 
         if (!$result) {
-            $this->addSql("INSERT INTO dc_user VALUES('21', 'alex.saunders@digital.justice.gov.uk','set-me-up')");
+            $this->addSql("INSERT INTO dc_user VALUES(nextval('dc_user_id_seq'), 'alex.saunders@digital.justice.gov.uk','set-me-up')");
         }
     }
-    
+
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
