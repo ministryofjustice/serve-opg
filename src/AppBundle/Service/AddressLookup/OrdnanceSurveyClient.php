@@ -12,24 +12,16 @@ class OrdnanceSurveyClient extends GuzzleHttpClient
 {
 
     /**
-     * @var SecretsManagerClient
-     */
-    private $secretsManagerClient;
-
-    /**
      * OrdnanceSurveyClient constructor.
-     * @param SecretsManagerClient $secretsManagerClient
      * @param array $config
      */
-    public function __construct(SecretsManagerClient $secretsManagerClient, array $config)
+    public function __construct(array $config)
     {
-        $this->secretsManagerClient = $secretsManagerClient;
 
-        $config['apiKey'] = $secretsManagerClient->getSecretValue([
-            "SecretId" => 'os_places_api_key'
-        ])['SecretString'];
+        $config['apiKey'] = getenv('OS_PLACES_API_KEY');
+        
         if (empty($config['apiKey'])) {
-            throw new \RuntimeException('OS Places API KEY not found in Secret Manager');
+            throw new \RuntimeException('OS Places API KEY not found via environment variable');
         }
 
         parent::__construct($config);

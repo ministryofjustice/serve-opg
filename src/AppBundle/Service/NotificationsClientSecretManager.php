@@ -2,28 +2,20 @@
 
 namespace AppBundle\Service;
 
-
-use Aws\SecretsManager\SecretsManagerClient;
-
 /**
  * Alphagov Notifications Client that grabs the apiKey from AWS secret manager
  */
 class NotificationsClientSecretManager extends \Alphagov\Notifications\Client
 {
-    /**
-     * @var SecretsManagerClient
-     */
-    private $secretsManagerClient;
 
-    public function __construct(SecretsManagerClient $secretsManagerClient, array $config)
+
+    public function __construct(array $config)
     {
-        $this->secretsManagerClient = $secretsManagerClient;
 
-        $config['apiKey'] = @$secretsManagerClient->getSecretValue([
-            "SecretId" => 'notification_api_key'
-        ])['SecretString'];
+        $config['apiKey'] = getenv('NOTIFICATION_API_KEY');
+
         if (empty($config['apiKey'])) {
-            throw new \RuntimeException('Notifications API KEY not found in Secret Manager');
+            throw new \RuntimeException('Notifications API KEY not passed in via environment variable');
         }
 
         parent::__construct($config);

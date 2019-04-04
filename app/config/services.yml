@@ -109,14 +109,6 @@ services:
       tags:
         - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
 
-    Aws\SecretsManager\SecretsManagerClient:
-      class: Aws\SecretsManager\SecretsManagerClient
-      arguments:
-        - region: 'eu-west-1'
-          version: 'latest'
-          validate: true
-          endpoint: "%env(SM_ENDPOINT)%"
-
     # Dynamo Db (session) config
     Aws\DynamoDb\DynamoDbClient:
         arguments:
