@@ -30,17 +30,9 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
 
-    # API key set in secrets manager ("SecretId" => 'os_places_api_key')
-    OrdnanceSurveyClient:
-      class: AppBundle\Service\AddressLookup\OrdnanceSurveyClient
-      arguments:
-        $config:
-          base_uri: "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
-          lr: "EN"
-
     AppBundle\Service\AddressLookup\OrdnanceSurvey:
       arguments:
-        $httpClient: "@OrdnanceSurveyClient"
+        $httpClient: "@guzzleClient"
 
     # Notify (used for email sending)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
@@ -51,17 +43,13 @@ services:
         $config:
           - timeout: 10
 
-    notificationHttpClient:
-        class: Http\Adapter\Guzzle6\Client
-        arguments:
-          $client: "@guzzleClient"
-
     # Notifications client, using Secret manager
     alphagov.notifications.client.real:
-      class: AppBundle\Service\NotificationsClientSecretManager
+      class: Alphagov\Notifications\Client
       arguments:
         $config:
-          httpClient: "@notificationHttpClient"
+          apiKey: "%env(NOTIFICATION_API_KEY)%"
+          httpClient: "@guzzleClient"
 
     # Notifications mock client for behat (local URL)
     alphagov.notifications.client.mock:
@@ -72,7 +60,7 @@ services:
           apiKey: "mock-0b6deb72-13ec-45f5-b598-88c7be007000-0b6deb72-13ec-45f5-b598-88c7be007000"
           #apiKey: "test-  dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1   - 93a167f0-e5bc-439f-8750-6f79fec8b5f1  "
           baseUrl: "%env(DC_NOTIFY_MOCK_ENDPOINT)%"
-          httpClient: "@notificationHttpClient"
+          httpClient: "@guzzleClient"
 
     AppBundle\Service\MailSender:
       arguments:
