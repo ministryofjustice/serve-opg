@@ -1,16 +1,12 @@
 <?php
-/**
- * Project: opg-digicop
- * Author: robertford
- * Date: 29/11/2018
- */
 
 namespace AppBundle\Service;
 
-use AppBundle\Service\AddressLookup\OrdnanceSurveyClient;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery\MockInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use AppBundle\Service\AddressLookup\OrdnanceSurvey;
@@ -19,7 +15,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 {
 
     /**
-     * @var MockInterface|OrdnanceSurveyClient
+     * @var MockInterface|Client
      */
     private $httpClient;
 
@@ -28,17 +24,17 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
      */
     private $response;
 
-    private $ordnanceSurveyService;
+    private $clientInterface;
 
     protected function setUp()
     {
-        $this->httpClient = Mockery::mock(OrdnanceSurveyClient::class);
+        $this->httpClient = Mockery::mock(Client::class);
         $this->httpClient->shouldReceive('getConfig')->with('base_uri');
         $this->httpClient->shouldReceive('getConfig')->with('apiKey');
         $this->httpClient->shouldReceive('getConfig')->with('lr');
 
         $this->response = Mockery::mock(ResponseInterface::class);
-        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient);
+        $this->clientInterface = new Client();
     }
     //------------------------------------------------------------------------------------
 
@@ -69,7 +65,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->once()
             ->andReturn($this->response);
 
-        $this->ordnanceSurveyService->lookupPostcode($postcode);
+        $this->clientInterface->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseCode()
     {
@@ -80,7 +76,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->andReturn($this->response);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/bad status code/' );
-        $this->ordnanceSurveyService->lookupPostcode($postcode);
+        $this->clientInterface->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseBody()
     {
@@ -92,7 +88,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->andReturn($this->response);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/invalid JSON/' );
-        $this->ordnanceSurveyService->lookupPostcode($postcode);
+        $this->clientInterface->lookupPostcode($postcode);
     }
     public function testValidHttpLookupResponse()
     {
@@ -104,7 +100,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('send')
             ->once()
             ->andReturn($this->response);
-        $result = $this->ordnanceSurveyService->lookupPostcode($postcode);
+        $result = $this->clientInterface->lookupPostcode($postcode);
         // We expect an empty array.
         $this->assertInternalType('array', $result);
         $this->assertEmpty($result);

@@ -33,6 +33,7 @@ services:
     AppBundle\Service\AddressLookup\OrdnanceSurvey:
       arguments:
         $httpClient: "@guzzleClient"
+        $apiKey: "%env(OS_PLACES_API_KEY)%"
 
     # Notify (used for email sending)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
