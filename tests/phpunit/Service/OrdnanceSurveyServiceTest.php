@@ -24,7 +24,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
      */
     private $response;
 
-    private $clientInterface;
+    private $ordnanceSurveyService;
 
     protected function setUp()
     {
@@ -34,7 +34,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('getConfig')->with('lr');
 
         $this->response = Mockery::mock(ResponseInterface::class);
-        $this->clientInterface = new Client();
+        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient);
     }
     //------------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->once()
             ->andReturn($this->response);
 
-        $this->clientInterface->lookupPostcode($postcode);
+        $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseCode()
     {
@@ -76,7 +76,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->andReturn($this->response);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/bad status code/' );
-        $this->clientInterface->lookupPostcode($postcode);
+        $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseBody()
     {
@@ -88,7 +88,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->andReturn($this->response);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageRegExp( '/invalid JSON/' );
-        $this->clientInterface->lookupPostcode($postcode);
+        $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testValidHttpLookupResponse()
     {
@@ -100,7 +100,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('send')
             ->once()
             ->andReturn($this->response);
-        $result = $this->clientInterface->lookupPostcode($postcode);
+        $result = $this->ordnanceSurveyService->lookupPostcode($postcode);
         // We expect an empty array.
         $this->assertInternalType('array', $result);
         $this->assertEmpty($result);
