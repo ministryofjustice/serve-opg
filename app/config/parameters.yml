@@ -11,7 +11,7 @@ parameters:
 
     # allow environment override, but set sensible default
     env(DYNAMODB_ENDPOINT): https://dynamodb.eu-west-1.amazonaws.com:443
-    env(SM_ENDPOINT): https://secretsmanager.eu-west-1.amazonaws.com:443
+#    env(SM_ENDPOINT): https://secretsmanager.eu-west-1.amazonaws.com:443
 
     # appended to CSS and JS as "?v=<this value>". If empty, the request timestamp will be used
     env(DC_ASSETS_VERSION): ""

@@ -7,6 +7,7 @@
 
 namespace AppBundle\Service\AddressLookup;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\ClientInterface;
@@ -15,16 +16,18 @@ class OrdnanceSurvey
 {
 
     /**
-     * @var ClientInterface
+     * @var Client
      */
     private $httpClient;
 
+    /**
+     * @var
+     */
     private $apiKey;
 
     /**
      * OrdnanceSurvey constructor.
      * @param ClientInterface $httpClient
-     * @param $apiKey
      */
     public function __construct(ClientInterface $httpClient, $apiKey)
     {

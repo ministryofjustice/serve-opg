@@ -34,7 +34,8 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('getConfig')->with('lr');
 
         $this->response = Mockery::mock(ResponseInterface::class);
-        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient);
+
+        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient, null);
     }
     //------------------------------------------------------------------------------------
 

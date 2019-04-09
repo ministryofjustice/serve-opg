@@ -59,6 +59,8 @@ class SiriusService
      */
     private $secretsManagerClient;
 
+    private $siriusApiEmail;
+
     /**
      * SiriusService constructor.
      * 
@@ -73,13 +75,15 @@ class SiriusService
         ClientInterface $httpClient,
         StorageInterface $S3storage,
         LoggerInterface $logger,
-        SecretsManagerClient $secretsManagerClient
+        SecretsManagerClient $secretsManagerClient,
+        $siriusApiEmail
     ) {
         $this->em = $em;
         $this->httpClient = $httpClient;
         $this->S3Storage = $S3storage;
         $this->logger = $logger;
         $this->secretsManagerClient = $secretsManagerClient;
+        $this->siriusApiEmail = $siriusApiEmail;
     }
 
     public function serveOrder(Order $order)
@@ -161,13 +165,11 @@ class SiriusService
      */
     private function login()
     {
-        $password = $this->secretsManagerClient->getSecretValue([
-            "SecretId" => getenv('SIRIUS_PUBLIC_API_EMAIL')
-        ])['SecretString'];
+        $password = $this->siriusApiEmail;
 
         $params = [
             'form_params' => [
-                'email'    => getenv('SIRIUS_PUBLIC_API_EMAIL'),
+                'email'    => $this->siriusApiEmail,
                 'password' => $password,
             ],
             'cookies' => $this->cookieJar
