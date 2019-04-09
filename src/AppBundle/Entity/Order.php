@@ -18,9 +18,6 @@ abstract class Order
     const HAS_ASSETS_ABOVE_THRESHOLD_YES = 'yes';
     const HAS_ASSETS_ABOVE_THRESHOLD_NO = 'no';
 
-    const HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS = 'HIGH';
-    const HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS = 'LOW';
-
     const HAS_ASSETS_ABOVE_THRESHOLD_NA = 'na';
 
     const APPOINTMENT_TYPE_SOLE = 'SOLE';
@@ -252,7 +249,7 @@ abstract class Order
      */
     public function setHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): Order
     {
-        $this->hasAssetsAboveThreshold = $this->translateForSirius($hasAssetsAboveThreshold);
+        $this->hasAssetsAboveThreshold = $hasAssetsAboveThreshold;
         return $this;
     }
 
@@ -436,15 +433,5 @@ abstract class Order
     {
         $this->apiResponse = $apiResponse;
         return $this;
-    }
-
-    private function translateForSirius(?string $hasAssetsAboveThreshold)
-    {
-        if ($hasAssetsAboveThreshold === self::HAS_ASSETS_ABOVE_THRESHOLD_NA || $hasAssetsAboveThreshold === null) {
-            return $hasAssetsAboveThreshold;
-        }
-
-        return $hasAssetsAboveThreshold === self::HAS_ASSETS_ABOVE_THRESHOLD_YES ?
-            self::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS : self::HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS;
     }
 }

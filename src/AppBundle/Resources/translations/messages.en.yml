@@ -3,8 +3,8 @@ pleaseSelect: Please select...
 order.PF: Property and finance
 order.HW: Health and welfare
 
-order.hasAssets.HIGH: 'Yes'
-order.hasAssets.LOW: 'No'
+order.hasAssets.yes: 'Yes'
+order.hasAssets.no: 'No'
 
 order.subType.NEW_APPLICATION: 'New application'
 order.subType.REPLACEMENT_OF_DISCHARGED_DEPUTY: 'Replacement of discharged deputy'
