@@ -27,8 +27,8 @@ class OrderForm extends AbstractType
                     'required' => false,
                     'choices' => [
                         'common.choices.pleaseSelect' => '',
-                        'common.choices.yes'  => Order::HAS_ASSETS_YES,
-                        'common.choices.no' => Order::HAS_ASSETS_NO,
+                        'common.choices.yes'  => Order::HAS_ASSETS_ABOVE_THRESHOLD_YES,
+                        'common.choices.no' => Order::HAS_ASSETS_ABOVE_THRESHOLD_NO,
                     ]
                 ]);
         }

@@ -4,6 +4,7 @@ namespace Tests\phpunit\Entity;
 
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderHw;
 use AppBundle\Entity\OrderPf;
 use DateTime;
 use PHPUnit\Framework\TestCase;
@@ -19,9 +20,13 @@ class OrderTest extends TestCase
         /** @var Client $client */
         $client = $this->prophesize(Client::class);
 
-        $order = new OrderPf($client->reveal(), new DateTime('now'), new DateTime('now'));
-        $order->setHasAssetsAboveThreshold($formResponse);
-        self::assertEquals($expectedValue, $order->getHasAssetsAboveThreshold());
+        $orderPf = new OrderPf($client->reveal(), new DateTime('now'), new DateTime('now'));
+        $orderPf->setHasAssetsAboveThreshold($formResponse);
+        self::assertEquals($expectedValue, $orderPf->getHasAssetsAboveThreshold());
+
+        $orderHw = new OrderHw($client->reveal(), new DateTime('now'), new DateTime('now'));
+        $orderHw->setHasAssetsAboveThreshold($formResponse);
+        self::assertEquals($expectedValue, $orderHw->getHasAssetsAboveThreshold());
     }
 
     public function thresholdProvider()
