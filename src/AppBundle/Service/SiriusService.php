@@ -255,7 +255,7 @@ class SiriusService
             "date" => $order->getMadeAt()->format(self::SIRIUS_DATE_FORMAT),
             "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
             "appointmentType" => $order->getAppointmentType(),
-            "assetLevel" => $order->getHasAssetsAboveThreshold() ? 'HIGH' : 'LOW',
+            "assetLevel" => $order->getHasAssetsAboveThreshold(),
         ];
     }
 
