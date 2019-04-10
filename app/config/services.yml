@@ -30,6 +30,7 @@ services:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"
         $siriusApiEmail: "%env(SIRIUS_PUBLIC_API_EMAIL)%"
+        $siriusApiPassword: "%env(SIRIUS_PUBLIC_API_PASSWORD)%"
 
     AppBundle\Service\AddressLookup\OrdnanceSurvey:
       arguments:
