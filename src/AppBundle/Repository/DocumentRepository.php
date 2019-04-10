@@ -3,23 +3,20 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
 
-use Doctrine\ORM\EntityManagerInterface;
-
-class DocumentRepository
+class DocumentRepository extends EntityRepository
 {
     /**
-     * @var EntityManagerInterface
+     * @param int $id
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function findById(int $id)
     {
-        $this->em = $em;
-    }
-
-    public function findById()
-    {
-
+        return $this->getEntityManager()->createQuery('SELECT d FROM AppBundle:Document d WHERE d.id = :id')
+            ->setParameter('id', $id)
+            ->getSingleResult();
     }
 }
