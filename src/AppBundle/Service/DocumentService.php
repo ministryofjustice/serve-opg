@@ -39,6 +39,7 @@ class DocumentService
         $this->documentRepository = $documentRepository;
     }
 
+    // @todo refactor into DocumentRepository, remove $deleteFromS3 and call separately where required
     public function deleteDocumentById($id)
     {
         /** @var Document $document */

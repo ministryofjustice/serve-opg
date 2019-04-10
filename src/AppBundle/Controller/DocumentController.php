@@ -11,8 +11,6 @@ use AppBundle\Service\File\Checker\Exception\RiskyFileException;
 use AppBundle\Service\File\Checker\Exception\VirusFoundException;
 use AppBundle\Service\File\Checker\FileCheckerFactory;
 use AppBundle\Service\File\FileUploader;
-use AppBundle\Service\File\Storage\StorageInterface;
-use AppBundle\Service\File\Types\Pdf;
 use AppBundle\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -149,8 +147,9 @@ class DocumentController extends Controller
 
         $uploadedFile = $request->files->get('file');
 
-        $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
+        // Add check on filename here and return a warning if filename and client name are not as expected
 
+        $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
         if($processedDocument["response"] === self::SUCCESS) {
             return new JsonResponse([
