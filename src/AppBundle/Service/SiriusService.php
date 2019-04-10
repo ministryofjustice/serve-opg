@@ -62,7 +62,7 @@ class SiriusService
     private $siriusApiEmail;
 
     private $siriusApiPassword;
-
+  
     /**
      * SiriusService constructor.
      * 
