@@ -11,7 +11,6 @@ services:
       - aws
     depends_on:
       - localstack
-      - secretsmanager
 
   loadbalancer:
     image: jwilder/nginx-proxy
@@ -46,7 +45,6 @@ services:
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
     depends_on:
       - localstack
-      - secretsmanager
       - postgres
       - sirius-api
     volumes:
@@ -64,7 +62,6 @@ services:
       AWS_SECRET_ACCESS_KEY: bar
       # end still needed
       DYNAMODB_ENDPOINT: http://localstack:8000
-      SM_ENDPOINT: http://secretsmanager:5000
       DC_SYMFONY_SECRET: dc2018!
       # db
       DC_DB_HOST: postgres
@@ -80,8 +77,11 @@ services:
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
       # using the same key as notifications, as the localstack secretmanager mock only supports one key
-      SIRIUS_PUBLIC_API_EMAIL: notification_api_key
+      SIRIUS_PUBLIC_API_EMAIL: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
+      SIRIUS_PUBLIC_API_PASSWORD: API_PASSWORD
       SIRIUS_KMS_KEY_ARN: arn:aws:kms:eu-west-1:012345678901:alias/notification_api_key
+      NOTIFICATION_API_KEY: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
+      OS_PLACES_API_KEY: DUMMY_KEY
       # file scanner
       DC_FILE_SCANNER_URL: 'https://file-scanner-api:8443'
       DC_FILE_SCANNER_SSL_VERIFY: 1
@@ -113,11 +113,6 @@ services:
       - mock
       - --spec
       - /tmp/api.public.v1.yaml
-
-  secretsmanager:
-    image: damacus/moto
-    ports:
-      - 5000:5000
 
   localstack:
     image: localstack/localstack
@@ -192,7 +187,7 @@ services:
       # Sirius public API configuratiion
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
 
-#  notify:
+  #  notify:
 #    build:
 #      context: ./docker/notify
 #      dockerfile: Dockerfile
@@ -226,7 +221,10 @@ services:
       DC_DB_PASS: dcdb2018!
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
-
+      SIRIUS_PUBLIC_API_EMAIL: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
+      SIRIUS_PUBLIC_API_PASSWORD: API_PASSWORD
+      NOTIFICATION_API_KEY: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
+      OS_PLACES_API_KEY: DUMMY_KEY
   qa:
     image: jakzal/phpqa:alpine
     volumes:

@@ -27,21 +27,14 @@ class ManageController extends Controller
     private $siriusService;
 
     /**
-     * @var SecretsManagerClient
-     */
-    private $secretsManagerClient;
-
-    /**
      * ManageController constructor.
      * @param EntityManager $em
      * @param SiriusService $siriusService
-     * @param SecretsManagerClient $secretsManagerClient
      */
-    public function __construct(EntityManager $em, SiriusService $siriusService, SecretsManagerClient $secretsManagerClient)
+    public function __construct(EntityManager $em, SiriusService $siriusService)
     {
         $this->em = $em;
         $this->siriusService = $siriusService;
-        $this->secretsManagerClient = $secretsManagerClient;
     }
 
     /**
@@ -51,13 +44,9 @@ class ManageController extends Controller
      */
     public function availabilityAction()
     {
-        $sm = $this->secretsManagerClient->describeSecret([
-            "SecretId" => getenv('SIRIUS_PUBLIC_API_EMAIL')
-        ])["@metadata"]['statusCode'];
         $sirius = $this->siriusService->ping();
         return $this->json([
-            'sirius' => $sirius,
-            'sm' => $sm
+            'sirius' => $sirius
         ]);
     }
 

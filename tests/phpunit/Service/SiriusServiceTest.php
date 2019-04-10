@@ -49,7 +49,9 @@ class SiriusServiceTest extends MockeryTestCase
             $this->mockHttpClient,
             $this->mockS3Storage,
             $this->mockLogger,
-            $this->mockSecretsManager
+            $this->mockSecretsManager,
+            null,
+            null
         );
     }
 

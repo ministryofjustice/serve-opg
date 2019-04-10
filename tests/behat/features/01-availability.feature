@@ -5,7 +5,6 @@ Feature: prechecks
         Given I go to "/manage/availability"
         Then the response status code should be 200
         And sirius status should not be unavailable
-        And sm status should be 200
 
 
     Scenario: check deployed versions
