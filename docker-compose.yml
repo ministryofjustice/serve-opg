@@ -78,7 +78,6 @@ services:
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
       # using the same key as notifications, as the localstack secretmanager mock only supports one key
       SIRIUS_PUBLIC_API_EMAIL: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
-      SIRIUS_PUBLIC_API_PASSWORD: API_PASSWORD
       SIRIUS_KMS_KEY_ARN: arn:aws:kms:eu-west-1:012345678901:alias/notification_api_key
       NOTIFICATION_API_KEY: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
       OS_PLACES_API_KEY: DUMMY_KEY
@@ -222,7 +221,6 @@ services:
       DC_SIRIUS_URL: 'http://sirius-api:4010/'
       SIRIUS_S3_BUCKET_NAME: sirius_test_bucket
       SIRIUS_PUBLIC_API_EMAIL: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
-      SIRIUS_PUBLIC_API_PASSWORD: API_PASSWORD
       NOTIFICATION_API_KEY: local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
       OS_PLACES_API_KEY: DUMMY_KEY
   qa:
