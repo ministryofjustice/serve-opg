@@ -7,7 +7,6 @@
 
 namespace AppBundle\Service\AddressLookup;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\ClientInterface;
@@ -16,29 +15,22 @@ class OrdnanceSurvey
 {
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     private $httpClient;
-
-    /**
-     * @var
-     */
-    private $apiKey;
 
     /**
      * OrdnanceSurvey constructor.
      * @param ClientInterface $httpClient
      */
-    public function __construct(ClientInterface $httpClient, $apiKey)
+    public function __construct(ClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
-        $this->apiKey = $apiKey;
     }
 
     /**
      * @param $postcode
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function lookupPostcode($postcode)
     {
@@ -61,7 +53,7 @@ class OrdnanceSurvey
     private function getPostcodeData($postcode)
     {
         $url = new Uri($this->httpClient->getConfig('base_uri'));
-        $url = URI::withQueryValue($url, 'key', $this->apiKey);
+        $url = URI::withQueryValue($url, 'key', $this->httpClient->getConfig('apiKey'));
         $url = URI::withQueryValue($url, 'postcode', $postcode);
         $url = URI::withQueryValue($url, 'lr', $this->httpClient->getConfig('lr'));
         $request = new Request('GET', $url);

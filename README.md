@@ -31,6 +31,14 @@ docker-compose run --rm waitforit -address=http://localstack:4569 -debug
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
 
+# Create secrets
+docker-compose up -d secretsmanager
+docker-compose run --rm waitforit -address=http://secretsmanager:5000 -debug
+# API token to send email only to the team
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://secretsmanager:5000 secretsmanager create-secret --name notification_api_key --secret-string "local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738"
+# API token for Ordnance Survey Places postcode lookup
+# Register for a free trial key: https://developer.ordnancesurvey.co.uk/os-places-api
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://secretsmanager:5000 secretsmanager create-secret --name os_places_api_key --secret-string "DUMMY-KEY"
 # Vendor php dependencies
 docker-compose run --rm composer
 
