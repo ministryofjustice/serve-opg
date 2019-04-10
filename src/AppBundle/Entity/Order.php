@@ -126,6 +126,7 @@ abstract class Order
         $this->deputies = new ArrayCollection();
         $this->documents = new ArrayCollection();
 
+        // @todo look at refactoring this dependency out - we're just setting the order so can be done when needed in code
         $client->addOrder($this);
     }
 

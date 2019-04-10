@@ -25,7 +25,10 @@ services:
     AppBundle\Service\ReportService: ~
 
     AppBundle\Service\DeputyService: ~
-    AppBundle\Service\DocumentService: ~
+    AppBundle\Service\DocumentService:
+      arguments:
+        $documentRepository: "@AppBundle\\Repository\\DocumentRepository"
+
     AppBundle\Service\SiriusService:
       arguments:
         $httpClient: "@AppBundle\\Service\\SiriusClient"

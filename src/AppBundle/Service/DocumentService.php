@@ -2,18 +2,15 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Client;
 use AppBundle\Entity\Document;
+use AppBundle\Repository\DocumentRepository;
 use AppBundle\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManager;
 
 class DocumentService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
     /**
      * @var StorageInterface
      */
@@ -25,16 +22,21 @@ class DocumentService
     private $logger;
 
     /**
+     * @var DocumentRepository
+     */
+    private $documentRepository;
+
+    /**
      * DocumentService constructor.
-     * @param EntityManager $em
      * @param StorageInterface $s3Storage
      * @param LoggerInterface $logger
+     * @param DocumentRepository $documentRepository
      */
-    public function __construct(EntityManager $em, StorageInterface $s3Storage, LoggerInterface $logger)
+    public function __construct(StorageInterface $s3Storage, LoggerInterface $logger, DocumentRepository $documentRepository)
     {
-        $this->em = $em;
         $this->storage = $s3Storage;
         $this->logger = $logger;
+        $this->documentRepository = $documentRepository;
     }
 
     public function deleteDocumentById($id)
@@ -51,6 +53,7 @@ class DocumentService
         $this->em->flush($document);
     }
 
+    // @todo can be refactored out in to generic S3 service
     /**
      * @param  Document   $document
      * @param  bool       $ignoreS3Failure
@@ -78,5 +81,26 @@ class DocumentService
                 throw $e;
             }
         }
+    }
+
+    public function documentLikelyValid(int $documentId, Client $client)
+    {
+        /** @var Document $document */
+        $document = $this->documentRepository->findById($documentId);
+        $fileName = $document->getFileName();
+
+        return $this->fileNameContainsClientName($fileName, $client->getClientName()) &&
+            $this->fileNameContainsDocumentType($fileName, $document->getType());
+    }
+
+    private function fileNameContainsClientName(string $fileName, string $clientName)
+    {
+        return strpos($fileName, $clientName) !== false;
+    }
+
+    private function fileNameContainsDocumentType(string $fileName, ?string $getType)
+    {
+        return strpos($fileName, $getType) !== false;
+
     }
 }

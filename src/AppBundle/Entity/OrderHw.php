@@ -2,8 +2,15 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
+
 class OrderHw extends Order
 {
+    public function __construct(Client $client, DateTime $madeAt, DateTime $issuedAt)
+    {
+        parent::__construct($client, $madeAt, $issuedAt);
+    }
+
     /**
      * @return string
      */
