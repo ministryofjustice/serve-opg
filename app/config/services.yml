@@ -7,27 +7,12 @@ services:
     Doctrine\ORM\EntityManager: "@doctrine.orm.entity_manager"
 
     AppBundle\DataFixtures\DefaultFixtures: ~
-    AppBundle\Controller\IndexController: ~
-    AppBundle\Controller\UserController: ~
-    AppBundle\Controller\CaseController: ~
-    AppBundle\Controller\ManageController: ~
-    AppBundle\Controller\OrderController: ~
-    AppBundle\Controller\DeputyController: ~
-    AppBundle\Controller\DocumentController: ~
-    AppBundle\Controller\BehatController: ~
-    AppBundle\Controller\CsvController: ~
-    AppBundle\Controller\PostcodeController: ~
-    AppBundle\Controller\ReportController: ~
 
-    AppBundle\Service\ClientService: ~
-    AppBundle\Service\CsvImporterService: ~
-    AppBundle\Service\OrderService: ~
-    AppBundle\Service\ReportService: ~
-
-    AppBundle\Service\DeputyService: ~
-    AppBundle\Service\DocumentService:
-      arguments:
-        $documentRepository: "@AppBundle\\Repository\\DocumentRepository"
+  # makes classes in src/AppBundle available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+    AppBundle\:
+      resource: '../../src/AppBundle/*'
+      exclude: '../../src/{Behat,Entity,DataFixtures,Resources}|AppBundle.php'
 
     AppBundle\Service\SiriusService:
       arguments:
@@ -147,21 +132,6 @@ services:
         $remoteBucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
 
     AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
-    AppBundle\Service\File\Checker\ClamAVChecker: ~
-    AppBundle\Service\File\Checker\PdfChecker: ~
-    AppBundle\Service\File\Checker\JpgChecker: ~
-    AppBundle\Service\File\Checker\PngChecker: ~
-    AppBundle\Service\File\Checker\TifChecker: ~
-    AppBundle\Service\File\Checker\DocChecker: ~
-    AppBundle\Service\File\Checker\FileCheckerFactory: ~
-    AppBundle\Service\File\FileUploader: ~
-    AppBundle\Service\File\Types\Pdf: ~
-    AppBundle\Service\File\Types\Jpg: ~
-    AppBundle\Service\File\Types\Png: ~
-    AppBundle\Service\File\Types\Tif: ~
-    AppBundle\Service\File\Types\Doc: ~
-
-
 
     GuzzleHttp\Client:
       arguments:
