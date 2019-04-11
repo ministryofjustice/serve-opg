@@ -119,7 +119,9 @@ class SiriusServiceTest extends MockeryTestCase
             $this->mockHttpClient->reveal(),
             $this->mockS3Storage->reveal(),
             $this->mockLogger->reveal(),
-            $this->mockSecretsManager->reveal()
+            $this->mockSecretsManager->reveal(),
+            null,
+            null
         );
 
         $this->sut->serveOrder($order);

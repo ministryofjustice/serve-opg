@@ -1,16 +1,12 @@
 <?php
-/**
- * Project: opg-digicop
- * Author: robertford
- * Date: 29/11/2018
- */
 
 namespace AppBundle\Service;
 
-use AppBundle\Service\AddressLookup\OrdnanceSurveyClient;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery\MockInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use AppBundle\Service\AddressLookup\OrdnanceSurvey;
@@ -19,7 +15,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 {
 
     /**
-     * @var MockInterface|OrdnanceSurveyClient
+     * @var MockInterface|Client
      */
     private $httpClient;
 
@@ -32,13 +28,14 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 
     protected function setUp()
     {
-        $this->httpClient = Mockery::mock(OrdnanceSurveyClient::class);
+        $this->httpClient = Mockery::mock(Client::class);
         $this->httpClient->shouldReceive('getConfig')->with('base_uri');
         $this->httpClient->shouldReceive('getConfig')->with('apiKey');
         $this->httpClient->shouldReceive('getConfig')->with('lr');
 
         $this->response = Mockery::mock(ResponseInterface::class);
-        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient);
+
+        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient, null);
     }
     //------------------------------------------------------------------------------------
 
