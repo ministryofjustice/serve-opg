@@ -15,9 +15,10 @@ abstract class Order
     const SUBTYPE_REPLACEMENT = 'REPLACEMENT_OF_DISCHARGED_DEPUTY';
     const SUBTYPE_INTERIM_ORDER = 'INTERIM_ORDER';
 
-    const HAS_ASSETS_YES = 'yes';
-    const HAS_ASSETS_NO = 'no';
-    const HAS_ASSETS_NA = 'na';
+    const HAS_ASSETS_ABOVE_THRESHOLD_YES = 'yes';
+    const HAS_ASSETS_ABOVE_THRESHOLD_NO = 'no';
+
+    const HAS_ASSETS_ABOVE_THRESHOLD_NA = 'na';
 
     const APPOINTMENT_TYPE_SOLE = 'SOLE';
     const APPOINTMENT_TYPE_JOINT = 'JOINT';

@@ -5,19 +5,19 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Deputy;
 use AppBundle\Entity\Document;
+use AppBundle\Entity\Order;
 use AppBundle\Entity\OrderPf;
 use AppBundle\Service\File\Storage\S3Storage;
 use Aws\SecretsManager\SecretsManagerClient;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Cookie\CookieJarInterface;
-use Mockery as m;
+use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Psr\Http\Message\ResponseInterface;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 class SiriusServiceTest extends MockeryTestCase
 {
@@ -33,59 +33,108 @@ class SiriusServiceTest extends MockeryTestCase
 
     public function setUp()
     {
-        $this->mockEntityManager = m::mock(EntityManager::class);
-        $this->mockHttpClient = $this->generateMockHttpClient();
-        $this->mockS3Storage = m::mock(S3Storage::class);
-        $this->mockLogger = m::mock(LoggerInterface::class);
-        $this->mockSecretsManager = m::mock(SecretsManagerClient::class);
-        $this->mockSecretsManager->shouldReceive('getSecretValue');
-        $this->mockLogger->shouldReceive('info','debug','error','warning')->zeroOrMoreTimes()->with(m::type('string'))->andReturn('');
-
-
-        $this->mockHttpClient->shouldReceive('getConfig')->with('base_uri')->andReturn('FAKE-SIRIUS-URL');
-
-        $this->sut = new SiriusService(
-            $this->mockEntityManager,
-            $this->mockHttpClient,
-            $this->mockS3Storage,
-            $this->mockLogger,
-            $this->mockSecretsManager,
-            null,
-            null
-        );
+        $this->mockEntityManager = $this->prophesize(EntityManager::class);
+        $this->mockHttpClient = $this->prophesize(SiriusClient::class);
+        $this->mockS3Storage = $this->prophesize(S3Storage::class);
+        $this->mockLogger =  $this->prophesize(LoggerInterface::class);
+        $this->mockSecretsManager = $this->prophesize(SecretsManagerClient::class);
     }
 
     public function testServeOrderOK()
     {
-        $mockOrder = $this->generateMockOrder();
+        $expectedCourtReference = '1234512345';
+        $expectedType = Order::TYPE_PF;
+        $expectedOrderStartDate = new DateTime('2018-08-01');
+        $expectedOrderIssuedDate = new DateTime('2018-08-10');
+        $expectedClientFirstName = 'AClient';
+        $expectedClientLastName = 'Fullname';
+        $expectedOrderSubType = null;
+        $expectedAppointmentType = null;
+        $expectedAssetLevel = SiriusService::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS;
+        $expectedClient = ['firstName' => $expectedClientFirstName, 'lastName' => $expectedClientLastName];
+        $expectedDeputies = [
+            [
+                "type" => Deputy::DEPUTY_TYPE_LAY,
+                "firstName" => "forename10",
+                "lastName" => "surname10",
+                "dob" => "1949-03-19",
+                "email" => "email10",
+                "daytimeNumber" => "DCN10",
+                "eveningNumber" => "ECN10",
+                "mobileNumber" => "MCN10",
+                "addressLine1" => "add1-10",
+                "addressLine2" => "add2-10",
+                "addressLine3" => "add3-10",
+                "town" => "town-10",
+                "county" => "county-10",
+                "postcode" => "pc-10"
+            ]
+        ];
+        $expectedDocuments = [
+            ["type" => "a type", "filename" => "LOCALFILENAME20"],
+            ["type" => "a type", "filename" => "LOCALFILENAME21"]
+        ];
 
-        $mockClient = $this->generateMockClient('200');
+        $client = new Client(
+            $expectedCourtReference,
+            sprintf('%s %s', $expectedClientFirstName, $expectedClientLastName),
+            new DateTime()
+        );
 
-        $mockOrder->shouldReceive('getClient')->andReturn($mockClient);
+        /** @var OrderPf $order */
+        $order = $this->generateOrder($client, $expectedOrderStartDate, $expectedOrderIssuedDate);
+        $order->setHasAssetsAboveThreshold('yes');
 
-        $documents = $mockOrder->getDocuments();
+        $documents = $order->getDocuments();
 
-        $this->mockS3Storage->shouldReceive('moveDocuments')
-            ->once()
-            ->with($documents)
-            ->andReturn($documents);
+        $this->mockS3Storage->moveDocuments($documents)->shouldBeCalled()->willReturn($documents);
         
-        $this->mockEntityManager->shouldReceive('flush')->once();
+        $this->mockEntityManager->flush()->shouldBeCalled();
 
-        $this->sut->serveOrder($mockOrder);
+        $expectedPayload = [
+            "courtReference" => $expectedCourtReference,
+            "type" => $expectedType,
+            "subType" => $expectedOrderSubType,
+            "date" => $expectedOrderStartDate->format('Y-m-d'),
+            "issueDate" => $expectedOrderIssuedDate->format('Y-m-d'),
+            "appointmentType" => $expectedAppointmentType,
+            "assetLevel" => $expectedAssetLevel,
+            'client' => $expectedClient,
+            'deputies' => $expectedDeputies,
+            'documents' => $expectedDocuments,
+        ];
+
+        $expectedPost = [
+            'json' => $expectedPayload,
+            'cookies' => new CookieJar(),
+        ];
+
+        $this->mockHttpClient->post('api/public/v1/orders', $expectedPost)->shouldBeCalled()->willReturn(new Response());
+        $this->mockHttpClient->post('auth/login', Argument::any())->shouldBeCalled()->willReturn(new Response());
+        $this->mockHttpClient->post('auth/logout')->shouldBeCalled()->willReturn(new Response());
+        $this->mockHttpClient->getConfig('base_uri')->shouldBeCalled()->willReturn('FAKE-SIRIUS-URL');
+
+        $this->sut = new SiriusService(
+            $this->mockEntityManager->reveal(),
+            $this->mockHttpClient->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockSecretsManager->reveal(),
+            null,
+            null
+        );
+
+        $this->sut->serveOrder($order);
     }
 
     /**
      * Generate mock Order
      *
-     * @return m\Mock
+     * @return Order
      */
-    private function generateMockOrder()
+    private function generateOrder($client, $madeAt, $issuedAt)
     {
-        $mockOrder = m::mock(OrderPf::class)->makePartial();
-
-        $mockOrder->shouldReceive('getMadeAt')->andReturn(new \DateTime('2018-08-01'));
-        $mockOrder->shouldReceive('getIssuedAt')->andReturn(new \DateTime('2018-08-10'));
+        $order = new OrderPf($client, $madeAt, $issuedAt);
 
         $mockDeputies = new ArrayCollection(
             [
@@ -97,39 +146,40 @@ class SiriusServiceTest extends MockeryTestCase
                 )
             ]
         );
-        $mockOrder->shouldReceive('getDeputies')->andReturn($mockDeputies);
-        $mockOrder->shouldReceive('getIssuedAt')->andReturn(new \DateTime('2018-08-10'));
-        $mockOrder->setDocuments($this->generateMockDocuments(false));
+        $order->setDeputies($mockDeputies);
 
-        return $mockOrder;
+        $order->setDocuments($this->generateMockDocuments(false));
+
+        return $order;
     }
 
     /**
      * Generates a mock Deputy object
      *
      * @param $options
-     * @return m\MockInterface
+     * @return ObjectProphecy|Deputy
      */
     private function generateMockDeputy($options)
     {
-        $mockDeputy = m::mock(Deputy::class);
+        /** @var Deputy|ObjectProphecy $mockDeputy */
+        $mockDeputy = $this->prophesize(Deputy::class);
 
-        $mockDeputy->shouldReceive('getDeputyType')->andReturn($options['deputyType']);
-        $mockDeputy->shouldReceive('getForename')->andReturn('forename' . $options['id']);
-        $mockDeputy->shouldReceive('getSurname')->andReturn('surname' . $options['id']);
-        $mockDeputy->shouldReceive('getDateOfBirth')->andReturn(new \DateTime('1949-03-19'));
-        $mockDeputy->shouldReceive('getEmailAddress')->andReturn('email' . $options['id']);
-        $mockDeputy->shouldReceive('getDaytimeContactNumber')->andReturn('DCN' . $options['id']);
-        $mockDeputy->shouldReceive('getEveningContactNumber')->andReturn('ECN' . $options['id']);
-        $mockDeputy->shouldReceive('getMobileContactNumber')->andReturn('MCN' . $options['id']);
-        $mockDeputy->shouldReceive('getAddressLine1')->andReturn('add1-' . $options['id']);
-        $mockDeputy->shouldReceive('getAddressLine2')->andReturn('add2-' . $options['id']);
-        $mockDeputy->shouldReceive('getAddressLine3')->andReturn('add3-' . $options['id']);
-        $mockDeputy->shouldReceive('getAddressTown')->andReturn('town-' . $options['id']);
-        $mockDeputy->shouldReceive('getAddressCounty')->andReturn('county-' . $options['id']);
-        $mockDeputy->shouldReceive('getAddressPostcode')->andReturn('pc-' . $options['id']);
+        $mockDeputy->getDeputyType()->shouldBeCalled()->willReturn($options['deputyType']);
+        $mockDeputy->getForename()->shouldBeCalled()->willReturn('forename' . $options['id']);
+        $mockDeputy->getSurname()->shouldBeCalled()->willReturn('surname' . $options['id']);
+        $mockDeputy->getDateOfBirth()->shouldBeCalled()->willReturn(new \DateTime('1949-03-19'));
+        $mockDeputy->getEmailAddress()->shouldBeCalled()->willReturn('email' . $options['id']);
+        $mockDeputy->getDaytimeContactNumber()->shouldBeCalled()->willReturn('DCN' . $options['id']);
+        $mockDeputy->getEveningContactNumber()->shouldBeCalled()->willReturn('ECN' . $options['id']);
+        $mockDeputy->getMobileContactNumber()->shouldBeCalled()->willReturn('MCN' . $options['id']);
+        $mockDeputy->getAddressLine1()->shouldBeCalled()->willReturn('add1-' . $options['id']);
+        $mockDeputy->getAddressLine2()->shouldBeCalled()->willReturn('add2-' . $options['id']);
+        $mockDeputy->getAddressLine3()->shouldBeCalled()->willReturn('add3-' . $options['id']);
+        $mockDeputy->getAddressTown()->shouldBeCalled()->willReturn('town-' . $options['id']);
+        $mockDeputy->getAddressCounty()->shouldBeCalled()->willReturn('county-' . $options['id']);
+        $mockDeputy->getAddressPostcode()->shouldBeCalled()->willReturn('pc-' . $options['id']);
 
-        return $mockDeputy;
+        return $mockDeputy->reveal();
     }
 
     private function generateMockDocuments($transferred = false)
@@ -146,62 +196,20 @@ class SiriusServiceTest extends MockeryTestCase
      * Generates a mock Document object
      *
      * @param $options
-     * @return m\MockInterface
+     * @return Document|ObjectProphecy
      */
     private function generateMockDocument($options)
     {
-        $mockDoc = m::mock(Document::class)->makePartial();
+        /** @var Document|ObjectProphecy $mockDoc */
+        $mockDoc = $this->prophesize(Document::class);
+        $mockDoc->getType()->shouldBeCalled()->willReturn('a type');
 
         if ($options['transferred']) {
-            $mockDoc->shouldReceive('getStorageReference')->andReturn('SIRIUSFILENAME' . $options['id']);
+            $mockDoc->getStorageReference()->shouldBeCalled()->willReturn('SIRIUSFILENAME' . $options['id']);
         } else {
-            $mockDoc->shouldReceive('getStorageReference')->andReturn('LOCALFILENAME' . $options['id']);
+            $mockDoc->getStorageReference()->shouldBeCalled()->willReturn('LOCALFILENAME' . $options['id']);
         }
-//        $mockDeputy->shouldReceive('getDeputyType')->andReturn($options['deputyType']);
-//        $mockDeputy->shouldReceive('getForename')->andReturn('forename' . $options['id']);
-//        $mockDeputy->shouldReceive('getSurname')->andReturn('surname' . $options['id']);
-//        $mockDeputy->shouldReceive('getDateOfBirth')->andReturn(new \DateTime('1949-03-19'));
-//        $mockDeputy->shouldReceive('getEmailAddress')->andReturn('email' . $options['id']);
-//        $mockDeputy->shouldReceive('getDaytimeContactNumber')->andReturn('DCN' . $options['id']);
-//        $mockDeputy->shouldReceive('getEveningContactNumber')->andReturn('ECN' . $options['id']);
-//        $mockDeputy->shouldReceive('getMobileContactNumber')->andReturn('MCN' . $options['id']);
-//        $mockDeputy->shouldReceive('getAddressLine1')->andReturn('add1-' . $options['id']);
-//        $mockDeputy->shouldReceive('getAddressLine2')->andReturn('add2-' . $options['id']);
-//        $mockDeputy->shouldReceive('getAddressLine3')->andReturn('add3-' . $options['id']);
-//        $mockDeputy->shouldReceive('getAddressTown')->andReturn('town-' . $options['id']);
-//        $mockDeputy->shouldReceive('getAddressCounty')->andReturn('county-' . $options['id']);
-//        $mockDeputy->shouldReceive('getAddressPostcode')->andReturn('pc-' . $options['id']);
 
-        return $mockDoc;
-    }
-
-    private function generateMockClient()
-    {
-        $mockClient = m::mock(Client::class);
-
-        $mockClient->shouldReceive('getCaseNumber')->andReturn('1234512345');
-        $mockClient->shouldReceive('getClientName')->andReturn('AClient Fullname');
-
-        return $mockClient;
-    }
-
-    private function generateMockHttpClient($statusCode = 200)
-    {
-        $mockResponse = m::mock(ResponseInterface::class);
-        $mockResponse->shouldReceive('getStatusCode')->andReturn($statusCode);
-        $mockResponse->shouldReceive('toArray')->andReturn(['statusCode'=> $statusCode]);
-
-        $mockHttpClient = m::mock(ClientInterface::class);
-
-        $mockHttpClient->shouldReceive('post')
-            ->with(
-                'api/public/v1/orders',
-                m::type('array')
-            )->andReturn($mockResponse);
-
-        $mockHttpClient->shouldReceive('post')->with('auth/login', m::type('array'))->andReturn($mockResponse);
-        $mockHttpClient->shouldReceive('post')->with('auth/logout')->andReturn($mockResponse);
-
-        return $mockHttpClient;
+        return $mockDoc->reveal();
     }
 }

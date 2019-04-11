@@ -28,6 +28,8 @@ use Aws\SecretsManager\SecretsManagerClient;
 class SiriusService
 {
     const SIRIUS_DATE_FORMAT = 'Y-m-d';
+    const HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS = 'HIGH';
+    const HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS = 'LOW';
 
     /**
      * @var EntityManager
@@ -259,7 +261,7 @@ class SiriusService
             "date" => $order->getMadeAt()->format(self::SIRIUS_DATE_FORMAT),
             "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
             "appointmentType" => $order->getAppointmentType(),
-            "assetLevel" => $order->getHasAssetsAboveThreshold() ? 'HIGH' : 'LOW',
+            "assetLevel" => $this->translateHasAssetsAboveThreshold($order->getHasAssetsAboveThreshold()),
         ];
     }
 
@@ -402,5 +404,15 @@ class SiriusService
         }
 
         return $ref . $checkbit;
+    }
+
+    private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold)
+    {
+        if ($hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_NA || $hasAssetsAboveThreshold === null) {
+            return $hasAssetsAboveThreshold;
+        }
+
+        return $hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_YES ?
+            self::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS : self::HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS;
     }
 }
