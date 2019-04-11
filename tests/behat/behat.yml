@@ -11,6 +11,9 @@ default:
 
     extensions:
         Behat\Symfony2Extension:
+            kernel:
+                bootstrap: ../phpunit/bootstrap.php
+                class: AppKernel
         Behat\MinkExtension\ServiceContainer\MinkExtension:
               goutte:
                   guzzle_parameters:
