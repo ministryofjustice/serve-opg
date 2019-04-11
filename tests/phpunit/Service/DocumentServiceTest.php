@@ -5,7 +5,6 @@ namespace tests\phpunit\Service;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Document;
 use AppBundle\Entity\OrderHw;
-use AppBundle\Repository\DocumentRepository;
 use AppBundle\Service\DocumentService;
 use AppBundle\Service\File\Storage\S3Storage;
 use DateTime;

@@ -2,13 +2,10 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\Client;
 use AppBundle\Entity\Document;
-use AppBundle\Repository\DocumentRepository;
 use AppBundle\Service\File\Storage\StorageInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Doctrine\ORM\EntityManager;
 
 class DocumentService
 {
