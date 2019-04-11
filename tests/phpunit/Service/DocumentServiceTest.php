@@ -22,16 +22,13 @@ class DocumentServiceTest extends TestCase
     public function testDocumentLikelyValid($document, $validationResult, $client)
     {
         /** @var EntityManager|ObjectProphecy $em */
-        $documentRepository = $this->prophesize(DocumentRepository::class);
-
-        $documentRepository->findById(1)->shouldBeCalled()->willReturn($document);
-
+        $em = $this->prophesize(EntityManager::class);
         $storage = $this->prophesize(S3Storage::class);
         $logger = new Logger('logger');
 
-        $sut = new DocumentService($storage->reveal(), $logger, $documentRepository->reveal());
+        $sut = new DocumentService($storage->reveal(), $logger, $em->reveal());
 
-        self::assertEquals($validationResult, $sut->documentLikelyValid(1, $client));
+        self::assertEquals($validationResult, $sut->documentLikelyValid($document->getFileName(), $document->getType(), $client->getClientName()));
     }
 
     public function documentProvider()

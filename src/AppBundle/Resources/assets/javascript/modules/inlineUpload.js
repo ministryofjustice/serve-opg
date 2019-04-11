@@ -81,6 +81,10 @@
                     file.orderId = data.orderId;
                     _this.options.readyToServe(file, data);
                     _this.options.handleRemoveAction(file, _this);
+
+                    if (!data.isLikelyValid) {
+                        $(file.previewElement).find('.dz-error-message > span').text("This filename doesn't match the document category and/or doesn't contain the client name");
+                    }
                 });
             }
         },

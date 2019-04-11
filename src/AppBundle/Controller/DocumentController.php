@@ -94,6 +94,11 @@ class DocumentController extends Controller
                 $response["response"] = self::SUCCESS;
                 $response["id"] = $document->getId();
                 $response["message"] = 'File uploaded';
+                $response['documentLikelyValid'] = $this->documentService->documentLikelyValid(
+                    $fileName,
+                    $document->getType(),
+                    $order->getClient()->getClientName()
+                );
             } else {
                 $response["message"] = 'File could not be uploaded';
             }
@@ -147,8 +152,6 @@ class DocumentController extends Controller
 
         $uploadedFile = $request->files->get('file');
 
-        // Add check on filename here and return a warning if filename and client name are not as expected
-
         $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
         if($processedDocument["response"] === self::SUCCESS) {
@@ -156,7 +159,8 @@ class DocumentController extends Controller
                 'success' => true,
                 'id' => $processedDocument["id"],
                 'orderId' => $orderId,
-                'readyToServe' => $order->readyToServe()
+                'readyToServe' => $order->readyToServe(),
+                'documentLikelyValid' => $processedDocument['documentLikelyValid']
             ]);
         }
 

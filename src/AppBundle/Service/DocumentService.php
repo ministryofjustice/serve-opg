@@ -6,6 +6,7 @@ use AppBundle\Entity\Client;
 use AppBundle\Entity\Document;
 use AppBundle\Repository\DocumentRepository;
 use AppBundle\Service\File\Storage\StorageInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -22,28 +23,29 @@ class DocumentService
     private $logger;
 
     /**
-     * @var DocumentRepository
+     * @var EntityManagerInterface
      */
-    private $documentRepository;
+    private $em;
 
     /**
      * DocumentService constructor.
      * @param StorageInterface $s3Storage
      * @param LoggerInterface $logger
-     * @param DocumentRepository $documentRepository
+     * @param EntityManagerInterface $em
      */
-    public function __construct(StorageInterface $s3Storage, LoggerInterface $logger, DocumentRepository $documentRepository)
+    public function __construct(StorageInterface $s3Storage, LoggerInterface $logger, EntityManagerInterface $em)
     {
         $this->storage = $s3Storage;
         $this->logger = $logger;
-        $this->documentRepository = $documentRepository;
+        $this->em = $em;
     }
 
     // @todo refactor into DocumentRepository, remove $deleteFromS3 and call separately where required
     public function deleteDocumentById($id)
     {
         /** @var Document $document */
-        $document = $this->em->getRepository(Document::class)->find($id);
+        $document = $this->em->find(Document::class, $id);
+
         if (!$document instanceof Document) {
             throw new \RuntimeException("document not found");
         }
@@ -84,24 +86,8 @@ class DocumentService
         }
     }
 
-    public function documentLikelyValid(int $documentId, Client $client)
+    public function documentLikelyValid(string $fileName, string $documentType, string $clientName)
     {
-        /** @var Document $document */
-        $document = $this->documentRepository->findById($documentId);
-        $fileName = $document->getFileName();
-
-        return $this->fileNameContainsClientName($fileName, $client->getClientName()) &&
-            $this->fileNameContainsDocumentType($fileName, $document->getType());
-    }
-
-    private function fileNameContainsClientName(string $fileName, string $clientName)
-    {
-        return strpos($fileName, $clientName) !== false;
-    }
-
-    private function fileNameContainsDocumentType(string $fileName, ?string $getType)
-    {
-        return strpos($fileName, $getType) !== false;
-
+        return strpos($fileName, $clientName) !== false && strpos($fileName, $documentType) !== false;
     }
 }
