@@ -82,8 +82,10 @@
                     _this.options.readyToServe(file, data);
                     _this.options.handleRemoveAction(file, _this);
 
-                    if (!data.documentLikelyValid) {
-                        $(file.previewElement).find('.dz-error-message > span').text("This filename doesn't match the document category and/or doesn't contain the client name");
+                    if (!data.documentLikelyValid && _this.element.classList.contains('mandatory')) {
+                        $(file.previewElement)
+                            .find('.dz-error-message > span')
+                            .text("This filename doesn't match the document category and/or doesn't contain the client name.")
                     }
                 });
             }
@@ -179,7 +181,7 @@
                     .clone()
                     .attr('id', dropZoneId)
                     .attr('data-inline-doc-type', docType)
-                    .addClass('dropzone dropzone--multiple');
+                    .addClass('dropzone dropzone--multiple mandatory');
                 var $dropZoneCopy = $('.dropzone__template__instruction', $dropZonePlaceholder);
                 var $dropZoneButton = $('.govuk-button--secondary', $dropZonePlaceholder);
 
