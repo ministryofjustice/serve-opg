@@ -88,14 +88,21 @@ class DocumentService
         return $this->nameIsPresent($fileName, $clientName) && stripos($fileName, $documentType) !== false;
     }
 
-    private function nameIsPresent($fileName, $clientName)
+    public function clientNameIsValidInFilename($fileName, $clientName)
     {
         $names = explode(' ', $clientName);
-        
+
         foreach ($names as $name) {
             if (stripos($fileName, $name) !== false) {
                 return true;
             }
         }
+
+        return false;
+    }
+
+    public function docTypeIsValidInFilename($fileName, $docType)
+    {
+        return stripos($fileName, $docType) !== false;
     }
 }

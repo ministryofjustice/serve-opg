@@ -94,10 +94,13 @@ class DocumentController extends Controller
                 $response["response"] = self::SUCCESS;
                 $response["id"] = $document->getId();
                 $response["message"] = 'File uploaded';
-                $response['documentLikelyValid'] = $this->documentService->documentLikelyValid(
+                $response["clientNameValid"] = $this->documentService->clientNameIsValidInFilename(
                     $fileName,
-                    $document->getType(),
                     $order->getClient()->getClientName()
+                );
+                $response["docTypeValid"] = $this->documentService->docTypeIsValidInFilename(
+                    $fileName,
+                    $document->getType()
                 );
             } else {
                 $response["message"] = 'File could not be uploaded';
@@ -160,7 +163,8 @@ class DocumentController extends Controller
                 'id' => $processedDocument["id"],
                 'orderId' => $orderId,
                 'readyToServe' => $order->readyToServe(),
-                'documentLikelyValid' => $processedDocument['documentLikelyValid']
+                'docTypeValid' => $processedDocument['docTypeValid'],
+                'clientNameValid' => $processedDocument['clientNameValid']
             ]);
         }
 

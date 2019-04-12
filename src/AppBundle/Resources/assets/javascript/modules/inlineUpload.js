@@ -82,10 +82,16 @@
                     _this.options.readyToServe(file, data);
                     _this.options.handleRemoveAction(file, _this);
 
-                    if (!data.documentLikelyValid && _this.element.classList.contains('mandatory')) {
+                    if (!data.docTypeValid && _this.element.classList.contains('mandatory')) {
                         $(file.previewElement)
                             .find('.dz-error-message > span')
-                            .text("This filename doesn't match the document category and/or doesn't contain the client name.")
+                            .append("This filename doesn't contain the document category<br />")
+                    }
+
+                    if (!data.clientNameValid && _this.element.classList.contains('mandatory')) {
+                        $(file.previewElement)
+                            .find('.dz-error-message > span')
+                            .append("This filename doesn't contain the client's name<br />")
                     }
                 });
             }

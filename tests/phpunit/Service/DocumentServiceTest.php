@@ -18,7 +18,7 @@ class DocumentServiceTest extends TestCase
     /**
      * @dataProvider documentProvider
      */
-    public function testDocumentLikelyValid(Document $document, $expectedValidationResult, Client $client)
+    public function testClientNameIsValidInFilename(Document $document, $expectedValidationResult, Client $client)
     {
         /** @var EntityManager|ObjectProphecy $em */
         $em = $this->prophesize(EntityManager::class);
@@ -27,7 +27,22 @@ class DocumentServiceTest extends TestCase
 
         $sut = new DocumentService($storage->reveal(), $logger, $em->reveal());
 
-        self::assertEquals($expectedValidationResult, $sut->documentLikelyValid($document->getFileName(), $document->getType(), $client->getClientName()));
+        self::assertEquals($expectedValidationResult, $sut->clientNameIsValidInFilename($document->getFileName(), $client->getClientName()));
+    }
+
+    /**
+     * @dataProvider documentProvider
+     */
+    public function testDocTypeIsValidInFilename(Document $document, $expectedValidationResult, Client $client)
+    {
+        /** @var EntityManager|ObjectProphecy $em */
+        $em = $this->prophesize(EntityManager::class);
+        $storage = $this->prophesize(S3Storage::class);
+        $logger = new Logger('logger');
+
+        $sut = new DocumentService($storage->reveal(), $logger, $em->reveal());
+
+        self::assertEquals($expectedValidationResult, $sut->docTypeIsValidInFilename($document->getFileName(), $document->getType()));
     }
 
     public function documentProvider()
@@ -35,23 +50,19 @@ class DocumentServiceTest extends TestCase
         $client = new Client('123455678', 'Firstname Lastname', new DateTime());
         $order = new OrderHw($client, new DateTime('-1 days'), new DateTime());
 
-        $validExactMatch = new Document($order, Document::TYPE_COP1A);
-        $validExactMatch->setFileName('LASTNAME COP1A 001.tif');
-
         $validUppercase = new Document($order, Document::TYPE_COP1A);
         $validUppercase->setFileName('LASTNAME COP1A 001.tif');
 
         $validMixedCase = new Document($order, Document::TYPE_COP1A);
-        $validMixedCase->setFileName('LaSTnaME COP1A 001.tif');
+        $validMixedCase->setFileName('LaSTnaME Cop1A 001.tif');
 
         $validLowerCase = new Document($order, Document::TYPE_COP1A);
-        $validLowerCase->setFileName('lastname COP1A 001.tif');
+        $validLowerCase->setFileName('lastname cop1a 001.tif');
 
         $invalidDocument = new Document($order, Document::TYPE_COP1A);
-        $invalidDocument->setFileName('WRONGLASTNAME NOTADOCTYPE 001.tif');
+        $invalidDocument->setFileName('WRONGNAME NOTADOCTYPE 001.tif');
 
         return [
-            'valid - exact match' => [$validExactMatch, true, $client],
             'valid - uppercase name' => [$validUppercase, true, $client],
             'valid - mixed case name' => [$validMixedCase, true, $client],
             'valid - lower case name' => [$validLowerCase, true, $client],
