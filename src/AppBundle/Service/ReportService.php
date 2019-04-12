@@ -72,15 +72,18 @@ class ReportService
 
     public function getCasesBeforeGoLive() {
 
-        $orders =  $this->orderRepo->getOrdersBeforeGoLive(1000);
+        $orders =  $this->orderRepo->getOrdersBeforeGoLive(5000);
 
-        $headers = ['DateServed', 'CaseNumber', 'OrderType'];
+        $headers = ['DateCreated', 'DateServed', 'CaseNumber', 'OrderType'];
         $ordersCsv = [];
 
         foreach ($orders as $order) {
-            $ordersCsv[] = ["DateServed" => $order->getServedAt(),
-                "CaseNumber" => $order->getClient()->getCaseNumber(),
-                "OrderType" => $order->getType()];
+            if ($order->getServedAt() === null) {
+                $ordersCsv[] = ["DateCreated" => $order->getCreatedAt()->format('Y-m-d'),
+                    "DateServed" => 'Null',
+                    "CaseNumber" => $order->getClient()->getCaseNumber(),
+                    "OrderType" => $order->getType()];
+            }
         }
 
         $file = fopen("/tmp/cases.csv","w");
