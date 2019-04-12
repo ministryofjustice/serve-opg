@@ -81,4 +81,16 @@ class OrderRepository extends EntityRepository
             ->setParameter('cn', strtoupper(trim($filters['q'])));
         }
     }
+
+    public function getOrdersBeforeGoLive($maxResults) {
+
+        $qb = $this->_em->getRepository(Order::class)
+            ->createQueryBuilder("o")
+            ->select("o")
+            ->where("o.createdAt < '2019-03-11'")
+            ->andWhere("o.servedAt IS NULL")
+            ->setMaxResults($maxResults);
+
+        return $qb->getQuery()->getResult();
+    }
 }

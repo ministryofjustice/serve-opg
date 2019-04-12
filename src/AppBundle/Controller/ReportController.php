@@ -45,4 +45,23 @@ class ReportController extends Controller
 
         return $this->file($csv);
     }
+
+    /**
+     * @Route("/cases", name="cases")
+     */
+    public function casesAction() {
+        return $this->render('AppBundle:Report:case-report.html.twig');
+    }
+
+    /**
+     * @Route("/download-cases", name="download-report-cases")
+     */
+    public function downloadCasesReportAction() {
+
+        $this->reportService->getCasesBeforeGoLive();
+
+        $csv = new File('/tmp/cases.csv');
+
+        return $this->file($csv);
+    }
 }

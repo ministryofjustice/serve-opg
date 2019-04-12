@@ -69,4 +69,30 @@ class ReportService
         ];
         return $this->orderRepo->getOrders($filters, 1000);
     }
+
+    public function getCasesBeforeGoLive() {
+
+        $orders =  $this->orderRepo->getOrdersBeforeGoLive(1000);
+
+        $headers = ['DateServed', 'CaseNumber', 'OrderType'];
+        $ordersCsv = [];
+
+        foreach ($orders as $order) {
+            $ordersCsv[] = ["DateServed" => $order->getServedAt(),
+                "CaseNumber" => $order->getClient()->getCaseNumber(),
+                "OrderType" => $order->getType()];
+        }
+
+        $file = fopen("/tmp/cases.csv","w");
+
+        fputcsv($file, $headers);
+
+        foreach($ordersCsv as $line) {
+            fputcsv($file, $line);
+        }
+
+        fclose($file);
+
+        return $file;
+    }
 }
