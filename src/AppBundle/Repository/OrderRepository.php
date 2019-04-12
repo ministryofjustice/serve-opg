@@ -82,14 +82,13 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    public function getOrdersBeforeGoLive($maxResults) {
+    public function getOrdersBeforeGoLive() {
 
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder("o")
             ->select("o")
             ->where("o.createdAt < '2019-03-11'")
-            ->andWhere("o.servedAt IS NULL")
-            ->setMaxResults($maxResults);
+            ->andWhere("o.servedAt IS NULL");
 
         return $qb->getQuery()->getResult();
     }

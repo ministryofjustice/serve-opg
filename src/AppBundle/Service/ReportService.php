@@ -72,7 +72,7 @@ class ReportService
 
     public function getCasesBeforeGoLive() {
 
-        $orders =  $this->orderRepo->getOrdersBeforeGoLive(100000);
+        $orders =  $this->orderRepo->getOrdersBeforeGoLive();
 
         $headers = ['DateCreated', 'DateServed', 'CaseNumber', 'OrderType'];
         $ordersCsv = [];
