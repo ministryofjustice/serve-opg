@@ -85,6 +85,17 @@ class DocumentService
 
     public function documentLikelyValid(string $fileName, string $documentType, string $clientName)
     {
-        return strpos($fileName, $clientName) !== false && strpos($fileName, $documentType) !== false;
+        return $this->nameIsPresent($fileName, $clientName) && stripos($fileName, $documentType) !== false;
+    }
+
+    private function nameIsPresent($fileName, $clientName)
+    {
+        $names = explode(' ', $clientName);
+        
+        foreach ($names as $name) {
+            if (stripos($fileName, $name) !== false) {
+                return true;
+            }
+        }
     }
 }

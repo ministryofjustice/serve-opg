@@ -18,7 +18,7 @@ class DocumentServiceTest extends TestCase
     /**
      * @dataProvider documentProvider
      */
-    public function testDocumentLikelyValid($document, $validationResult, $client)
+    public function testDocumentLikelyValid(Document $document, $expectedValidationResult, Client $client)
     {
         /** @var EntityManager|ObjectProphecy $em */
         $em = $this->prophesize(EntityManager::class);
@@ -27,24 +27,34 @@ class DocumentServiceTest extends TestCase
 
         $sut = new DocumentService($storage->reveal(), $logger, $em->reveal());
 
-        self::assertEquals($validationResult, $sut->documentLikelyValid($document->getFileName(), $document->getType(), $client->getClientName()));
+        self::assertEquals($expectedValidationResult, $sut->documentLikelyValid($document->getFileName(), $document->getType(), $client->getClientName()));
     }
 
     public function documentProvider()
     {
-        $client = new Client('123455678', 'client name', new DateTime());
+        $client = new Client('123455678', 'Firstname Lastname', new DateTime());
         $order = new OrderHw($client, new DateTime('-1 days'), new DateTime());
 
-        $validDocument = new Document($order, Document::TYPE_COP1A);
-        $validDocument->setFileName('client name COP1A');
-        $validDocument->setId(1);
+        $validExactMatch = new Document($order, Document::TYPE_COP1A);
+        $validExactMatch->setFileName('LASTNAME COP1A 001.tif');
+
+        $validUppercase = new Document($order, Document::TYPE_COP1A);
+        $validUppercase->setFileName('LASTNAME COP1A 001.tif');
+
+        $validMixedCase = new Document($order, Document::TYPE_COP1A);
+        $validMixedCase->setFileName('LaSTnaME COP1A 001.tif');
+
+        $validLowerCase = new Document($order, Document::TYPE_COP1A);
+        $validLowerCase->setFileName('lastname COP1A 001.tif');
 
         $invalidDocument = new Document($order, Document::TYPE_COP1A);
-        $invalidDocument->setFileName('wrong identifier NOTADOCTYPE');
-        $invalidDocument->setId(2);
+        $invalidDocument->setFileName('WRONGLASTNAME NOTADOCTYPE 001.tif');
 
         return [
-            'valid document' => [$validDocument, true, $client],
+            'valid - exact match' => [$validExactMatch, true, $client],
+            'valid - uppercase name' => [$validUppercase, true, $client],
+            'valid - mixed case name' => [$validMixedCase, true, $client],
+            'valid - lower case name' => [$validLowerCase, true, $client],
             'invalid document' => [$invalidDocument, false, $client],
         ];
     }
