@@ -4,7 +4,7 @@ Feature: Served Order Report
     Given I go to "/logout"
     When I go to "/report"
     Then I should be on "/login"
-    When I go to "/report.cases"
+    When I go to "/report/cases"
     Then I should be on "/login"
 
   Scenario: Access report page as authenticated user

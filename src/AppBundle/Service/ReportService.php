@@ -84,7 +84,6 @@ class ReportService
                     "CaseNumber" => $order->getClient()->getCaseNumber(),
                     "OrderType" => $order->getType()];
             }
-
         }
 
         $file = fopen("/tmp/cases.csv","w");
