@@ -81,6 +81,7 @@
                     file.orderId = data.orderId;
                     _this.options.readyToServe(file, data);
                     _this.options.handleRemoveAction(file, _this);
+
                 });
             }
         },
@@ -179,7 +180,7 @@
                 var $dropZoneCopy = $('.dropzone__template__instruction', $dropZonePlaceholder);
                 var $dropZoneButton = $('.govuk-button--secondary', $dropZonePlaceholder);
 
-                $dropZoneCopy.text($dropZoneCopy.text().replace('documents', docTypeNiceName));
+                $dropZoneCopy.html($dropZoneCopy.html().replace('documents', docTypeNiceName));
                 $dropZoneButton.text($dropZoneButton.text().replace('documents', 'document'));
 
                 dropZoneSettings.url = dropZoneSettings.addRoute

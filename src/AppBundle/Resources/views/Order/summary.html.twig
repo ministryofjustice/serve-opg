@@ -184,7 +184,7 @@
 
     <p class="text dropzone__info">You can only upload JPG, PNG, TIFF, PDF and Word Doc files, and they cannot be larger than 20MB.</p>
 
-    <p class="text">If a COP24 has been provided, it must be uploaded.</p>
+    <p class="text">If a <strong>COP24</strong> has been provided, it must be uploaded.</p>
 
     {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
     <table class="govuk-table"  id="documents-additional" data-order-id="{{ order.id }}" data-doc-type="{{ constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }}">
@@ -241,7 +241,7 @@
     <div class="dz-default dz-message govuk-body">
         <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
         <div class="govuk-grid-column-one-half"></div>
-        <span class="dropzone__template__instruction">Drag and drop documents here</span>
+        <span class="dropzone__template__instruction">Drag and drop <strong>documents</strong> for <strong>{{order.client.clientName}}</strong> here</span>
         <div class="govuk-!-font-weight-bold">or</div>
         <button class="govuk-button govuk-button--secondary">Choose documents</button>
     </div>
