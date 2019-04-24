@@ -1,0 +1,9 @@
+monolog:
+  handlers:
+    php_stderr:
+      type: stream
+      path: php://stderr
+      # change on the fly as needed during development
+      level: warning
+      # change on the fly as needed during development
+      # channels: [ "!translation" ]

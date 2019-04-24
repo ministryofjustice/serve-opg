@@ -5,25 +5,33 @@ parameters:
     # You should not need to change this value.
     env(DATABASE_URL): ''
 
+# http://symfony.com/doc/master/bundles/DoctrineBundle/configuration.html
 doctrine:
     dbal:
-        # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '5.7'
-        charset: utf8mb4
-        default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
-
-        url: '%env(resolve:DATABASE_URL)%'
+        driver:   pdo_pgsql
+        host:     "%env(DC_DB_HOST)%"
+        port:     "%env(DC_DB_PORT)%"
+        dbname:   "%env(DC_DB_NAME)%"
+        user:     "%env(DC_DB_USER)%"
+        password: "%env(DC_DB_PASS)%"
+        charset:  UTF8
+        #options:
+        #sslmode: require
     orm:
-        auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+        auto_generate_proxy_classes: "%kernel.debug%"
+        proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"
+        auto_mapping: false
         mappings:
-            App:
+            commonEntities:
+                type: yml
+                dir: "%kernel.root_dir%/config/doctrine"
+                prefix: AppBundle\Entity
                 is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+        dql:
+            string_functions:
+                cast_as_integer: Common\Query\CastAsInteger
+                str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
+                to_date: DoctrineExtensions\Query\Postgresql\DateFormat
+            numeric_functions:
+            datetime_functions:
+        #        metadata_cache_driver: apcu

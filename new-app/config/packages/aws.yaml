@@ -1,0 +1,6 @@
+# https://github.com/aws/aws-sdk-php-symfony#sample-yml-configuration
+aws:
+  version: latest
+  region: eu-west-1
+  DynamoDb:
+    region: eu-west-1
