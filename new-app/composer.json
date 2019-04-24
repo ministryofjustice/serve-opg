@@ -32,7 +32,7 @@
         "symfony/monolog-bundle": "2.8.*",
         "symfony/swiftmailer-bundle": "2.3.*",
         "symfony/yaml": "4.2.*",
-        "twig/extensions": "1.5.*",
+        "twig/extensions": "1.5.*"
     },
     "config": {
         "preferred-install": {
