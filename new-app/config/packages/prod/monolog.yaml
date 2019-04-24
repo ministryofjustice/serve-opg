@@ -23,3 +23,8 @@ monolog:
             handler: deprecation
             max_level: info
             channels: ["php"]
+        log_stash_prod:
+            type: stream
+            path: "/tmp/app-logs/application.log"
+            level: warning
+            formatter: logstash_formatter
