@@ -24,7 +24,8 @@ doctrine:
         mappings:
             commonEntities:
                 type: yml
-                dir: "%kernel.root_dir%/config/doctrine"
+#                @todo look at making this dynamic rather than absolute
+                dir: "%kernel.root_dir%/../config/doctrine"
                 prefix: App\Entity
                 is_bundle: false
         dql:
