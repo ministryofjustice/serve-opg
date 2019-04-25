@@ -16,3 +16,22 @@ behat.yml
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+.idea
+# ignore bin as created by composer
+**/bin
+**/web/assets
+node_modules
+*/bin/jp.php
+**/vendor
+bootstrap.php.cache
+*.iml
+.env.local
+docker-compose.local.yml
+var
+**/*.crt
+**/*.key
+web/behat
+**/.DS_Store
+s3
+.dd-*.sh
