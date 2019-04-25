@@ -37,7 +37,7 @@ class AssetsExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFilter('assetUrl', function ($originalUrl) {
-                $assetVersion = getenv('DC_ASSETS_VERSION') ?: time();
+                $assetVersion = $this->assetsVersion ?: time();
                 $pathToFile = ltrim($originalUrl, '/');
 
                 return "{$this->basePath}/{$pathToFile}?v={$assetVersion}";
