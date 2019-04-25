@@ -467,6 +467,12 @@
             "config/routes.yaml"
         ]
     },
+    "symfony/security-core": {
+        "version": "v4.2.7"
+    },
+    "symfony/security-csrf": {
+        "version": "v4.2.7"
+    },
     "symfony/stopwatch": {
         "version": "v4.2.7"
     },
