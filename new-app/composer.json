@@ -75,7 +75,8 @@
         }
     },
     "require-dev": {
+        "egulias/email-validator": "^1.2.8|~2.0",
         "phpstan/phpstan-symfony": "^0.10.0",
-        "egulias/email-validator": "^1.2.8|~2.0"
+        "symfony/profiler-pack": "^1.0"
     }
 }
