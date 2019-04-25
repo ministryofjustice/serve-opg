@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Twig;
+namespace App\Twig;
 
 /**
  * debug filter, using \Doctrine\Common\Util\Debug::dump();

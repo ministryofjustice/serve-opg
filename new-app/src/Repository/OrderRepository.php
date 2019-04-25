@@ -1,7 +1,7 @@
 <?php
-namespace AppBundle\Repository;
+namespace App\Repository;
 
-use AppBundle\Entity\Order;
+use App\Entity\Order;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 

@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\SqlWalker;
  * Class Cast
  * Function to allow CAST to be called within query builder
  *
- * @package AppBundle\Repository\Query
+ * @package App\Repository\Query
  */
 class CastAsInteger extends FunctionNode
 {

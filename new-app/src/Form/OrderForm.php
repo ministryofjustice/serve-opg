@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Form;
+namespace App\Form;
 
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderPf;
-use AppBundle\Entity\Post;
+use App\Entity\Order;
+use App\Entity\OrderPf;
+use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -63,7 +63,7 @@ class OrderForm extends AbstractType
             'data_class' => Order::class,
             'show_assets_question' => true,
             'validation_groups' => function (FormInterface $form) {
-                /* @var $data \AppBundle\Entity\Order */
+                /* @var $data \App\Entity\Order */
 
                 return array_filter([
                     $form->getData() instanceof OrderPf ? 'order-has-assets' : null,

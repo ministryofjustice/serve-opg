@@ -5,12 +5,12 @@
  * Date: 04/12/2018
  */
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Service\AddressLookup\OrdnanceSurveyClient;
+use App\Service\AddressLookup\OrdnanceSurveyClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Service\AddressLookup\OrdnanceSurvey;
+use App\Service\AddressLookup\OrdnanceSurvey;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

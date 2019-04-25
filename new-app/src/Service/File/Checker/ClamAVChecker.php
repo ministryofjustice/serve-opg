@@ -1,11 +1,11 @@
 <?php
 
-namespace AppBundle\Service\File\Checker;
+namespace App\Service\File\Checker;
 
-use AppBundle\Service\File\Checker\Exception\RiskyFileException;
-use AppBundle\Service\File\Checker\Exception\VirusFoundException;
-use AppBundle\Service\File\Types\Pdf;
-use AppBundle\Service\File\Types\UploadableFileInterface;
+use App\Service\File\Checker\Exception\RiskyFileException;
+use App\Service\File\Checker\Exception\VirusFoundException;
+use App\Service\File\Types\Pdf;
+use App\Service\File\Types\UploadableFileInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response as GuzzlePsr7Response;
 use Monolog\Logger;

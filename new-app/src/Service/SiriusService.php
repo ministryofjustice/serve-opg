@@ -1,13 +1,13 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Controller\BehatController;
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Deputy;
-use AppBundle\Entity\Document;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\User;
+use App\Controller\BehatController;
+use App\Entity\Client;
+use App\Entity\Deputy;
+use App\Entity\Document;
+use App\Entity\Order;
+use App\Entity\User;
 use Application\Factory\GuzzleClient;
 use Aws\CommandPool;
 use Aws\Exception\AwsException;
@@ -21,7 +21,7 @@ use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
-use AppBundle\Service\File\Storage\StorageInterface;
+use App\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Aws\SecretsManager\SecretsManagerClient;
 

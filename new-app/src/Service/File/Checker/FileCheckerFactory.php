@@ -1,16 +1,16 @@
 <?php
 
-namespace AppBundle\Service\File\Checker;
+namespace App\Service\File\Checker;
 
-use AppBundle\Service\File\Checker\Exception\InvalidFileTypeException;
-use AppBundle\Service\File\Checker\Exception\RiskyFileException;
-use AppBundle\Service\File\Types\Doc;
-use AppBundle\Service\File\Types\Jpg;
-use AppBundle\Service\File\Types\Pdf;
-use AppBundle\Service\File\Types\Png;
-use AppBundle\Service\File\Types\Tif;
-use AppBundle\Service\File\Types\UploadableFile;
-use AppBundle\Service\File\Types\UploadableFileInterface;
+use App\Service\File\Checker\Exception\InvalidFileTypeException;
+use App\Service\File\Checker\Exception\RiskyFileException;
+use App\Service\File\Types\Doc;
+use App\Service\File\Types\Jpg;
+use App\Service\File\Types\Pdf;
+use App\Service\File\Types\Png;
+use App\Service\File\Types\Tif;
+use App\Service\File\Types\UploadableFile;
+use App\Service\File\Types\UploadableFileInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

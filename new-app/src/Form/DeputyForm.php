@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Form;
+namespace App\Form;
 
-use AppBundle\Entity\Deputy;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\Post;
+use App\Entity\Deputy;
+use App\Entity\Order;
+use App\Entity\Post;
 use Common\Form\Answers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -107,7 +107,7 @@ class DeputyForm extends AbstractType
             'translation_domain' => 'forms',
             'validation_groups' => function (FormInterface $form) {
 
-                /* @var $data \AppBundle\Entity\Deputy */
+                /* @var $data \App\Entity\Deputy */
                 $data = $form->getData();
                 $validationGroups = ['order-deputy'];
 

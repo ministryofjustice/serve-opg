@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Service\File\Checker;
+namespace App\Service\File\Checker;
 
-use AppBundle\Service\File\Types\UploadableFileInterface;
+use App\Service\File\Types\UploadableFileInterface;
 
 class DocChecker extends AbstractFileChecker implements FileCheckerInterface
 {

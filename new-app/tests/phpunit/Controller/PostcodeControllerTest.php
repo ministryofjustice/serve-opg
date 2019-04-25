@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
 class PostcodeControllerTest extends AbstractControllerTestCase
 {

@@ -25,7 +25,7 @@ doctrine:
             commonEntities:
                 type: yml
                 dir: "%kernel.root_dir%/config/doctrine"
-                prefix: AppBundle\Entity
+                prefix: App\Entity
                 is_bundle: false
         dql:
             string_functions:

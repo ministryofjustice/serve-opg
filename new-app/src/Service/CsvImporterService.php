@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderHw;
-use AppBundle\Entity\OrderPf;
+use App\Entity\Order;
+use App\Entity\OrderHw;
+use App\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
 
 class CsvImporterService

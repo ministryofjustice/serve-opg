@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
 /**
  *  S3Client wrapper allowing local S3 client config with custom endpoint

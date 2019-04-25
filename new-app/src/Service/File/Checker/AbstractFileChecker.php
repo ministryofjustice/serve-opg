@@ -1,16 +1,16 @@
 <?php
 
-namespace AppBundle\Service\File\Checker;
+namespace App\Service\File\Checker;
 
-use AppBundle\Service\File\Checker\Exception\RiskyFileException;
-use AppBundle\Service\File\Types\UploadableFileInterface;
+use App\Service\File\Checker\Exception\RiskyFileException;
+use App\Service\File\Types\UploadableFileInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class AbstractFileChecker
  * A generic place to hold common methods for checking files
  *
- * @package AppBundle\Service\File\Checker
+ * @package App\Service\File\Checker
  */
 class AbstractFileChecker
 {

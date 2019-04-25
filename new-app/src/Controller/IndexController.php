@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\User;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +25,7 @@ class IndexController extends Controller
     public function designAction()
     {
         // design stuff
-        return $this->render('AppBundle:Index:design.html.twig', [
+        return $this->render('App:Index:design.html.twig', [
         ]);
     }
 

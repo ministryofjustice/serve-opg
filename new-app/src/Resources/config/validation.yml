@@ -1,6 +1,6 @@
-# src/AppBundle/Resources/config/validation.yml
+# src/App/Resources/config/validation.yml
 
-AppBundle\Entity\User:
+App\Entity\User:
   properties:
     email:
     - Email:
@@ -9,7 +9,7 @@ AppBundle\Entity\User:
         checkHost: false
 
 
-AppBundle\Entity\Order:
+App\Entity\Order:
   properties:
     hasAssetsAboveThreshold:
     - Type: string
@@ -28,7 +28,7 @@ AppBundle\Entity\Order:
         groups: [appointment-type]
 
 
-AppBundle\Entity\Deputy:
+App\Entity\Deputy:
     properties:
         deputyType:
             - Type: string

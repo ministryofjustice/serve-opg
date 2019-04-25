@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Security\LoginAttempts\Exception;
+namespace App\Service\Security\LoginAttempts\Exception;
 
 class BruteForceAttackDetectedException extends \Exception
 {

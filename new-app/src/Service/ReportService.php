@@ -1,10 +1,10 @@
 <?php
 
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\Order;
-use AppBundle\Repository\OrderRepository;
+use App\Entity\Order;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
 
 class ReportService
@@ -60,7 +60,7 @@ class ReportService
     /**
      *  Get orders that have been served into Sirius
      *
-     * @return \AppBundle\Entity\Order[]
+     * @return \App\Entity\Order[]
      */
     public function getOrders()
     {

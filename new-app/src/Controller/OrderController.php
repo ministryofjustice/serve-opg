@@ -1,16 +1,16 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Document;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderPf;
-use AppBundle\Entity\User;
-use AppBundle\Form\DeclarationForm;
-use AppBundle\Form\OrderForm;
-use AppBundle\Service\DocumentService;
-use AppBundle\Service\OrderService;
+use App\Entity\Client;
+use App\Entity\Document;
+use App\Entity\Order;
+use App\Entity\OrderPf;
+use App\Entity\User;
+use App\Form\DeclarationForm;
+use App\Form\OrderForm;
+use App\Service\DocumentService;
+use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,7 +81,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('AppBundle:Order:edit.html.twig', [
+        return $this->render('App:Order:edit.html.twig', [
             'order' => $order,
             'form' => $form->createView()
         ]);
@@ -102,7 +102,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('AppBundle:Order:summary.html.twig', [
+        return $this->render('App:Order:summary.html.twig', [
             'order' => $order,
         ]);
     }
@@ -146,7 +146,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('case-list');
         }
 
-        return $this->render('AppBundle:Order:declaration.html.twig', [
+        return $this->render('App:Order:declaration.html.twig', [
             'order' => $order,
             'form' => $form->createView()
         ]);

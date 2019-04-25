@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Behat;
+namespace App\Behat;
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Element\NodeElement;

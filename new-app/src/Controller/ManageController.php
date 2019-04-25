@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Service\SiriusService;
+use App\Service\SiriusService;
 use Aws\SecretsManager\SecretsManagerClient;
 
 /**
@@ -73,7 +73,7 @@ class ManageController extends Controller
         $healthy = true;
         $time = 100;
 
-        $response = $this->render('AppBundle:Manage:health-check.xml.twig', [
+        $response = $this->render('App:Manage:health-check.xml.twig', [
             'status' => $healthy ? 'OK' : 'ERRORS: ',
             'time' => $time * 1000,
         ]);

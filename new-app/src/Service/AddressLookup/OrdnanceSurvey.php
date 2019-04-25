@@ -5,7 +5,7 @@
  * Date: 29/11/2018
  */
 
-namespace AppBundle\Service\AddressLookup;
+namespace App\Service\AddressLookup;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;

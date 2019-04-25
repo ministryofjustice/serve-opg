@@ -1,9 +1,9 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\Document;
-use AppBundle\Service\File\Storage\StorageInterface;
+use App\Entity\Document;
+use App\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManager;
 

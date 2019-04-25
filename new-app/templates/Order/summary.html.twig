@@ -1,4 +1,4 @@
-{% extends 'AppBundle:Layouts:base-template.html.twig' %}
+{% extends 'App:Layouts:base-template.html.twig' %}
 
 {% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order summary{% endblock %}
 
@@ -21,7 +21,7 @@
         <tbody class="govuk-table__body">
 
         {# assets question only for PA orders #}
-        {% if order.type == constant('AppBundle\\Entity\\Order::TYPE_PF') %}
+        {% if order.type == constant('App\\Entity\\Order::TYPE_PF') %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
                     Is the bond over £21,000?
@@ -186,8 +186,8 @@
 
     <p class="text">If a <strong>COP24</strong> has been provided, it must be uploaded.</p>
 
-    {% set otherDocs = order.getDocumentsByType(constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL')) %}
-    <table class="govuk-table"  id="documents-additional" data-order-id="{{ order.id }}" data-doc-type="{{ constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }}">
+    {% set otherDocs = order.getDocumentsByType(constant('App\\Entity\\Document::TYPE_ADDITIONAL')) %}
+    <table class="govuk-table"  id="documents-additional" data-order-id="{{ order.id }}" data-doc-type="{{ constant('App\\Entity\\Document::TYPE_ADDITIONAL') }}">
     {% if otherDocs | length %}
         <thead class="govuk-table__head behat-region-documents-additional-filenames">
             <tr>
@@ -213,7 +213,7 @@
 
         <tfoot>
         <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
-            <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('AppBundle\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+            <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('App\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
                class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
                 <span class="govuk-icon govuk-icon--plus"></span>Add document
             </a>

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\File\Types;
+namespace App\Service\File\Types;
 
 interface UploadableFileInterface
 {

@@ -36,13 +36,13 @@ services:
 
     Doctrine\ORM\EntityManager: "@doctrine.orm.entity_manager"
 
-    AppBundle\Service\SiriusService:
+    App\Service\SiriusService:
         arguments:
-            $httpClient: "@AppBundle\\Service\\SiriusClient"
+            $httpClient: "@App\\Service\\SiriusClient"
             $siriusApiEmail: "%env(SIRIUS_PUBLIC_API_EMAIL)%"
             $siriusApiPassword: "%env(SIRIUS_PUBLIC_API_PASSWORD)%"
 
-    AppBundle\Service\AddressLookup\OrdnanceSurvey:
+    App\Service\AddressLookup\OrdnanceSurvey:
         arguments:
             $apiKey: "%env(OS_PLACES_API_KEY)%"
             $httpClient: "@guzzleClient"
@@ -79,12 +79,12 @@ services:
                 baseUrl: "%env(DC_NOTIFY_MOCK_ENDPOINT)%"
                 httpClient: "@notificationHttpClient"
 
-    AppBundle\Service\MailSender:
+    App\Service\MailSender:
         arguments:
             $notifyClient: "@alphagov.notifications.client.real"
 
-    AppBundle\Service\SiriusClient:
-        class: AppBundle\Service\SiriusClient
+    App\Service\SiriusClient:
+        class: App\Service\SiriusClient
         arguments:
           [
               base_uri: "%env(DC_SIRIUS_URL)%",
@@ -100,17 +100,17 @@ services:
           ]
 
     # twig extensions
-    AppBundle\Twig\AssetsExtension:
+    App\Twig\AssetsExtension:
         arguments: [ "/assets/", "%env(DC_ASSETS_VERSION)%" ]
         tags:
             - { name: twig.extension }
 
-    AppBundle\Twig\DebugExtension:
+    App\Twig\DebugExtension:
         tags:
             - { name: twig.extension }
 
     # Adds 'help' var to form component
-    AppBundle\Form\Extension\FormTypeExtension:
+    App\Form\Extension\FormTypeExtension:
         tags:
             - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
 
@@ -141,19 +141,19 @@ services:
 
     Common\BruteForceChecker: ~
 
-    AppBundle\Service\S3Client:
+    App\Service\S3Client:
         arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
 
     # document storage and checking
-    Aws\S3\S3ClientInterface: "@AppBundle\\Service\\S3Client"
+    Aws\S3\S3ClientInterface: "@App\\Service\\S3Client"
 
-    AppBundle\Service\File\Storage\S3Storage:
+    App\Service\File\Storage\S3Storage:
         arguments:
-            $s3Client: "@AppBundle\\Service\\S3Client"
+            $s3Client: "@App\\Service\\S3Client"
             $localBucketName: "%env(DC_S3_BUCKET_NAME)%"
             $remoteBucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
 
-    AppBundle\Service\File\Storage\StorageInterface: "@AppBundle\\Service\\File\\Storage\\S3Storage"
+    App\Service\File\Storage\StorageInterface: "@App\\Service\\File\\Storage\\S3Storage"
 
     GuzzleHttp\Client:
         arguments:
@@ -170,7 +170,7 @@ services:
 
     GuzzleHttp\ClientInterface: "@GuzzleHttp\\Client"
 
-    AppBundle\Service\Security\LoginAttempts\UserProvider:
+    App\Service\Security\LoginAttempts\UserProvider:
         arguments:
             $rules:
                 # 5 failed attempts in the last 60 seconds => lock for 10 minutes.
@@ -194,11 +194,11 @@ services:
                 min_lock_retry_microtime: 500
                 max_lock_retry_microtime: 5000
 
-    AppBundle\Service\Security\LoginAttempts\DynamoDbAttemptsStorage:
+    App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage:
         arguments:
             $connection: "@dynamoDb.connection.bruteForceAttempts"
 
     # attempts checker configured to use the dynamoDb storage
-    AppBundle\Service\Security\LoginAttempts\AttemptsStorageInterface:
-        alias: AppBundle\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
+    App\Service\Security\LoginAttempts\AttemptsStorageInterface:
+        alias: App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Deputy;
-use AppBundle\Entity\Document;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderPf;
-use AppBundle\Service\File\Storage\S3Storage;
+use App\Entity\Client;
+use App\Entity\Deputy;
+use App\Entity\Document;
+use App\Entity\Order;
+use App\Entity\OrderPf;
+use App\Service\File\Storage\S3Storage;
 use Aws\SecretsManager\SecretsManagerClient;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;

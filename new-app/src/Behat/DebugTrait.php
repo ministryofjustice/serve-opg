@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Behat;
+namespace App\Behat;
 
 trait DebugTrait
 {

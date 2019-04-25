@@ -1,9 +1,9 @@
 <?php
 
-namespace AppBundle\Service\File\Types;
+namespace App\Service\File\Types;
 
-use AppBundle\Service\File\Checker\ClamAVChecker;
-use AppBundle\Service\File\Checker\PngChecker;
+use App\Service\File\Checker\ClamAVChecker;
+use App\Service\File\Checker\PngChecker;
 use Psr\Log\LoggerInterface;
 
 class Png extends UploadableFile

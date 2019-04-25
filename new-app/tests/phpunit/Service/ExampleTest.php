@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 

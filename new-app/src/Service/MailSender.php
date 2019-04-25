@@ -1,9 +1,9 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
 use Alphagov\Notifications\Client;
-use AppBundle\Entity\User;
+use App\Entity\User;
 use Symfony\Component\Routing\RouterInterface;
 
 /**

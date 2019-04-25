@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Form\CsvUploadForm;
-use AppBundle\Service\CsvImporterService;
-use AppBundle\Service\CsvToArray;
+use App\Form\CsvUploadForm;
+use App\Service\CsvImporterService;
+use App\Service\CsvToArray;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,7 +41,7 @@ class CsvController extends Controller
             return $this->redirectToRoute('case-list');
         }
 
-        return $this->render('AppBundle:Csv:upload.html.twig', [
+        return $this->render('App:Csv:upload.html.twig', [
             'form' => $form->createView()
         ]);
     }

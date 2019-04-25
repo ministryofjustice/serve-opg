@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Behat;
+namespace App\Behat;
 
-use AppBundle\Controller\BehatController;
+use App\Controller\BehatController;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Doctrine\ORM\EntityManager;

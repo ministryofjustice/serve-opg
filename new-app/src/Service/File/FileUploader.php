@@ -1,11 +1,11 @@
 <?php
 
-namespace AppBundle\Service\File;
+namespace App\Service\File;
 
-use AppBundle\Entity\Order;
-use AppBundle\Entity\Document;
-use AppBundle\Service\File\Storage\StorageInterface;
-use AppBundle\Service\File\Types\UploadableFile;
+use App\Entity\Order;
+use App\Entity\Document;
+use App\Service\File\Storage\StorageInterface;
+use App\Service\File\Types\UploadableFile;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderHw;
-use AppBundle\Entity\OrderPf;
-use AppBundle\Entity\User;
-use AppBundle\Service\ClientService;
-use AppBundle\Service\MailSender;
-use AppBundle\Service\OrderService;
-use AppBundle\Service\Security\LoginAttempts\UserProvider;
+use App\Entity\Client;
+use App\Entity\Order;
+use App\Entity\OrderHw;
+use App\Entity\OrderPf;
+use App\Entity\User;
+use App\Service\ClientService;
+use App\Service\MailSender;
+use App\Service\OrderService;
+use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;

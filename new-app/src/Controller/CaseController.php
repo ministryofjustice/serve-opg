@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\User;
-use AppBundle\Repository\OrderRepository;
-use AppBundle\Service\Security\LoginAttempts\Checker;
+use App\Entity\Client;
+use App\Entity\Order;
+use App\Entity\User;
+use App\Repository\OrderRepository;
+use App\Service\Security\LoginAttempts\Checker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +50,7 @@ class CaseController extends Controller
             'q' => $request->get('q', ''),
         ];
 
-        return $this->render('AppBundle:Case:index.html.twig', [
+        return $this->render('App:Case:index.html.twig', [
             'orders' => $this->orderRepo->getOrders($filters, $limit),
             'filters' => $filters,
             'counts' => [

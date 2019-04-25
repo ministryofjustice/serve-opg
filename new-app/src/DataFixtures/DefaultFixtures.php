@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+namespace App\DataFixtures;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderHw;
-use AppBundle\Entity\OrderPf;
-use AppBundle\Entity\User;
+use App\Entity\Client;
+use App\Entity\Order;
+use App\Entity\OrderHw;
+use App\Entity\OrderPf;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

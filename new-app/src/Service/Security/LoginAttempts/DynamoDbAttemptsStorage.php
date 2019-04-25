@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Security\LoginAttempts;
+namespace App\Service\Security\LoginAttempts;
 
 use Common\SessionConnectionCreatingTable;
 

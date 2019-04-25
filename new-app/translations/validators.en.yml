@@ -1,4 +1,4 @@
-# appBundle/Resources/translations/validators.en.yml
+# App/Resources/translations/validators.en.yml
 
 document:
    submitButton: Upload file and attach document

@@ -1,13 +1,13 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\User;
-use AppBundle\Form\PasswordChangeForm;
-use AppBundle\Form\PasswordResetForm;
-use AppBundle\Repository\UserRepository;
-use AppBundle\Service\MailSender;
-use AppBundle\Service\Security\LoginAttempts\UserProvider;
+use App\Entity\User;
+use App\Form\PasswordChangeForm;
+use App\Form\PasswordResetForm;
+use App\Repository\UserRepository;
+use App\Service\MailSender;
+use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +55,7 @@ class UserController extends Controller
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        return $this->render('AppBundle:User:login.html.twig', array(
+        return $this->render('App:User:login.html.twig', array(
             'error' => $error,
             'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
                 ? $up->usernameLockedForSeconds($username)
@@ -85,7 +85,7 @@ class UserController extends Controller
             return $this->redirectToRoute('password-reset-sent', ['email'=>$email]);
         }
 
-        return $this->render('AppBundle:User:password-reset-request.html.twig', [
+        return $this->render('App:User:password-reset-request.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -118,7 +118,7 @@ class UserController extends Controller
             return $this->redirectToRoute('login');
         }
 
-        return $this->render('AppBundle:User:password-change.html.twig', [
+        return $this->render('App:User:password-change.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -129,7 +129,7 @@ class UserController extends Controller
      */
     public function passwordResetSent(Request $request)
     {
-        return $this->render('AppBundle:User:password-reset-sent.html.twig', [
+        return $this->render('App:User:password-reset-sent.html.twig', [
             'email' => $request->get('email')
         ]);
     }

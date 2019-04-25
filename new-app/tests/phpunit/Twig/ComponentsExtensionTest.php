@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Twig;
+namespace App\Twig;
 
-use AppBundle\Entity\User;
+use App\Entity\User;
 use Mockery as m;
 
 class ComponentsExtensionTest extends \PHPUnit_Framework_TestCase
@@ -10,8 +10,8 @@ class ComponentsExtensionTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->translator = m::mock('Symfony\Component\Translation\TranslatorInterface');
-        $this->reportSectionsLinkService = m::mock('AppBundle\Service\ReportSectionsLinkService');
-        $this->object = new \AppBundle\Twig\ComponentsExtension($this->translator, $this->reportSectionsLinkService);
+        $this->reportSectionsLinkService = m::mock('App\Service\ReportSectionsLinkService');
+        $this->object = new \App\Twig\ComponentsExtension($this->translator, $this->reportSectionsLinkService);
     }
 
     public static function accordionLinksProvider()

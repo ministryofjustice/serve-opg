@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\Client;
+use App\Entity\Client;
 use Doctrine\ORM\EntityManager;
 
 class ClientService

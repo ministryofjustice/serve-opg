@@ -1,19 +1,19 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\Document;
-use AppBundle\Entity\Order;
-use AppBundle\Form\DocumentForm;
-use AppBundle\Service\DocumentService;
-use AppBundle\Service\File\Checker\Exception\InvalidFileTypeException;
-use AppBundle\Service\File\Checker\Exception\RiskyFileException;
-use AppBundle\Service\File\Checker\Exception\VirusFoundException;
-use AppBundle\Service\File\Checker\FileCheckerFactory;
-use AppBundle\Service\File\FileUploader;
-use AppBundle\Service\File\Storage\StorageInterface;
-use AppBundle\Service\File\Types\Pdf;
-use AppBundle\Service\OrderService;
+use App\Entity\Document;
+use App\Entity\Order;
+use App\Form\DocumentForm;
+use App\Service\DocumentService;
+use App\Service\File\Checker\Exception\InvalidFileTypeException;
+use App\Service\File\Checker\Exception\RiskyFileException;
+use App\Service\File\Checker\Exception\VirusFoundException;
+use App\Service\File\Checker\FileCheckerFactory;
+use App\Service\File\FileUploader;
+use App\Service\File\Storage\StorageInterface;
+use App\Service\File\Types\Pdf;
+use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
@@ -198,7 +198,7 @@ class DocumentController extends Controller
 
         }
 
-        return $this->render('AppBundle:Document:add.html.twig', [
+        return $this->render('App:Document:add.html.twig', [
             'order' => $order,
             'docType' => $docType,
             'form' => $form->createView()

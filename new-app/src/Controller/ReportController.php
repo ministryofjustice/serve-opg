@@ -1,9 +1,9 @@
 <?php
 
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Service\ReportService;
+use App\Service\ReportService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +31,7 @@ class ReportController extends Controller
      * @Route("", name="report")
      */
     public function reportAction() {
-        return $this->render('AppBundle:Report:report.html.twig');
+        return $this->render('App:Report:report.html.twig');
     }
 
     /**
@@ -50,7 +50,7 @@ class ReportController extends Controller
      * @Route("/cases", name="cases")
      */
     public function casesAction() {
-        return $this->render('AppBundle:Report:case-report.html.twig');
+        return $this->render('App:Report:case-report.html.twig');
     }
 
     /**

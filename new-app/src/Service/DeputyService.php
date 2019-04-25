@@ -1,11 +1,11 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\Deputy;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\OrderTypeHw;
-use AppBundle\Entity\OrderPf;
+use App\Entity\Deputy;
+use App\Entity\Order;
+use App\Entity\OrderTypeHw;
+use App\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
 
 class DeputyService

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\File\Storage;
+namespace App\Service\File\Storage;
 
 interface StorageInterface
 {

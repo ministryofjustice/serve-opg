@@ -1,9 +1,9 @@
 <?php
 
-namespace AppBundle\Service\Security\LoginAttempts;
+namespace App\Service\Security\LoginAttempts;
 
-use AppBundle\Entity\User;
-use AppBundle\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
+use App\Entity\User;
+use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use Common\BruteForceChecker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;

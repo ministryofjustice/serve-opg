@@ -1,15 +1,15 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Deputy;
-use AppBundle\Entity\Order;
-use AppBundle\Entity\User;
-use AppBundle\Form\ConfirmationForm;
-use AppBundle\Service\DeputyService;
-use AppBundle\Form\DeputyForm;
-use AppBundle\Service\OrderService;
+use App\Entity\Client;
+use App\Entity\Deputy;
+use App\Entity\Order;
+use App\Entity\User;
+use App\Form\ConfirmationForm;
+use App\Service\DeputyService;
+use App\Form\DeputyForm;
+use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,7 +72,7 @@ class DeputyController extends Controller
             }
         }
 
-        return $this->render('AppBundle:Deputy:add.html.twig', [
+        return $this->render('App:Deputy:add.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()
@@ -107,7 +107,7 @@ class DeputyController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('AppBundle:Deputy:add.html.twig', [
+        return $this->render('App:Deputy:add.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()
@@ -142,7 +142,7 @@ class DeputyController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('AppBundle:Common:confirm.html.twig', [
+        return $this->render('App:Common:confirm.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()
