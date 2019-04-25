@@ -22,8 +22,8 @@ services:
 
   web:
     build:
-      context: .
-      dockerfile: docker/web/Dockerfile
+      context: ..
+      dockerfile: ../docker/web/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:latest
     volumes:
       - ./web:/var/www/web
@@ -37,8 +37,8 @@ services:
 
   app:
     build:
-      context: .
-      dockerfile: docker/app/Dockerfile
+      context: ..
+      dockerfile: ../docker/app/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
     depends_on:
       - localstack
@@ -130,8 +130,8 @@ services:
 
   phpunit:
     build:
-      context: .
-      dockerfile: docker/app/Dockerfile
+      context: ..
+      dockerfile: ../docker/app/Dockerfile
     volumes:
       - .:/app
     working_dir: /app
@@ -147,5 +147,5 @@ services:
 
   waitforit:
     build:
-      context: .
-      dockerfile: docker/waitforit/Dockerfile
+      context: ..
+      dockerfile: ../docker/waitforit/Dockerfile
