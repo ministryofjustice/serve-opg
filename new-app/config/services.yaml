@@ -124,7 +124,7 @@ services:
               debug: false
 
     dynamoDb.connection.session:
-        class: Common\SessionConnectionCreatingTable
+        class: App\Common\SessionConnectionCreatingTable
         arguments:
             $config:
                 table_name: 'sessions'
@@ -185,7 +185,7 @@ services:
             - { name: kernel.event_listener, event: 'security.authentication.success', method: 'onAuthenticationSuccess' }
 
     dynamoDb.connection.bruteForceAttempts:
-        class: Common\SessionConnectionCreatingTable
+        class: App\Common\SessionConnectionCreatingTable
         arguments:
             $config:
                 table_name: 'attempts'

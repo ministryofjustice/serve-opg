@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use App\Service\Security\LoginAttempts\MockAttemptsStorage;
-use Common\BruteForceChecker;
+use App\Common\BruteForceChecker;
 use Doctrine\ORM\EntityRepository;
 use Mockery as m;
 use App\Service\Security\LoginAttempts\AttemptsStorageInterface;

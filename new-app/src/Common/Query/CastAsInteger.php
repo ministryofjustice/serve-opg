@@ -1,5 +1,5 @@
 <?php
-namespace Common\Query;
+namespace App\Common\Query;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;

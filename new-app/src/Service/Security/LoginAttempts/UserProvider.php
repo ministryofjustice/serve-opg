@@ -4,7 +4,7 @@ namespace App\Service\Security\LoginAttempts;
 
 use App\Entity\User;
 use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
-use Common\BruteForceChecker;
+use App\Common\BruteForceChecker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

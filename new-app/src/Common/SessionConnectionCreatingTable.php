@@ -1,6 +1,6 @@
 <?php
 
-namespace Common;
+namespace App\Common;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\StandardSessionConnection;
