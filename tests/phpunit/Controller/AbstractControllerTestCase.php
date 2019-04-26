@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
 use Mockery as m;
 use Symfony\Bundle\FrameworkBundle\Client;

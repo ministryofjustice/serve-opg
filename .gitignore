@@ -1,3 +1,22 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> behat/symfony2-extension ###
+behat.yml
+###< behat/symfony2-extension ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
 .idea
 # ignore bin as created by composer
 **/bin

@@ -1,15 +1,15 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
-use AppBundle\Entity\User;
-use AppBundle\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
-use AppBundle\Service\Security\LoginAttempts\MockAttemptsStorage;
-use Common\BruteForceChecker;
+use App\Entity\User;
+use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
+use App\Service\Security\LoginAttempts\MockAttemptsStorage;
+use App\Common\BruteForceChecker;
 use Doctrine\ORM\EntityRepository;
 use Mockery as m;
-use AppBundle\Service\Security\LoginAttempts\AttemptsStorageInterface;
-use AppBundle\Service\Security\LoginAttempts\UserProvider;
+use App\Service\Security\LoginAttempts\AttemptsStorageInterface;
+use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;

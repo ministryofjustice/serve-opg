@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace App\Service;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -9,7 +9,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
 use Psr\Http\Message\ResponseInterface;
 
-use AppBundle\Service\AddressLookup\OrdnanceSurvey;
+use App\Service\AddressLookup\OrdnanceSurvey;
 
 class OrdnanceSurveyServiceTest extends MockeryTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Message\ResponseInterface;
