@@ -104,12 +104,12 @@ services:
     image: php:7.2-fpm-alpine
     volumes:
       - .:/app
-      - ./web/behat:/tmp/behat
+#      - ./web/behat:/tmp/behat
     working_dir: /app
     entrypoint:
       - bin/behat
       - -c
-      - tests/behat/behat.yml
+      - ./behat.yml
       - --stop-on-failure
     depends_on:
       - loadbalancer
