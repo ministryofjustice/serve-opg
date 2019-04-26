@@ -4,6 +4,8 @@ version: '3'
 services:
   aws:
     image: infrastructureascode/aws-cli
+    env_file:
+      - .env
     entrypoint:
       - aws
     depends_on:
