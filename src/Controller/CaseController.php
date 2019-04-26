@@ -50,7 +50,7 @@ class CaseController extends Controller
             'q' => $request->get('q', ''),
         ];
 
-        return $this->render('App:Case:index.html.twig', [
+        return $this->render('Case/index.html.twig', [
             'orders' => $this->orderRepo->getOrders($filters, $limit),
             'filters' => $filters,
             'counts' => [

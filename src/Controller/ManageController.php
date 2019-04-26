@@ -73,7 +73,7 @@ class ManageController extends Controller
         $healthy = true;
         $time = 100;
 
-        $response = $this->render('App:Manage:health-check.xml.twig', [
+        $response = $this->render('Manage/health-check.xml.twig', [
             'status' => $healthy ? 'OK' : 'ERRORS: ',
             'time' => $time * 1000,
         ]);

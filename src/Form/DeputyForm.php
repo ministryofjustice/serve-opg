@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\Deputy;
 use App\Entity\Order;
 use App\Entity\Post;
-use Common\Form\Answers;
+use App\Common\Form\Answers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

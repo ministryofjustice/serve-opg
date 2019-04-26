@@ -139,7 +139,7 @@ services:
 
     Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
 
-    Common\BruteForceChecker: ~
+    App\Common\BruteForceChecker: ~
 
     App\Service\S3Client:
         arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]

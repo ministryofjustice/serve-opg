@@ -30,7 +30,7 @@ doctrine:
                 is_bundle: false
         dql:
             string_functions:
-                cast_as_integer: Common\Query\CastAsInteger
+                cast_as_integer: App\Common\Query\CastAsInteger
                 str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
                 to_date: DoctrineExtensions\Query\Postgresql\DateFormat
             numeric_functions:

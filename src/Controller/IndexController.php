@@ -25,7 +25,7 @@ class IndexController extends Controller
     public function designAction()
     {
         // design stuff
-        return $this->render('App:Index:design.html.twig', [
+        return $this->render('Index/design.html.twig', [
         ]);
     }
 

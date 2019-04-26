@@ -4,16 +4,16 @@ use App\Kernel;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
-require dirname(__DIR__) . '/config/bootstrap.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $isLocal = file_exists(__DIR__ . '/../.enableDevMode');
 
 if ($isLocal) {
     ini_set('display_errors', 'on');
     Debug::enable();
-    $kernel = new AppKernel('dev', true);
+    $kernel = new Kernel('dev', true);
 } else {
-    $kernel = new AppKernel('prod', false);
+    $kernel = new Kernel('prod', false);
 }
 
 if ($_SERVER['APP_DEBUG']) {

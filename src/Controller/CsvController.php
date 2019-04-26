@@ -41,7 +41,7 @@ class CsvController extends Controller
             return $this->redirectToRoute('case-list');
         }
 
-        return $this->render('App:Csv:upload.html.twig', [
+        return $this->render('Csv/upload.html.twig', [
             'form' => $form->createView()
         ]);
     }

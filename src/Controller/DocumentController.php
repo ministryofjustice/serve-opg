@@ -198,7 +198,7 @@ class DocumentController extends Controller
 
         }
 
-        return $this->render('App:Document:add.html.twig', [
+        return $this->render('Document/add.html.twig', [
             'order' => $order,
             'docType' => $docType,
             'form' => $form->createView()

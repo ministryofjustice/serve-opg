@@ -81,7 +81,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('App:Order:edit.html.twig', [
+        return $this->render('Order/edit.html.twig', [
             'order' => $order,
             'form' => $form->createView()
         ]);
@@ -102,7 +102,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('App:Order:summary.html.twig', [
+        return $this->render('Order/summary.html.twig', [
             'order' => $order,
         ]);
     }
@@ -146,7 +146,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('case-list');
         }
 
-        return $this->render('App:Order:declaration.html.twig', [
+        return $this->render('Order/declaration.html.twig', [
             'order' => $order,
             'form' => $form->createView()
         ]);

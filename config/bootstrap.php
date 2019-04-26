@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -19,3 +19,10 @@ $_SERVER += $_ENV;
 $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = ($_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? null) ?: 'dev';
 $_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? 'prod' !== $_SERVER['APP_ENV'];
 $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = (int) $_SERVER['APP_DEBUG'] || filter_var($_SERVER['APP_DEBUG'], FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
+
+// add additional headers DCOP-157
+//$_SERVER['X-Frame-Options'] = 'SAMEORIGIN';
+//$_SERVER['X-XSS-Protection'] = '1; mode=block';
+//$_SERVER['X-Content-Type-Options'] = 'nosniff';
+//$_SERVER['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload';
+

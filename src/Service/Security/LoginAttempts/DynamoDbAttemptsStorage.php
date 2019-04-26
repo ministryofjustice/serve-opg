@@ -2,7 +2,7 @@
 
 namespace App\Service\Security\LoginAttempts;
 
-use Common\SessionConnectionCreatingTable;
+use App\Common\SessionConnectionCreatingTable;
 
 class DynamoDbAttemptsStorage implements AttemptsStorageInterface
 {

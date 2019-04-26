@@ -1,2 +1,2 @@
-AppBundle\Entity\OrderHw:
+App\Entity\OrderHw:
     type: entity

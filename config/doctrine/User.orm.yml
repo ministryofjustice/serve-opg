@@ -1,7 +1,7 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
-AppBundle\Entity\User:
+App\Entity\User:
     type: entity
-    repositoryClass: AppBundle\Repository\UserRepository
+    repositoryClass: App\Repository\UserRepository
     table: "dc_user"
     id:
       id:

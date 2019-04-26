@@ -72,7 +72,7 @@ class DeputyController extends Controller
             }
         }
 
-        return $this->render('App:Deputy:add.html.twig', [
+        return $this->render('Deputy/add.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()
@@ -107,7 +107,7 @@ class DeputyController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('App:Deputy:add.html.twig', [
+        return $this->render('Deputy/add.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()
@@ -142,7 +142,7 @@ class DeputyController extends Controller
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
-        return $this->render('App:Common:confirm.html.twig', [
+        return $this->render('Common/confirm.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView()

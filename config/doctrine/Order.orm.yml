@@ -1,15 +1,15 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
-AppBundle\Entity\Order:
+App\Entity\Order:
     type: entity
-    repositoryClass: AppBundle\Repository\OrderRepository
+    repositoryClass: App\Repository\OrderRepository
     table: "dc_order"
     inheritanceType: single_table
     discriminatorColumn:
       name: type
       type: string
     discriminatorMap:
-      PF:  AppBundle\Entity\OrderPf
-      HW:  AppBundle\Entity\OrderHw
+      PF:  App\Entity\OrderPf
+      HW:  App\Entity\OrderHw
     id:
       id:
         type: integer

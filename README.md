@@ -44,10 +44,10 @@ docker-compose up -d --build --remove-orphans loadbalancer
 
 # Add sample users and cases (local env only).
 # See docker-compose.yml app container, DC_FIXURES_USERS variable
-docker-compose run --rm app php app/console doctrine:fixtures:load --append
+docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 
 # Generates status of migrations
-docker-compose run --rm app php app/console doctrine:migrations:status
+docker-compose run --rm app php bin/console doctrine:migrations:status
 
 # enable dev mode (local development only)
 docker-compose exec app touch /var/www/.enableDevMode
@@ -93,10 +93,10 @@ docker-compose run --rm --entrypoint="bin/phpunit -c tests/phpunit/ tests/phpuni
 ## Integration Testing
 ```bash
 # Load Fixtures
-docker-compose run --rm app php app/console doctrine:fixtures:load --append
+docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 
 # Load Fixtures truncating existing data (users, client, orders, deputies)
-docker-compose run --rm app php app/console doctrine:fixtures:load --purge-with-truncate
+docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate
 
 # Run Behat
 docker-compose run --rm behat
@@ -135,13 +135,13 @@ gulp watch
 ```bash
 # Database migrations
 # Generate migration script between entities and schema
-docker-compose run --rm app php app/console doctrine:migrations:diff
+docker-compose run --rm app php bin/console doctrine:migrations:diff
 
 # Generate blank migration script
-docker-compose run --rm app php app/console doctrine:migrations:generate
+docker-compose run --rm app php bin/console doctrine:migrations:generate
 
 # Example: run migration version 20181019141515
-docker-compose run --rm app php app/console doctrine:migrations:execute 20181019141515
+docker-compose run --rm app php bin/console doctrine:migrations:execute 20181019141515
 ```
 
 # Utilities
@@ -152,7 +152,7 @@ docker-compose run --rm app php app/console doctrine:migrations:execute 20181019
 docker cp web/app.php serve-opg_app_1:/var/www/web/app.php
 
 # Drop the data before schema update (mainl during local development)
-docker-compose run --rm app php app/console doctrine:schema:drop --force
+docker-compose run --rm app php bin/console doctrine:schema:drop --force
 
 ```
 

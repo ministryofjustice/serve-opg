@@ -16,10 +16,14 @@ COPY public/index.php public/index.php
 RUN mkdir -p public/assets
 COPY vendor vendor
 COPY src src
-COPY app app
+COPY bin bin
+COPY .env .env
+COPY config config
+COPY templates templates
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
+
 ENV TIMEOUT=20
-CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
-  && php app/console doctrine:migrations:migrate --no-interaction \
+CMD waitforit -address=tcp://postgres:5432 -timeout=$TIMEOUT \
+  && php bin/console doctrine:migrations:migrate --no-interaction \
   && chown -R www-data var \
   && php-fpm

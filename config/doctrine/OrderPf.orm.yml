@@ -1,2 +1,2 @@
-AppBundle\Entity\OrderPf:
+App\Entity\OrderPf:
     type: entity

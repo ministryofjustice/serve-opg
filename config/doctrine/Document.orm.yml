@@ -1,5 +1,5 @@
 # reference https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html
-AppBundle\Entity\Document:
+App\Entity\Document:
     type: entity
     table: "document"
     id:

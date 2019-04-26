@@ -31,7 +31,7 @@ class ReportController extends Controller
      * @Route("", name="report")
      */
     public function reportAction() {
-        return $this->render('App:Report:report.html.twig');
+        return $this->render('Report/report.html.twig');
     }
 
     /**
@@ -50,7 +50,7 @@ class ReportController extends Controller
      * @Route("/cases", name="cases")
      */
     public function casesAction() {
-        return $this->render('App:Report:case-report.html.twig');
+        return $this->render('Report/case-report.html.twig');
     }
 
     /**
