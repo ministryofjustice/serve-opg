@@ -106,7 +106,7 @@ services:
     image: php:7.2-fpm-alpine
     volumes:
       - .:/app
-      - ./features/screenshots:/tmp/screenshots
+      - ./features/screenshots:/tmp/behat
     working_dir: /app
     entrypoint:
       - bin/behat
