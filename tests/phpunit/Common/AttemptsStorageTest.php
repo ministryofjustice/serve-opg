@@ -2,7 +2,9 @@
 
 namespace Common;
 
-class BruteForceCheckerTest extends \PHPUnit_Framework_TestCase
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+
+class BruteForceCheckerTest extends TestCase
 {
     private $sut;
 

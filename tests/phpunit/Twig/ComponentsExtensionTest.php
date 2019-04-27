@@ -4,8 +4,9 @@ namespace App\Twig;
 
 use App\Entity\User;
 use Mockery as m;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
-class ComponentsExtensionTest extends \PHPUnit_Framework_TestCase
+class ComponentsExtensionTest extends TestCase
 {
     public function setUp()
     {

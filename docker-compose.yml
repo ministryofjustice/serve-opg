@@ -106,7 +106,7 @@ services:
     image: php:7.2-fpm-alpine
     volumes:
       - .:/app
-#      - ./web/behat:/tmp/behat
+      - ./features/screenshots:/tmp/screenshots
     working_dir: /app
     entrypoint:
       - bin/behat
@@ -141,8 +141,8 @@ services:
     working_dir: /app
     entrypoint: bin/phpunit
     command:
-      - -c
       - tests/phpunit
+
   qa:
     image: jakzal/phpqa:alpine
     volumes:

@@ -14,7 +14,7 @@ WORKDIR /var/www
 # https://symfony.com/doc/3.4/quick_tour/the_architecture.html
 COPY public/index.php public/index.php
 RUN mkdir -p public/assets
-RUN mkdir -p tmp/behat
+RUN mkdir -p tmp/screenshots
 COPY vendor vendor
 COPY src src
 COPY translations translations
