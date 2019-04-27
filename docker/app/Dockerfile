@@ -17,6 +17,7 @@ RUN mkdir -p public/assets
 RUN mkdir -p tmp/behat
 COPY vendor vendor
 COPY src src
+COPY translations translations
 COPY bin bin
 COPY .env .env
 COPY config config
