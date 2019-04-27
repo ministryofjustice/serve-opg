@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Phpunit\Helpers\AbstractControllerTestCase;
+
 class PostcodeControllerTest extends AbstractControllerTestCase
 {
     public function testRequest()

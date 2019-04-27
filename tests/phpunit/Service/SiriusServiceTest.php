@@ -31,7 +31,7 @@ class SiriusServiceTest extends MockeryTestCase
     private $mockS3Storage;
     private $mockSecretsManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockEntityManager = $this->prophesize(EntityManager::class);
         $this->mockHttpClient = $this->prophesize(SiriusClient::class);

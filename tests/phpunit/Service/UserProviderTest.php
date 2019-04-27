@@ -18,7 +18,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class UserProviderTest extends MockeryTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->userRepo = m::mock(EntityRepository::class);
         $this->em = m::mock(EntityManager::class)

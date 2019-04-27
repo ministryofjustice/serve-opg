@@ -101,7 +101,9 @@ services:
 
     # twig extensions
     App\Twig\AssetsExtension:
-        arguments: [ "/assets/", "%env(DC_ASSETS_VERSION)%" ]
+        arguments:
+            $basePath: "/assets/"
+            $assetsVersion: "%env(DC_ASSETS_VERSION)%"
         tags:
             - { name: twig.extension }
 

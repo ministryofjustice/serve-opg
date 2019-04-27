@@ -2,13 +2,14 @@
 
 namespace Common;
 
+use App\Common\BruteForceChecker;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 class BruteForceCheckerTest extends TestCase
 {
     private $sut;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->sut = new BruteForceChecker();
     }

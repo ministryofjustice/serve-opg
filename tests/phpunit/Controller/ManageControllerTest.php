@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Message\ResponseInterface;
-use Mockery as m;
+use App\Phpunit\Helpers\AbstractControllerTestCase;
+//use GuzzleHttp\Message\Response;
+//use GuzzleHttp\Message\ResponseInterface;
 
 class ManageControllerTest extends AbstractControllerTestCase
 {

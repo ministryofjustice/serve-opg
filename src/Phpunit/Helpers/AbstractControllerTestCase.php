@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Phpunit\Helpers;
 
-use Mockery as m;
+
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractControllerTestCase extends WebTestCase
 {
@@ -14,7 +13,7 @@ abstract class AbstractControllerTestCase extends WebTestCase
      */
     protected $frameworkBundleClient;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = static::createClient(['environment' => 'test', 'debug' => true]);
     }

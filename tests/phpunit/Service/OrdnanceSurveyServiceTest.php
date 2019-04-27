@@ -26,7 +26,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 
     private $ordnanceSurveyService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->httpClient = Mockery::mock(Client::class);
         $this->httpClient->shouldReceive('getConfig')->with('base_uri');
