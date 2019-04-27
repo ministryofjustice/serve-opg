@@ -204,6 +204,3 @@ services:
     App\Service\Security\LoginAttempts\AttemptsStorageInterface:
         alias: App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
 
-#    sensio_framework_extra.view.guesser:
-#        class: "%sensio_framework_extra.view.guesser.class%"
-#        public: true
