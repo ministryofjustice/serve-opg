@@ -33,3 +33,5 @@ s3
 .phpunit
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+/features/screenshots/*

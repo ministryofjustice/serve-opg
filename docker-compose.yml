@@ -60,7 +60,7 @@ services:
     command:
       - mock
       - --spec
-      - ./api.public.v1.yaml
+      - /tmp/api.public.v1.yaml
 
   localstack:
     image: localstack/localstack
