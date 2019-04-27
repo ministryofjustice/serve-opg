@@ -90,6 +90,8 @@ class ManageController extends Controller
      */
     public function elbAction()
     {
-        return ['status' => 'OK'];
+        return $this->render('Manage/elb.html.twig', [
+            'status' => 'OK'
+        ]);
     }
 }
