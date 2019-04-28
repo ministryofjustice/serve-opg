@@ -11,7 +11,13 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     {% for error in errors %}
-                        {% set elementPath =  error.cause.propertyPath | replace({'data.': ''}) %}
+{#                        @todo look into real reason cause isnt populated in 05-document.feature line 102 for unsupported5.jpg.exe#}
+                        {% set elementPath = 'file' %}
+
+                        {% if error.cause %}
+                            {% set elementPath =  error.cause.propertyPath | replace({'data.': ''}) %}
+                        {% endif %}
+
                         <li><a href="#form-group-{{ elementPath }}">{{ error.message }}</a></li>
                     {% endfor %}
                 </ul>

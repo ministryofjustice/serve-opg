@@ -15,6 +15,7 @@ use App\Service\File\Storage\StorageInterface;
 use App\Service\File\Types\Pdf;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,6 +49,11 @@ class DocumentController extends Controller
      */
     private $fileCheckerFactory;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     const SUCCESS = 1;
     const FAIL = 0;
     const ERROR = 2;
@@ -59,14 +65,23 @@ class DocumentController extends Controller
      * @param DocumentService $documentService
      * @param FileUploader $fileUploader
      * @param FileCheckerFactory $fileCheckerFactory
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, OrderService $orderService, DocumentService $documentService, FileUploader $fileUploader, FileCheckerFactory $fileCheckerFactory)
+    public function __construct(
+        EntityManager $em,
+        OrderService $orderService,
+        DocumentService $documentService,
+        FileUploader $fileUploader,
+        FileCheckerFactory $fileCheckerFactory,
+        LoggerInterface $logger
+    )
     {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
         $this->fileUploader = $fileUploader;
         $this->fileCheckerFactory = $fileCheckerFactory;
+        $this->logger = $logger;
     }
 
     private function processDocument(Order $order, Document $document, $file, $requestId) {
@@ -114,7 +129,7 @@ class DocumentController extends Controller
                 '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $requestId,
             ], 'validators');
 
-            $this->get('logger')->error($e->getMessage()); //fully log exceptions
+            $this->logger->error($e->getMessage());
 
             $response["response"] = self::ERROR;
             $response["message"] = $message;
@@ -132,7 +147,7 @@ class DocumentController extends Controller
             $response = self::SUCCESS;
 
         } catch (\Exception $e) {
-            $this->get('logger')->error($e->getMessage());
+            $this->logger->error($e->getMessage());
         }
 
         return $response;

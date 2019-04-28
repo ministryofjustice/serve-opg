@@ -48,10 +48,11 @@ services:
       - localstack
       - postgres
       - sirius-api
+    working_dir: /var/www
     volumes:
-#      - ./app:/var/www/app
-      - ./src:/var/www/src
-      - ./public:/var/www/public
+      - ./src:/src
+      - ./public:/public
+      - ./templates:/templates
 
   sirius-api:
     image: stoplight/prism
