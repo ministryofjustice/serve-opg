@@ -139,7 +139,7 @@ services:
       dockerfile: docker/app/Dockerfile
     volumes:
       - .:/app
-#    working_dir: /app
+    working_dir: /app
     entrypoint: ./bin/phpunit
     command:
       - c
