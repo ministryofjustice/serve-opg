@@ -21,6 +21,9 @@ jobs:
             docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
             docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
 
+            rm -rf vendor
+            rm -rf symfony.lock
+            
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
@@ -54,8 +57,6 @@ jobs:
       - run:
           name: Build
           command: |
-            rm -rf vendor
-            rm -rf symfony.lock
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
