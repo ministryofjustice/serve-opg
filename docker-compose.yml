@@ -134,13 +134,11 @@ services:
 #      - 8081:8081
 
   phpunit:
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
+    image: composer
     volumes:
       - .:/app
     working_dir: /app
-    entrypoint: bin/phpunit
+    entrypoint: bin/simple-phpunit
     command:
       - tests/phpunit
 
