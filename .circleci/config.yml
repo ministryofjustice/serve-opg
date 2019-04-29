@@ -7,7 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependencies-v3
+            - dependencies-{{ checksum "composer.lock" }}
       - run:
           name: Build Dependencies
           command: |
@@ -26,7 +26,7 @@ jobs:
             # Generate static assets
             docker-compose run --rm npm
       - save_cache:
-          key: dependencies-v3
+          key: dependencies-{{ checksum "composer.lock" }}
           paths:
 #          - vendor
           - node_modules
@@ -54,6 +54,8 @@ jobs:
       - run:
           name: Build
           command: |
+            rm -rf vendor
+            rm -rf symfony.lock
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
