@@ -140,9 +140,10 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    entrypoint: bin/phpunit
+#    entrypoint: bin/phpunit
     command:
-      - tests/phpunit
+#      - tests/phpunit
+      - vendor/bin/phpunit
 
   qa:
     image: jakzal/phpqa:alpine
