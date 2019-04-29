@@ -139,8 +139,8 @@ services:
       dockerfile: docker/app/Dockerfile
     volumes:
       - .:/app
-    working_dir: /app
-    entrypoint: ./app/bin/phpunit
+#    working_dir: /app
+    entrypoint: ./bin/phpunit
     command:
       - c
       - tests/phpunit
