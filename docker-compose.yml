@@ -142,6 +142,7 @@ services:
     working_dir: /app
     entrypoint: ./bin/phpunit
     command:
+      - composer install
       - tests/phpunit
 
   qa:
