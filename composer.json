@@ -88,6 +88,7 @@
     "require-dev": {
         "egulias/email-validator": "^1.2.8|~2.0",
         "phpstan/phpstan-symfony": "^0.10.0",
-        "symfony/phpunit-bridge": "4.2.*"
+        "symfony/phpunit-bridge": "4.2.*",
+        "symfony/test-pack": "^1.0"
     }
 }
