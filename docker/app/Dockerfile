@@ -9,7 +9,7 @@ ENV WAITFORIT_VERSION="v2.4.1"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
   && chmod +x /usr/local/bin/waitforit
 
-WORKDIR /var/www
+WORKDIR /var/app
 # See this page for directories required
 # https://symfony.com/doc/3.4/quick_tour/the_architecture.html
 COPY public/index.php public/index.php

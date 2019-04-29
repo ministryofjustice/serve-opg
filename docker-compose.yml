@@ -28,7 +28,7 @@ services:
       dockerfile: ./docker/web/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:latest
     volumes:
-      - ./public:/var/www/public
+      - ./public:/var/app/public
     depends_on:
       - app
     environment:
@@ -48,7 +48,7 @@ services:
       - localstack
       - postgres
       - sirius-api
-    working_dir: /var/www
+    working_dir: /var/app
     volumes:
       - ./src:/src
       - ./public:/public
@@ -134,7 +134,8 @@ services:
 #      - 8081:8081
 
   phpunit:
-    build: .
+    build:
+      dockerfile: ./docker/app/Dockerfile
     volumes:
       - .:/app
     working_dir: /app
