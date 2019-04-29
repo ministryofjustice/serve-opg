@@ -89,7 +89,7 @@ services:
     volumes:
       - .:/app
     command:
-      - install
+      - install --no-interaction
 
   npm:
     image: node:10.13-stretch
