@@ -135,7 +135,8 @@ services:
 
   phpunit:
     build:
-      dockerfile: ./docker/app/Dockerfile
+      context: .
+      dockerfile: docker/app/Dockerfile
     volumes:
       - .:/app
     working_dir: /app
