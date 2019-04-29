@@ -140,8 +140,9 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    entrypoint: ./bin/phpunit
+    entrypoint: ./app/bin/phpunit
     command:
+      - c
       - tests/phpunit
 
   qa:
