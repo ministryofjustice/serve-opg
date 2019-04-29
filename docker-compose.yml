@@ -138,7 +138,7 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    entrypoint: bin/simple-phpunit
+    entrypoint: bin/phpunit
     command:
       - tests/phpunit
 
