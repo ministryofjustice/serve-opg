@@ -27,5 +27,6 @@ COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://postgres:5432 -timeout=$TIMEOUT \
   && php bin/console doctrine:migrations:migrate --no-interaction \
+  && ./bin/phpunit install \
   && chown -R www-data var \
   && php-fpm
