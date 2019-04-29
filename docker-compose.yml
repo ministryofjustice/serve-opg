@@ -140,7 +140,7 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    entrypoint: vendor/bin/simple-phpunit
+    entrypoint: bin/phpunit
     command:
       - tests/phpunit
 
