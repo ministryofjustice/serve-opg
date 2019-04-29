@@ -53,8 +53,6 @@ services:
       - ./src:/src
       - ./public:/public
       - ./templates:/templates
-    networks:
-      - main
 
   sirius-api:
     image: stoplight/prism
@@ -92,8 +90,6 @@ services:
       - .:/app
     command:
       - install
-    networks:
-      - main
 
   npm:
     image: node:10.13-stretch
@@ -138,17 +134,13 @@ services:
 #      - 8081:8081
 
   phpunit:
-    build:
-      context: ""
-      dockerfile: ./docker/app/Dockerfile
+    build: .
     volumes:
       - .:/app
     working_dir: /app
     entrypoint: ./bin/phpunit
     command:
       - tests/phpunit
-    networks:
-      - main
 
   qa:
     image: jakzal/phpqa:alpine
@@ -160,6 +152,3 @@ services:
     build:
       context: ""
       dockerfile: ./docker/waitforit/Dockerfile
-
-networks:
-  main:
