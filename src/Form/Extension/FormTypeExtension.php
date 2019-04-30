@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-Abstract class FormTypeExtension extends AbstractTypeExtension
+class FormTypeExtension extends AbstractTypeExtension
 {
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
@@ -24,8 +24,11 @@ Abstract class FormTypeExtension extends AbstractTypeExtension
         ));
     }
 
-    public function getExtendedType()
+    /**
+     * Return the class of the type being extended.
+     */
+    public static function getExtendedTypes(): iterable
     {
-        return FormType::class;
+        return [FormType::class];
     }
 }

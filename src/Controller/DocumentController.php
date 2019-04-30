@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DocumentController extends AbstractController
 {
@@ -52,6 +53,11 @@ class DocumentController extends AbstractController
      */
     private $logger;
 
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     const SUCCESS = 1;
     const FAIL = 0;
     const ERROR = 2;
@@ -64,6 +70,7 @@ class DocumentController extends AbstractController
      * @param FileUploader $fileUploader
      * @param FileCheckerFactory $fileCheckerFactory
      * @param LoggerInterface $logger
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         EntityManager $em,
@@ -71,7 +78,8 @@ class DocumentController extends AbstractController
         DocumentService $documentService,
         FileUploader $fileUploader,
         FileCheckerFactory $fileCheckerFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        TranslatorInterface $translator
     )
     {
         $this->em = $em;
@@ -80,6 +88,7 @@ class DocumentController extends AbstractController
         $this->fileUploader = $fileUploader;
         $this->fileCheckerFactory = $fileCheckerFactory;
         $this->logger = $logger;
+        $this->translator = $translator;
     }
 
     private function processDocument(Order $order, Document $document, $file, $requestId) {
@@ -123,7 +132,7 @@ class DocumentController extends AbstractController
             $errorKey = isset($errorToErrorTranslationKey[get_class($e)]) ?
                 $errorToErrorTranslationKey[get_class($e)] : 'generic';
 
-            $message = $this->get('translator')->trans("document.file.errors.{$errorKey}", [
+            $message = $this->translator->trans("document.file.errors.{$errorKey}", [
                 '%techDetails%' => $this->getParameter('kernel.debug') ? $e->getMessage() : $requestId,
             ], 'validators');
 
