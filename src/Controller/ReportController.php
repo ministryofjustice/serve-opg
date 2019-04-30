@@ -4,14 +4,14 @@
 namespace App\Controller;
 
 use App\Service\ReportService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/report")
  */
-class ReportController extends Controller
+class ReportController extends AbstractController
 {
     /**
      * @var ReportService

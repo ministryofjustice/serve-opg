@@ -23,7 +23,7 @@ jobs:
 
             rm -rf vendor
             rm -rf symfony.lock
-            
+
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets

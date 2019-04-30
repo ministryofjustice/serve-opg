@@ -3,18 +3,16 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\Response;
 use App\Service\SiriusService;
-use Aws\SecretsManager\SecretsManagerClient;
 
 /**
  * @Route("/manage")
  */
-class ManageController extends Controller
+class ManageController extends AbstractController
 {
     /**
      * @var EntityManager

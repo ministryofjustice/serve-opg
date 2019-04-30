@@ -2,21 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
 use App\Entity\Deputy;
 use App\Entity\Order;
-use App\Entity\User;
 use App\Form\ConfirmationForm;
 use App\Service\DeputyService;
 use App\Form\DeputyForm;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DeputyController extends Controller
+class DeputyController extends AbstractController
 {
     /**
      * @var EntityManager

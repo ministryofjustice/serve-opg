@@ -8,22 +8,20 @@ use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Entity\User;
 use App\Service\ClientService;
-use App\Service\MailSender;
 use App\Service\OrderService;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/behat")
  */
-class BehatController extends Controller
+class BehatController extends AbstractController
 {
     const BEHAT_EMAIL = 'behat@digital.justice.gov.uk';
     const BEHAT_PASSWORD = 'Abcd1234';

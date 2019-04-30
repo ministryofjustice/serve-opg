@@ -4,12 +4,11 @@ namespace App\Controller;
 
 use App\Form\CsvUploadForm;
 use App\Service\CsvImporterService;
-use App\Service\CsvToArray;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CsvController extends Controller
+class CsvController extends AbstractController
 {
     /**
      * @var CsvImporterService

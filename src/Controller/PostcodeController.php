@@ -1,22 +1,15 @@
 <?php
-/**
- * Project: opg-digicop
- * Author: robertford
- * Date: 04/12/2018
- */
 
 namespace App\Controller;
 
 use App\Service\AddressLookup\OrdnanceSurveyClient;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Service\AddressLookup\OrdnanceSurvey;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class PostcodeController extends Controller
+class PostcodeController extends AbstractController
 {
     /**
      * @Route("/postcode-lookup", name="postcode-lookup")

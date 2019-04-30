@@ -11,18 +11,16 @@ use App\Service\File\Checker\Exception\RiskyFileException;
 use App\Service\File\Checker\Exception\VirusFoundException;
 use App\Service\File\Checker\FileCheckerFactory;
 use App\Service\File\FileUploader;
-use App\Service\File\Storage\StorageInterface;
-use App\Service\File\Types\Pdf;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DocumentController extends Controller
+class DocumentController extends AbstractController
 {
     /**
      * @var EntityManager

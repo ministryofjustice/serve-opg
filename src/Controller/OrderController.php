@@ -2,23 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
 use App\Entity\Document;
 use App\Entity\Order;
-use App\Entity\OrderPf;
-use App\Entity\User;
 use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormView;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class OrderController extends Controller
+class OrderController extends AbstractController
 {
     /**
      * @var EntityManager
