@@ -141,7 +141,7 @@ services:
     working_dir: /app
     entrypoint: bin/phpunit
     command:
-      - tests/phpunit
+      - tests
 
   qa:
     image: jakzal/phpqa:alpine
