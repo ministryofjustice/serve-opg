@@ -4,10 +4,9 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use App\Service\SiriusService;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/manage")
@@ -36,8 +35,7 @@ class ManageController extends AbstractController
     }
 
     /**
-     * @Route("/availability")
-     * @Method({"GET"})
+     * @Route("/availability", methods={"GET"})
      * @Template
      */
     public function availabilityAction()
@@ -49,8 +47,7 @@ class ManageController extends AbstractController
     }
 
     /**
-     * @Route("/version")
-     * @Method({"GET"})
+     * @Route("/version", methods={"GET"})
      * @Template
      */
     public function versionAction()
@@ -63,8 +60,7 @@ class ManageController extends AbstractController
     }
 
     /**
-     * @Route("/availability/pingdom")
-     * @Method({"GET"})
+     * @Route("/availability/pingdom", methods={"GET"})
      */
     public function healthCheckXmlAction()
     {
@@ -82,8 +78,7 @@ class ManageController extends AbstractController
     }
 
     /**
-     * @Route("/elb", name="manage-elb")
-     * @Method({"GET"})
+     * @Route("/elb", name="manage-elb", methods={"GET"})
      * @Template()
      */
     public function elbAction()

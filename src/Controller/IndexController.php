@@ -5,8 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
+
 
 class IndexController extends AbstractController
 {
@@ -31,8 +31,7 @@ class IndexController extends AbstractController
     /**
      * keep session alive. Called from session timeout dialog.
      *
-     * @Route("session-keep-alive", name="session-keep-alive")
-     * @Method({"GET"})
+     * @Route("session-keep-alive", name="session-keep-alive", methods={"GET"})
      */
     public function sessionKeepAliveAction(Request $request)
     {

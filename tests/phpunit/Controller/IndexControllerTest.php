@@ -3,8 +3,6 @@
 namespace tests\phpunit\Controller;
 
 use App\Phpunit\Helpers\AbstractControllerTestCase;
-//use GuzzleHttp\Message\Response;
-//use GuzzleHttp\Message\ResponseInterface;
 
 class IndexControllerTest extends AbstractControllerTestCase
 {
