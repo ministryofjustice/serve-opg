@@ -180,7 +180,8 @@
                 var $dropZoneCopy = $('.dropzone__template__instruction', $dropZonePlaceholder);
                 var $dropZoneButton = $('.govuk-button--secondary', $dropZonePlaceholder);
 
-                $dropZoneCopy.html($dropZoneCopy.html().replace('other relevant documents', '<strong class="bold">' + docTypeNiceName + '</strong>'));
+                $dropZoneCopy.html($dropZoneCopy.html().replace('documents', docTypeNiceName));
+                //$dropZoneCopy.html($dropZoneCopy.html().replace('other relevant documents', '<strong class="bold">' + docTypeNiceName + '</strong>'));
                 $dropZoneButton.text($dropZoneButton.text().replace('documents', 'document'));
 
                 dropZoneSettings.url = dropZoneSettings.addRoute
