@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FormTypeExtension extends AbstractTypeExtension
+Abstract class FormTypeExtension extends AbstractTypeExtension
 {
     public function buildView(FormView $view, FormInterface $form, array $options)
     {

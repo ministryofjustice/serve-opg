@@ -2,6 +2,9 @@
 
 namespace App\Twig;
 
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+
 /**
  * Twig filters for assets
  *
@@ -10,7 +13,7 @@ namespace App\Twig;
  * Will generate /assets/images/file.png?v=<version>
  * where <version> is the value of the DC_ASSETS_VERSION env variable (or - if not defined - the current timestamp)
  */
-class AssetsExtension extends \Twig_Extension
+class AssetsExtension extends AbstractExtension
 {
     /**
      * @var string
@@ -36,7 +39,7 @@ class AssetsExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('assetUrl', function ($originalUrl) {
+            new TwigFilter('assetUrl', function ($originalUrl) {
                 $assetVersion = $this->assetsVersion ?: time();
                 $pathToFile = ltrim($originalUrl, '/');
 

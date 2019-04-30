@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
-use App\Service\AddressLookup\OrdnanceSurveyClient;
+use App\Service\AddressLookup\OrdnanceSurvey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\AddressLookup\OrdnanceSurvey;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class PostcodeController extends AbstractController
 {
