@@ -1,0 +1,43 @@
+{
+  "courtReference": "93559316",
+  "type": "PF",
+  "subType": "NEW_APPLICATION",
+  "date": "2018-08-01",
+  "issueDate": "2018-08-15",
+  "appointmentType": "JOINT_AND_SEVERAL",
+  "assetLevel": "LOW",
+  "client": {
+    "firstName": "Behat",
+    "lastName": "User"
+  },
+  "deputies": [{
+    "type": "PUBLIC_AUTHORITY",
+    "firstName": "PfPADep",
+    "lastName": "Uty",
+    "dob": "",
+    "email": null,
+    "daytimeNumber": null,
+    "eveningNumber": null,
+    "mobileNumber": null,
+    "addressLine1": null,
+    "addressLine2": null,
+    "addressLine3": null,
+    "town": null,
+    "county": null,
+    "postcode": null
+  }],
+
+  "documents": [{
+    "type": "COURT_ORDER",
+    "filename": "dc_doc_12_15566061495714.jpg"
+  },
+    {
+      "type": "COP3",
+      "filename": "dc_doc_12_15566061486978.png"
+    },
+    {
+      "type": "COP1A",
+      "filename": "dc_doc_12_1556606147844.pdf"
+    }
+  ]
+}
