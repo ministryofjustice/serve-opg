@@ -6,7 +6,7 @@ framework:
     validation:
         enabled: true
         enable_annotations: true
-        strict_email: true
+        email_validation_mode: strict
     templating:
         engines: ['twig']
     default_locale:  "en"

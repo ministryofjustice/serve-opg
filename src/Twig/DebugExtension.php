@@ -2,18 +2,23 @@
 
 namespace App\Twig;
 
+use Doctrine\Common\Util\Debug;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+
 /**
  * debug filter, using \Doctrine\Common\Util\Debug::dump();
  *
  * {{ var | debug }}
  */
-class DebugExtension extends \Twig_Extension
+class DebugExtension extends AbstractExtension
 {
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('debug', function ($e) {
-                \Doctrine\Common\Util\Debug::dump($e);
+            new TwigFilter('debug', function ($e) {
+
+                Debug::dump($e);
             }),
         ];
     }
