@@ -18,8 +18,9 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Test">
+            <directory>/tests</directory>
+            <exclude>vendor/symfony/framework-bundle/Tests/</exclude>
         </testsuite>
     </testsuites>
 

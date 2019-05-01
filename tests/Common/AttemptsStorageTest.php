@@ -3,7 +3,7 @@
 namespace tests\Common;
 
 use App\Common\BruteForceChecker;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class BruteForceCheckerTest extends TestCase
 {
