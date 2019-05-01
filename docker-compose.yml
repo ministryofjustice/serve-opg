@@ -50,9 +50,9 @@ services:
       - sirius-api
     working_dir: /var/www
     volumes:
-      - ./src:/src
-      - ./public:/public
-      - ./templates:/templates
+      - ./src:/var/www/src
+      - ./public:/var/www/public
+      - ./templates:/var/www/templates
 
   sirius-api:
     image: stoplight/prism
