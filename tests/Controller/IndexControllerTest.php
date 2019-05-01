@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\phpunit\Controller;
+namespace tests\Controller;
 
 use App\Phpunit\Helpers\AbstractControllerTestCase;
 

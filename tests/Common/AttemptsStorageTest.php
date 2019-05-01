@@ -1,6 +1,6 @@
 <?php
 
-namespace Common;
+namespace tests\Common;
 
 use App\Common\BruteForceChecker;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
@@ -40,7 +40,7 @@ class BruteForceCheckerTest extends TestCase
     /**
      * @dataProvider hasToWaitProvider
      */
-    public function testhasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime, $expectedWaitFor)
+    public function testHasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime, $expectedWaitFor)
     {
         $actual =  $this->sut->hasToWait($attemptTimeStamps, $maxAttempts, $timeRange, $lockFor, $currentTime);
         $this->assertEquals($expectedWaitFor, $actual);

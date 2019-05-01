@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace tests\Service;
 
 use App\Entity\User;
 use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;

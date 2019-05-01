@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace tests\Service;
 
 use App\Entity\Client;
 use App\Entity\Deputy;
@@ -8,6 +8,8 @@ use App\Entity\Document;
 use App\Entity\Order;
 use App\Entity\OrderPf;
 use App\Service\File\Storage\S3Storage;
+use App\Service\SiriusClient;
+use App\Service\SiriusService;
 use Aws\SecretsManager\SecretsManagerClient;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;

@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace tests\Controller;
 
 use App\Phpunit\Helpers\AbstractControllerTestCase;
-//use GuzzleHttp\Message\Response;
-//use GuzzleHttp\Message\ResponseInterface;
 
 class ManageControllerTest extends AbstractControllerTestCase
 {
