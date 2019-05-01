@@ -139,7 +139,7 @@ services:
         class: Aws\DynamoDb\SessionHandler
         arguments: [ "@dynamoDb.connection.session" ]
 
-    Aws\DynamoDb\SessionConnectionInterface: "@Common\\SessionConnectionCreatingTable"
+    Aws\DynamoDb\SessionConnectionInterface: "@App\\Common\\SessionConnectionCreatingTable"
 
     App\Common\BruteForceChecker: ~
 

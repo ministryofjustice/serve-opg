@@ -11,7 +11,7 @@ framework:
         engines: ['twig']
     default_locale:  "en"
     session:
-        name: digideps
+        name: serve-opg
         handler_id: dynamo_session_handler
         # force session usage, no cookie (we want to logout when the browser closes)
         cookie_lifetime: 0
