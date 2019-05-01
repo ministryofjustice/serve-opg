@@ -113,7 +113,7 @@ services:
     entrypoint:
       - vendor/bin/behat
       - -c
-      - ./behat.yml
+      - behat.yml
       - --stop-on-failure
     depends_on:
       - loadbalancer
