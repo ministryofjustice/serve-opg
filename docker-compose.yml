@@ -111,7 +111,7 @@ services:
       - ./features/screenshots:/tmp/behat
     working_dir: /app
     entrypoint:
-      - bin/behat
+      - vendor/bin/behat
       - -c
       - ./behat.yml
       - --stop-on-failure
