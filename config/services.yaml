@@ -125,9 +125,6 @@ services:
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
 
-    dynamo_session_handler:
-        class: Aws\DynamoDb\SessionHandler
-        arguments: [ "@dynamoDb.connection.session" ]
 
     Aws\DynamoDb\SessionConnectionInterface: "@App\\Common\\SessionConnectionCreatingTable"
 
@@ -185,6 +182,10 @@ services:
                 max_lock_wait_time: 10
                 min_lock_retry_microtime: 500
                 max_lock_retry_microtime: 5000
+
+    dynamo_session_handler:
+        class: Aws\DynamoDb\SessionHandler
+        arguments: [ "@dynamoDb.connection.session" ]
 
     dynamoDb.connection.bruteForceAttempts:
         class: App\Common\SessionConnectionCreatingTable
