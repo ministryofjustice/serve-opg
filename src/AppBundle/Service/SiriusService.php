@@ -304,7 +304,7 @@ class SiriusService
      */
     private function generateDeputyArray(Deputy $deputy)
     {
-        return [
+        return array_filter([
             "type" => $deputy->getDeputyType(),
             "firstName" => $deputy->getForename(),
             "lastName" => $deputy->getSurname(),
@@ -319,7 +319,7 @@ class SiriusService
             "town" => $deputy->getAddressTown(),
             "county" => $deputy->getAddressCounty(),
             "postcode" => $deputy->getAddressPostcode()
-        ];
+        ]);
     }
 
     /**

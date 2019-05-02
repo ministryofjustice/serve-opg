@@ -48,8 +48,6 @@ class SiriusServiceTest extends MockeryTestCase
         $expectedOrderIssuedDate = new DateTime('2018-08-10');
         $expectedClientFirstName = 'AClient';
         $expectedClientLastName = 'Fullname';
-        $expectedOrderSubType = null;
-        $expectedAppointmentType = null;
         $expectedAssetLevel = SiriusService::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS;
         $expectedClient = ['firstName' => $expectedClientFirstName, 'lastName' => $expectedClientLastName];
         $expectedDeputies = [
@@ -94,10 +92,8 @@ class SiriusServiceTest extends MockeryTestCase
         $expectedPayload = [
             "courtReference" => $expectedCourtReference,
             "type" => $expectedType,
-            "subType" => $expectedOrderSubType,
             "date" => $expectedOrderStartDate->format('Y-m-d'),
             "issueDate" => $expectedOrderIssuedDate->format('Y-m-d'),
-            "appointmentType" => $expectedAppointmentType,
             "assetLevel" => $expectedAssetLevel,
             'client' => $expectedClient,
             'deputies' => $expectedDeputies,
