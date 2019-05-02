@@ -47,9 +47,9 @@ class DynamoDbTableCreator
         // enable the following to delete the table, for testing purposes only
         //$this->client->deleteTable(['TableName' => $tableName]);
 
-//        if (true === self::$tableCreated) {
-//            return;
-//        }
+        if (true === self::$tableCreated) {
+            return;
+        }
 
 //        aws dynamodb create-table
 //            --table-name sessions
@@ -58,7 +58,7 @@ class DynamoDbTableCreator
 //            --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=10
 
         // create table on the fly if not existing
-//        if (!in_array($this->tableName, $this->client->listTables()['TableNames'])) {
+        if (!in_array($this->tableName, $this->client->listTables()['TableNames'])) {
             $params = [
                 'TableName' => $this->tableName,
                 'KeySchema' => [
@@ -79,7 +79,7 @@ class DynamoDbTableCreator
                 ]
             ];
             $this->client->createTable($params);
-//        }
+        }
 
         // At this point, the table is either already created, or just created.
         // The static variable is set to avoid unnecessary subsequent "listTable" queries
