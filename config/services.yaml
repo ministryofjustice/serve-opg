@@ -125,16 +125,6 @@ services:
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
 
-    dynamoDb.connection.session:
-        class: App\Common\SessionConnectionCreatingTable
-        arguments:
-            $config:
-                table_name: 'sessions'
-                hash_key: 'id'
-                max_lock_wait_time: 10
-                min_lock_retry_microtime: 500
-                max_lock_retry_microtime: 5000
-
     dynamo_session_handler:
         class: Aws\DynamoDb\SessionHandler
         arguments: [ "@dynamoDb.connection.session" ]
@@ -185,6 +175,16 @@ services:
         tags:
             - { name: kernel.event_listener, event: 'security.authentication.failure', method: 'onAuthenticationFailure' }
             - { name: kernel.event_listener, event: 'security.authentication.success', method: 'onAuthenticationSuccess' }
+
+    dynamoDb.connection.session:
+        class: App\Common\SessionConnectionCreatingTable
+        arguments:
+            $config:
+                table_name: 'sessions'
+                hash_key: 'id'
+                max_lock_wait_time: 10
+                min_lock_retry_microtime: 500
+                max_lock_retry_microtime: 5000
 
     dynamoDb.connection.bruteForceAttempts:
         class: App\Common\SessionConnectionCreatingTable
