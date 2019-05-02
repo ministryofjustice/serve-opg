@@ -53,8 +53,8 @@ class DynamoDbTableCreator
 
 //        aws dynamodb create-table
 //            --table-name sessions
-//            --attribute-definitions AttributeName=sessions,AttributeType=S
 //            --key-schema AttributeName=id,KeyType=HASH
+//            --attribute-definitions AttributeName=sessions,AttributeType=S
 //            --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=10
 
         // create table on the fly if not existing
