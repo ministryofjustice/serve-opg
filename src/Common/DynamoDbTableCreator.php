@@ -47,9 +47,9 @@ class DynamoDbTableCreator
         // enable the following to delete the table, for testing purposes only
         //$this->client->deleteTable(['TableName' => $tableName]);
 
-        if (true === self::$tableCreated) {
-            return;
-        }
+//        if (true === self::$tableCreated) {
+//            return;
+//        }
 
         // create table on the fly if not existing
         if (!in_array($this->tableName, $this->client->listTables()['TableNames'])) {
