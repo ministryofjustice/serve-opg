@@ -254,7 +254,7 @@ class SiriusService
      */
     private function generateOrderDetails(Order $order)
     {
-        return [
+        return array_filter([
             "courtReference" => $order->getClient()->getCaseNumber(),
             "type" => $order->getType(),
             "subType" => $order->getSubType(),
@@ -262,7 +262,7 @@ class SiriusService
             "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
             "appointmentType" => $order->getAppointmentType(),
             "assetLevel" => $this->translateHasAssetsAboveThreshold($order->getHasAssetsAboveThreshold()),
-        ];
+        ]);
     }
 
     /**
@@ -362,7 +362,7 @@ class SiriusService
             $docsArray[] = $this->generateDocumentArray($doc);
         }
 
-        return $docsArray;
+        return array_filter($docsArray);
     }
 
     /**
@@ -374,10 +374,10 @@ class SiriusService
      */
     private function generateDocumentArray(Document $document)
     {
-        return array_filter([
+        return [
             "type" => $document->getType(),
             "filename" => $document->getStorageReference()
-        ]);
+        ];
     }
 
     /**
