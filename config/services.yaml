@@ -185,7 +185,8 @@ services:
 
     dynamo_session_handler:
         class: Aws\DynamoDb\SessionHandler
-        arguments: [ "@dynamoDb.connection.session" ]
+        arguments:
+            $connection: "@dynamoDb.connection.session"
 
     dynamoDb.connection.bruteForceAttempts:
         class: App\Common\SessionConnectionCreatingTable

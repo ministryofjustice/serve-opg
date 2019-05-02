@@ -67,9 +67,8 @@ services:
     image: localstack/localstack
     ports:
       - 4569:4569
-      - 4572:4572
     environment:
-      - SERVICES=s3:4572,dynamodb:4569
+      - SERVICES=s3:4569,dynamodb:8000
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     volumes:
