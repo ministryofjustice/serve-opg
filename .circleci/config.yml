@@ -22,7 +22,7 @@ jobs:
             docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
 
             # Create dynamodb table
-            docker-compose run --rm waitforit -address=http://localstack:4569 -debug
+#            docker-compose run --rm waitforit -address=http://localstack:4569 -debug
             docker-compose run --rm aws dynamodb create-table --table-name sessions --attribute-definitions AttributeName=sessions,AttributeType=S --key-schema AttributeName=id,KeyType=HASH --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=10
 
             rm -rf vendor
