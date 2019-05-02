@@ -115,6 +115,7 @@ services:
       - -c
       - behat.yml.dist
       - --stop-on-failure
+      - --no-interaction
     env_file:
       - .env
     depends_on:
