@@ -254,7 +254,7 @@ class SiriusService
      */
     private function generateOrderDetails(Order $order)
     {
-        return [
+        return array_filter([
             "courtReference" => $order->getClient()->getCaseNumber(),
             "type" => $order->getType(),
             "subType" => $order->getSubType(),
@@ -262,7 +262,7 @@ class SiriusService
             "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
             "appointmentType" => $order->getAppointmentType(),
             "assetLevel" => $this->translateHasAssetsAboveThreshold($order->getHasAssetsAboveThreshold()),
-        ];
+        ]);
     }
 
     /**
@@ -273,10 +273,10 @@ class SiriusService
      */
     private function generateClientDetails(Client $client)
     {
-        return [
+        return array_filter([
             "firstName" => self::extractFirstname($client->getClientName()),
             "lastName" => self::extractLastname($client->getClientName())
-        ];
+        ]);
     }
 
     /**
@@ -304,7 +304,7 @@ class SiriusService
      */
     private function generateDeputyArray(Deputy $deputy)
     {
-        return [
+        return array_filter([
             "type" => $deputy->getDeputyType(),
             "firstName" => $deputy->getForename(),
             "lastName" => $deputy->getSurname(),
@@ -319,7 +319,7 @@ class SiriusService
             "town" => $deputy->getAddressTown(),
             "county" => $deputy->getAddressCounty(),
             "postcode" => $deputy->getAddressPostcode()
-        ];
+        ]);
     }
 
     /**
@@ -362,7 +362,7 @@ class SiriusService
             $docsArray[] = $this->generateDocumentArray($doc);
         }
 
-        return $docsArray;
+        return array_filter($docsArray);
     }
 
     /**
