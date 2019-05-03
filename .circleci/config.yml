@@ -40,8 +40,8 @@ jobs:
       - run:
           name: Unit Test
           command: |
-            mkdir ~/phpunit
-            docker-compose run --rm phpunit --log-junit ~/phpunit/junit.xml
+            mkdir /app/phpunit
+            docker-compose run --rm phpunit --log-junit /app/phpunit/junit.xml
       - run:
           name: Integration Test
           command: |
