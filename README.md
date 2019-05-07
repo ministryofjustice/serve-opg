@@ -31,6 +31,10 @@ docker-compose run --rm waitforit -address=http://localstack:4569 -debug
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
 docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
 
+# Create dynamodb tables
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
+
 # Vendor php dependencies
 docker-compose run --rm composer
 

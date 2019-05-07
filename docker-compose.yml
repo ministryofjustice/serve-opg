@@ -8,6 +8,9 @@ services:
       - .env
     entrypoint:
       - aws
+    working_dir: /app
+    volumes:
+      - .:/app
     depends_on:
       - localstack
 
