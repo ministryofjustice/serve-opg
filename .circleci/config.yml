@@ -54,8 +54,8 @@ jobs:
       - run:
           name: Copy Test Results
           command: |
-            mkdir -p /tmp/test-results/phpunit
-            docker cp /app/tests/artefacts/phpunit/junit.xml "$(docker-compose ps -q phpunit)":/tmp/test-results/phpunit/junit.xml
+            mkdir -p ./tmp/test-results/phpunit
+            docker cp ./app/tests/artefacts/phpunit/junit.xml "$(docker-compose ps -q app)":./tmp/test-results/phpunit/junit.xml
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
