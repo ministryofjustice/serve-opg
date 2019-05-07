@@ -151,8 +151,6 @@ services:
       - bin/phpunit
       - --verbose
       - tests
-      - --log-junit
-      - /app/tests/artefacts/phpunit/junit.xml
 
   qa:
     image: jakzal/phpqa:alpine
