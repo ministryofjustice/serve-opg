@@ -155,5 +155,5 @@ services:
 
   waitforit:
     build:
-      context: .
-      dockerfile: docker/waitforit/Dockerfile
+      context: ""
+      dockerfile: ./docker/waitforit/Dockerfile
