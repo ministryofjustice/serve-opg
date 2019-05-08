@@ -52,7 +52,7 @@ jobs:
             docker-compose run --rm app php bin/console doctrine:fixtures:load --append
             docker-compose run --rm behat
       - store_test_results:
-          path: ./tests/artefacts/phpunit
+          path: ./tests/artifacts
       - store_artifacts:
           path: /tmp/behat
 

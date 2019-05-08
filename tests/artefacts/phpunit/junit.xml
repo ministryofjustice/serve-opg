@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="tests" tests="25" assertions="117" errors="0" failures="0" skipped="0" time="8.192222">
+    <testsuite name="tests\Common\BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" tests="9" assertions="9" errors="0" failures="0" skipped="0" time="0.056144">
+      <testsuite name="tests\Common\BruteForceCheckerTest::testHasToWait" tests="9" assertions="9" errors="0" failures="0" skipped="0" time="0.056144">
+        <testcase name="testHasToWait with data set #0" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.055877"/>
+        <testcase name="testHasToWait with data set #1" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000060"/>
+        <testcase name="testHasToWait with data set #2" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000034"/>
+        <testcase name="testHasToWait with data set #3" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000030"/>
+        <testcase name="testHasToWait with data set #4" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000035"/>
+        <testcase name="testHasToWait with data set #5" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000026"/>
+        <testcase name="testHasToWait with data set #6" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000028"/>
+        <testcase name="testHasToWait with data set #7" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000025"/>
+        <testcase name="testHasToWait with data set #8" class="tests\Common\BruteForceCheckerTest" classname="tests.Common.BruteForceCheckerTest" file="/app/tests/Common/AttemptsStorageTest.php" line="43" assertions="1" time="0.000029"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="tests\Controller\IndexControllerTest" file="/app/tests/Controller/IndexControllerTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="3.717036">
+      <testcase name="testHomePage" class="tests\Controller\IndexControllerTest" classname="tests.Controller.IndexControllerTest" file="/app/tests/Controller/IndexControllerTest.php" line="9" assertions="1" time="3.717036"/>
+    </testsuite>
+    <testsuite name="tests\Controller\ManageControllerTest" file="/app/tests/Controller/ManageControllerTest.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="2.273850">
+      <testcase name="testPingdom" class="tests\Controller\ManageControllerTest" classname="tests.Controller.ManageControllerTest" file="/app/tests/Controller/ManageControllerTest.php" line="9" assertions="1" time="1.342527"/>
+      <testcase name="testElb" class="tests\Controller\ManageControllerTest" classname="tests.Controller.ManageControllerTest" file="/app/tests/Controller/ManageControllerTest.php" line="16" assertions="1" time="0.931323"/>
+    </testsuite>
+    <testsuite name="tests\Controller\PostcodeControllerTest" file="/app/tests/Controller/PostcodeControllerTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="1.200788">
+      <testcase name="testRequest" class="tests\Controller\PostcodeControllerTest" classname="tests.Controller.PostcodeControllerTest" file="/app/tests/Controller/PostcodeControllerTest.php" line="9" assertions="1" time="1.200788"/>
+    </testsuite>
+    <testsuite name="tests\Service\ExampleTest" file="/app/tests/Service/ExampleTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.088905">
+      <testcase name="testExample" class="tests\Service\ExampleTest" classname="tests.Service.ExampleTest" file="/app/tests/Service/ExampleTest.php" line="9" assertions="1" time="0.088905"/>
+    </testsuite>
+    <testsuite name="tests\Service\OrdnanceSurveyServiceTest" file="/app/tests/Service/OrdnanceSurveyServiceTest.php" tests="4" assertions="29" errors="0" failures="0" skipped="0" time="0.149581">
+      <testcase name="testHttpLookupUrl" class="tests\Service\OrdnanceSurveyServiceTest" classname="tests.Service.OrdnanceSurveyServiceTest" file="/app/tests/Service/OrdnanceSurveyServiceTest.php" line="43" assertions="6" time="0.128695"/>
+      <testcase name="testInvalidHttpLookupResponseCode" class="tests\Service\OrdnanceSurveyServiceTest" classname="tests.Service.OrdnanceSurveyServiceTest" file="/app/tests/Service/OrdnanceSurveyServiceTest.php" line="71" assertions="7" time="0.012900"/>
+      <testcase name="testInvalidHttpLookupResponseBody" class="tests\Service\OrdnanceSurveyServiceTest" classname="tests.Service.OrdnanceSurveyServiceTest" file="/app/tests/Service/OrdnanceSurveyServiceTest.php" line="82" assertions="8" time="0.000335"/>
+      <testcase name="testValidHttpLookupResponse" class="tests\Service\OrdnanceSurveyServiceTest" classname="tests.Service.OrdnanceSurveyServiceTest" file="/app/tests/Service/OrdnanceSurveyServiceTest.php" line="94" assertions="8" time="0.007651"/>
+    </testsuite>
+    <testsuite name="tests\Service\SiriusServiceTest" file="/app/tests/Service/SiriusServiceTest.php" tests="1" assertions="24" errors="0" failures="0" skipped="0" time="0.606454">
+      <testcase name="testServeOrderOK" class="tests\Service\SiriusServiceTest" classname="tests.Service.SiriusServiceTest" file="/app/tests/Service/SiriusServiceTest.php" line="45" assertions="24" time="0.606454"/>
+    </testsuite>
+    <testsuite name="tests\Service\UserProviderTest" file="/app/tests/Service/UserProviderTest.php" tests="6" assertions="50" errors="0" failures="0" skipped="0" time="0.099465">
+      <testcase name="testEmptyConfigLoadExistingUser" class="tests\Service\UserProviderTest" classname="tests.Service.UserProviderTest" file="/app/tests/Service/UserProviderTest.php" line="54" assertions="8" time="0.083611"/>
+      <testcase name="testEmptyConfigLoadMissingUserThrowsException" class="tests\Service\UserProviderTest" classname="tests.Service.UserProviderTest" file="/app/tests/Service/UserProviderTest.php" line="64" assertions="8" time="0.003841"/>
+      <testcase name="testBruteForceLockNotReached" class="tests\Service\UserProviderTest" classname="tests.Service.UserProviderTest" file="/app/tests/Service/UserProviderTest.php" line="74" assertions="10" time="0.005194"/>
+      <testcase name="testBruteForceLockReached" class="tests\Service\UserProviderTest" classname="tests.Service.UserProviderTest" file="/app/tests/Service/UserProviderTest.php" line="87" assertions="10" time="0.006160"/>
+      <testcase name="testonAuthenticationFailureEmptyConfig" class="tests\Service\UserProviderTest" classname="tests.Service.UserProviderTest" file="/app/tests/Service/UserProviderTest.php" line="104" assertions="7" time="0.000354"/>
+      <testcase name="testonAuthenticationFailureStoresAttempt" class="tests\Service\UserProviderTest" classname="tests.Service.UserProviderTest" file="/app/tests/Service/UserProviderTest.php" line="112" assertions="7" time="0.000305"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

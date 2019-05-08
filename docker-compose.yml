@@ -113,6 +113,8 @@ services:
       - .:/app
       - ./features/screenshots:/tmp/behat
     working_dir: /app
+    command:
+      - mkdir /app/tests/artifacts/behat
     entrypoint:
       - vendor/bin/behat
       - -c
@@ -146,13 +148,13 @@ services:
       - .:/app
     working_dir: /app
     command:
-      - mkdir /app/tests/artefacts/phpunit
+      - mkdir /app/tests/artifacts/phpunit
     entrypoint:
       - bin/phpunit
       - --verbose
       - tests
       - --log-junit
-      - /app/tests/artefacts/phpunit/junit.xml
+      - /app/tests/artifacts/phpunit/junit.xml
 
   qa:
     image: jakzal/phpqa:alpine
