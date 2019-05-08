@@ -16,5 +16,5 @@ COPY docker/web/etc /etc
 
 ENV TIMEOUT=20
 CMD confd -onetime -backend env \
-  && waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=$TIMEOUT \
+  && waitforit -address=tcp://app:9000 -timeout=$TIMEOUT \
   && nginx -g "daemon off;"

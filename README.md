@@ -27,9 +27,9 @@ sudo security add-trusted-cert -d -r trustRoot \
 # Create the s3 buckets, generate localstack data in /localstack-data
 # & wait for the server to become available
 docker-compose up -d localstack
-docker-compose run --rm waitforit -address=http://localstack:4569 -debug
-docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
-docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
+docker-compose run --rm waitforit -address=http://localstack:4572 -debug
+docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius_test_bucket
+docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
 
 # Create dynamodb tables
 docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
