@@ -51,12 +51,6 @@ class DynamoDbTableCreator
             return;
         }
 
-//        aws dynamodb create-table
-//            --table-name sessions
-//            --key-schema AttributeName=id,KeyType=HASH
-//            --attribute-definitions AttributeName=sessions,AttributeType=S
-//            --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=10
-
         // create table on the fly if not existing
         if (!in_array($this->tableName, $this->client->listTables()['TableNames'])) {
             $params = [
