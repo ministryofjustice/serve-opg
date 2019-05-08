@@ -19,3 +19,8 @@ default:
                   guzzle_parameters:
                     verify: false
               files_path: "%paths.base%/features/fixtures/"
+
+    formatters:
+        pretty: true
+        junit:
+            output_path: "%paths.base%/tests/artifacts/behat"
