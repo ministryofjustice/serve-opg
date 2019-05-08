@@ -30,6 +30,9 @@ jobs:
 
             # Vendor php dependencies
             docker-compose run --rm composer
+
+            rm -rf features/demo.feature
+
             # Generate static assets
             docker-compose run --rm npm
       - save_cache:
