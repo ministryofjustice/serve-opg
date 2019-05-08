@@ -35,4 +35,5 @@ s3
 ###< symfony/phpunit-bridge ###
 
 /features/screenshots/*
-/tests/artifacts/*
+/tests/artifacts/behat/*
+/tests/artifacts/phpunit/*

@@ -113,8 +113,6 @@ services:
       - .:/app
       - ./features/screenshots:/tmp/behat
     working_dir: /app
-    command:
-      - mkdir /app/tests/artifacts/behat
     entrypoint:
       - vendor/bin/behat
       - -c
@@ -147,8 +145,6 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    command:
-      - mkdir /app/tests/artifacts/phpunit
     entrypoint:
       - bin/phpunit
       - --verbose
