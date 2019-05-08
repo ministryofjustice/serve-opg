@@ -53,9 +53,7 @@ services:
       - sirius-api
     working_dir: /var/www
     volumes:
-      - ./src:/var/www/src
-      - ./public:/var/www/public
-      - ./templates:/var/www/templates
+      - .:/var/www
 
   sirius-api:
     image: stoplight/prism
@@ -68,15 +66,12 @@ services:
 
   localstack:
     image: localstack/localstack
-    ports:
-      - 4569:4569
-      - 4572:4572
     environment:
       - SERVICES=s3:4572,dynamodb:4569
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     volumes:
-      - ./s3:/tmp/localstack/data
+      - ./localstack-data:/tmp/localstack/data
 
   postgres:
     image: postgres:9.6

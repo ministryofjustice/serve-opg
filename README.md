@@ -24,7 +24,7 @@ git config core.autocrlf true
 sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain certs/web.crt
 
-# Create the s3 buckets
+# Create the s3 buckets, generate localstack data in /localstack-data
 # & wait for the server to become available
 docker-compose up -d localstack
 docker-compose run --rm waitforit -address=http://localstack:4569 -debug
@@ -95,7 +95,7 @@ docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-
 docker-compose run --rm behat
 
 # Launch specific behat feature
-docker-compose run --rm --entrypoint="bin/behat -c tests/behat/behat.yml tests/behat/features/00-security.feature:18" behat
+docker-compose run --rm behat features/00-security.feature:18
 
 ```
 
