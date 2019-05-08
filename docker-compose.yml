@@ -65,7 +65,7 @@ services:
       - /tmp/api.public.v1.yaml
 
   localstack:
-    image: localstack/localstack
+    image: localstack/localstack:0.9.1
     ports:
       - 4572:4572
       - 4569:4569
