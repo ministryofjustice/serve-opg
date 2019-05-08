@@ -13,7 +13,7 @@ behat.yml
 .idea
 # ignore bin as created by composer
 **/bin
-**/web/assets
+**/public/assets
 node_modules
 */bin/jp.php
 **/vendor
