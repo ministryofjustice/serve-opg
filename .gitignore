@@ -26,7 +26,7 @@ var
 **/*.key
 web/behat
 **/.DS_Store
-s3
+localstack-data
 .dd-*.sh
 
 ###> symfony/phpunit-bridge ###
