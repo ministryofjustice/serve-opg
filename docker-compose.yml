@@ -66,9 +66,6 @@ services:
 
   localstack:
     image: localstack/localstack:0.9.1
-    ports:
-      - 4572:4572
-      - 4569:4569
     environment:
       - SERVICES=s3:4572,dynamodb:4569
       - DATA_DIR=/tmp/localstack/data
