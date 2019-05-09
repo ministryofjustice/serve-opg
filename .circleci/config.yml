@@ -8,6 +8,8 @@ jobs:
       - restore_cache:
           keys:
             - vendor-{{ checksum "composer.lock" }}
+      - restore_cache:
+          keys:
             - node_modules-{{ checksum "package-lock.json" }}
       - run:
           name: Build Dependencies
