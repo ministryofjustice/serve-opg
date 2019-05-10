@@ -273,10 +273,10 @@ class SiriusService
      */
     private function generateClientDetails(Client $client)
     {
-        return [
+        return array_filter([
             "firstName" => self::extractFirstname($client->getClientName()),
             "lastName" => self::extractLastname($client->getClientName())
-        ];
+        ]);
     }
 
     /**
