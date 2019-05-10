@@ -4,7 +4,7 @@ ENV APP_DIR /var/www/app
 RUN mkdir -p $APP_DIR
 WORKDIR $APP_DIR
 
-COPY ./index.php /var/www/app/index.php
+COPY index.php /var/www/app/index.php
 
 EXPOSE 8081
 WORKDIR /var/www/app
