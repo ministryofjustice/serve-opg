@@ -4,8 +4,9 @@ version: '3'
 services:
   aws:
     image: infrastructureascode/aws-cli
-    env_file:
-      - .env
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
     entrypoint:
       - aws
     working_dir: /app
