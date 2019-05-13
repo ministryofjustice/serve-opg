@@ -4,6 +4,7 @@ version: '3'
 services:
   aws:
     image: infrastructureascode/aws-cli
+    #    Setting here rather than .env to stop them being overwritten during build steps on prod
     environment:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
@@ -52,6 +53,8 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
+      - DC_S3_ENDPOINT=http://localstack:4572
+      - DYNAMODB_ENDPOINT=http://localstack:4569
     depends_on:
       - localstack
       - postgres
