@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master)
 
-Symfony 3.4 & PHP 7.2
+Symfony 4.2 & PHP 7.2
 
 # Prerequisites
 Software to download and install
@@ -24,12 +24,16 @@ git config core.autocrlf true
 sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain certs/web.crt
 
-# Create the s3 buckets
+# Create the s3 buckets, generate localstack data in /localstack-data
 # & wait for the server to become available
 docker-compose up -d localstack
-docker-compose run --rm waitforit -address=http://localstack:4569 -debug
-docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
-docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
+docker-compose run --rm waitforit -address=http://localstack:4572 -debug
+docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius_test_bucket
+docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
+
+# Create dynamodb tables
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
+docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
 
 # Vendor php dependencies
 docker-compose run --rm composer
@@ -44,27 +48,16 @@ docker-compose up -d --build --remove-orphans loadbalancer
 
 # Add sample users and cases (local env only).
 # See docker-compose.yml app container, DC_FIXURES_USERS variable
-docker-compose run --rm app php app/console doctrine:fixtures:load --append
-
-# Generates status of migrations
-docker-compose run --rm app php app/console doctrine:migrations:status
-
-# enable dev mode (local development only)
-docker-compose exec app touch /var/www/.enableDevMode
-
-# To disable dev mode and re-enable prod mode (default):
-docker-compose exec app rm /var/www/.enableDevMode
+docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 ```
 
-View logs
+# View logs
 ```bash
 docker-compose logs -f
 ```
 
 The app will be available locally at:
 > [https://localhost](https://localhost/)
-
-
 
 
 # Dev and prod mode
@@ -78,7 +71,7 @@ docker-compose exec app rm /var/www/.enableDevMode
 ```
 
 # Testing
-Serve OPG uses PHPUnit and Behats to test the application
+Serve OPG uses PHPUnit and Behat to test the application
 
 ## Unit Testing
 Run php unit
@@ -93,13 +86,17 @@ docker-compose run --rm --entrypoint="bin/phpunit -c tests/phpunit/ tests/phpuni
 ## Integration Testing
 ```bash
 # Load Fixtures
-docker-compose run --rm app php app/console doctrine:fixtures:load --append
+docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 
 # Load Fixtures truncating existing data (users, client, orders, deputies)
-docker-compose run --rm app php app/console doctrine:fixtures:load --purge-with-truncate
+docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate
 
 # Run Behat
 docker-compose run --rm behat
+
+# Launch specific behat feature
+docker-compose run --rm behat features/00-security.feature:18
+
 ```
 
 ### Notify mocking
@@ -135,32 +132,23 @@ gulp watch
 ```bash
 # Database migrations
 # Generate migration script between entities and schema
-docker-compose run --rm app php app/console doctrine:migrations:diff
+docker-compose run --rm app php bin/console doctrine:migrations:diff
 
 # Generate blank migration script
-docker-compose run --rm app php app/console doctrine:migrations:generate
+docker-compose run --rm app php bin/console doctrine:migrations:generate
 
 # Example: run migration version 20181019141515
-docker-compose run --rm app php app/console doctrine:migrations:execute 20181019141515
+docker-compose run --rm app php bin/console doctrine:migrations:execute 20181019141515
 ```
 
 # Utilities
-
 
 ```bash
 #Copy a file into the container
 docker cp web/app.php serve-opg_app_1:/var/www/web/app.php
 
 # Drop the data before schema update (mainl during local development)
-docker-compose run --rm app php app/console doctrine:schema:drop --force
-
-```
-
-
-# Launch specific behat feature
-
-```
-docker-compose run --rm --entrypoint="bin/behat -c tests/behat/behat.yml tests/behat/features/00-security.feature:18" behat
+docker-compose run --rm app php bin/console doctrine:schema:drop --force
 ```
 
 # Quality Analysis Tools
