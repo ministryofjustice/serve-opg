@@ -53,8 +53,12 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
+      - DC_BEHAT_CONTROLLER_ENABLED=1
       - DC_S3_ENDPOINT=http://localstack:4572
       - DYNAMODB_ENDPOINT=http://localstack:4569
+      - NOTIFICATION_API_KEY=local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
+      - OS_PLACES_API_KEY=DUMMY_KEY
+      - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
     depends_on:
       - localstack
       - postgres
@@ -86,7 +90,6 @@ services:
   postgres:
     image: postgres:9.6
     environment:
-#      @todo look at renaming .env vars to match this rather than DC_DB_HOST etc
       POSTGRES_HOST: postgres
       POSTGRES_DB: serve-opg
       POSTGRES_USER: serve-opg
@@ -131,19 +134,6 @@ services:
       #- notify
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
-      # used to access the sent email. Note: it must be set in the mock client in the symfony container matching the email used for testing
-      # tells behat at what base URL Notifications mock is responding
-      #DC_NOTIFY_MOCK_ENDPOINT: "http://notify:8081"
-      # Sirius public API configuratiion
-
-  #  notify:
-#    build:
-#      context: ./docker/notify
-#      dockerfile: Dockerfile
-#    volumes:
-#      - ./docker/notify:/var/www/app
-#    ports:
-#      - 8081:8081
 
   phpunit:
     image: composer
@@ -157,8 +147,9 @@ services:
       - --log-junit
       - /app/tests/artifacts/phpunit/junit.xml
     environment:
-      - DYNAMODB_ENDPOINT=http://localstack:4569
       - DC_S3_ENDPOINT=http://localstack:4572
+      - DYNAMODB_ENDPOINT=http://localstack:4569
+      - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
 
   qa:
     image: jakzal/phpqa:alpine
