@@ -16,6 +16,6 @@
     "dropzone": "5.5.1"
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/gulp"
+    "postinstall": "gulp"
   }
 }
