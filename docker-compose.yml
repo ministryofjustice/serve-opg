@@ -131,7 +131,6 @@ services:
       - .env
     depends_on:
       - loadbalancer
-      #- notify
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
