@@ -24,11 +24,7 @@ class S3Client extends \Aws\S3\S3Client
         if ($s3Endpoint) {
             $args += [
                 'endpoint' => $s3Endpoint,
-                'validate' => false,
-                'credentials' => [
-                    'key' => 'YOUR_ACCESS_KEY_ID',
-                    'secret' => 'YOUR_SECRET_ACCESS_KEY',
-                ]
+                'validate' => false
             ];
         } else { // AWS credentials available in the instance
             $args += [
