@@ -1,0 +1,99 @@
+{% extends 'Layouts/base-template.html.twig' %}
+
+
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order summary</h1>
+{% endblock %}
+
+{% block content %}
+
+
+    <form action="step-1-process" method="post" id="form">
+
+        <p class="text">Please upload the court order for <strong>{{order.client.clientName}}</strong>.</p>
+
+        <table class="documents-table check-your-answers push--bottom" id="documents-mandatory">
+            <thead>
+            <tr>
+                <th scope="col" class="width-third">Document required</th>
+                <th scope="col">Document uploaded</th>
+                <th scope="col" class="width-fifth align-right"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr data-order-id="{{ order.id }}" data-doc-type="COURT_ORDER" >
+                <td>Court order</td>
+                <td>
+
+                </td>
+                <td class="align-right">
+                    <a href="bundle-attach-documents?doc_type=order" class="bold-small action-link right">
+                        <span class="icon icon-plus"></span>Add document
+                    </a>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <input type="hidden" id="bundle_assets" name="bundle_assets" value="Yes">
+        <input type="hidden" id="bundle_sub_order_type" name="bundle_sub_order_type" value="New application">
+        <input type="hidden" id="appointment_type" name="appointment_type" value="Sole">
+        <input type="hidden" id="case_id" name="case_id" value="{{order.client.caseNumber}}">
+        <input type="hidden" id="type" name="type" value="">
+
+        <details class="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">How to find the court order.</span>
+            </summary>
+            <div class="govuk-details__text">
+                <ol>
+                    <li>Open the PD folder</li>
+                    <li>From here, open the ? folder</li>
+                    <li>Then open the 'Court Orders' folder for the year the court order was made (eg: 'Court orders 2019')</li>
+                    <li>Search the folder for the court order number to find the matching files</li>
+                </ol>
+
+                <p>Remember to upload the word version of the court order</p>
+
+                <div class="govuk-checkboxes" >
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="carcasses">
+                        <label class="govuk-label govuk-checkboxes__label" for="waste-1">
+                            I cannot find the microsoft word version of the court order
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled">
+            Continue
+        </button>
+
+    </form>
+
+{% endblock %}
+
+{% block bodyEnd %}
+    <div id="dropzone__template">
+        <div class="dz-default dz-message govuk-body">
+            <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
+            <div class="govuk-grid-column-one-half"></div>
+            <span class="dropzone__template__instruction">Drag and drop the Court order for <strong>{{ order.client.clientName }}</strong> here</span>
+            <div class="govuk-!-font-weight-bold">or</div>
+            <button class="govuk-button govuk-button--secondary">Choose documents</button>
+        </div>
+    </div>
+    <div id="dropzone__template__file">
+        <div class="dz-preview dz-file-preview">
+            <div class="dz-details govuk-body">
+                <div class="dz-filename"><span data-dz-name=""></span> <span class="dz-size" data-dz-size=""></span></div>
+                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+                <div class="dz-error-message govuk-error-message"><span data-dz-errormessage=""></span></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

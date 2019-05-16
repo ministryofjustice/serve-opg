@@ -42,6 +42,18 @@ class OrderController extends AbstractController
         $this->documentService = $documentService;
     }
 
+
+    /**
+     * @Route("/order/{orderId}/upload", name="upload-order")
+     */
+    public function uploadOrder(Request $request, $orderId)
+    {
+
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        return $this->render('Order/upload.html.twig', ['order' => $order]);
+    }
+
     /**
      * @Route("/order/{orderId}/edit", name="order-edit")
      */
@@ -146,4 +158,5 @@ class OrderController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
 }
