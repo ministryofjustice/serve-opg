@@ -17,7 +17,6 @@ RUN mkdir -p public/assets
 RUN mkdir -p tmp/screenshots
 COPY vendor vendor
 COPY src src
-COPY assets assets
 COPY translations translations
 COPY bin bin
 COPY .env .env
