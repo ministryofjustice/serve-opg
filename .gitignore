@@ -37,3 +37,6 @@ localstack-data
 /features/screenshots/*
 /tests/artifacts/behat/*
 /tests/artifacts/phpunit/*
+
+/s3/
+/web/
