@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="main">
+  <testsuite name="prechecks" tests="4" skipped="0" failures="0" errors="0" time="4">
+    <testcase name="add behat (see details in BehatController constants)" status="passed" time="1"></testcase>
+    <testcase name="Reset behat cases" status="passed" time="0"></testcase>
+    <testcase name="Reset brute force attempts" status="passed" time="0"></testcase>
+    <testcase name="Login page works OK" status="passed" time="0"></testcase>
+  </testsuite>
+  <testsuite name="security checks" tests="3" skipped="0" failures="0" errors="0" time="17">
+    <testcase name="check what I can access when not logged" status="passed" time="4"></testcase>
+    <testcase name="after 5 attempts to login with the wrong password, I'm locked for 10 minutes" status="passed" time="11"></testcase>
+    <testcase name="Login Autocomplete disabled" status="passed" time="0"></testcase>
+  </testsuite>
+  <testsuite name="prechecks" tests="2" skipped="0" failures="0" errors="0" time="2">
+    <testcase name="check app status" status="passed" time="1"></testcase>
+    <testcase name="check deployed versions" status="passed" time="0"></testcase>
+  </testsuite>
+  <testsuite name="homepage" tests="1" skipped="0" failures="0" errors="0" time="1">
+    <testcase name="homepage" status="passed" time="1"></testcase>
+  </testsuite>
+  <testsuite name="login" tests="1" skipped="0" failures="0" errors="0" time="5">
+    <testcase name="login" status="passed" time="5"></testcase>
+  </testsuite>
+  <testsuite name="cases" tests="6" skipped="0" failures="0" errors="0" time="21">
+    <testcase name="upload CSV" status="passed" time="3"></testcase>
+    <testcase name="PA order: set assets, subtype, appointment type" status="passed" time="3"></testcase>
+    <testcase name="HW order: set subtype, appointment type" status="passed" time="3"></testcase>
+    <testcase name="PA order: set assets, interim subtype, appointment type" status="passed" time="3"></testcase>
+    <testcase name="HW order: set interim subtype, appointment type" status="passed" time="3"></testcase>
+    <testcase name="test search" status="passed" time="3"></testcase>
+  </testsuite>
+  <testsuite name="deputy" tests="6" skipped="0" failures="0" errors="0" time="22">
+    <testcase name="HW: add invalid deputy data" status="passed" time="4"></testcase>
+    <testcase name="HW order: add valid deputy data" status="passed" time="3"></testcase>
+    <testcase name="HW order: edit deputy data" status="passed" time="3"></testcase>
+    <testcase name="HW order: remove deputy" status="passed" time="4"></testcase>
+    <testcase name="PF order: add one deputy (just type, first and lastname)" status="passed" time="3"></testcase>
+    <testcase name="HW order: add one deputy (just type, first and lastname)" status="passed" time="3"></testcase>
+  </testsuite>
+  <testsuite name="documents" tests="5" skipped="0" failures="0" errors="0" time="23">
+    <testcase name="PF: add documents" status="passed" time="7"></testcase>
+    <testcase name="HW: add COP3, CO documents" status="passed" time="6"></testcase>
+    <testcase name="Test unsupported files" status="passed" time="4"></testcase>
+    <testcase name="PF: Interim order - check required docs" status="passed" time="2"></testcase>
+    <testcase name="HW: Interim order - check required docs" status="passed" time="2"></testcase>
+  </testsuite>
+  <testsuite name="serve order" tests="2" skipped="0" failures="0" errors="0" time="10">
+    <testcase name="Serve PF order" status="passed" time="4"></testcase>
+    <testcase name="Serve HW order" status="passed" time="4"></testcase>
+  </testsuite>
+  <testsuite name="password reset" tests="1" skipped="0" failures="0" errors="0" time="2">
+    <testcase name="Send password link" status="passed" time="2"></testcase>
+  </testsuite>
+  <testsuite name="Served Order Report" tests="3" skipped="0" failures="0" errors="0" time="6">
+    <testcase name="Check I cannot access the report page" status="passed" time="2"></testcase>
+    <testcase name="Access report page as authenticated user" status="passed" time="2"></testcase>
+    <testcase name="Access cases report page as authenticated user" status="passed" time="2"></testcase>
+  </testsuite>
+</testsuites>
