@@ -1,8 +1,0 @@
-services:
-  mail_sender:
-    class: App\Service\Mailer\MailSenderMock
-    arguments: ["@service_container" ]
-  mailer.transport.smtp.default:
-    class: App\Service\Mailer\Transport\TransportMock
-  mailer.transport.smtp.secure:
-    class: App\Service\Mailer\Transport\TransportMock

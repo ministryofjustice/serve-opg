@@ -1,0 +1,65 @@
+# https://symfony.com/doc/current/security.html
+security:
+    providers:
+      webservice:
+        id: AppBundle\Service\Security\LoginAttempts\UserProvider
+    encoders:
+          AppBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 12
+    firewalls:
+      main:
+        anonymous: ~
+        form_login:
+            login_path: login
+            check_path: login
+            default_target_path: case-list
+        logout:
+            path:   /logout
+            target: login
+      dev:
+        pattern:  ^/(_(profiler|wdt)|css|images|js)/
+        security: false
+
+    access_control:
+    - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/user/password-reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/manage/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/behat/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    # default: only ROLE_USER can access everything
+    - { path: ^/, roles: ROLE_USER }
+
+
+#        dev:
+#            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+#            security: false
+#
+#        login:
+#            pattern:  ^/login$
+#            security: false
+#
+#        manageController:
+#            pattern:  ^/manage/*
+#            security: false
+#
+#        secured_area:
+#            form_login:
+#                login_path: /login
+#            logout:
+#                path:   /logout
+#                target: /
+#                invalidate_session: false
+#            anonymous: ~
+#            switch_user: true
+#
+#    access_control:
+#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/manage, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/terms, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/privacy, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/elements, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/$ , roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        # all the rest needs authentication
+#        - { path: ^/ , roles: IS_AUTHENTICATED_FULLY }
+#

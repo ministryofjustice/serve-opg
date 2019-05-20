@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Common\Form;
+namespace Common\Form;
 
 class Answers
 {
