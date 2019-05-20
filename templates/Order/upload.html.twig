@@ -3,7 +3,7 @@
 
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
-    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order summary</h1>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order</h1>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
 
     <form action="step-1-process" method="post" id="form">
 
-        <p class="text">Please upload the court order for <strong>{{order.client.clientName}}</strong>.</p>
+        <p class="text">Upload the Microsoft Word version of the court order for <strong>{{order.client.clientName}}</strong>.</p>
 
         <table class="documents-table check-your-answers push--bottom" id="documents-mandatory">
             <thead>
@@ -69,7 +69,7 @@
             </div>
         </details>
 
-        <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled">
+        <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button">
             Continue
         </button>
 
