@@ -60,6 +60,8 @@ services:
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
+      - APP_ENV=dev
+      - APP_DEBUG=true
     depends_on:
       - localstack
       - postgres

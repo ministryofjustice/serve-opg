@@ -206,3 +206,7 @@ services:
     App\Service\Security\LoginAttempts\AttemptsStorageInterface:
         alias: App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
 
+    App\DataFixtures\DefaultFixtures:
+        arguments:
+            $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
+
