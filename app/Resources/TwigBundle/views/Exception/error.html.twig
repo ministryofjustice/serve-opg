@@ -1,0 +1,16 @@
+{% set showNavigation = false %}
+{% extends 'AppBundle:Layouts:base-template.html.twig' %}
+
+{% block htmlTitle %}Sorry, there is a problem with the service{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+{% endblock %}
+
+{% block content %}
+    <p>
+        Try again later.
+    </p>
+    <p>
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+{% endblock %}
