@@ -7,6 +7,5 @@ twig:
     version_web: "%env(WEB_VERSION)%"
     version_infra: "%env(INFRA_VERSION)%"
     gtm: "%env(DC_GTM)%"
-    # for the following two settings, use a multiple of 60
-    session_expires_seconds: "3900"
-    session_popup_show_after: "3600"
+    session_expires_seconds: "%env(session_expire_seconds)%"
+    session_popup_show_after: "%env(session_popup_show_after)%"
