@@ -1,18 +1,39 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> behat/symfony2-extension ###
+behat.yml
+###< behat/symfony2-extension ###
 .idea
 # ignore bin as created by composer
 **/bin
-**/web/assets
+**/public/assets
 node_modules
 */bin/jp.php
 **/vendor
 bootstrap.php.cache
 *.iml
-.env
+.env.local
 docker-compose.local.yml
 var
 **/*.crt
 **/*.key
 web/behat
 **/.DS_Store
-s3
+localstack-data
 .dd-*.sh
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+/features/screenshots/*
+/tests/artifacts/behat/*
+/tests/artifacts/phpunit/*

@@ -12,15 +12,20 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
 WORKDIR /var/www
 # See this page for directories required
 # https://symfony.com/doc/3.4/quick_tour/the_architecture.html
-COPY web/app.php web/app.php
-RUN mkdir -p web/assets
-COPY web/config.php web/config.php
+COPY public/index.php public/index.php
+RUN mkdir -p public/assets
+RUN mkdir -p tmp/screenshots
 COPY vendor vendor
 COPY src src
-COPY app app
+COPY translations translations
+COPY bin bin
+COPY .env .env
+COPY config config
+COPY templates templates
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
+
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
-  && php app/console doctrine:migrations:migrate --no-interaction \
+  && php bin/console doctrine:migrations:migrate --no-interaction \
   && chown -R www-data var \
   && php-fpm
