@@ -1,0 +1,29 @@
+framework:
+    translator:      { fallback: "en" }
+    secret:          '%env(APP_SECRET)%'
+    form:            ~
+    csrf_protection: ~
+    validation:
+        enabled: true
+        enable_annotations: true
+        email_validation_mode: strict
+    templating:
+        engines: ['twig']
+    default_locale:  "en"
+    session:
+        name: serve-opg
+        handler_id: dynamo_session_handler
+        # force session usage, no cookie (we want to logout when the browser closes)
+        cookie_lifetime: 0
+        gc_probability: 1
+        gc_divisor: 100
+        # session timeout (when GC kicks in)
+        gc_maxlifetime: 3900
+        # true:  cookie won't be accessible by Javascript, safer for XSS
+        cookie_httponly: true
+        # set to true when moved to HTTPS
+        cookie_secure: false
+    fragments:       ~
+    http_method_override: true
+    serializer:
+        enable_annotations: true

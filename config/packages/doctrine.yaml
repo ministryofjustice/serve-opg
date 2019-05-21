@@ -1,0 +1,37 @@
+parameters:
+    # Adds a fallback DATABASE_URL if the env var is not set.
+    # This allows you to run cache:warmup even if your
+    # environment variables are not available yet.
+    # You should not need to change this value.
+    env(DATABASE_URL): ''
+
+# http://symfony.com/doc/master/bundles/DoctrineBundle/configuration.html
+doctrine:
+    dbal:
+        driver:   pdo_pgsql
+        host:     "%env(DC_DB_HOST)%"
+        port:     "%env(DC_DB_PORT)%"
+        dbname:   "%env(DC_DB_NAME)%"
+        user:     "%env(DC_DB_USER)%"
+        password: "%env(DC_DB_PASS)%"
+        charset:  UTF8
+        #options:
+        #sslmode: require
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"
+        auto_mapping: false
+        mappings:
+            commonEntities:
+                type: yml
+                dir: "%kernel.root_dir%/../config/doctrine"
+                prefix: App\Entity
+                is_bundle: false
+        dql:
+            string_functions:
+                cast_as_integer: App\Common\Query\CastAsInteger
+                str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
+                to_date: DoctrineExtensions\Query\Postgresql\DateFormat
+            numeric_functions:
+            datetime_functions:
+        #        metadata_cache_driver: apcu
