@@ -108,7 +108,6 @@ services:
     command:
       - install
       - --no-interaction
-      - --no-scripts
 
   npm:
     image: node:10.13-stretch
