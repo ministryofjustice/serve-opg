@@ -62,6 +62,7 @@ services:
       - APP_SECRET=aFakeSecret
       - APP_ENV=dev
       - APP_DEBUG=true
+      - FIXTURES_ENABLED=true
     depends_on:
       - localstack
       - postgres
