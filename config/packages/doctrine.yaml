@@ -15,6 +15,7 @@ doctrine:
         user:     "%env(DC_DB_USER)%"
         password: "%env(DC_DB_PASS)%"
         charset:  UTF8
+        server_version: 9.6
         #options:
         #sslmode: require
     orm:
