@@ -34,4 +34,3 @@ doctrine:
                 to_date: DoctrineExtensions\Query\Postgresql\DateFormat
             numeric_functions:
             datetime_functions:
-        #        metadata_cache_driver: apcu
