@@ -17,7 +17,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy
+    image: jwilder/nginx-proxy:alpine
     ports:
       - 443:443
     volumes:
@@ -26,6 +26,8 @@ services:
       - ./docker/loadbalancer/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro
     depends_on:
       - web
+    environment:
+      DHPARAM_GENERATION: 'false'
 
   web:
     build:
@@ -106,6 +108,7 @@ services:
     command:
       - install
       - --no-interaction
+      - --no-scripts
 
   npm:
     image: node:10.13-stretch
