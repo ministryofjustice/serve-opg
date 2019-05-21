@@ -83,6 +83,7 @@ jobs:
             # Build app
             docker-compose build web
             docker-compose build app
+            docker-compose run app -rm php bin/console cache:clear
       - run:
           name: Deploy
           command: |
