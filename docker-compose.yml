@@ -105,7 +105,9 @@ services:
     image: composer
     volumes:
       - .:/app
-    entrypoint: ["composer"]
+    command:
+      - install
+      - --no-interaction
 
   npm:
     image: node:10.13-stretch
