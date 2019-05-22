@@ -13,7 +13,8 @@
     "jquery": "^3.4.0",
     "del": "^3.0.0",
     "gulp-plumber": "^1.2.1",
-    "dropzone": "5.5.1"
+    "dropzone": "5.5.1",
+    "tar": ">=4.4.2"
   },
   "scripts": {
     "postinstall": "gulp"
