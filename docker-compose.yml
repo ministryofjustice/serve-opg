@@ -131,6 +131,7 @@ services:
       - vendor/bin/behat
       - -c
       - behat.yml.dist
+      - --suite=local
       - --stop-on-failure
       - --no-interaction
     env_file:

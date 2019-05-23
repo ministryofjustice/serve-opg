@@ -14,7 +14,8 @@ default:
             paths:    [ "%paths.base%/features" ]
             contexts:
               - App\Behat\FeatureContext
-            tags: ~@excludeLocal
+            filters:
+                tags: ~@excludeLocal
 
     extensions:
         Behat\Symfony2Extension:
