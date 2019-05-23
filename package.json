@@ -17,6 +17,6 @@
     "tar": ">=4.4.2"
   },
   "scripts": {
-    "postinstall": "gulp"
+    "postinstall": "./node_modules/.bin/gulp"
   }
 }

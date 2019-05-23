@@ -1,0 +1,2 @@
+App\Entity\OrderPf:
+    type: entity

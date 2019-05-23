@@ -1,0 +1,216 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    logstash_formatter:
+        class: Monolog\Formatter\LogstashFormatter
+        arguments: [ "serve-opg.frontend", null, null, "", 1 ]
+
+    line_formatter:
+        class: Monolog\Formatter\LineFormatter
+
+    Doctrine\ORM\EntityManager: "@doctrine.orm.entity_manager"
+
+    App\Service\SiriusService:
+        arguments:
+            $httpClient: "@App\\Service\\SiriusClient"
+            $siriusApiEmail: "%env(SIRIUS_PUBLIC_API_EMAIL)%"
+            $siriusApiPassword: "%env(SIRIUS_PUBLIC_API_PASSWORD)%"
+
+    App\Service\AddressLookup\OrdnanceSurvey:
+        arguments:
+            $apiKey: "%env(OS_PLACES_API_KEY)%"
+            $httpClient: "@guzzleClient"
+
+    notificationHttpClient:
+        class: Http\Adapter\Guzzle6\Client
+        arguments:
+            $client: "@guzzleClient"
+
+    # Notify (used for email sending)
+    # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
+    # Consider creating a NotifyClient extending and setting the options if needed
+    guzzleClient:
+        class: GuzzleHttp\Client
+        arguments:
+            $config:
+                - timeout: 10
+
+    # Notifications client, using Secret manager
+    alphagov.notifications.client.real:
+        class: Alphagov\Notifications\Client
+        arguments:
+            $config:
+                apiKey: "%env(NOTIFICATION_API_KEY)%"
+                httpClient: "@notificationHttpClient"
+
+    # Notifications mock client for behat (local URL)
+    alphagov.notifications.client.mock:
+        class: Alphagov\Notifications\Client
+        arguments:
+            $config:
+                # API key must be a <whatever>-<4 UUID>-<4 UUID> with valid Version 4 UUID JSON webtoken or an execption is thrown
+                apiKey: "mock-0b6deb72-13ec-45f5-b598-88c7be007000-0b6deb72-13ec-45f5-b598-88c7be007000"
+                baseUrl: "%env(DC_NOTIFY_MOCK_ENDPOINT)%"
+                httpClient: "@notificationHttpClient"
+
+    App\Service\MailSender:
+        arguments:
+            $notifyClient: "@alphagov.notifications.client.real"
+
+    App\Service\SiriusClient:
+        class: App\Service\SiriusClient
+        arguments:
+          [
+              base_uri: "%env(DC_SIRIUS_URL)%",
+              cookies: true,
+              verify: 0,
+              proxy: "",
+              debug: "false",
+              headers:
+                  Content-Type: multipart-form-data,
+              version: "1.1",
+              timeout: 10,
+              allow_redirects: "true  "
+          ]
+
+    # twig extensions
+    App\Twig\AssetsExtension:
+        arguments:
+            $basePath: "/assets/"
+            $assetsVersion: "%env(DC_ASSETS_VERSION)%"
+        tags:
+            - { name: twig.extension }
+
+    App\Twig\DebugExtension:
+        tags:
+            - { name: twig.extension }
+
+    # Adds 'help' var to form component
+    App\Form\Extension\FormTypeExtension:
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
+    # Dynamo Db (session) config
+    Aws\DynamoDb\DynamoDbClient:
+        arguments:
+            - region: 'eu-west-1'
+              version: 'latest'
+              validate: true
+              endpoint: "%env(DYNAMODB_ENDPOINT)%"
+              debug: false
+
+
+    Aws\DynamoDb\SessionConnectionInterface: "@App\\Common\\SessionConnectionCreatingTable"
+
+    App\Common\BruteForceChecker: ~
+
+    App\Service\S3Client:
+        arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
+
+    # document storage and checking
+    Aws\S3\S3ClientInterface: "@App\\Service\\S3Client"
+
+    App\Service\File\Storage\S3Storage:
+        arguments:
+            $s3Client: "@App\\Service\\S3Client"
+            $localBucketName: "%env(DC_S3_BUCKET_NAME)%"
+            $remoteBucketName: "%env(SIRIUS_S3_BUCKET_NAME)%"
+
+    App\Service\File\Storage\StorageInterface: "@App\\Service\\File\\Storage\\S3Storage"
+
+    GuzzleHttp\Client:
+        arguments:
+            $config:
+                base_uri: "https://file-scanner-api:8443"
+                verify: false
+                proxy: ""
+                debug: false
+                headers:
+                    Content-Type: multipart-form-data
+                version: "1.1"
+                timeout: 10
+                allow_redirects: false
+
+    GuzzleHttp\ClientInterface: "@GuzzleHttp\\Client"
+
+    App\Service\Security\LoginAttempts\UserProvider:
+        arguments:
+            $rules:
+                # 5 failed attempts in the last 60 seconds => lock for 10 minutes.
+                # Update behat test (tests/behat/features/00-security.feature) in case this setting is changed
+                - [5, 60, 600]
+                # 10 failed attempts in the last 5 mins => lock for 30 minutes
+                - [10, 600, 1800]
+                # 50 failed attempts in the last 30 mins => lock for 24h
+                - [50, 1800, 86400]
+        tags:
+            - { name: kernel.event_listener, event: 'security.authentication.failure', method: 'onAuthenticationFailure' }
+            - { name: kernel.event_listener, event: 'security.authentication.success', method: 'onAuthenticationSuccess' }
+
+    dynamoDb.connection.session:
+        class: App\Common\SessionConnectionCreatingTable
+        arguments:
+            $config:
+                table_name: 'sessions'
+                hash_key: 'id'
+                max_lock_wait_time: 10
+                min_lock_retry_microtime: 500
+                max_lock_retry_microtime: 5000
+
+    dynamo_session_handler:
+        class: Aws\DynamoDb\SessionHandler
+        arguments:
+            $connection: "@dynamoDb.connection.session"
+
+    dynamoDb.connection.bruteForceAttempts:
+        class: App\Common\SessionConnectionCreatingTable
+        arguments:
+            $config:
+                table_name: 'attempts'
+                hash_key: 'id'
+                max_lock_wait_time: 10
+                min_lock_retry_microtime: 500
+                max_lock_retry_microtime: 5000
+
+    App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage:
+        arguments:
+            $connection: "@dynamoDb.connection.bruteForceAttempts"
+
+    # attempts checker configured to use the dynamoDb storage
+    App\Service\Security\LoginAttempts\AttemptsStorageInterface:
+        alias: App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
+
+    App\DataFixtures\DefaultFixtures:
+        arguments:
+            $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
+
+    App\Controller\ManageController:
+        arguments:
+            $appEnv: "%env(APP_ENV)%"
+

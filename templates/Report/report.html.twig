@@ -1,0 +1,17 @@
+{% extends 'Layouts/base-template.html.twig' %}
+
+{% block htmlTitle %}Served Orders Report{% endblock %}
+
+{% block pageTitle %}
+    {#<span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>#}
+    <h1 class="govuk-heading-l">Served Order Reports</h1>
+{% endblock %}
+
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <a class="govuk-button" href="{{ path('download-report') }}">Download csv</a>
+        </div>
+    </div>
+{% endblock %}
