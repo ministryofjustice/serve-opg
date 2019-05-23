@@ -18,5 +18,8 @@
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/gulp"
+  },
+  "dependencies": {
+    "gulp-replace": "^1.0.0"
   }
 }

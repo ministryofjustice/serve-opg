@@ -5,6 +5,7 @@ const del = require('del');
 const plumber = require('gulp-plumber');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
+const replace = require('gulp-replace');
 
 var config = {
     sassSrc: './assets/scss',
@@ -32,6 +33,7 @@ function css() {
             includePaths: ['node_modules/govuk-frontend'],
             outputStyle: 'expanded'
         }))
+        .pipe(replace('url("../../images/', 'url("../images/'))
         .pipe(gulp.dest(config.webAssets + '/stylesheets'))
 }
 
