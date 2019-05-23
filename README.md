@@ -92,7 +92,7 @@ docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate
 
 # Run Behat
-docker-compose run --rm behat
+docker-compose run --rm behat --suite=local
 
 # Launch specific behat feature
 docker-compose run --rm behat features/00-security.feature:18

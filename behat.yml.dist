@@ -9,6 +9,13 @@ default:
             contexts:
                - App\Behat\FeatureContext
 
+        local:
+            description: Excludes CI specific tests
+            paths:    [ "%paths.base%/features" ]
+            contexts:
+              - App\Behat\FeatureContext
+            tags: ~@excludeLocal
+
     extensions:
         Behat\Symfony2Extension:
               kernel:

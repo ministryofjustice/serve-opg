@@ -210,3 +210,7 @@ services:
         arguments:
             $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
 
+    App\Controller\ManageController:
+        arguments:
+            $appEnv: "%env(APP_ENV)%"
+
