@@ -7,14 +7,14 @@ const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 
 var config = {
-    sassSrc: 'src/AppBundle/Resources/assets/scss',
-    webAssets: 'web/assets',
-    jsSrc: 'src/AppBundle/Resources/assets/javascript',
-    imgSrc: 'src/AppBundle/Resources/assets/images'
+    sassSrc: './assets/scss',
+    webAssets: './public/assets',
+    jsSrc: './assets/javascript',
+    imgSrc: './assets/images'
 }
 
 function cleanAssets() {
-    return del(['./web/assets/*']);
+    return del(['./public/assets/*']);
 }
 
 function watchFiles() {

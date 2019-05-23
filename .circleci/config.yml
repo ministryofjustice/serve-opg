@@ -7,7 +7,10 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependencies-{{ checksum "composer.lock" }}
+            - vendor-{{ checksum "composer.lock" }}
+      - restore_cache:
+          keys:
+            - node_modules-{{ checksum "package-lock.json" }}
       - run:
           name: Build Dependencies
           command: |
@@ -17,32 +20,51 @@ jobs:
             # Create the s3 buckets
             # & wait for the server to become available
             docker-compose up -d localstack
-            docker-compose run --rm waitforit -address=http://localstack:4569 -debug
-            docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://sirius_test_bucket
-            docker-compose run --rm aws --endpoint-url=http://localstack:4569 s3 mb s3://test_bucket
+            docker-compose run --rm waitforit -address=http://localstack:4572 -debug
+            docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius_test_bucket
+            docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
+
+            # Create dynamodb tables
+            docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
+            docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
+
+            # Triggers Symfony Flex to run recipes during composer install - required for phpunit-bridge
+            rm -rf vendor
+            rm -rf symfony.lock
 
             # Vendor php dependencies
             docker-compose run --rm composer
+
+            # Removes boilerplate feature test added during Symfony Flex recipe for behat
+            rm -rf features/demo.feature
+
             # Generate static assets
             docker-compose run --rm npm
       - save_cache:
-          key: dependencies-{{ checksum "composer.lock" }}
+          key: vendor-{{ checksum "composer.lock" }}
           paths:
           - vendor
-          - node_modules
-          - bin
+      - save_cache:
+          key: node_modules-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - run:
           name: Unit Test
-          command: docker-compose run --rm phpunit
+          command: |
+            docker-compose run --rm phpunit
       - run:
           name: Integration Test
           command: |
             ./generate_certs.sh
             docker-compose up --build -d loadbalancer
-            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
+            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 240
             docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
-            docker-compose run --rm app php app/console doctrine:fixtures:load --append
+            docker-compose run --rm app php bin/console doctrine:fixtures:load --append
             docker-compose run --rm behat
+      - store_test_results:
+          path: ./tests/artifacts
+      - store_artifacts:
+          path: /tmp/behat
 
   build:
     machine: true
