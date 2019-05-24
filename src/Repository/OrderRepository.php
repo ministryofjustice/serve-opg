@@ -56,8 +56,11 @@ class OrderRepository extends EntityRepository
             ")
 
             ->leftJoin('o.client', 'c')
-            ->setMaxResults($maxResults)
             ->orderBy('custom_ordering', 'ASC');
+
+        if ($maxResults) {
+            $qb->setMaxResults($maxResults);
+        }
 
         $this->applyFilters($qb, $filters);
 

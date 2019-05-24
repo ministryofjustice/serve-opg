@@ -15,27 +15,46 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 class ReportServiceTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private $expectedCaseRef;
 
-    public function testGenerateCsv()
+    /**
+     * @var DateTime
+     */
+    private $expectedMadeAt;
+
+    /**
+     * @var string
+     */
+    private $expectedIssuedAt;
+
+    /**
+     * @var string
+     */
+    private $expectedServedAt;
+
+
+    public function setUp()
     {
-        $expectedCaseRef = 'COURTREFERENCE1';
+        $this->expectedCaseRef = 'COURTREFERENCE1';
+        $this->expectedMadeAt = new DateTime();
+        $this->expectedIssuedAt = '2019-05-23';
+        $this->expectedServedAt = '2019-05-24';
 
         $client = new Client(
-            $expectedCaseRef,
+            $this->expectedCaseRef,
             'Client Name',
             new DateTime()
         );
 
-        $expectedMadeAt = new DateTime();
-        $expectedIssuedAt = '2019-05-23';
-        $expectedServedAt = '2019-05-24';
-
-        $orderPf = new OrderPf($client, $expectedMadeAt, new DateTime($expectedIssuedAt));
-        $orderPf->setServedAt(new DateTime($expectedServedAt));
+        $orderPf = new OrderPf($client, $this->expectedMadeAt, new DateTime($this->expectedIssuedAt));
+        $orderPf->setServedAt(new DateTime($this->expectedServedAt));
         $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
 
-        $orderHw = new OrderHw($client, $expectedMadeAt, new DateTime($expectedIssuedAt));
-        $orderHw->setServedAt(new DateTime($expectedServedAt));
+        $orderHw = new OrderHw($client, $this->expectedMadeAt, new DateTime($this->expectedIssuedAt));
+        $orderHw->setServedAt(new DateTime($this->expectedServedAt));
         $orderHw->setAppointmentType('SOLE');
 
         $orders = [$orderPf, $orderHw];
@@ -45,19 +64,38 @@ class ReportServiceTest extends TestCase
         $orderRepo->getOrders(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($orders);
 
         /** @var ObjectProphecy|EntityManager $em */
-        $em = $this->prophesize(EntityManager::class);
-        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
+        $this->em = $this->prophesize(EntityManager::class);
+        $this->em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
+    }
 
-        $sut = new ReportService($em->reveal());
+    public function testGenerateCsv()
+    {
+        $sut = new ReportService($this->em->reveal());
 
         $expectedCsv = <<<CSV
 DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
-$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
-$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
+$this->expectedIssuedAt,$this->expectedServedAt,$this->expectedCaseRef,JOINT_AND_SEVERAL,PF
+$this->expectedIssuedAt,$this->expectedServedAt,$this->expectedCaseRef,SOLE,HW
 
 CSV;
 
         $actualCsv = $sut->generateCsv();
+        $actualCsvString = file_get_contents($actualCsv->getRealPath());
+
+        self::assertEquals($expectedCsv, $actualCsvString);
+    }
+
+    public function testGenerateCsvWithLimit()
+    {
+        $sut = new ReportService($this->em->reveal());
+
+        $expectedCsv = <<<CSV
+DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
+$this->expectedIssuedAt,$this->expectedServedAt,$this->expectedCaseRef,JOINT_AND_SEVERAL,PF
+
+CSV;
+
+        $actualCsv = $sut->generateCsv(1);
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
 
         self::assertEquals($expectedCsv, $actualCsvString);
