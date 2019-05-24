@@ -6,6 +6,8 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\File;
 
 class ReportService
 {
@@ -22,9 +24,9 @@ class ReportService
 
     /**
      * ReportService constructor
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->orderRepo = $em->getRepository(Order::class);
@@ -54,7 +56,7 @@ class ReportService
 
         fclose($file);
 
-        return $file;
+        return new File('/tmp/orders.csv');
     }
 
     /**
