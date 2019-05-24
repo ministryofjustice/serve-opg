@@ -36,14 +36,17 @@ class ReportService
     {
         $orders = $this->getOrders();
 
-        $headers = ['DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
+        $headers = ['DateIssued','DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
         $ordersCsv = [];
 
         foreach ($orders as $order) {
-            $ordersCsv[] = ["DateServed" => $order->getServedAt()->format('Y-m-d'),
+            $ordersCsv[] = [
+                "DateIssued" => $order->getIssuedAt()->format('Y-m-d'),
+                "DateServed" => $order->getServedAt()->format('Y-m-d'),
                 "CaseNumber" => $order->getClient()->getCaseNumber(),
                 "AppointmentType" => $order->getAppointmentType(),
-                "OrderType" => $order->getType()];
+                "OrderType" => $order->getType()
+            ];
         }
 
         $file = fopen("/tmp/orders.csv","w");

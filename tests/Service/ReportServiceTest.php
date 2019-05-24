@@ -51,9 +51,9 @@ class ReportServiceTest extends TestCase
         $sut = new ReportService($em->reveal());
 
         $expectedCsv = <<<CSV
-DateServed,CaseNumber,AppointmentType,OrderType
-$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
-$expectedServedAt,$expectedCaseRef,SOLE,HW
+DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
+$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
+$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
 
 CSV;
 
