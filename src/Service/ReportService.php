@@ -38,7 +38,7 @@ class ReportService
      */
     public function generateCsv(int $maxResults=null)
     {
-        $orders = $this->getOrders($maxResults);
+        $orders = $this->getServedOrders($maxResults);
 
         $headers = ['DateIssued','DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
         $ordersCsv = [];
@@ -72,12 +72,13 @@ class ReportService
      * @param int? $maxResult
      * @return Order[]
      */
-    public function getOrders(int $maxResult=null)
+    public function getServedOrders(int $maxResult=null)
     {
         $filters = [
-            'type' => 'served'
+            'type' => 'served',
+            'maxResults' => $maxResult
         ];
-        return $this->orderRepo->getOrders($filters, $maxResult);
+        return $this->orderRepo->getOrders($filters);
     }
 
     public function getCasesBeforeGoLive() {

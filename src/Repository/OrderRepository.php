@@ -27,11 +27,11 @@ class OrderRepository extends EntityRepository
 
     /**
      * @param array $filters
-     * @param integer $maxResults
+     * @param integer|null $maxResults
      *
      * @return Order[]
      */
-    public function getOrders(array $filters, $maxResults)
+    public function getOrders(array $filters)
     {
         /**
          * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
@@ -58,10 +58,6 @@ class OrderRepository extends EntityRepository
             ->leftJoin('o.client', 'c')
             ->orderBy('custom_ordering', 'ASC');
 
-        if ($maxResults) {
-            $qb->setMaxResults($maxResults);
-        }
-
         $this->applyFilters($qb, $filters);
 
         return $qb->getQuery()->getResult();
@@ -82,6 +78,10 @@ class OrderRepository extends EntityRepository
         if ($filters['q'] ?? false) {
             $qb->andWhere('UPPER(c.caseNumber) LIKE :cn')
             ->setParameter('cn', strtoupper(trim($filters['q'])));
+        }
+
+        if ($filters['maxResults']) {
+            $qb->setMaxResults($filters['maxResults']);
         }
     }
 

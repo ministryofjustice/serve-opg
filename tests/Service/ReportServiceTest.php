@@ -9,9 +9,9 @@ use App\Repository\OrderRepository;
 use App\Service\ReportService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 class ReportServiceTest extends TestCase
 {
@@ -35,6 +35,10 @@ class ReportServiceTest extends TestCase
      */
     private $expectedServedAt;
 
+    /**
+     * @var []Order
+     */
+    private $orders;
 
     public function setUp()
     {
@@ -57,20 +61,20 @@ class ReportServiceTest extends TestCase
         $orderHw->setServedAt(new DateTime($this->expectedServedAt));
         $orderHw->setAppointmentType('SOLE');
 
-        $orders = [$orderPf, $orderHw];
-
-        /** @var ObjectProphecy|OrderRepository $orderRepo */
-        $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrders(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($orders);
-
-        /** @var ObjectProphecy|EntityManager $em */
-        $this->em = $this->prophesize(EntityManager::class);
-        $this->em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
+        $this->orders = [$orderPf, $orderHw];
     }
 
     public function testGenerateCsv()
     {
-        $sut = new ReportService($this->em->reveal());
+        /** @var ObjectProphecy|OrderRepository $orderRepo */
+        $orderRepo = $this->prophesize(OrderRepository::class);
+        $orderRepo->getOrders(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($this->orders);
+
+        /** @var ObjectProphecy|EntityManager $em */
+        $em = $this->prophesize(EntityManager::class);
+        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
+
+        $sut = new ReportService($em->reveal());
 
         $expectedCsv = <<<CSV
 DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
@@ -87,17 +91,21 @@ CSV;
 
     public function testGenerateCsvWithLimit()
     {
-        $sut = new ReportService($this->em->reveal());
+        $expectedFilters = [
+            'type' => 'served',
+            'maxResults' => 1
+        ];
 
-        $expectedCsv = <<<CSV
-DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
-$this->expectedIssuedAt,$this->expectedServedAt,$this->expectedCaseRef,JOINT_AND_SEVERAL,PF
+        /** @var ObjectProphecy|OrderRepository $orderRepo */
+        $orderRepo = $this->prophesize(OrderRepository::class);
+        $orderRepo->getOrders($expectedFilters)->shouldBeCalled()->willReturn($this->orders);
 
-CSV;
+        /** @var ObjectProphecy|EntityManager $em */
+        $em = $this->prophesize(EntityManager::class);
+        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
 
-        $actualCsv = $sut->generateCsv(1);
-        $actualCsvString = file_get_contents($actualCsv->getRealPath());
+        $sut = new ReportService($em->reveal());
 
-        self::assertEquals($expectedCsv, $actualCsvString);
+        $sut->generateCsv(1);
     }
 }
