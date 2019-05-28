@@ -17,7 +17,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy
+    image: jwilder/nginx-proxy:alpine
     ports:
       - 443:443
     volumes:
@@ -26,6 +26,8 @@ services:
       - ./docker/loadbalancer/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro
     depends_on:
       - web
+    environment:
+      DHPARAM_GENERATION: 'false'
 
   web:
     build:
@@ -59,6 +61,8 @@ services:
       - NOTIFICATION_API_KEY=local-dc0ef8aa-ffdf-4bfb-9c47-30ea20362eb1-6b44c7a0-00dc-4d55-9fc4-69bcb0d67738
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
+      - APP_SECRET=aFakeSecret
+      - FIXTURES_ENABLED=true
     depends_on:
       - localstack
       - postgres
@@ -88,7 +92,7 @@ services:
       - ./localstack-data:/tmp/localstack/data
 
   postgres:
-    image: postgres:9.6
+    image: postgres:9.6-alpine
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: serve-opg
@@ -125,6 +129,7 @@ services:
       - vendor/bin/behat
       - -c
       - behat.yml.dist
+      - --suite=local
       - --stop-on-failure
       - --no-interaction
     env_file:

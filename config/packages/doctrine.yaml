@@ -15,6 +15,7 @@ doctrine:
         user:     "%env(DC_DB_USER)%"
         password: "%env(DC_DB_PASS)%"
         charset:  UTF8
+        server_version: 9.6
         #options:
         #sslmode: require
     orm:
@@ -34,4 +35,3 @@ doctrine:
                 to_date: DoctrineExtensions\Query\Postgresql\DateFormat
             numeric_functions:
             datetime_functions:
-        #        metadata_cache_driver: apcu

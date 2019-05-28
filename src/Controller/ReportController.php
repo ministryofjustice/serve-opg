@@ -39,9 +39,7 @@ class ReportController extends AbstractController
      */
     public function downloadReportAction() {
 
-        $this->reportService->generateCsv();
-
-        $csv = new File('/tmp/orders.csv');
+        $csv = $this->reportService->generateCsv();
 
         return $this->file($csv);
     }

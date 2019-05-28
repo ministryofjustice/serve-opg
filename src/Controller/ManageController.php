@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use App\Service\SiriusService;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -24,14 +25,21 @@ class ManageController extends AbstractController
     private $siriusService;
 
     /**
+     * @var string
+     */
+    private $appEnv;
+
+    /**
      * ManageController constructor.
      * @param EntityManager $em
      * @param SiriusService $siriusService
+     * @param string $appEnv
      */
-    public function __construct(EntityManager $em, SiriusService $siriusService)
+    public function __construct(EntityManager $em, SiriusService $siriusService, string $appEnv)
     {
         $this->em = $em;
         $this->siriusService = $siriusService;
+        $this->appEnv = $appEnv;
     }
 
     /**
@@ -86,5 +94,13 @@ class ManageController extends AbstractController
         return $this->render('Manage/elb.html.twig', [
             'status' => 'OK'
         ]);
+    }
+
+    /**
+     * @Route("/app-env", name="app-env", methods={"GET"})
+     */
+    public function appEnv()
+    {
+        return new Response($this->appEnv);
     }
 }

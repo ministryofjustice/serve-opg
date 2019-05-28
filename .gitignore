@@ -11,8 +11,6 @@
 behat.yml
 ###< behat/symfony2-extension ###
 .idea
-# ignore bin as created by composer
-**/bin
 **/public/assets
 node_modules
 */bin/jp.php
@@ -37,5 +35,6 @@ localstack-data
 /features/screenshots/*
 /tests/artifacts/behat/*
 /tests/artifacts/phpunit/*
+
 /s3/
 /web/

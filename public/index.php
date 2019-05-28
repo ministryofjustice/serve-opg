@@ -6,16 +6,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__) . '/config/bootstrap.php';
 
-$isLocal = file_exists(__DIR__ . '/../.enableDevMode');
-
-if ($isLocal) {
-    ini_set('display_errors', 'on');
-    Debug::enable();
-    $kernel = new Kernel('dev', true);
-} else {
-    $kernel = new Kernel('prod', false);
-}
-
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
 
