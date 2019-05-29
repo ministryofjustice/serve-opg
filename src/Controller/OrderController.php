@@ -11,6 +11,7 @@ use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OrderController extends AbstractController
@@ -157,6 +158,22 @@ class OrderController extends AbstractController
             'order' => $order,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/order/{orderId}/step-1-process", name="step-1-process", methods={"POST"})
+     * @param Request $request
+     * @return Response
+     */
+    public function step1Process(Request $request)
+    {
+        $file = $request->files->get('court_order');
+        $processedDocument = $this->documentService->processDocument($file);
+
+//        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+//        $document = new Document($order, 'COURT_ORDER');
+
+        return new Response();
     }
 
 }

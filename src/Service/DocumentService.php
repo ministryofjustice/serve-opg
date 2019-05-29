@@ -6,6 +6,7 @@ use App\Entity\Document;
 use App\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\File\File;
 
 class DocumentService
 {
@@ -78,5 +79,14 @@ class DocumentService
                 throw $e;
             }
         }
+    }
+
+    /**
+     * @param File $file
+     * @return false|string
+     */
+    public function processFile(File $file)
+    {
+        return json_encode(['valid' => true]);
     }
 }
