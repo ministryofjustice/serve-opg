@@ -147,6 +147,8 @@ To enable Xdebug running via Docker in PHPStorm you will need to:
 - Name this configuration `Docker` and select `Directory` for `Test Scope` and add the `tests` directory under `Directory`. Click `OK`.
 - Back in settings, go to `Language & Frameworks > PHP > Debug` and enter `10000` under Xdebug > Debug port. Hit `Apply` and `OK`.
 
+As Xdebug has quite a large performace hit, it is not installed as part of the Dockerfile by default. Instead it is set as a build argument in docker-compose to ensure it will only ever be enabled for local dev. If you need to disable it in local dev then change `WITH_XDEBUG` to false in `app > build`.
+
 Now you can add break points to any line of code by clicking in the gutter next to line numbers. Then you can either run the entire test suite by selecting `DOCKER` from the dropdown next to the test buttons in the top right of the page and click the phone icon so it turns green. Hit the debug button to run the suite.
 
 Alternatively you can run individual tests by hitting the debug button next to the test method name in the test class. Ove the code gets to a break point you can step through and run executions on the current state of the app to help with debugging.

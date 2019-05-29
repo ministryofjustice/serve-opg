@@ -24,9 +24,11 @@ COPY config config
 COPY templates templates
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 
-ARG WITH_XDEBUG=false
+ARG WITH_XDEBUG
 
-RUN apk --no-cache add autoconf alpine-sdk
+RUN if [ $WITH_XDEBUG = "true" ] ; then \
+        apk --no-cache add autoconf alpine-sdk; \
+    fi ;
 
 RUN if [ $WITH_XDEBUG = "true" ] ; then \
         pecl install xdebug; \
@@ -40,7 +42,9 @@ RUN if [ $WITH_XDEBUG = "true" ] ; then \
         echo "xdebug.remote_log="/tmp/xdebug.log"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     fi ;
 
-RUN apk --no-cache del autoconf alpine-sdk
+RUN if [ $WITH_XDEBUG = "true" ] ; then \
+        apk --no-cache del autoconf alpine-sdk; \
+    fi ;
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
