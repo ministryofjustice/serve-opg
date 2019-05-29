@@ -78,9 +78,27 @@ Run php unit
 ```bash
 docker-compose run --rm phpunit
 
-# specific test
-docker-compose run --rm --entrypoint="bin/phpunit -c tests/phpunit/ tests/phpunit/Service/UserProviderTest.php" phpunit
+# specific test (if unique)
+docker-compose run --rm phpunit --filter testHomePage
 
+# specific test (if not unique)
+docker-compose run --rm phpunit --filter testHomePage tests/Controller/IndexControllerTest.php
+
+# specific test using groups
+
+Add a @group notation above the test method or class:
+
+/**
+  * @group failing
+  */
+public function testSomething()
+{
+...
+}
+
+Then run:
+
+docker-compose run --rm phpunit --group failing
 ```
 
 ## Integration Testing
@@ -117,6 +135,21 @@ Clear Cache
 ```bash
 docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 ```
+
+Xdebug
+To enable Xdebug running via Docker in PHPStorm you will need to:
+
+- In settings, select `Docker for Mac` in `Build, Execution, Deployment > Docker`
+- Click the `...` button next to `CLI Interpreter` in `Languages and Frameworks > PHP`:
+- Click the `+` button to add a new CLI - select `From Docker, Vagrant, VM, Remote`
+- Select `Docker Compose` and then for `Server` choose `Docker` and select `app` for Service. Click `OK` and then `Apply`.
+- Click `Run > Edit Configurations` from the menu bar at the top, then `+` and select `PhpUnit`
+- Name this configuration `Docker` and select `Directory` for `Test Scope` and add the `tests` directory under `Directory`. Click `OK`.
+- Back in settings, go to `Language & Frameworks > PHP > Debug` and enter `10000` under Xdebug > Debug port. Hit `Apply` and `OK`.
+
+Now you can add break points to any line of code by clicking in the gutter next to line numbers. Then you can either run the entire test suite by selecting `DOCKER` from the dropdown next to the test buttons in the top right of the page and click the phone icon so it turns green. Hit the debug button to run the suite.
+
+Alternatively you can run individual tests by hitting the debug button next to the test method name in the test class.
 
 # Front end assets
 
