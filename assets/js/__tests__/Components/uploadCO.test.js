@@ -13,6 +13,6 @@ describe('init', () => {
         uploadCO.init();
 
         expect(document.addEventListener).toHaveBeenCalledTimes(1);
-        expect(document.addEventListener).toHaveBeenCalledWith('receiveData', expect.any(Function));
+        expect(document.addEventListener).toHaveBeenCalledWith('validDoc', expect.any(Function));
     })
 })
