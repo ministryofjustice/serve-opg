@@ -87,6 +87,10 @@ class DocumentService
      */
     public function processFile(File $file)
     {
+        // assert file is correct type here
+        $file->getMimeType();
         return json_encode(['valid' => true]);
     }
+
+
 }

@@ -168,12 +168,17 @@ class OrderController extends AbstractController
     public function step1Process(Request $request)
     {
         $file = $request->files->get('court_order');
-        $processedDocument = $this->documentService->processDocument($file);
+        $fileType = $file->getExtension();
+        $acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf' , 'doc', 'docx', 'tif'];
+
+        if (!in_array($fileType, $acceptedTypes)) {
+            return new Response(json_encode(['valid' => false]));
+        }
 
 //        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 //        $document = new Document($order, 'COURT_ORDER');
 
-        return new Response();
+        return new Response(json_encode(['valid' => true]));
     }
 
 }

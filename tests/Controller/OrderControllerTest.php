@@ -24,14 +24,9 @@ class OrderControllerTest extends WebTestCase
      */
     public function testStep1Process()
     {
-//        $client = new Client('CASENUMBER', 'Client Name', new DateTime());
-//        $order = new OrderHw($client, new DateTime(), new DateTime());
-//        $document = new Document($order, 'COURT_ORDER');
-
         $fileLocation = __DIR__ . '/validCO.docx';
         $file = new UploadedFile($fileLocation, 'validCO.docx', 'application/msword', null);
         $expectedJSONResponse = json_encode(['valid' => true]);
-        $this->documentService->processFile($file)->shouldBeCalled()->willReturn($expectedJSONResponse);
 
         $symfonyClient = static::createClient();
         $symfonyClient->request(
@@ -39,11 +34,11 @@ class OrderControllerTest extends WebTestCase
             '/order/1/step-1-process',
             [],
             ['court_order' => $file],
-            // Simulate authenticating
-            ['PHP_AUTH_USER' => 'username', 'PHP_AUTH_PW' => 'pa$$word',]
+            // Use basic auth to skip login redirect
+            ['PHP_AUTH_USER' => 'behat@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234',]
             );
 
         self::assertTrue($symfonyClient->getResponse()->isSuccessful());
-        self::assertEquals($symfonyClient->getResponse()->getTargetUrl(), '/order/1/summary');
+        self::assertEquals($expectedJSONResponse, $symfonyClient->getResponse()->getContent());
     }
 }

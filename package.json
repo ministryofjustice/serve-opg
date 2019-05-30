@@ -5,19 +5,53 @@
   "repository": "https://github.com/ministryofjustice/serve-opg",
   "license": "MIT",
   "devDependencies": {
+    "@babel/preset-env": "^7.4.5",
+    "@symfony/webpack-encore": "^0.27.0",
+    "babel-jest": "^24.8.0",
+    "core-js": "^3.0.0",
+    "del": "^3.0.0",
+    "dropzone": "5.5.1",
     "govuk-frontend": "^2.7.0",
     "gulp": "^4.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-concat": "^2.6.1",
-    "gulp-sass": "^4.0.2",
-    "jquery": "^3.4.0",
-    "del": "^3.0.0",
     "gulp-plumber": "^1.2.1",
-    "dropzone": "5.5.1",
-    "tar": ">=4.4.2"
+    "gulp-sass": "^4.0.2",
+    "jest": "^24.8.0",
+    "jquery": "^3.4.0",
+    "tar": ">=4.4.2",
+    "webpack-notifier": "^1.6.0"
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/gulp"
+    "build": "encore production --progress",
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "jest": "jest assets/js/__tests__",
+    "postinstall": "./node_modules/.bin/gulp",
+    "watch": "encore dev --watch"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env"
+      ]
+    ]
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "testRegex": "\\.test\\.js$",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/*.+\\.js$"
+    ]
   },
   "dependencies": {
     "gulp-replace": "^1.0.0"
