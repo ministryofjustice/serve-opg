@@ -9,66 +9,40 @@ use App\Repository\OrderRepository;
 use App\Service\ReportService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 class ReportServiceTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $expectedCaseRef;
 
-    /**
-     * @var DateTime
-     */
-    private $expectedMadeAt;
-
-    /**
-     * @var string
-     */
-    private $expectedIssuedAt;
-
-    /**
-     * @var string
-     */
-    private $expectedServedAt;
-
-    /**
-     * @var []Order
-     */
-    private $orders;
-
-    public function setUp()
+    public function testGenerateCsv()
     {
-        $this->expectedCaseRef = 'COURTREFERENCE1';
-        $this->expectedMadeAt = new DateTime();
-        $this->expectedIssuedAt = '2019-05-23';
-        $this->expectedServedAt = '2019-05-24';
+        $expectedCaseRef = 'COURTREFERENCE1';
 
         $client = new Client(
-            $this->expectedCaseRef,
+            $expectedCaseRef,
             'Client Name',
             new DateTime()
         );
 
-        $orderPf = new OrderPf($client, $this->expectedMadeAt, new DateTime($this->expectedIssuedAt));
-        $orderPf->setServedAt(new DateTime($this->expectedServedAt));
+        $expectedMadeAt = new DateTime();
+        $expectedIssuedAt = '2019-05-23';
+        $expectedServedAt = '2019-05-24';
+
+        $orderPf = new OrderPf($client, $expectedMadeAt, new DateTime($expectedIssuedAt));
+        $orderPf->setServedAt(new DateTime($expectedServedAt));
         $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
 
-        $orderHw = new OrderHw($client, $this->expectedMadeAt, new DateTime($this->expectedIssuedAt));
-        $orderHw->setServedAt(new DateTime($this->expectedServedAt));
+        $orderHw = new OrderHw($client, $expectedMadeAt, new DateTime($expectedIssuedAt));
+        $orderHw->setServedAt(new DateTime($expectedServedAt));
         $orderHw->setAppointmentType('SOLE');
 
-        $this->orders = [$orderPf, $orderHw];
-    }
+        $orders = [$orderPf, $orderHw];
 
-    public function testGenerateCsv()
-    {
         /** @var ObjectProphecy|OrderRepository $orderRepo */
         $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrders(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($this->orders);
+        $orderRepo->getOrders(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($orders);
 
         /** @var ObjectProphecy|EntityManager $em */
         $em = $this->prophesize(EntityManager::class);
@@ -78,8 +52,8 @@ class ReportServiceTest extends TestCase
 
         $expectedCsv = <<<CSV
 DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
-$this->expectedIssuedAt,$this->expectedServedAt,$this->expectedCaseRef,JOINT_AND_SEVERAL,PF
-$this->expectedIssuedAt,$this->expectedServedAt,$this->expectedCaseRef,SOLE,HW
+$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
+$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
 
 CSV;
 
@@ -87,25 +61,5 @@ CSV;
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
 
         self::assertEquals($expectedCsv, $actualCsvString);
-    }
-
-    public function testGenerateCsvWithLimit()
-    {
-        $expectedFilters = [
-            'type' => 'served',
-            'maxResults' => 1
-        ];
-
-        /** @var ObjectProphecy|OrderRepository $orderRepo */
-        $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrders($expectedFilters)->shouldBeCalled()->willReturn($this->orders);
-
-        /** @var ObjectProphecy|EntityManager $em */
-        $em = $this->prophesize(EntityManager::class);
-        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
-
-        $sut = new ReportService($em->reveal());
-
-        $sut->generateCsv(1);
     }
 }

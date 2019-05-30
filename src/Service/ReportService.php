@@ -32,13 +32,9 @@ class ReportService
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
-    /**
-     * @param int|null $maxResults
-     * @return File
-     */
-    public function generateCsv(int $maxResults=null)
+    public function generateCsv()
     {
-        $orders = $this->getServedOrders($maxResults);
+        $orders = $this->getOrders();
 
         $headers = ['DateIssued','DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
         $ordersCsv = [];
@@ -69,16 +65,14 @@ class ReportService
     /**
      *  Get orders that have been served into Sirius
      *
-     * @param int? $maxResult
-     * @return Order[]
+     * @return \App\Entity\Order[]
      */
-    public function getServedOrders(int $maxResult=null)
+    public function getOrders()
     {
         $filters = [
-            'type' => 'served',
-            'maxResults' => $maxResult
+            'type' => 'served'
         ];
-        return $this->orderRepo->getOrders($filters);
+        return $this->orderRepo->getOrders($filters, 1000);
     }
 
     public function getCasesBeforeGoLive() {
