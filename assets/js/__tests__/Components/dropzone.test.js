@@ -23,7 +23,7 @@ describe('instantiating Dropzone', () => {
    })
 });
 
-describe('file types', () => {
+describe('adding a file', () => {
    let element = document.createElement("court-order");
    const dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court_order');
 
@@ -34,6 +34,21 @@ describe('file types', () => {
             dz.accept({ type: type }, err => expect(err).not.toBeDefined());
          });
       });
+
+      it('should dispatch a validFile event', () => {
+         document.dispatchEvent = jest.fn();
+         const event = new CustomEvent(
+             'validDoc',
+             {
+                detail: { valid: true }
+             }
+         );
+
+         dz.accept({ type: 'image/jpeg' }, err => err);
+
+         expect(document.dispatchEvent).toHaveBeenCalledTimes(1);
+         expect(document.dispatchEvent).toHaveBeenCalledWith(event);
+      })
    });
 
    describe('not listed in acceptedFiles', () => {
