@@ -22,3 +22,26 @@ describe('instantiating Dropzone', () => {
       });
    })
 });
+
+describe('file types', () => {
+   let element = document.createElement("court-order");
+   const dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court_order');
+
+   describe('listed in acceptedFiles', () => {
+      it('should be accepted', () => {
+         const acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+         acceptedTypes.forEach((type) => {
+            dz.accept({ type: type }, err => expect(err).not.toBeDefined());
+         });
+      });
+   });
+
+   describe('not listed in acceptedFiles', () => {
+      it('should be rejected', () => {
+         const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
+         nonAcceptedTypes.forEach((type) => {
+            dz.accept({ type: type }, err => expect(err).toBeDefined());
+         });
+      });
+   });
+});

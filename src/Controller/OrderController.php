@@ -49,7 +49,6 @@ class OrderController extends AbstractController
      */
     public function uploadOrder(Request $request, $orderId)
     {
-
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         return $this->render('Order/upload.html.twig', ['order' => $order]);

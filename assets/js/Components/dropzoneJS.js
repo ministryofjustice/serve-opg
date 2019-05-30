@@ -6,7 +6,8 @@ class DropzoneJS{
             url: targetURL,
             maxFiles: maxFiles,
             dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
-            paramName: fileIdentifier
+            paramName: fileIdentifier,
+            acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         })
     }
 }

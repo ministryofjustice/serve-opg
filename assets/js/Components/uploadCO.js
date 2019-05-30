@@ -1,14 +1,12 @@
 class uploadCO {
     static init() {
         document.addEventListener('validDoc', (e) => {
-            if (event.target.matches('#continue')) {
-                if (e.valid) {
-                    button.removeAttribute('disabled')
-                }
+            if (e.detail.valid) {
+                let button = document.getElementById('continue');
+                button.removeAttribute('disabled')
             }
         });
     }
 }
 
 export default uploadCO
-
