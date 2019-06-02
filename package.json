@@ -45,6 +45,7 @@
       "node_modules",
       "src"
     ],
+    "restoreMocks": true,
     "testRegex": "\\.test\\.js$",
     "transform": {
       "^.+\\.js$": "babel-jest"

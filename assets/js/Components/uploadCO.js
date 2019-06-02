@@ -1,11 +1,15 @@
 class uploadCO {
-    static init() {
+    static init(elementId) {
         document.addEventListener('validDoc', (e) => {
             if (e.detail.valid) {
-                let button = document.getElementById('continue');
-                button.removeAttribute('disabled')
+                this.removeDisabledFrom(elementId)
             }
         });
+    }
+
+    static removeDisabledFrom(elementId) {
+        let element = document.getElementById(elementId);
+        element.removeAttribute('disabled')
     }
 }
 
