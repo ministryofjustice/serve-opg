@@ -1,6 +1,6 @@
-@import "settings/all";
-@import "tools/all";
-@import "helpers/all";
+@import "~govuk-frontend/settings/all";
+@import "~govuk-frontend/tools/all";
+@import "~govuk-frontend/helpers/all";
 
 @include govuk-exports("govuk/core/error-message-extended") {
     .govuk-error-message {

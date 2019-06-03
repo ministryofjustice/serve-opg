@@ -166,7 +166,7 @@ class OrderController extends AbstractController
      */
     public function step1Process(Request $request)
     {
-        $file = $request->files->get('court_order');
+        $file = $request->files->get('court-order');
         $fileType = $file->getExtension();
         $acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf' , 'doc', 'docx', 'tif'];
 

@@ -1,16 +1,169 @@
+{% import 'Macros/_macros.html.twig' as macro %}
+
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
+<html lang="en" class="govuk-template">
+<head>
+
+
+    {% if gtm is not empty  %}
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '{{ gtm | striptags | raw  }}&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-MN4BQPM');</script>
+        <!-- End Google Tag Manager -->
+    {% endif %}
+
+    <meta charset="utf-8" />
+    <title>{% block htmlTitle %}{% endblock %} - Serve OPG - GOV.UK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="{{ 'images/favicon.ico' | assetUrl }}" type="image/x-icon" />
+    <link rel="mask-icon" href="{{ 'images/govuk-mask-icon.svg' | assetUrl }}" color="#0b0c0c">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ 'images/govuk-apple-touch-icon-180x180.png' | assetUrl }}">
+    <link rel="apple-touch-icon" sizes="167x167" href="{{ 'images/govuk-apple-touch-icon-167x167.png' | assetUrl }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ 'images/govuk-apple-touch-icon-152x152.png' | assetUrl }}">
+    <link rel="apple-touch-icon" href="{{ 'images/govuk-apple-touch-icon.png' | assetUrl }}">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {# The default og:image is added below head so that scrapers see any custom metatags first, and this is just a fallback #}
+    <meta property="og:image" content="{{ 'images/govuk-opengraph-image.png' | assetUrl }}">
+</head>
+
+<body class="govuk-template__body -debug">
+
+{% if gtm is not empty  %}
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN4BQPM{{ gtm | striptags | raw  }}&gtm_cookies_win=x"
+                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+{% endif %}
+
+{% block bodyStart %}{% endblock %}
+<script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+{% block skipLink %}
+    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+{% endblock %}
+
+{# TODO: Cookie banner should be here. Look at app-cookie-banner on GDS #}
+
+<header class="govuk-header" role="banner" data-module="header">
+    <div class="govuk-header__container govuk-width-container">
+
+        <div class="govuk-header__content">
+
+            <a href="/" class="govuk-header__link govuk-header__link--service-name">Serve OPG</a>
+
+            <button role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
+            <nav>
+                <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
+                    {% block navLinks %}
+                        {% set currentRoute = app.request.attributes.get('_route') %}
+                        {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
+                            </li>
+                        {% else %}
+                            <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('case-list') }}">Orders</a>
+                            </li>
+                            <li class="govuk-header__navigation-item {{ currentRoute =='upload-csv' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('upload-csv') }}">Upload orders</a>
+                            </li>
+                            <li class="govuk-header__navigation-item {{ currentRoute =='report' ? 'govuk-header__navigation-item--active' : '' }}">
+                                <a class="govuk-header__link" href="{{ path('report') }}">Report</a>
+                            </li>
+                            <li class="govuk-header__navigation-item">
+                                <a class="govuk-header__link" href="/logout">Sign out</a>
+                            </li>
+                        {% endif %}
+                    {% endblock %}
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</header>
+
+{% block main %}
+    <div class="govuk-width-container">
+
+        {% block beforeContent %}
+            {# <a href="#" class="govuk-back-link">Back</a> #}
         {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </body>
+
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            {% block validationSummary %}{% endblock %}
+
+            {% for notificationType in [
+                'notification',
+                'info',
+                'success',
+                'error',
+                'important'
+            ] %}
+                {% for flashMessage in app.session.flashbag.get(notificationType) %}
+                    {{ macro.notification(notificationType, flashMessage) }}
+                {% endfor %}
+            {% endfor %}
+
+            {% block pageTitle %}{% endblock %}
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer class="govuk-footer" role="contentinfo">
+        <div class="govuk-width-container">
+
+            <div class="govuk-footer__meta">
+                <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+                    <h2 class="govuk-visually-hidden">Support links</h2>
+                    <ul class="govuk-footer__inline-list">
+                        <li class="govuk-footer__inline-list-item">
+                            Built by <a href="https://www.gov.uk/government/organisations/office-of-the-public-guardian" class="govuk-footer__link">the Office of the Public Guardian</a>
+                        </li>
+                    </ul>
+                    <svg role="presentation" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 483.2 195.7" height="17" width="41">
+                        <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"></path>
+                    </svg>
+
+                    <span class="govuk-footer__licence-description">
+                          All content is available under the
+                          <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+                          {% if version_app %}<br>v {{ version_app }}{% endif %}
+                        </span>
+                </div>
+                <div class="govuk-footer__meta-item">
+                    <a
+                            class="govuk-footer__link govuk-footer__copyright-logo"
+                            href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+                    >&copy; Crown copyright</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{# TODO: Add build tag to footer #}
+
+{% block bodyEnd %}
+
+    {% block popups %}
+        {% include 'Common/_popups.html.twig' %}
+    {% endblock %}
+
+{% endblock %}
+</body>
 </html>

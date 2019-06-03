@@ -1,4 +1,4 @@
-class uploadCO {
+class forms {
     static init(elementId) {
         document.addEventListener('validDoc', (e) => {
             if (e.detail.valid) {
@@ -13,4 +13,4 @@ class uploadCO {
     }
 }
 
-export default uploadCO
+export default forms

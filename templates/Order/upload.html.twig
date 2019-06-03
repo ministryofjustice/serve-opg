@@ -1,4 +1,4 @@
-{% extends 'Layouts/base-template.html.twig' %}
+{% extends 'base.html.twig' %}
 
 
 {% block pageTitle %}
@@ -6,10 +6,15 @@
     <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order</h1>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('uploadCO') }}
+{% endblock %}
+
 {% block content %}
 
 
-        <form action="step-1-process" method="post" id="form" class="dropzone">
+        <div id="court-order">
 
             <p class="text">Upload the Microsoft Word version of the court order for <strong>{{order.client.clientName}}</strong>.</p>
 
@@ -69,11 +74,13 @@
                 </div>
             </details>
 
-            <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button">
+            <button type="submit" disabled="disabled" class="govuk-button" id="continue">
                 Continue
             </button>
 
-        </form>
+            <div id="error" class="hidden"></div>
+
+        </div>
 
 {% endblock %}
 

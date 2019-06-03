@@ -1,10 +1,10 @@
-import uploadCO from '../../Components/uploadCO';
+import forms from '../../Components/forms';
 
 describe('init', () => {
     it('adds a validDoc eventListener to continue button', () => {
         const spy = jest.spyOn(document, 'addEventListener');
 
-        uploadCO.init('continue');
+        forms.init('continue');
 
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith('validDoc', expect.any(Function));
@@ -19,7 +19,7 @@ describe('init', () => {
 
         const button = document.getElementById('continue');
 
-        uploadCO.init('continue');
+        forms.init('continue');
 
         const event = new CustomEvent(
             'validDoc',
@@ -44,7 +44,7 @@ describe('removeDisabledFrom', () => {
 
         const button = document.getElementById('continue');
 
-        uploadCO.removeDisabledFrom('continue');
+        forms.removeDisabledFrom('continue');
 
         expect(button.getAttributeNames()).not.toContain('disabled');
     })
