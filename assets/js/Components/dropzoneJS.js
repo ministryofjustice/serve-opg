@@ -1,4 +1,5 @@
 import Dropzone from 'dropzone/dist/min/dropzone.min';
+Dropzone.autoDiscover = false;
 
 class DropzoneJS {
     static setup(elementID, targetURL, maxFiles, fileIdentifier) {
@@ -9,7 +10,9 @@ class DropzoneJS {
             paramName: fileIdentifier,
             acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             autoDiscover: false,
-            createImageThumbnails: false
+            createImageThumbnails: false,
+            // previewsContainer: "#dropzone__template",
+            // previewTemplate: '#dropzone__template__file'
         });
 
         dz.on("success", function() {

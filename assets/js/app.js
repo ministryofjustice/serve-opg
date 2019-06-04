@@ -10,6 +10,9 @@ require('../css/app.css');
 require('../scss/application.scss');
 
 require('dropzone/dist/min/dropzone.min');
+import { initAll } from 'govuk-frontend'
+
+initAll();
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 const $ = require('jquery');
