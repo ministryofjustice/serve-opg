@@ -13,132 +13,135 @@ let getMockFile = () =>
        }
     });
 
-describe('instantiating Dropzone', () => {
-   describe('sets', () => {
-       document.body.innerHTML =
-           '<div id="court-order">' +
-           '</div>'                         +
-           '<div id="error" hidden="true">' +
-           '</div>';
-       let element = document.getElementById("court-order");
-       let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+let previewFileHTML = `
+<div id="dropzone__template__file">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-details govuk-body">
+            <div class="dz-filename"><span data-dz-name=""></span> <span class="dz-size" data-dz-size=""></span></div>
+            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+            <div class="dz-error-message govuk-error-message"><span data-dz-errormessage=""></span></div>
+        </div>
+    </div> 
+</div> 
+`;
 
-      it('paramName', () => {
-         expect(dz.options.paramName).toBe('court-order');
-      });
+let setDocumentBody = () => (
+    document.body.innerHTML = `
+        <div id="court-order"></div>
+        ${previewFileHTML}
+    `
+);
 
-      it('url', () => {
-         expect(dz.options.url).toBe('/orders/upload');
-      });
+describe('dropzoneJS', () => {
+    describe('instantiating Dropzone', () => {
+        describe('sets', () => {
+            setDocumentBody();
 
-      it('dictMaxFilesExceeded', () => {
-         expect(dz.options.dictMaxFilesExceeded).toBe('Only 1 document(s) can be uploaded');
-      });
+            let element = document.getElementById("court-order");
+            let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
 
-      it('maxFiles', () => {
-         expect(dz.options.maxFiles).toBe(1);
-      });
-   })
-});
+            it('paramName', () => {
+                expect(dz.options.paramName).toBe('court-order');
+            });
 
-describe('adding a file', () => {
-   describe('listed in acceptedFiles', () => {
-      it('should be accepted', () => {
-          document.body.innerHTML =
-              '<div id="court-order">' +
-              '</div>'                         +
-              '<div id="error" hidden="true">' +
-              '</div>';
-          let element = document.getElementById("court-order");
-          let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+            it('url', () => {
+                expect(dz.options.url).toBe('/orders/upload');
+            });
 
-         const acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-         let mockFile = getMockFile();
+            it('dictMaxFilesExceeded', () => {
+                expect(dz.options.dictMaxFilesExceeded).toBe('Only 1 document(s) can be uploaded');
+            });
 
-         acceptedTypes.forEach((type) => {
-            mockFile.type = type;
-            dz.accept(mockFile, err => expect(err).not.toBeDefined());
-         });
-      });
+            it('maxFiles', () => {
+                expect(dz.options.maxFiles).toBe(1);
+            });
+        })
+    });
 
-      it('should dispatch a validFile event', () => {
-          document.body.innerHTML =
-              '<div id="court-order">' +
-              '</div>'                         +
-              '<div id="error" hidden="true">' +
-              '</div>';
-          let element = document.getElementById("court-order");
-          let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+    describe('adding a file', () => {
+        describe('listed in acceptedFiles', () => {
+            it('should be accepted', () => {
+                setDocumentBody();
 
-          const spy = jest.spyOn(document, 'dispatchEvent');
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
 
-          const expectedEvent = new CustomEvent(
-             'validDoc',
-             {
-                detail: { valid: true }
-             }
-          );
+                const acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                let mockFile = getMockFile();
 
-          const mockFile = getMockFile();
-          dz.addFile(mockFile);
+                acceptedTypes.forEach((type) => {
+                    mockFile.type = type;
+                    dz.accept(mockFile, err => expect(err).not.toBeDefined());
+                });
+            });
 
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(expectedEvent);
-      })
-   });
+            it('should dispatch a validFile event', () => {
+                setDocumentBody();
 
-   describe('not listed in acceptedFiles', () => {
-      it('should be rejected', () => {
-          document.body.innerHTML =
-              '<div id="court-order">' +
-              '</div>'                         +
-              '<div id="error" hidden="true">' +
-              '</div>';
-          let element = document.getElementById("court-order");
-          let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
 
-         const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
-         nonAcceptedTypes.forEach((type) => {
-            dz.accept({ type: type }, err => expect(err).toBeDefined());
-         });
-      });
-   });
+                const spy = jest.spyOn(document, 'dispatchEvent');
 
-   describe('maxfilesexceeded event', () => {
-       it('removes the last added file', () => {
-           document.body.innerHTML =
-               '<div id="court-order">' +
-               '</div>'                         +
-               '<div id="error" hidden="true">' +
-               '</div>';
-           let element = document.getElementById("court-order");
-           let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                const expectedEvent = new CustomEvent(
+                    'validDoc',
+                    {
+                        detail: { valid: true }
+                    }
+                );
 
-           const spy = jest.spyOn(dz, 'removeFile');
+                const mockFile = getMockFile();
+                dz.addFile(mockFile);
 
-           let mockFile = getMockFile();
-           dz.addFile(mockFile);
-           dz.addFile(mockFile);
+                expect(spy).toHaveBeenCalledTimes(1);
+                expect(spy).toHaveBeenCalledWith(expectedEvent);
+            })
+        });
 
-           expect(spy).toHaveBeenCalledTimes(1);
-           expect(spy).toHaveBeenCalledWith(mockFile);
-       });
+        describe('not listed in acceptedFiles', () => {
+            it('should be rejected', () => {
+                setDocumentBody();
 
-      it('alerts user that max file limit has been reached', () => {
-          document.body.innerHTML =
-              '<div id="court-order">' +
-              '</div>'                         +
-              '<div id="error" hidden="true">' +
-              '</div>';
-          let element = document.getElementById("court-order");
-          let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
 
-          dz.addFile(getMockFile());
+                const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
+                nonAcceptedTypes.forEach((type) => {
+                    dz.accept({ type: type }, err => expect(err).toBeDefined());
+                });
+            });
+        });
 
-          const errorDiv = document.getElementById('error');
+        describe('maxfilesexceeded event', () => {
+            it('removes the last added file', () => {
+                setDocumentBody();
 
-          expect(errorDiv.hidden).toBe(false);
-          expect(errorDiv.innerText).toContain('Only 1 document(s) can be uploaded');
-      });
-   })
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+
+                const spy = jest.spyOn(dz, 'removeFile');
+
+                let mockFile = getMockFile();
+                dz.files.push(mockFile);
+                dz.addFile(mockFile);
+
+                expect(spy).toHaveBeenCalledTimes(1);
+                expect(spy).toHaveBeenCalledWith(mockFile);
+            });
+
+            it('alerts user that max file limit has been reached', () => {
+                setDocumentBody();
+
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+
+                let mockFile = getMockFile();
+                dz.addFile(mockFile);
+
+                const errorDiv = document.querySelector('.dz-error-message');
+
+                expect(errorDiv.innerHTML).toContain('Only 1 document(s) can be uploaded');
+            });
+        })
+    });
 });

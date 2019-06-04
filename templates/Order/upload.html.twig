@@ -12,44 +12,7 @@
 {% endblock %}
 
 {% block content %}
-        <div class="dropzone" id="court-order">
-            <div class="dropzone dropzone-previews" id="dropzone__template__file"></div>
-
-            <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">How to find the court order.</span>
-                </summary>
-                <div class="govuk-details__text">
-                    <ol>
-                        <li>Open the PD folder</li>
-                        <li>From here, open the ? folder</li>
-                        <li>Then open the 'Court Orders' folder for the year the court order was made (eg: 'Court orders 2019')</li>
-                        <li>Search the folder for the court order number to find the matching files</li>
-                    </ol>
-
-                    <p>Remember to upload the word version of the court order</p>
-
-                    <div class="govuk-checkboxes" >
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="carcasses">
-                            <label class="govuk-label govuk-checkboxes__label" for="waste-1">
-                                I cannot find the microsoft word version of the court order
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </details>
-
-            <button type="submit" disabled="disabled" class="govuk-button" id="continue">
-                Continue
-            </button>
-
-            <div id="error" class="hidden"></div>
-        </div>
-{% endblock %}
-
-{% block bodyEnd %}
-    <div id="dropzone__template" class="dropzone-previews">
+    <div id="court-order" class='dropzone'>
         <div class="dz-default dz-message govuk-body">
             <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
             <div class="govuk-grid-column-one-half"></div>
@@ -58,6 +21,38 @@
             <button class="govuk-button govuk-button--secondary">Choose documents</button>
         </div>
     </div>
+
+    <button type="submit" disabled="disabled" class="govuk-button" id="continue">
+        Continue
+    </button>
+
+    <details class="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">How to find the court order.</span>
+        </summary>
+        <div class="govuk-details__text">
+            <ol>
+                <li>Open the PD folder</li>
+                <li>From here, open the ? folder</li>
+                <li>Then open the 'Court Orders' folder for the year the court order was made (eg: 'Court orders 2019')</li>
+                <li>Search the folder for the court order number to find the matching files</li>
+            </ol>
+
+            <p>Remember to upload the word version of the court order</p>
+
+            <div class="govuk-checkboxes" >
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="waste-1" name="waste" type="checkbox" value="carcasses">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste-1">
+                        I cannot find the microsoft word version of the court order
+                    </label>
+                </div>
+            </div>
+        </div>
+    </details>
+{% endblock %}
+
+{% block bodyEnd %}
     <div id="dropzone__template__file">
         <div class="dz-preview dz-file-preview">
             <div class="dz-details govuk-body">
@@ -67,4 +62,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}
