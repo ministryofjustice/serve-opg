@@ -121,6 +121,21 @@ describe('forms', () => {
 
                 expect(button.getAttributeNames()).not.toContain('disabled');
             })
+
+            it('receiving a docRemoved event with fileLimitExceeded set to true', () => {
+                const button = document.getElementById('continue');
+
+                const event = new CustomEvent(
+                    'docRemoved',
+                    {
+                        detail: {fileLimitExceeded: true}
+                    }
+                );
+
+                document.dispatchEvent(event);
+
+                expect(button.getAttributeNames()).not.toContain('disabled');
+            });
         });
 
         describe('is disabled by', () => {
@@ -129,10 +144,15 @@ describe('forms', () => {
                 forms.init('continue');
             });
 
-            it('receiving a docRemoved event', () => {
+            it('receiving a docRemoved event with fileLimitExceeded set to false', () => {
                 const button = document.getElementById('continue');
 
-                const event = new CustomEvent('docRemoved');
+                const event = new CustomEvent(
+                    'docRemoved',
+                    {
+                        detail: {fileLimitExceeded: false}
+                    }
+                );
 
                 document.dispatchEvent(event);
 

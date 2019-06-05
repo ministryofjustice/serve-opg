@@ -7,6 +7,10 @@ class forms {
         });
 
         document.addEventListener('docRemoved', (e) => {
+            if (e.detail.fileLimitExceeded) {
+                this.removeDisabledFrom(elementId)
+                return
+            }
             this.addDisabledTo(elementId)
         });
 

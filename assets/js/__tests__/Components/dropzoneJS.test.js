@@ -1,17 +1,18 @@
 import DropzoneJS from '../../Components/dropzoneJS';
 import Dropzone from 'dropzone/dist/min/dropzone.min';
 
-let getMockFile = () =>
-    ({
-       status: Dropzone.ADDED,
-       accepted: true,
-       name: "test file name",
-       size: 123456,
-       type: "image/jpeg",
-       upload: {
-          filename: "test file name"
-       }
-    });
+let getMockFile = () => {
+    return {
+        status: Dropzone.ADDED,
+        accepted: true,
+        name: "test file name",
+        size: 123456,
+        type: "image/jpeg",
+        upload: {
+            filename: "test file name"
+        }
+    }
+}
 
 let previewFileHTML = `
 <div id="dropzone__template__file">
@@ -25,13 +26,13 @@ let previewFileHTML = `
 </div> 
 `;
 
-let setDocumentBody = () => (
+let setDocumentBody = () => {
     document.body.innerHTML = `
         <div id="court-order"></div>
         ${previewFileHTML}
         <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
-    `
-);
+    `;
+}
 
 describe('dropzoneJS', () => {
     describe('instantiating Dropzone', () => {
@@ -113,36 +114,90 @@ describe('dropzoneJS', () => {
             });
         });
 
-        describe('maxfilesexceeded event', () => {
-            it('removes the last added file', () => {
+        describe('addedFile event', () => {
+            describe('when maxfile limit has been exceeded', () => {
+                it('removes the last added file', () => {
+                    setDocumentBody();
+
+                    let element = document.getElementById("court-order");
+                    let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+
+                    const spy = jest.spyOn(dz, 'removeFile');
+
+                    let mockFile = getMockFile();
+                    dz.addFile(mockFile);
+                    dz.addFile(mockFile);
+
+                    expect(spy).toHaveBeenCalledTimes(1);
+                    expect(spy).toHaveBeenCalledWith(mockFile);
+                });
+
+                it('alerts user that max file limit has been reached', () => {
+                    setDocumentBody();
+
+                    let element = document.getElementById("court-order");
+                    let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+
+                    let mockFile = getMockFile();
+                    dz.addFile(mockFile);
+
+                    const errorDiv = document.querySelector('.dz-error-message');
+
+                    expect(errorDiv.innerHTML).toContain('Only 1 document(s) can be uploaded');
+                });
+            });
+        });
+    });
+
+    describe('removing a file', () => {
+        describe('equal or less than max file limit', () => {
+            it('should dispatch a docRemoved event with fileLimitExceeded equal to false', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
                 let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
 
-                const spy = jest.spyOn(dz, 'removeFile');
+                const spy = jest.spyOn(document, 'dispatchEvent');
 
-                let mockFile = getMockFile();
-                dz.files.push(mockFile);
+                const expectedEvent = new CustomEvent(
+                    'docRemoved',
+                    {
+                        detail: {fileLimitExceeded: false}
+                    }
+                );
+
+                const mockFile = getMockFile();
                 dz.addFile(mockFile);
+                dz.removeFile(mockFile);
 
-                expect(spy).toHaveBeenCalledTimes(1);
-                expect(spy).toHaveBeenCalledWith(mockFile);
+                expect(spy).toHaveBeenCalledWith(expectedEvent);
             });
+        });
 
-            it('alerts user that max file limit has been reached', () => {
+        describe('more than max file limit', () => {
+            it('should not dispatch a docRemoved event with fileLimitExceeded equal to true', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
                 let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
 
-                let mockFile = getMockFile();
+                const spy = jest.spyOn(document, 'dispatchEvent');
+
+                const expectedEvent = new CustomEvent(
+                    'docRemoved',
+                    {
+                        detail: {fileLimitExceeded: true}
+                    }
+                );
+
+                const mockFile = getMockFile();
+
                 dz.addFile(mockFile);
+                dz.addFile(mockFile);
+                dz.removeFile(mockFile);
 
-                const errorDiv = document.querySelector('.dz-error-message');
-
-                expect(errorDiv.innerHTML).toContain('Only 1 document(s) can be uploaded');
+                expect(spy).toHaveBeenCalledWith(expectedEvent);
             });
-        })
+        });
     });
 });

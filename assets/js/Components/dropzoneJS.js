@@ -13,29 +13,13 @@ class DropzoneJS {
             acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             autoDiscover: false,
             createImageThumbnails: false,
-            previewTemplate: previewTemplate
+            previewTemplate: previewTemplate,
+            addRemoveLinks: true
         });
 
-        dz.on("success", function() {
-            if (dz.files.length > dz.options.maxFiles) {
-                let errorDiv = document.querySelector('.dz-error-message ');
-                errorDiv.innerText = dz.options.dictMaxFilesExceeded;
-                errorDiv.hidden = false;
-                dz.removeFile(file);
-                return;
-            }
-
-            const event = new CustomEvent(
-                'validDoc',
-                {
-                    detail: { valid: true }
-                }
-            );
-            document.dispatchEvent(event);
-        });
-
-        dz.on('maxfilesexceeded', (file) => {
-            // Having to hack around what, appears to be, a bug with setting maxFiles to 1:
+        dz.on('addedfile', (file) => {
+            // Having to hack around what, appears to be, a bug with setting maxFiles to 1 preventing the use
+            // of maxfilesexceeded event:
             //
             // # dropzone.js - accept() {
             // ...
@@ -52,14 +36,27 @@ class DropzoneJS {
                 let errorDiv = document.querySelector('.dz-error-message ');
                 errorDiv.innerText = dz.options.dictMaxFilesExceeded;
                 errorDiv.hidden = false;
+                file.fileLimitExceeded = true;
                 dz.removeFile(file);
                 return;
             }
+        });
 
+        dz.on("success", () => {
             const event = new CustomEvent(
                 'validDoc',
                 {
                     detail: { valid: true }
+                }
+            );
+            document.dispatchEvent(event);
+        });
+
+        dz.on('removedfile', (file) => {
+            const event = new CustomEvent(
+                'docRemoved',
+                {
+                    detail: { fileLimitExceeded: file.fileLimitExceeded }
                 }
             );
             document.dispatchEvent(event);
