@@ -160,6 +160,7 @@ services:
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
+      - APP_ENV=test
 
   qa:
     image: jakzal/phpqa:alpine
