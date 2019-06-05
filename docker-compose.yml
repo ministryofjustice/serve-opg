@@ -158,6 +158,8 @@ services:
       - DC_S3_ENDPOINT=http://localstack:4572
       - DYNAMODB_ENDPOINT=http://localstack:4569
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
 
   qa:
     image: jakzal/phpqa:alpine
