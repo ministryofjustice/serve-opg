@@ -39,7 +39,7 @@ jobs:
             rm -rf features/demo.feature
 
             # Generate static assets
-            docker-compose run --rm npm
+            docker-compose run --rm yarn install
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
@@ -79,7 +79,7 @@ jobs:
             # Vendor php dependencies
             docker-compose run --rm composer
             # Generate static assets
-            docker-compose run --rm npm
+            docker-compose run --rm yarn
             # Build app
             docker-compose build web
             docker-compose build app

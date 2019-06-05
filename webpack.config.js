@@ -20,8 +20,7 @@ Encore
     .addEntry('app', './assets/js/app.js')
     .addEntry('uploadCO', './assets/js/PageSpecific/uploadCO.js')
     .addEntry('orderSummary', './assets/js/PageSpecific/orderSummary.js')
-    //.addEntry('page1', './assets/js/page1.js')
-    //.addEntry('page2', './assets/js/page2.js')
+    .addEntry('timeout', './assets/js/PageSpecific/timeout.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

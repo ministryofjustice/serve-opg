@@ -1,9 +1,18 @@
 {% set translationDomain = "popup-timeout" %}
 {% trans_default_domain translationDomain %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('timeout') }}
+{% endblock %}
 
-<div class="session-timeout-underlay">
+{#Using data attributes to pass twig vars to javascript#}
+<div class="session-timeout-underlay"
+     data-session-expires="{{ session_expires_seconds|default(1500) }}"
+     data-session-popup-show-after="{{ session_popup_show_after|default(1200) }}"
+     data-keep-alive-url="{{ path('session-keep-alive') }}">
 </div>
+
 <div id="timeoutPopup" data-role="timeout-popup" class="session-timeout js-session-timeout">
     <div class="session-timeout-dialog">
 

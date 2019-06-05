@@ -1,3 +1,6 @@
+import jquery from 'jquery'
+
+const $ = jquery;
 // Postcode lookup module
 
 /*jshint browser: true */

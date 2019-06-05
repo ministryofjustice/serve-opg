@@ -2,9 +2,7 @@ import jquery from 'jquery'
 import Dropzone from 'dropzone/dist/min/dropzone.min';
 
 const $ = jquery;
-// Inline upload module
 
-/*jshint browser: true */
 class InlineUpload {
     constructor() {
         this.settings = {
