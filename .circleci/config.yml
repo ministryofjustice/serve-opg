@@ -45,7 +45,7 @@ jobs:
           paths:
           - vendor
       - save_cache:
-          key: node_modules-{{ checksum yarn.lock" }}
+          key: node_modules-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
       - run:

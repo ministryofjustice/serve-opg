@@ -38,7 +38,7 @@ class OrderControllerTest extends WebTestCase
             ['PHP_AUTH_USER' => 'behat@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234',]
         );
 
-        self::assertTrue($symfonyClient->getResponse()->isSuccessful());
+        self::assertEquals(true, $symfonyClient->getResponse()->isSuccessful());
         self::assertEquals($expectedJSONResponse, $symfonyClient->getResponse()->getContent());
     }
 }
