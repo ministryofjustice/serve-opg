@@ -29,6 +29,7 @@ let setDocumentBody = () => (
     document.body.innerHTML = `
         <div id="court-order"></div>
         ${previewFileHTML}
+        <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
     `
 );
 

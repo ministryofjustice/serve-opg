@@ -1,51 +1,155 @@
 import forms from '../../Components/forms';
 
-describe('init', () => {
-    it('adds a validDoc eventListener to continue button', () => {
-        const spy = jest.spyOn(document, 'addEventListener');
+let setDocumentBody = (buttonDisabled) => {
+    const button = buttonDisabled ? '<button id="continue" disabled />' : '<button id="continue"/>';
 
-        forms.init('continue');
+    document.body.innerHTML = `
+        <div>
+            ${button}
+        </div>
+        <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
+    `
+};
 
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenCalledWith('validDoc', expect.any(Function));
+describe('forms', () => {
+    describe('init', () => {
+        it('adds required eventListeners to document', () => {
+            setDocumentBody(true);
+
+            const spy = jest.spyOn(document, 'addEventListener');
+
+            forms.init('continue');
+
+            expect(spy).toHaveBeenCalledTimes(2);
+            expect(spy).toHaveBeenCalledWith('validDoc', expect.any(Function));
+            expect(spy).toHaveBeenCalledWith('docRemoved', expect.any(Function));
+        });
+
+        it('adds required eventListeners to checkbox', () => {
+            setDocumentBody(true);
+
+            const checkBox = document.getElementById('cannot-find-checkbox');
+
+            const spy = jest.spyOn(checkBox, 'addEventListener');
+
+            forms.init('continue');
+
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith('click', expect.any(Function));
+        });
     });
 
-    it('receiving a validDoc event enables continue button', () => {
-        // Set up our document body
-        document.body.innerHTML =
-            '<div>' +
-            '  <button id="continue" disabled="true" />' +
-            '</div>';
+    describe('removeDisabledFrom', () => {
+        it('removes disabled attribute from target element', () => {
+            setDocumentBody(true);
 
-        const button = document.getElementById('continue');
+            const button = document.getElementById('continue');
 
-        forms.init('continue');
+            forms.removeDisabledFrom('continue');
 
-        const event = new CustomEvent(
-            'validDoc',
-            {
-                detail: { valid: true }
-            }
-        );
+            expect(button.getAttributeNames()).not.toContain('disabled');
+        })
+    });
 
-        document.dispatchEvent(event);
+    describe('addDisabledTo', () => {
+        it('adds disabled attribute to target element', () => {
+            setDocumentBody(false);
 
-        expect(button.getAttributeNames()).not.toContain('disabled');
+            const button = document.getElementById('continue');
+
+            forms.addDisabledTo('continue');
+
+            expect(button.getAttributeNames()).toContain('disabled');
+        })
+    });
+
+    describe('toggleDisabled', () => {
+        describe('when target element is disabled', () => {
+            it('should remove disabled attribute', () => {
+                setDocumentBody(true);
+
+                const button = document.getElementById('continue');
+
+                forms.toggleDisabled('continue');
+
+                expect(button.getAttributeNames()).not.toContain('disabled');
+            })
+        });
+
+        describe('when target element is not disabled', () => {
+            it('should add disabled attribute', () => {
+                setDocumentBody(false);
+
+                const button = document.getElementById('continue');
+
+                forms.toggleDisabled('continue');
+
+                expect(button.getAttributeNames()).toContain('disabled');
+            })
+        });
     })
+
+    describe('continue button', () => {
+        describe('is enabled by', () => {
+            beforeEach(() => {
+                setDocumentBody(true);
+                forms.init('continue');
+            });
+
+            it('receiving a validDoc event', () => {
+                const button = document.getElementById('continue');
+
+                const event = new CustomEvent(
+                    'validDoc',
+                    {
+                        detail: { valid: true }
+                    }
+                );
+
+                document.dispatchEvent(event);
+
+                expect(button.getAttributeNames()).not.toContain('disabled');
+            });
+
+            it('receiving a click event', () => {
+                const checkBox = document.getElementById('cannot-find-checkbox');
+                const button = document.getElementById('continue');
+
+                const event = new MouseEvent('click');
+
+                checkBox.dispatchEvent(event);
+
+                expect(button.getAttributeNames()).not.toContain('disabled');
+            })
+        });
+
+        describe('is disabled by', () => {
+            beforeEach(() => {
+                setDocumentBody(false);
+                forms.init('continue');
+            });
+
+            it('receiving a docRemoved event', () => {
+                const button = document.getElementById('continue');
+
+                const event = new CustomEvent('docRemoved');
+
+                document.dispatchEvent(event);
+
+                expect(button.getAttributeNames()).toContain('disabled');
+            });
+
+            it('receiving a click event', () => {
+                const checkBox = document.getElementById('cannot-find-checkbox');
+                const button = document.getElementById('continue');
+
+                const event = new MouseEvent('click');
+
+                checkBox.dispatchEvent(event);
+
+                expect(button.getAttributeNames()).toContain('disabled');
+            })
+        });
+    });
 });
 
-describe('removeDisabledFrom', () => {
-    it('removes disabled attribute from target element', () => {
-        // Set up our document body
-        document.body.innerHTML =
-            '<div>' +
-            '  <button id="continue" disabled="true" />' +
-            '</div>';
-
-        const button = document.getElementById('continue');
-
-        forms.removeDisabledFrom('continue');
-
-        expect(button.getAttributeNames()).not.toContain('disabled');
-    })
-});
