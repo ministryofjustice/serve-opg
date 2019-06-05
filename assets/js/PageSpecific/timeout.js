@@ -1,9 +1,11 @@
+import SessionTimeoutDialog from '../Components/sessionTimeoutDialog'
+
 // instantiate object and attach events on page load
 $().ready(function () { // $DOM READY EVENT
 
     let overlay = document.querySelector('.session-timeout-underlay'),
     sessionExpires = overlay.dataset.sessionExpires,
-    sessionShowPopupMs = overlay.dataset.sessionPopusShowAfter,
+    sessionShowPopupMs = overlay.dataset.sessionPopupShowAfter,
     keepAliveUrl = overlay.dataset.keepAliveUrl;
 
     new SessionTimeoutDialog({
@@ -12,5 +14,4 @@ $().ready(function () { // $DOM READY EVENT
         'sessionPopupShowAfterMs': sessionShowPopupMs * 1000,
         'keepSessionAliveUrl': keepAliveUrl
     }).startCountdown();
-
 });

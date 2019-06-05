@@ -2,7 +2,6 @@
 {% trans_default_domain translationDomain %}
 
 {% block javascripts %}
-    {{ parent() }}
     {{ encore_entry_script_tags('timeout') }}
 {% endblock %}
 
@@ -32,23 +31,3 @@
 
     </div>
 </div>
-
-<script>
-
-    // instantiate object and attach events on page load
-    $().ready(function () { // $DOM READY EVENT
-
-        var sessionExpires = {{ session_expires_seconds|default(1500) }},
-            sessionShowPopupMs = {{ session_popup_show_after|default(1200) }},
-            keepAliveUrl = '{{ path('session-keep-alive') }}';
-
-        new SessionTimeoutDialog({
-            'element': $('#timeoutPopup'),
-            'sessionExpiresMs': sessionExpires * 1000,
-            'sessionPopupShowAfterMs': sessionShowPopupMs * 1000,
-            'keepSessionAliveUrl': keepAliveUrl
-        }).startCountdown();
-
-    });
-
-</script>

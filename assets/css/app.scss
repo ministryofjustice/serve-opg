@@ -3,7 +3,7 @@ $govuk-global-styles: true;
 $govuk-page-width: 1200px;
 $govuk-assets-path: '/build/';
 $govuk-font-family: helvetica, arial;
-@import "../../node_modules/govuk-frontend/all";
+@import "~govuk-frontend/all";
 
 // GOVUK extensions
 @import "govuk-extension/core/links";
