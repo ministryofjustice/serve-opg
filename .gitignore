@@ -19,7 +19,6 @@ node_modules
 bootstrap.php.cache
 *.iml
 .env.local
-docker-compose.local.yml
 var
 **/*.crt
 **/*.key
