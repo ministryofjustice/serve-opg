@@ -2,14 +2,16 @@
 
 namespace App\Tests\Controller;
 
+use App\Controller\OrderController;
 use App\Service\DocumentService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
-class OrderControllerTest extends WebTestCase
+class OrderControllerTest extends TestCase
 {
     public function setUp()
     {
@@ -24,21 +26,20 @@ class OrderControllerTest extends WebTestCase
      */
     public function testStep1Process()
     {
+        $sut = new OrderController(
+            $this->em->reveal(),
+            $this->orderService->reveal(),
+            $this->documentService->reveal()
+        );
+
         $fileLocation = __DIR__ . '/validCO.docx';
         $file = new UploadedFile($fileLocation, 'validCO.docx', 'application/msword', null);
         $expectedJSONResponse = json_encode(['valid' => true]);
 
-        $symfonyClient = static::createClient();
-        $symfonyClient->request(
-            'POST',
-            '/order/1/step-1-process',
-            [],
-            ['court-order' => $file],
-            // Use basic auth to skip login redirect
-            ['PHP_AUTH_USER' => 'unitTests@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234',]
-        );
+        $request = new Request([], [], [], [], ['court-order' => $file]);
 
-        self::assertEquals(200, $symfonyClient->getResponse()->getStatusCode());
-        self::assertEquals($expectedJSONResponse, $symfonyClient->getResponse()->getContent());
+        $response = $sut->step1Process($request);
+
+        self::assertEquals($expectedJSONResponse, $response->getContent());
     }
 }
