@@ -72,7 +72,7 @@ class ReportService
         $filters = [
             'type' => 'served'
         ];
-        return $this->orderRepo->getOrders($filters, 1000);
+        return $this->orderRepo->getOrders($filters, 10000);
     }
 
     public function getCasesBeforeGoLive() {
