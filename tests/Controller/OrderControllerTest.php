@@ -35,7 +35,7 @@ class OrderControllerTest extends WebTestCase
             [],
             ['court-order' => $file],
             // Use basic auth to skip login redirect
-            ['PHP_AUTH_USER' => 'behat@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234',]
+            ['PHP_AUTH_USER' => 'unitTests@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234',]
         );
 
         self::assertEquals(200, $symfonyClient->getResponse()->getStatusCode());
