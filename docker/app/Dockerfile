@@ -21,23 +21,13 @@ COPY .env .env
 COPY config config
 COPY templates templates
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
+COPY docker/app/xdebug.sh xdebug.sh
+RUN chmod 777 xdebug.sh
 
 ARG WITH_XDEBUG
 ENV WITH_XDEBUG=${WITH_XDEBUG:-false}
 
-RUN if [ $WITH_XDEBUG = "true" ] ; then \
-        apk --no-cache add autoconf alpine-sdk; \
-        pecl install xdebug; \
-        docker-php-ext-enable xdebug; \
-        echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_host=docker.for.mac.host.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_port=10000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_log="/tmp/xdebug.log"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        apk --no-cache del autoconf alpine-sdk; \
-    fi ;
+RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
