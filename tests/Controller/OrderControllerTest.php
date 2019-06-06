@@ -21,9 +21,6 @@ class OrderControllerTest extends TestCase
         $this->documentService = $this->prophesize(DocumentService::class);
     }
 
-    /**
-     * @group acs
-     */
     public function testStep1Process()
     {
         $sut = new OrderController(
@@ -32,7 +29,7 @@ class OrderControllerTest extends TestCase
             $this->documentService->reveal()
         );
 
-        $fileLocation = __DIR__ . '/validCO.docx';
+        $fileLocation = '../TestData/validCO.docx';
         $file = new UploadedFile($fileLocation, 'validCO.docx', 'application/msword', null);
         $expectedJSONResponse = json_encode(['valid' => true]);
 
