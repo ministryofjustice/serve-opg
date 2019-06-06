@@ -83,7 +83,7 @@ jobs:
             # Vendor php dependencies
             docker-compose run --rm composer
             # install js dependencies
-            docker-compose run --rm yarn build
+            docker-compose run --rm yarn install
             # Generate static assets
             docker-compose run --rm yarn build
             # Build app
