@@ -17,19 +17,19 @@
         <title>{% block htmlTitle %}{% endblock %} - Serve OPG - GOV.UK</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="shortcut icon" href="{{ 'images/favicon.ico' | assetUrl }}" type="image/x-icon" />
-        <link rel="mask-icon" href="{{ 'images/govuk-mask-icon.svg' | assetUrl }}" color="#0b0c0c">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ 'images/govuk-apple-touch-icon-180x180.png' | assetUrl }}">
-        <link rel="apple-touch-icon" sizes="167x167" href="{{ 'images/govuk-apple-touch-icon-167x167.png' | assetUrl }}">
-        <link rel="apple-touch-icon" sizes="152x152" href="{{ 'images/govuk-apple-touch-icon-152x152.png' | assetUrl }}">
-        <link rel="apple-touch-icon" href="{{ 'images/govuk-apple-touch-icon.png' | assetUrl }}">
+        <link rel="shortcut icon" href="{{ asset('build/images/favicon.ico') }}" type="image/x-icon" />
+        <link rel="mask-icon" href="{{ asset('build/images/govuk-mask-icon.svg') }}" color="#0b0c0c">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('build/images/govuk-apple-touch-icon-180x180.png') }}">
+        <link rel="apple-touch-icon" sizes="167x167" href="{{ asset('build/images/govuk-apple-touch-icon-167x167.png') }}">
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('build/images/govuk-apple-touch-icon-152x152.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('build/images/govuk-apple-touch-icon.png') }}">
 
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
         {# The default og:image is added below head so that scrapers see any custom metatags first, and this is just a fallback #}
-        <meta property="og:image" content="{{ 'images/govuk-opengraph-image.png' | assetUrl }}">
+        <meta property="og:image" content="{{ asset('build/images/govuk-opengraph-image.png') }}">
     </head>
 
     <body class="govuk-template__body -debug">
