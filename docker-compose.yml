@@ -67,7 +67,6 @@ services:
       - localstack
       - postgres
       - sirius-api
-    working_dir: /var/www
     volumes:
       - .:/app
 
