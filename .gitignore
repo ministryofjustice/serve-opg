@@ -12,7 +12,6 @@ behat.yml
 ###< behat/symfony2-extension ###
 .idea
 **/public/assets
-node_modules
 */bin/jp.php
 **/vendor
 bootstrap.php.cache
