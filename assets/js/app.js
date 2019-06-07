@@ -7,8 +7,8 @@
 
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.scss');
-
 require('dropzone/dist/min/dropzone.min');
+
 import { initAll } from 'govuk-frontend'
 
 initAll();
