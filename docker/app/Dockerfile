@@ -10,8 +10,6 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
   && chmod +x /usr/local/bin/waitforit
 
 WORKDIR /var/www
-# See this page for directories required
-# https://symfony.com/doc/3.4/quick_tour/the_architecture.html
 COPY public/index.php public/index.php
 RUN mkdir -p public/assets
 RUN mkdir -p tmp/screenshots
@@ -23,9 +21,17 @@ COPY .env .env
 COPY config config
 COPY templates templates
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
+COPY docker/app/xdebug.sh xdebug.sh
+RUN chmod 777 xdebug.sh
+
+ARG WITH_XDEBUG
+ENV WITH_XDEBUG=${WITH_XDEBUG:-false}
+
+RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
   && php bin/console doctrine:migrations:migrate --no-interaction \
   && chown -R www-data var \
   && php-fpm
+

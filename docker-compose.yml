@@ -72,6 +72,11 @@ services:
       - ./src:/var/www/src
       - ./public:/var/www/public
       - ./templates:/var/www/templates
+      - ./bin:/var/www/bin
+      - ./tests:/var/www/tests
+      - ./vendor:/var/www/vendor
+      - ./translations:/var/www/translations
+      - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
 
   sirius-api:
     image: stoplight/prism
