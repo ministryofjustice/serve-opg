@@ -10,8 +10,6 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
   && chmod +x /usr/local/bin/waitforit
 
 WORKDIR /var/www
-# See this page for directories required
-# https://symfony.com/doc/3.4/quick_tour/the_architecture.html
 COPY public/index.php public/index.php
 RUN mkdir -p public/assets
 RUN mkdir -p tmp/screenshots
@@ -23,28 +21,13 @@ COPY .env .env
 COPY config config
 COPY templates templates
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
+COPY docker/app/xdebug.sh xdebug.sh
+RUN chmod 777 xdebug.sh
 
 ARG WITH_XDEBUG
+ENV WITH_XDEBUG=${WITH_XDEBUG:-false}
 
-RUN if [ $WITH_XDEBUG = "true" ] ; then \
-        apk --no-cache add autoconf alpine-sdk; \
-    fi ;
-
-RUN if [ $WITH_XDEBUG = "true" ] ; then \
-        pecl install xdebug; \
-        docker-php-ext-enable xdebug; \
-        echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_host=docker.for.mac.host.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_port=10000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-        echo "xdebug.remote_log="/tmp/xdebug.log"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    fi ;
-
-RUN if [ $WITH_XDEBUG = "true" ] ; then \
-        apk --no-cache del autoconf alpine-sdk; \
-    fi ;
+RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
