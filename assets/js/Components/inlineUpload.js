@@ -146,7 +146,6 @@ class InlineUpload {
 
     setupDocumentMandatoryUpload() {
         var context = this;
-        console.log(context.$dropZoneTemplate);
 
         var dropZoneSettings = $.extend({}, context.settings.dropZone);
 

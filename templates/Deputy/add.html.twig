@@ -13,6 +13,11 @@
     {{ macro.errorSummary(form) }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent('app') }}
+    {{ encore_entry_script_tags('addDeputy') }}
+{% endblock %}
+
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
