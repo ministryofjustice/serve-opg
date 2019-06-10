@@ -44,10 +44,12 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     // enables @babel/preset-env polyfills
-    .configureBabel(() => {}, {
-        useBuiltIns: 'usage',
-        corejs: 3
-    })
+    // .configureBabel((babelconfig) => {
+    //     babelconfig.presets.push('@babel/preset-env');
+    // }, {
+    //     useBuiltIns: 'usage',
+    //     corejs: 3
+    // })
 
     // enables Sass/SCSS support
     .enableSassLoader()

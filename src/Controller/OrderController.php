@@ -10,6 +10,7 @@ use App\Service\DocumentService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -166,16 +167,14 @@ class OrderController extends AbstractController
      */
     public function step1Process(Request $request)
     {
+        /** @var UploadedFile $file */
         $file = $request->files->get('court-order');
-        $fileType = $file->getExtension();
-        $acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf' , 'doc', 'docx', 'tif'];
+        $fileType = $file->getClientOriginalExtension();
+        $acceptedTypes = ['doc', 'docx', 'tif', 'tiff'];
 
         if (!in_array($fileType, $acceptedTypes)) {
             return new Response(json_encode(['valid' => false]));
         }
-
-//        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
-//        $document = new Document($order, 'COURT_ORDER');
 
         return new Response(json_encode(['valid' => true]));
     }

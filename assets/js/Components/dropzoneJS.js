@@ -2,7 +2,7 @@ import Dropzone from 'dropzone/dist/min/dropzone.min';
 Dropzone.autoDiscover = false;
 
 class DropzoneJS {
-    static setup(elementID, targetURL, maxFiles, fileIdentifier) {
+    static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes) {
         const previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
 
         let dz =  new Dropzone(elementID, {
@@ -10,7 +10,7 @@ class DropzoneJS {
             maxFiles: maxFiles,
             dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
             paramName: fileIdentifier,
-            acceptedFiles: 'image/jpeg,image/png,image/tiff,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            acceptedFiles: acceptedTypes,
             autoDiscover: false,
             createImageThumbnails: false,
             previewTemplate: previewTemplate,
