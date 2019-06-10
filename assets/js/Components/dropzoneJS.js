@@ -7,17 +7,6 @@ class DropzoneJS {
 
         let dz =  new Dropzone(elementID, {
             url: targetURL,
-            maxFiles: maxFiles,
-            dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
-            paramName: fileIdentifier,
-            acceptedFiles: acceptedTypes,
-            autoDiscover: false,
-            createImageThumbnails: false,
-            previewTemplate: previewTemplate,
-            addRemoveLinks: true
-        });
-
-        dz.on('addedfile', (file) => {
             // Having to hack around what, appears to be, a bug with setting maxFiles to 1 preventing the use
             // of maxfilesexceeded event:
             //
@@ -31,15 +20,14 @@ class DropzoneJS {
             // }
             //
             // This checks for >= rather than > so will always emit maxfilesexceeded for maxFiles=1
-
-            if (dz.files.length > dz.options.maxFiles) {
-                let errorDiv = document.querySelector('.dz-error-message ');
-                errorDiv.innerText = dz.options.dictMaxFilesExceeded;
-                errorDiv.hidden = false;
-                file.fileLimitExceeded = true;
-                dz.removeFile(file);
-                return;
-            }
+            maxFiles: maxFiles + 1,
+            dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
+            paramName: fileIdentifier,
+            acceptedFiles: acceptedTypes,
+            autoDiscover: false,
+            createImageThumbnails: false,
+            previewTemplate: previewTemplate,
+            addRemoveLinks: true,
         });
 
         dz.on("success", () => {
@@ -50,6 +38,8 @@ class DropzoneJS {
                 }
             );
             document.dispatchEvent(event);
+            // reset maxFiles - see above in instantiating step for background
+            dz.options.maxFiles = maxFiles;
         });
 
         dz.on('removedfile', (file) => {
@@ -60,6 +50,14 @@ class DropzoneJS {
                 }
             );
             document.dispatchEvent(event);
+        });
+
+        dz.on('maxfilesexceeded', (file) => {
+            let errorDiv = document.querySelector('.dz-error-message ');
+            errorDiv.innerText = dz.options.dictMaxFilesExceeded;
+            errorDiv.hidden = false;
+            file.fileLimitExceeded = true;
+            dz.removeFile(file);
         });
 
         return dz;

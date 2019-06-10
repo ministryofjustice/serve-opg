@@ -1,13 +1,13 @@
 import DropzoneJS from '../../Components/dropzoneJS';
 import Dropzone from 'dropzone/dist/min/dropzone.min';
 
-let getMockFile = () => {
+let getMockFile = (fileType='image/jpeg') => {
     return {
         status: Dropzone.ADDED,
         accepted: true,
         name: "test file name",
         size: 123456,
-        type: "image/jpeg",
+        type: fileType,
         upload: {
             filename: "test file name"
         }
@@ -40,7 +40,12 @@ describe('dropzoneJS', () => {
             setDocumentBody();
 
             let element = document.getElementById("court-order");
-            let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+            let dz = DropzoneJS.setup(element,
+                '/orders/upload',
+                1,
+                'court-order',
+                'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            );
 
             it('paramName', () => {
                 expect(dz.options.paramName).toBe('court-order');
@@ -55,7 +60,30 @@ describe('dropzoneJS', () => {
             });
 
             it('maxFiles', () => {
-                expect(dz.options.maxFiles).toBe(1);
+                // hacking around a bug in the package - see dropzoneJS.setup() for details
+                expect(dz.options.maxFiles).toBe(2);
+            });
+
+            it('acceptedFiles', () => {
+                expect(dz.options.acceptedFiles).toBe(
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                );
+            });
+
+            it('autoDiscover', () => {
+                expect(dz.options.autoDiscover).toBe(false);
+            });
+
+            it('createImageThumbnails', () => {
+                expect(dz.options.createImageThumbnails).toBe(false);
+            });
+
+            it('previewTemplate', () => {
+                expect(dz.options.previewTemplate).toBe(document.getElementById('dropzone__template__file').innerHTML);
+            });
+
+            it('addRemoveLinks', () => {
+                expect(dz.options.addRemoveLinks).toBe(true);
             });
         })
     });
@@ -66,9 +94,13 @@ describe('dropzoneJS', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
-                const acceptedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                const acceptedTypes = ['image/tiff', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
                 let mockFile = getMockFile();
 
                 acceptedTypes.forEach((type) => {
@@ -81,7 +113,12 @@ describe('dropzoneJS', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
 
@@ -92,11 +129,16 @@ describe('dropzoneJS', () => {
                     }
                 );
 
-                const mockFile = getMockFile();
+                const mockFile = getMockFile('application/msword');
                 dz.addFile(mockFile);
 
-                expect(spy).toHaveBeenCalledTimes(1);
-                expect(spy).toHaveBeenCalledWith(expectedEvent);
+                // Add timeout here to give the queue time to process files
+                setTimeout(function() {
+                        expect(spy).toHaveBeenCalledTimes(1);
+                        expect(spy).toHaveBeenCalledWith(expectedEvent);
+                        return done();
+                    }
+                    , 10);
             })
         });
 
@@ -105,7 +147,12 @@ describe('dropzoneJS', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                );
 
                 const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
                 nonAcceptedTypes.forEach((type) => {
@@ -114,17 +161,22 @@ describe('dropzoneJS', () => {
             });
         });
 
-        describe('addedFile event', () => {
+        describe('maxfilesexceeded event', () => {
             describe('when maxfile limit has been exceeded', () => {
                 it('removes the last added file', () => {
                     setDocumentBody();
 
                     let element = document.getElementById("court-order");
-                    let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                    let dz = DropzoneJS.setup(element,
+                        '/orders/upload',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    );
 
                     const spy = jest.spyOn(dz, 'removeFile');
 
-                    let mockFile = getMockFile();
+                    let mockFile = getMockFile('application/msword');
                     dz.addFile(mockFile);
                     dz.addFile(mockFile);
 
@@ -136,14 +188,20 @@ describe('dropzoneJS', () => {
                     setDocumentBody();
 
                     let element = document.getElementById("court-order");
-                    let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                    let dz = DropzoneJS.setup(element,
+                        '/orders/upload',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    );
 
-                    let mockFile = getMockFile();
+                    let mockFile = getMockFile('application/msword');
+                    dz.addFile(mockFile);
                     dz.addFile(mockFile);
 
                     const errorDiv = document.querySelector('.dz-error-message');
 
-                    expect(errorDiv.innerHTML).toContain('Only 1 document(s) can be uploaded');
+                    expect(errorDiv.innerText).toContain('Only 1 document(s) can be uploaded');
                 });
             });
         });
