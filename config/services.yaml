@@ -11,6 +11,9 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
+            $projectDir: '%kernel.project_dir%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -125,7 +128,6 @@ services:
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
 
-
     Aws\DynamoDb\SessionConnectionInterface: "@App\\Common\\SessionConnectionCreatingTable"
 
     App\Common\BruteForceChecker: ~
@@ -205,10 +207,6 @@ services:
     # attempts checker configured to use the dynamoDb storage
     App\Service\Security\LoginAttempts\AttemptsStorageInterface:
         alias: App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
-
-    App\DataFixtures\DefaultFixtures:
-        arguments:
-            $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
 
     App\Controller\ManageController:
         arguments:
