@@ -18,7 +18,6 @@ Encore
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
-    .addEntry('uploadCO', './assets/js/PageSpecific/uploadCO.js')
     .addEntry('orderSummary', './assets/js/PageSpecific/orderSummary.js')
     .addEntry('timeout', './assets/js/PageSpecific/timeout.js')
     .addEntry('addDeputy', './assets/js/PageSpecific/addDeputy.js')
