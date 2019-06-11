@@ -42,7 +42,7 @@ jobs:
             docker-compose run --rm yarn install
 
             # Generate static assets
-            docker-compose run --rm yarn build-dev
+            docker-compose run --rm yarn build
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
