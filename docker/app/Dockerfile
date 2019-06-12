@@ -20,6 +20,7 @@ COPY bin bin
 COPY .env .env
 COPY config config
 COPY templates templates
+
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 COPY docker/app/xdebug.sh xdebug.sh
 RUN chmod 777 xdebug.sh

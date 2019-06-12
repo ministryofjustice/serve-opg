@@ -10,7 +10,7 @@ jobs:
             - vendor-{{ checksum "composer.lock" }}
       - restore_cache:
           keys:
-            - node_modules-{{ checksum "package-lock.json" }}
+            - node_modules-{{ checksum "yarn.lock" }}
       - run:
           name: Build Dependencies
           command: |
@@ -38,14 +38,17 @@ jobs:
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
 
+            # Install js dependencies
+            docker-compose run --rm yarn install
+
             # Generate static assets
-            docker-compose run --rm npm
+            docker-compose run --rm yarn build-dev
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
           - vendor
       - save_cache:
-          key: node_modules-{{ checksum "package-lock.json" }}
+          key: node_modules-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
       - run:
@@ -78,8 +81,10 @@ jobs:
           command: |
             # Vendor php dependencies
             docker-compose run --rm composer
+            # install js dependencies
+            docker-compose run --rm yarn install
             # Generate static assets
-            docker-compose run --rm npm
+            docker-compose run --rm yarn build
             # Build app
             docker-compose build web
             docker-compose build app
