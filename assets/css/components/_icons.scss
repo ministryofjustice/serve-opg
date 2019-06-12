@@ -1,9 +1,9 @@
 // Icons
 // ==========================================================================
 
-@import "settings/all";
-@import "tools/all";
-@import "helpers/all";
+@import "~govuk-frontend/settings/all";
+@import "~govuk-frontend/tools/all";
+@import "~govuk-frontend/helpers/all";
 
 // Icon mixin
 @mixin icon($icon-name, $icon-width, $icon-height, $icon-sub-folder:false) {
