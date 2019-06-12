@@ -67,16 +67,8 @@ services:
       - localstack
       - postgres
       - sirius-api
-    working_dir: /var/www
     volumes:
-      - ./src:/var/www/src
-      - ./public:/var/www/public
-      - ./templates:/var/www/templates
-      - ./bin:/var/www/bin
-      - ./tests:/var/www/tests
-      - ./vendor:/var/www/vendor
-      - ./translations:/var/www/translations
-      - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
+      - .:/app
 
   sirius-api:
     image: stoplight/prism
@@ -112,17 +104,14 @@ services:
       - install
       - --no-interaction
 
-  npm:
-    image: node:10.13-stretch
+  yarn:
+    image: node:12.3-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /app
     volumes:
       - .:/app
-    entrypoint: ["npm"]
-    command:
-      - i
-      - --unsafe-perm
+    entrypoint: ["yarn"]
 
   behat:
     image: php:7.2-fpm-alpine
@@ -159,6 +148,9 @@ services:
       - DC_S3_ENDPOINT=http://localstack:4572
       - DYNAMODB_ENDPOINT=http://localstack:4569
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - APP_ENV=test
 
   qa:
     image: jakzal/phpqa:alpine
