@@ -41,6 +41,8 @@ services:
       APP_PORT: 9000
       NGINX_LOG_LEVEL: warn
       VIRTUAL_HOST: web
+    volumes:
+      - ./public:/var/www/public
 
   app:
     build:
