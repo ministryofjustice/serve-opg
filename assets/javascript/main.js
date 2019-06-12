@@ -1,13 +1,9 @@
-import organisation from '../Components/organisation'
-import postcode from '../Components/postcodeLookup'
-
 // ====================================================================================
 // INITITALISE ALL MODULES
 
-$(document).ready(function() {
+window.GOVUKFrontend.initAll();
 
-    // organisation();
-    // postcode();
+$(document).ready(function() {
 
     // Organisation
     // Note: This has been removed for now. Leave in as might be used later.

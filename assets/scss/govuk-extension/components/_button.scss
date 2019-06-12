@@ -1,9 +1,9 @@
 // Button
 // ==========================================================================
 
-@import "~govuk-frontend/settings/all";
-@import "~govuk-frontend/tools/all";
-@import "~govuk-frontend/helpers/all";
+@import "settings/all";
+@import "tools/all";
+@import "helpers/all";
 
 @include govuk-exports("govuk/components/button-extended") {
     .govuk-button--secondary {
