@@ -112,14 +112,17 @@ services:
       - install
       - --no-interaction
 
-  yarn:
-    image: node:12.3-stretch
+  npm:
+    image: node:10.13-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /app
     volumes:
       - .:/app
-    entrypoint: ["yarn"]
+    entrypoint: ["npm"]
+    command:
+      - i
+      - --unsafe-perm
 
   behat:
     image: php:7.2-fpm-alpine
