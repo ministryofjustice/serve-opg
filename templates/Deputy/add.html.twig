@@ -1,4 +1,4 @@
-{% extends 'Layouts/base-template.html.twig' %}
+{% extends 'base.html.twig' %}
 {% form_theme form 'Form/govuk_frontend.html.twig' %}
 {% import 'Macros/_macros.html.twig' as macro %}
 
@@ -11,6 +11,11 @@
 
 {% block validationSummary %}
     {{ macro.errorSummary(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent('app') }}
+    {{ encore_entry_script_tags('addDeputy') }}
 {% endblock %}
 
 {% block content %}
