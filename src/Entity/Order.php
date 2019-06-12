@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use App\exceptions\WrongCaseNumberException;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Exception;
 
 abstract class Order
 {
@@ -45,11 +48,6 @@ abstract class Order
     private $client;
 
     /**
-     * @var string|null see TYPE_* values
-     */
-    private $type;
-
-    /**
      * @var string|null see SUBTYPE_* values
      */
     private $subType;
@@ -77,24 +75,24 @@ abstract class Order
     /**
      * Date order was created in DC database
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
     /**
      * Date order was first made outside DC
      *
-     * @var \DateTime
+     * @var DateTime
      */
     private $madeAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $issuedAt;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $servedAt;
 
@@ -113,17 +111,19 @@ abstract class Order
     private $apiResponse;
 
     /**
+     * Order constructor.
      * @param Client $client
-     * @param \DateTime $madeAt Date Order was first made, outside DC
-     * @param \DateTime $issuedAts
+     * @param DateTime $madeAt Date Order was first made, outside DC
+     * @param DateTime $issuedAt Date Order was issues at
+     * @throws Exception
      */
-    public function __construct(Client $client, \DateTime $madeAt, \DateTime $issuedAt)
+    public function __construct(Client $client, DateTime $madeAt, DateTime $issuedAt)
     {
         $this->client = $client;
         $this->madeAt = $madeAt;
         $this->issuedAt = $issuedAt;
 
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
         $this->deputies = new ArrayCollection();
         $this->documents = new ArrayCollection();
 
@@ -273,23 +273,23 @@ abstract class Order
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getMadeAt(): \DateTime
+    public function getMadeAt(): DateTime
     {
         return $this->madeAt;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getIssuedAt()
     {
@@ -350,19 +350,19 @@ abstract class Order
     }
 
     /**
-     * @param \DateTime|null $servedAt
+     * @param DateTime|null $servedAt
      * @return Order
      */
-    public function setServedAt(\DateTime $servedAt = null): Order
+    public function setServedAt(DateTime $servedAt = null): Order
     {
         $this->servedAt = $servedAt;
         return $this;
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getServedAt(): ?\DateTime
+    public function getServedAt(): ?DateTime
     {
         return $this->servedAt;
     }
@@ -433,5 +433,90 @@ abstract class Order
     {
         $this->apiResponse = $apiResponse;
         return $this;
+    }
+
+    /**
+     * @param $fileContents String, Text extracted from Court Order
+     *
+     * @return $this Returns an updated version of the order
+     * @throws WrongCaseNumberException
+     */
+    public function answerQuestionsFromText($fileContents)
+    {
+        $regex = "/ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)
+        \s*(?:DEPUTIES|DEPUTY)/m";
+
+        if (!$this->extractCaseNumber($fileContents)) {
+            throw new WrongCaseNumberException('The order provided does not have the correct case number for 
+            this record');
+        }
+
+        // Answer the questions from the order
+        $this->extractAppointmentTypeAndSubtype($fileContents, $regex);
+
+        if ($this->getType() === self::TYPE_PF || $this->getType() === self::TYPE_BOTH) {
+            $this->extractBondType($fileContents);
+        }
+
+        return $this;
+    }
+
+    private function extractCaseNumber($text)
+    {
+        preg_match("/No\. ([A-Z0-9]*)/m", $text, $matches);
+
+        if (strcmp($matches[1], $this->getClient()->getCaseNumber())) {
+            return true;
+        }
+        return false;
+    }
+
+    private function extractAppointmentTypeAndSubtype($text, $regex)
+    {
+        preg_match($regex, $text, $matches);
+
+        switch ($matches[1]) {
+            case null:
+                $this->setSubType('NEW ORDER');
+                break;
+            case 'NEW':
+                $this->setSubType('REPLACEMENT ORDER');
+                break;
+            case 'INTERIM':
+                $this->setSubType('INTERIM ORDER');
+                break;
+            default:
+                $this->setSubType(null);
+        }
+        
+        switch ($matches[2]) {
+            case null:
+                $this->setAppointmentType('SOLE');
+                break;
+            case 'SEVERAL':
+                $this->setAppointmentType('JOINT AND SEVERAL');
+                break;
+            case 'JOINT':
+                $this->setAppointmentType('JOINT');
+                break;
+            default:
+                $this->setAppointmentType(null);
+        }
+    }
+
+    private function extractBondType($text)
+    {
+        preg_match("/sum of (.*) in/", $text, $matches);
+
+        $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
+
+        switch ($bond) {
+            case ($bond >= 21000):
+                $this->setHasAssetsAboveThreshold('YES');
+                break;
+            case ($bond < 21000):
+                $this->setHasAssetsAboveThreshold('NO');
+                break;
+        }
     }
 }
