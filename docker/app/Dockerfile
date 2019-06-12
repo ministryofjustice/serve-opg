@@ -10,9 +10,17 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
   && chmod +x /usr/local/bin/waitforit
 
 WORKDIR /var/www
+COPY public/index.php public/index.php
+RUN mkdir -p public/assets
 RUN mkdir -p tmp/screenshots
+COPY vendor vendor
+COPY src src
+COPY translations translations
+COPY bin bin
+COPY .env .env
+COPY config config
+COPY templates templates
 
-COPY . /var/www
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 COPY docker/app/xdebug.sh xdebug.sh
 RUN chmod 777 xdebug.sh
