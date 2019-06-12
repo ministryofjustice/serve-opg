@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "1f3b757a65f09fc7ca0175e93a2668f9",
-=======
-    "content-hash": "cc3f4d728ef564c260b9e879cc514749",
->>>>>>> 430f88425fa8fbd43a366a414e109451723ca7af
+    "content-hash": "e48f922adc162400c834144f6f313d22",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -1442,16 +1438,16 @@
         },
         {
             "name": "doctrine/doctrine-fixtures-bundle",
-            "version": "3.2.0",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineFixturesBundle.git",
-                "reference": "13b2e8e1af099bc06f8611497fe079a4e0b4e497"
+                "reference": "90e4a4f968b2dae40e290a6ee516957af043f16c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/13b2e8e1af099bc06f8611497fe079a4e0b4e497",
-                "reference": "13b2e8e1af099bc06f8611497fe079a4e0b4e497",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/90e4a4f968b2dae40e290a6ee516957af043f16c",
+                "reference": "90e4a4f968b2dae40e290a6ee516957af043f16c",
                 "shasum": ""
             },
             "require": {
@@ -1502,7 +1498,7 @@
                 "Fixture",
                 "persistence"
             ],
-            "time": "2019-06-07T11:21:53+00:00"
+            "time": "2019-06-12T12:03:37+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -2630,6 +2626,41 @@
                 "sql"
             ],
             "time": "2014-01-12T16:20:24+00:00"
+        },
+        {
+            "name": "lukemadhanga/php-document-parser",
+            "version": "0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LukeMadhanga/PHPDocumentParser.git",
+                "reference": "97233b3cb737e09342c69e4607b4924f0df38142"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LukeMadhanga/PHPDocumentParser/zipball/97233b3cb737e09342c69e4607b4924f0df38142",
+                "reference": "97233b3cb737e09342c69e4607b4924f0df38142",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LukeMadhanga\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Luke Madhanga",
+                    "email": "luke@madhan.ga",
+                    "homepage": "http://madhan.ga",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP parser for getting the text from a .doc, .docx, .rtf or .txt file",
+            "time": "2019-03-21T09:30:26+00:00"
         },
         {
             "name": "mockery/mockery",
