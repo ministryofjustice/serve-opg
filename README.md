@@ -38,15 +38,8 @@ docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:
 # Vendor php dependencies
 docker-compose run --rm composer
 
-# Install javascript dependencies
-docker-compose run --rm yarn
-
-# Compile static assets
-docker-compose run --rm yarn build-dev
-
-OR
-
-docker-compose run --rm yarn watch (to autocompile on any file changes in assets folder)
+# Generate static assets
+docker-compose run --rm npm
 
 # Build app
 docker-compose up -d --build --remove-orphans loadbalancer
@@ -68,11 +61,14 @@ The app will be available locally at:
 
 
 # Dev and prod mode
-The app runs in prod mode as default due to APP_ENV=prod APP_DEBUG=false being set in .env. To run in dev mode, and enable the Symfony web profiler toolbar, bring the app up using docker-compose.local.yml:
+```bash
+# dev mode
+docker-compose exec app touch /var/www/.enableDevMode
 
-`docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
+# prod mode (default)
+docker-compose exec app rm /var/www/.enableDevMode
 
-Note - this will also enable xdebug which can make the test suite run slowly. If you encounter slow test runs then revert to running the app in prod mode.
+```
 
 # Testing
 Serve OPG uses PHPUnit and Behat to test the application
@@ -140,7 +136,7 @@ Clear Cache
 docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 ```
 
-# Xdebug
+Xdebug
 To enable Xdebug running via Docker in PHPStorm you will need to:
 
 - In settings, select `Docker for Mac` in `Build, Execution, Deployment > Docker`
@@ -153,7 +149,7 @@ To enable Xdebug running via Docker in PHPStorm you will need to:
 
 As Xdebug has a large performance hit, it is not installed as part of the Dockerfile by default. Instead it is set as a build argument in docker-compose.local.yml to ensure it will only ever be enabled for local dev. To build the app image with xdebug enabled, run:
 
-`docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
+- `docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
 
 Now you can add break points to any line of code by clicking in the gutter next to line numbers. Then you can either run the entire test suite by selecting `DOCKER` from the dropdown next to the test buttons in the top right of the page and click the phone icon so it turns green. Hit the debug button to run the suite.
 

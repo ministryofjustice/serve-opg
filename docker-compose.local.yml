@@ -6,8 +6,5 @@ services:
     build:
       args:
         WITH_XDEBUG: 'true'
-    environment:
-      APP_ENV: 'dev'
-      APP_DEBUG: 'true'
     volumes:
       - ./docker/app/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
