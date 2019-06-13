@@ -11,9 +11,7 @@
 behat.yml
 ###< behat/symfony2-extension ###
 .idea
-# ignore bin as created by composer
 **/public/assets
-node_modules
 */bin/jp.php
 **/vendor
 bootstrap.php.cache
@@ -39,3 +37,10 @@ localstack-data
 /s3/
 /web/
 composer.phar
+
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###

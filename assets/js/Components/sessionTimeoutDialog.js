@@ -60,3 +60,5 @@ var SessionTimeoutDialog = function (options) {
     };
 
 };
+
+export default SessionTimeoutDialog
