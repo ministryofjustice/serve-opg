@@ -38,3 +38,4 @@ localstack-data
 
 /s3/
 /web/
+composer.phar
