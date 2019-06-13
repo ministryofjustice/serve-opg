@@ -1,15 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'Layouts/base-template.html.twig' %}
 
 {% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order summary{% endblock %}
 
 {% block pageTitle %}
     <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
     <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order summary</h1>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('orderSummary') }}
 {% endblock %}
 
 {% block content %}
