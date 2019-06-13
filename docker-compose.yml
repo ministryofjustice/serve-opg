@@ -34,6 +34,8 @@ services:
       context: .
       dockerfile: docker/web/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:latest
+    volumes:
+      - ./public:/var/www/public
     depends_on:
       - app
     environment:
@@ -41,8 +43,6 @@ services:
       APP_PORT: 9000
       NGINX_LOG_LEVEL: warn
       VIRTUAL_HOST: web
-    volumes:
-      - ./public:/var/www/public
 
   app:
     build:
@@ -112,14 +112,17 @@ services:
       - install
       - --no-interaction
 
-  yarn:
-    image: node:12.3-stretch
+  npm:
+    image: node:10.13-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /app
     volumes:
       - .:/app
-    entrypoint: ["yarn"]
+    entrypoint: ["npm"]
+    command:
+      - i
+      - --unsafe-perm
 
   behat:
     image: php:7.2-fpm-alpine
@@ -156,9 +159,6 @@ services:
       - DC_S3_ENDPOINT=http://localstack:4572
       - DYNAMODB_ENDPOINT=http://localstack:4569
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
-      - AWS_ACCESS_KEY_ID=foo
-      - AWS_SECRET_ACCESS_KEY=bar
-      - APP_ENV=test
 
   qa:
     image: jakzal/phpqa:alpine
