@@ -6,6 +6,7 @@ use App\Entity\Document;
 use App\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\File\File;
 
 class DocumentService
 {
@@ -79,4 +80,17 @@ class DocumentService
             }
         }
     }
+
+    /**
+     * @param File $file
+     * @return false|string
+     */
+    public function processFile(File $file)
+    {
+        // assert file is correct type here
+        $file->getMimeType();
+        return json_encode(['valid' => true]);
+    }
+
+
 }

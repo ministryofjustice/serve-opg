@@ -10,7 +10,9 @@ use App\Service\DocumentService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OrderController extends AbstractController
@@ -40,6 +42,17 @@ class OrderController extends AbstractController
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
+    }
+
+
+    /**
+     * @Route("/order/{orderId}/upload", name="upload-order")
+     */
+    public function uploadOrder(Request $request, $orderId)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        return $this->render('Order/upload.html.twig', ['order' => $order]);
     }
 
     /**
@@ -146,4 +159,24 @@ class OrderController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/order/{orderId}/step-1-process", name="step-1-process", methods={"POST"})
+     * @param Request $request
+     * @return Response
+     */
+    public function step1Process(Request $request)
+    {
+        /** @var UploadedFile $file */
+        $file = $request->files->get('court-order');
+        $fileType = $file->getClientOriginalExtension();
+        $acceptedTypes = ['doc', 'docx', 'tif', 'tiff'];
+
+        if (!in_array($fileType, $acceptedTypes)) {
+            return new Response(json_encode(['valid' => false]));
+        }
+
+        return new Response(json_encode(['valid' => true]));
+    }
+
 }
