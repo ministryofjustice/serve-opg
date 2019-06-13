@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -440,11 +441,11 @@ abstract class Order
      *
      * @return $this Returns an updated version of the order
      * @throws WrongCaseNumberException
+     * @throws NoMatchesFoundException
      */
     public function answerQuestionsFromText($fileContents)
     {
-        $regex = "/ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)
-        \s*(?:DEPUTIES|DEPUTY)/m";
+        $regex = "/ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)\s*(?:DEPUTIES|DEPUTY)/m";
 
         if (!$this->extractCaseNumber($fileContents)) {
             throw new WrongCaseNumberException('The order provided does not have the correct case number for 
@@ -465,7 +466,7 @@ abstract class Order
     {
         preg_match("/No\. ([A-Z0-9]*)/m", $text, $matches);
 
-        if (strcmp($matches[1], $this->getClient()->getCaseNumber())) {
+        if ($matches[1] === $this->getClient()->getCaseNumber()) {
             return true;
         }
         return false;
@@ -474,6 +475,10 @@ abstract class Order
     private function extractAppointmentTypeAndSubtype($text, $regex)
     {
         preg_match($regex, $text, $matches);
+
+        if (empty($matches)) {
+            throw new NoMatchesFoundException('No matches found');
+        }
 
         switch ($matches[1]) {
             case null:

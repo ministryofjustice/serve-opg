@@ -2,7 +2,7 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "alphagov/notifications-php-client": "^1.6",
