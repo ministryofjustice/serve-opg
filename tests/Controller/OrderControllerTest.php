@@ -21,7 +21,7 @@ class OrderControllerTest extends WebTestCase
         $this->documentService = $this->prophesize(DocumentService::class);
     }
 
-    public function testStep1Process()
+    public function testAssertDocType()
     {
         $sut = new OrderController(
             $this->em->reveal(),
@@ -39,7 +39,7 @@ class OrderControllerTest extends WebTestCase
 
         $request = new Request([], [], [], [], ['court-order' => $file]);
 
-        $response = $sut->step1Process($request);
+        $response = $sut->assertDocType($request);
 
         self::assertEquals($expectedJSONResponse, $response->getContent());
     }

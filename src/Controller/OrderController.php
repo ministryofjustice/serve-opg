@@ -44,17 +44,6 @@ class OrderController extends AbstractController
         $this->documentService = $documentService;
     }
 
-
-    /**
-     * @Route("/order/{orderId}/upload", name="upload-order")
-     */
-    public function uploadOrder(Request $request, $orderId)
-    {
-        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
-
-        return $this->render('Order/upload.html.twig', ['order' => $order]);
-    }
-
     /**
      * @Route("/order/{orderId}/edit", name="order-edit")
      */
@@ -161,11 +150,21 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{orderId}/step-1-process", name="step-1-process", methods={"POST"})
+     * @Route("/order/{orderId}/upload", name="upload-order")
+     */
+    public function uploadOrder($orderId)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        return $this->render('Order/upload.html.twig', ['order' => $order]);
+    }
+
+    /**
+     * @Route("/order/assert-doc-type", name="assert-doc-type", methods={"POST"})
      * @param Request $request
      * @return Response
      */
-    public function step1Process(Request $request)
+    public function assertDocType(Request $request)
     {
         /** @var UploadedFile $file */
         $file = $request->files->get('court-order');

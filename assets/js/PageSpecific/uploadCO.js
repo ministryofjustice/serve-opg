@@ -3,7 +3,7 @@ import forms from '../Components/forms'
 
 window.addEventListener('DOMContentLoaded', () => {
     dropzoneJS.setup('div#court-order',
-        '/order/{orderId}/step-1-process',
+        '/order/assert-doc-type',
         1,
         'court-order',
         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
