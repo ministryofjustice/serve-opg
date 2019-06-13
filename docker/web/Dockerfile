@@ -11,7 +11,7 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
   && chmod +x /usr/local/bin/waitforit
 
 WORKDIR /var/www
-COPY ./public/build public
+COPY ./public/build public/build
 COPY docker/web/etc /etc
 
 ENV TIMEOUT=20

@@ -10,9 +10,12 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
   && chmod +x /usr/local/bin/waitforit
 
 WORKDIR /var/www
-COPY public/index.php public/index.php
-RUN mkdir -p public/assets
+
 RUN mkdir -p tmp/screenshots
+
+COPY public/index.php public/index.php
+COPY public/build/manifest.json public/build/manifest.json
+COPY public/build/entrypoints.json public/build/entrypoints.json
 COPY vendor vendor
 COPY src src
 COPY translations translations

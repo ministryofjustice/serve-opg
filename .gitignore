@@ -36,6 +36,7 @@ localstack-data
 
 /s3/
 /web/
+composer.phar
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
