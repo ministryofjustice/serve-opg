@@ -4,13 +4,21 @@ namespace App\Service;
 
 use App\Entity\Client;
 use App\Entity\Order;
-use App\Entity\OrderTypeHw;
-use App\Entity\OrderPf;
+use App\exceptions\NoMatchesFoundException;
+use App\exceptions\WrongCaseNumberException;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OrderService
 {
+    const APPOINTMENT_TYPE_SUB_TYPE_REGEX = <<<REGEX
+/ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)\s*(?:DEPUTIES|DEPUTY)/m
+REGEX;
+
+    const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
+    const BOND_REGEX = '/sum of (.*) in/';
+
     /**
      * @var EntityManager
      */
@@ -22,13 +30,25 @@ class OrderService
     private $siriusService;
 
     /**
+     * @var DocumentReaderService
+     */
+    private $documentReader;
+
+    /**
      * OrderService constructor.
      * @param EntityManager $em
+     * @param SiriusService $siriusService
+     * @param DocumentReaderService $documentReader
      */
-    public function __construct(EntityManager $em, SiriusService $siriusService)
+    public function __construct(
+        EntityManager $em,
+        SiriusService $siriusService,
+        DocumentReaderService $documentReader
+    )
     {
         $this->em = $em;
         $this->siriusService = $siriusService;
+        $this->documentReader = $documentReader;
     }
 
     public function serve(Order $order)
@@ -50,11 +70,10 @@ class OrderService
     }
 
     /**
-     * @param integer $orderId
-     *
+     * @param int $orderId
      * @return Order
      */
-    public function getOrderByIdIfNotServed($orderId)
+    public function getOrderByIdIfNotServed(int $orderId)
     {
         /** @var $order Order */
         $order = $this->em->getRepository(Order::class)->find($orderId);
@@ -112,5 +131,128 @@ class OrderService
             ->setAppointmentType(null);
 
         $this->em->flush();
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @param Order $dehydratedOrder
+     * @return Order
+     * @throws NoMatchesFoundException
+     * @throws WrongCaseNumberException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function hydrateOrderFromDocument(UploadedFile $file, Order $dehydratedOrder)
+    {
+        $orderText = $this->documentReader->readWordDocx($file->getRealPath());
+        $hydratedOrder = $this->answerQuestionsFromText($orderText, $dehydratedOrder);
+        $this->em->persist($hydratedOrder);
+        $this->em->flush();
+
+        return $hydratedOrder;
+    }
+
+    /**
+     * @param string $fileContents, Text extracted from Court Order
+     * @param Order $order
+     *
+     * @return Order Returns an updated version of the order
+     * @throws NoMatchesFoundException
+     * @throws WrongCaseNumberException
+     */
+    public function answerQuestionsFromText(string $fileContents, Order $order)
+    {
+        if (!$this->extractCaseNumber($fileContents, $order)) {
+            throw new WrongCaseNumberException(
+                'The order provided does not have the correct case number for this record'
+            );
+        }
+
+        // Answer the questions from the order
+        $this->extractAppointmentTypeAndSubtype($fileContents, $order);
+
+        if ($order->getType() === $order::TYPE_PF || $order->getType() === $order::TYPE_BOTH) {
+            $this->extractBondType($fileContents, $order);
+        }
+
+        return $order;
+    }
+
+    /**
+     * @param string $text
+     * @param Order $order
+     * @return bool
+     */
+    private function extractCaseNumber(string $text, Order $order)
+    {
+        preg_match(self::CASE_NUMBER_REGEX, $text, $matches);
+
+        if ($matches[1] === $order->getClient()->getCaseNumber()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $text
+     * @param string $regex
+     * @param Order $order
+     * @throws NoMatchesFoundException
+     */
+    private function extractAppointmentTypeAndSubtype(string $text, Order $order)
+    {
+        preg_match(self::APPOINTMENT_TYPE_SUB_TYPE_REGEX, $text, $matches);
+
+        if (empty($matches)) {
+            throw new NoMatchesFoundException('No matches found');
+        }
+
+        switch ($matches[1]) {
+            case null:
+                $order->setSubType('NEW ORDER');
+                break;
+            case 'NEW':
+                $order->setSubType('REPLACEMENT ORDER');
+                break;
+            case 'INTERIM':
+                $order->setSubType('INTERIM ORDER');
+                break;
+            default:
+                $order->setSubType(null);
+        }
+
+        switch ($matches[2]) {
+            case null:
+                $order->setAppointmentType('SOLE');
+                break;
+            case 'SEVERAL':
+                $order->setAppointmentType('JOINT AND SEVERAL');
+                break;
+            case 'JOINT':
+                $order->setAppointmentType('JOINT');
+                break;
+            default:
+                $order->setAppointmentType(null);
+        }
+    }
+
+    /**
+     * @param string $text
+     * @param Order $order
+     */
+    private function extractBondType(string $text, Order $order)
+    {
+        preg_match(self::BOND_REGEX, $text, $matches);
+
+        $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
+
+        switch ($bond) {
+            case ($bond >= 21000):
+                $order->setHasAssetsAboveThreshold('YES');
+                break;
+            case ($bond < 21000):
+                $order->setHasAssetsAboveThreshold('NO');
+                break;
+        }
     }
 }

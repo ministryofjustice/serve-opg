@@ -4,16 +4,22 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\Order;
+use App\exceptions\NoMatchesFoundException;
+use App\exceptions\WrongCaseNumberException;
 use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 
 class OrderController extends AbstractController
 {
@@ -33,15 +39,27 @@ class OrderController extends AbstractController
     private $documentService;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
+     * @param DocumentService $documentService
+     * @param RouterInterface $router
      */
-    public function __construct(EntityManager $em, OrderService $orderService, DocumentService $documentService)
-    {
+    public function __construct(
+        EntityManager $em,
+        OrderService $orderService,
+        DocumentService $documentService,
+        RouterInterface $router
+    ) {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
+        $this->router = $router;
     }
 
     /**
@@ -151,8 +169,10 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/order/{orderId}/upload", name="upload-order")
+     * @param string $orderId
+     * @return Response
      */
-    public function uploadOrder($orderId)
+    public function uploadOrder(string $orderId)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -176,6 +196,28 @@ class OrderController extends AbstractController
         }
 
         return new Response(json_encode(['valid' => true]));
+    }
+
+    /**
+     * @Route("/order/{orderId}/process-order-doc", name="process-order-doc", methods={"POST"})
+     * @param Request $request
+     * @param int $orderId
+     * @return RedirectResponse
+     * @throws NoMatchesFoundException
+     * @throws WrongCaseNumberException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function processOrderDocument(Request $request, int $orderId)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+        /** @var UploadedFile $file */
+        $file = $request->files->get('court-order');
+        $this->orderService->hydrateOrderFromDocument($file, $order);
+
+        $redirectRoute = $this->router->generate('order-summary');
+
+        return new RedirectResponse($redirectRoute);
     }
 
 }

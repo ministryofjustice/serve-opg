@@ -22,9 +22,11 @@
         </div>
     </div>
 
-    <button type="submit" disabled="disabled" class="govuk-button" id="continue">
-        Continue
-    </button>
+    <form action="{{ path('order-summary', {'orderId': order.id}) }}" method='get' disabled='disabled'>
+        <button type='submit' disabled='disabled' class='govuk-button' id='continue'>
+            Continue
+        </button>
+    </form>
 
     <details class="govuk-details">
         <summary class="govuk-details__summary">

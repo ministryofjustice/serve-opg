@@ -9,8 +9,8 @@ class DocumentReaderService
     /**
      * Get text from word document
      */
-    public function readWordDocx($doc)
+    public function readWordDocx($fileLocation)
     {
-        return DocumentParser::parseFromFile($doc);
+        return DocumentParser::parseFromFile($fileLocation);
     }
 }
