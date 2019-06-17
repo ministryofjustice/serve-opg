@@ -11,13 +11,12 @@ use App\Tests\Helpers\OrderTestHelper;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Panther\Client as PantherClient;
-use Symfony\Component\Panther\PantherTestCase;
 
-class OrderControllerTest extends PantherTestCase
+class OrderControllerTest extends WebTestCase
 {
     /**
      * @var EntityManager|ObjectProphecy
