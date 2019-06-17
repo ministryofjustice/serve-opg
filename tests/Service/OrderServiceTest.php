@@ -53,8 +53,8 @@ class OrderServiceTest extends WebTestCase
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
-        self::assertEquals($hydratedOrder->getAppointmentType(), 'JOINT AND SEVERAL');
-        self::assertEquals($hydratedOrder->getSubType(), 'NEW ORDER');
+        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
+        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
     }
 
     /**
@@ -70,9 +70,9 @@ class OrderServiceTest extends WebTestCase
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
-        self::assertEquals($hydratedOrder->getAppointmentType(), 'JOINT AND SEVERAL');
-        self::assertEquals($hydratedOrder->getSubType(), 'NEW ORDER');
-        self::assertEquals($hydratedOrder->getHasAssetsAboveThreshold(), 'YES');
+        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
+        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
+        self::assertEquals('yes', $hydratedOrder->getHasAssetsAboveThreshold());
     }
 
 
@@ -118,9 +118,6 @@ class OrderServiceTest extends WebTestCase
         $siriusService = $this->prophesize(SiriusService::class);
         $documentReader = new DocumentReaderService();
 
-        $em->persist(Argument::type(OrderHw::class))->shouldBeCalled();
-        $em->flush()->shouldBeCalled();
-
         $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
 
         $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO.docx', 'validCO.docx', 'application/msword');
@@ -128,8 +125,8 @@ class OrderServiceTest extends WebTestCase
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
         $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
 
-        self::assertEquals('JOINT AND SEVERAL', $hydratedOrder->getAppointmentType());
-        self::assertEquals('NEW ORDER', $hydratedOrder->getSubType());
+        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
+        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
 
     }
 }

@@ -216,13 +216,13 @@ REGEX;
 
         switch ($matches[1]) {
             case null:
-                $order->setSubType('NEW_APPLICATION');
+                $order->setSubType(Order::SUBTYPE_NEW);
                 break;
             case 'NEW':
-                $order->setSubType('REPLACEMENT_ORDER');
+                $order->setSubType(Order::SUBTYPE_REPLACEMENT);
                 break;
             case 'INTERIM':
-                $order->setSubType('INTERIM_ORDER');
+                $order->setSubType(Order::SUBTYPE_INTERIM_ORDER);
                 break;
             default:
                 $order->setSubType(null);
@@ -230,13 +230,13 @@ REGEX;
 
         switch ($matches[2]) {
             case null:
-                $order->setAppointmentType('SOLE');
+                $order->setAppointmentType(Order::APPOINTMENT_TYPE_SOLE);
                 break;
             case 'SEVERAL':
-                $order->setAppointmentType('JOINT_AND_SEVERAL');
+                $order->setAppointmentType(Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL);
                 break;
             case 'JOINT':
-                $order->setAppointmentType('JOINT');
+                $order->setAppointmentType(Order::APPOINTMENT_TYPE_JOINT);
                 break;
             default:
                 $order->setAppointmentType(null);
@@ -255,10 +255,10 @@ REGEX;
 
         switch ($bond) {
             case ($bond >= 21000):
-                $order->setHasAssetsAboveThreshold('yes');
+                $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
                 break;
             case ($bond < 21000):
-                $order->setHasAssetsAboveThreshold('no');
+                $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_NO);
                 break;
         }
     }

@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\OrderController;
 use App\Entity\Order;
+use App\Entity\OrderHw;
 use App\Service\DocumentService;
 use App\Service\OrderService;
 use App\Tests\Helpers\FileTestHelper;
@@ -48,7 +49,7 @@ class OrderControllerTest extends WebTestCase
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
 
-        $order->setSubType('NEW_ORDER');
+        $order->setSubType('NEW_APPLICATION');
         $order->setAppointmentType('JOINT_AND_SEVERAL');
 
         $this->orderService->hydrateOrderFromDocument(
@@ -56,6 +57,8 @@ class OrderControllerTest extends WebTestCase
             Argument::type(Order::class)
         )->shouldBeCalled()->willReturn($order);
 
+        $this->em->persist($order)->shouldBeCalled();
+        $this->em->flush($order)->shouldBeCalled();
 
         $sut = new OrderController(
             $this->em->reveal(),
