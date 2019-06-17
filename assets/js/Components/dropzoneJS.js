@@ -30,13 +30,6 @@ class DropzoneJS {
             addRemoveLinks: true,
         });
 
-        let button = document.querySelector(`#${continueButtonId}`);
-
-        button.addEventListener('click', () => {
-            console.log('click');
-            dz.processQueue();
-        });
-
         dz.on("addedfile", (file) => {
             if (dz.options.acceptedFiles.includes(file.type)){
                 const event = new CustomEvent(

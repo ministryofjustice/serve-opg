@@ -63,7 +63,7 @@ describe('dropzoneJS', () => {
 
             it('maxFiles', () => {
                 // hacking around a bug in the package - see dropzoneJS.setup() for details
-                expect(dz.options.maxFiles).toBe(2);
+                expect(dz.options.maxFiles).toBe(1);
             });
 
             it('acceptedFiles', () => {
@@ -87,32 +87,7 @@ describe('dropzoneJS', () => {
             it('addRemoveLinks', () => {
                 expect(dz.options.addRemoveLinks).toBe(true);
             });
-
-            it('autoProcessQueue', () => {
-                expect(dz.options.autoProcessQueue).toBe(false);
-            });
         })
-
-        describe('init callback', () => {
-           it('adds click eventListener to button with callback to process queue', () => {
-               setDocumentBody();
-
-               let element = document.getElementById("court-order");
-               let button = document.querySelector(`#continue`);
-               const spy = jest.spyOn(button, 'addEventListener');
-
-               DropzoneJS.setup(element,
-                   '/orders/upload',
-                   1,
-                   'court-order',
-                   'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                   'continue',
-               );
-
-               expect(spy).toHaveBeenCalledWith('click', expect.any(Function));
-
-           })
-        });
     });
 
     describe('adding a file', () => {
@@ -229,10 +204,10 @@ describe('dropzoneJS', () => {
                     );
 
                     let mockFile = getMockFile('application/msword');
-                    dz.addFile(mockFile);
+                    dz.files.push(mockFile);
                     dz.addFile(mockFile);
 
-                    const errorDiv = document.querySelector('.dz-error-message');
+                    const errorDiv = mockFile.previewElement.querySelector('.dz-error-message');
 
                     expect(errorDiv.innerText).toContain('Only 1 document(s) can be uploaded');
                 });
