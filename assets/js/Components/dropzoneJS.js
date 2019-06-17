@@ -2,7 +2,7 @@ import Dropzone from 'dropzone/dist/min/dropzone.min';
 Dropzone.autoDiscover = false;
 
 class DropzoneJS {
-    static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes) {
+    static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes, continueButtonId) {
         const previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
 
         let dz =  new Dropzone(elementID, {
@@ -20,7 +20,7 @@ class DropzoneJS {
             // }
             //
             // This checks for >= rather than > so will always emit maxfilesexceeded for maxFiles=1
-            maxFiles: maxFiles + 1,
+            maxFiles: maxFiles,
             dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
             paramName: fileIdentifier,
             acceptedFiles: acceptedTypes,
@@ -30,16 +30,34 @@ class DropzoneJS {
             addRemoveLinks: true,
         });
 
-        dz.on("success", () => {
+        let button = document.querySelector(`#${continueButtonId}`);
+
+        button.addEventListener('click', () => {
+            console.log('click');
+            dz.processQueue();
+        });
+
+        dz.on("addedfile", (file) => {
+            if (dz.options.acceptedFiles.includes(file.type)){
+                const event = new CustomEvent(
+                    'validDoc',
+                    {
+                        detail: { valid: true }
+                    }
+                );
+                document.dispatchEvent(event);
+            } else {
+                let errorDiv = document.querySelector('.dz-error-message ');
+                errorDiv.innerText = dz.options.dictInvalidFileType;
+                errorDiv.hidden = false;
+            }
+        });
+
+        dz.on("success", (file, response) => {
             const event = new CustomEvent(
-                'validDoc',
-                {
-                    detail: { valid: true }
-                }
+                'orderDocProcessed',
             );
             document.dispatchEvent(event);
-            // reset maxFiles - see above in instantiating step for background
-            dz.options.maxFiles = maxFiles;
         });
 
         dz.on('removedfile', (file) => {

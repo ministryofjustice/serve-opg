@@ -18,15 +18,16 @@
             <div class="govuk-grid-column-one-half"></div>
             <span class="dropzone__template__instruction">Drag and drop the Court order for <strong>{{ order.client.clientName }}</strong> here</span>
             <div class="govuk-!-font-weight-bold">or</div>
-            <button class="govuk-button govuk-button--secondary">Choose documents</button>
+            <button class="govuk-button govuk-button--secondary" id="upload-doc-button">Choose documents</button>
         </div>
     </div>
 
-    <form action="{{ path('order-summary', {'orderId': order.id}) }}" method='get' disabled='disabled'>
+    <form action='{{ path('order-summary', {'orderId': order.id}) }}' method='get'>
         <button type='submit' disabled='disabled' class='govuk-button' id='continue'>
             Continue
         </button>
     </form>
+
 
     <details class="govuk-details">
         <summary class="govuk-details__summary">

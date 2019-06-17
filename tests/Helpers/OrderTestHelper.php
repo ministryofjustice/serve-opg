@@ -11,10 +11,10 @@ use Exception;
 class OrderTestHelper
 {
     /**
-     * @param string $madeAt
-     * @param string $issuedAt
+     * @param string $madeAt, in format YYYY-MM-DD
+     * @param string $issuedAt, in format YYYY-MM-DD
      * @param string $caseNumber
-     * @param string $orderType
+     * @param string $orderType, HW or PF
      * @return OrderHw
      * @throws Exception
      */

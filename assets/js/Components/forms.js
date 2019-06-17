@@ -2,28 +2,28 @@ class forms {
     static init(elementId) {
         document.addEventListener('validDoc', (e) => {
             if (e.detail.valid) {
-                this.removeDisabledFrom(elementId)
+                this.removeDisabledFrom(elementId);
             }
         });
 
         document.addEventListener('docRemoved', (e) => {
             if (e.detail.fileLimitExceeded) {
-                this.removeDisabledFrom(elementId)
+                this.removeDisabledFrom(elementId);
                 return
             }
-            this.addDisabledTo(elementId)
+            this.addDisabledTo(elementId);
         });
 
         const checkBox = document.getElementById('cannot-find-checkbox');
 
         checkBox.addEventListener('click', (e) => {
-            this.toggleDisabled(elementId)
+            this.toggleDisabled(elementId);
         });
     }
 
     static removeDisabledFrom(elementId) {
         let element = document.getElementById(elementId);
-        element.removeAttribute('disabled')
+        element.removeAttribute('disabled');
     }
 
     static addDisabledTo(elementId) {

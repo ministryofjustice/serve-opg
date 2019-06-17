@@ -144,10 +144,17 @@ REGEX;
      */
     public function hydrateOrderFromDocument(UploadedFile $file, Order $dehydratedOrder)
     {
-        $orderText = $this->documentReader->readWordDocx($file->getRealPath());
+        // @todo catch exceptions for:
+        //     - unknown mime type
+        //     - unreadable file
+
+        $orderText = $this->documentReader->readWordDoc($file->getRealPath());
+
+        // @todo catch errors:
+        //    - Case number doesn't match
+        //    - Couldn't extract case number
+
         $hydratedOrder = $this->answerQuestionsFromText($orderText, $dehydratedOrder);
-        $this->em->persist($hydratedOrder);
-        $this->em->flush();
 
         return $hydratedOrder;
     }
@@ -209,13 +216,13 @@ REGEX;
 
         switch ($matches[1]) {
             case null:
-                $order->setSubType('NEW ORDER');
+                $order->setSubType('NEW_APPLICATION');
                 break;
             case 'NEW':
-                $order->setSubType('REPLACEMENT ORDER');
+                $order->setSubType('REPLACEMENT_ORDER');
                 break;
             case 'INTERIM':
-                $order->setSubType('INTERIM ORDER');
+                $order->setSubType('INTERIM_ORDER');
                 break;
             default:
                 $order->setSubType(null);
@@ -226,7 +233,7 @@ REGEX;
                 $order->setAppointmentType('SOLE');
                 break;
             case 'SEVERAL':
-                $order->setAppointmentType('JOINT AND SEVERAL');
+                $order->setAppointmentType('JOINT_AND_SEVERAL');
                 break;
             case 'JOINT':
                 $order->setAppointmentType('JOINT');
@@ -248,10 +255,10 @@ REGEX;
 
         switch ($bond) {
             case ($bond >= 21000):
-                $order->setHasAssetsAboveThreshold('YES');
+                $order->setHasAssetsAboveThreshold('yes');
                 break;
             case ($bond < 21000):
-                $order->setHasAssetsAboveThreshold('NO');
+                $order->setHasAssetsAboveThreshold('no');
                 break;
         }
     }

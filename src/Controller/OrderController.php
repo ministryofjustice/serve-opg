@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\Order;
-use App\exceptions\NoMatchesFoundException;
-use App\exceptions\WrongCaseNumberException;
 use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
@@ -14,12 +12,12 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\RouterInterface;
+use Throwable;
 
 class OrderController extends AbstractController
 {
@@ -39,27 +37,19 @@ class OrderController extends AbstractController
     private $documentService;
 
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
      * @param DocumentService $documentService
-     * @param RouterInterface $router
      */
     public function __construct(
         EntityManager $em,
         OrderService $orderService,
-        DocumentService $documentService,
-        RouterInterface $router
+        DocumentService $documentService
     ) {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
-        $this->router = $router;
     }
 
     /**
@@ -109,13 +99,14 @@ class OrderController extends AbstractController
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
-        // nothing answered -> go to step 1
-        if (empty($order->getHasAssetsAboveThreshold())
-            && empty($order->getSubType())
-            && empty($order->getAppointmentType())
-        ) {
-            return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
-        }
+       // nothing answered -> go to step 1
+       if (
+           empty($order->getHasAssetsAboveThreshold()) &&
+           empty($order->getSubType()) &&
+           empty($order->getAppointmentType())
+       ) {
+           return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
+       }
 
         return $this->render('Order/summary.html.twig', [
             'order' => $order,
@@ -169,6 +160,7 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/order/{orderId}/upload", name="upload-order")
+     *
      * @param string $orderId
      * @return Response
      */
@@ -180,44 +172,33 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/assert-doc-type", name="assert-doc-type", methods={"POST"})
-     * @param Request $request
-     * @return Response
-     */
-    public function assertDocType(Request $request)
-    {
-        /** @var UploadedFile $file */
-        $file = $request->files->get('court-order');
-        $fileType = $file->getClientOriginalExtension();
-        $acceptedTypes = ['doc', 'docx', 'tif', 'tiff'];
-
-        if (!in_array($fileType, $acceptedTypes)) {
-            return new Response(json_encode(['valid' => false]));
-        }
-
-        return new Response(json_encode(['valid' => true]));
-    }
-
-    /**
      * @Route("/order/{orderId}/process-order-doc", name="process-order-doc", methods={"POST"})
+     *
      * @param Request $request
-     * @param int $orderId
-     * @return RedirectResponse
-     * @throws NoMatchesFoundException
-     * @throws WrongCaseNumberException
+     * @param string $orderId
+     * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function processOrderDocument(Request $request, int $orderId)
+    public function processOrderDocument(Request $request, string $orderId)
     {
-        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+        $order = $this->orderService->getOrderByIdIfNotServed((int)$orderId);
         /** @var UploadedFile $file */
         $file = $request->files->get('court-order');
-        $this->orderService->hydrateOrderFromDocument($file, $order);
 
-        $redirectRoute = $this->router->generate('order-summary');
+        try{
+            $hydratedOrder = $this->orderService->hydrateOrderFromDocument($file, $order);
+        } catch (Throwable $e) {
+            return new Response($e->getMessage());
+        }
 
-        return new RedirectResponse($redirectRoute);
+        $this->em->persist($hydratedOrder);
+        $this->em->flush($hydratedOrder);
+
+        // @todo check order to see:
+        //    - Order fully hydrated
+        //    - Order partially hydrated
+
+        return new Response();
     }
-
 }
