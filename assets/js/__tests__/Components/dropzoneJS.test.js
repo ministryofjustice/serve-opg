@@ -46,7 +46,6 @@ describe('dropzoneJS', () => {
                 1,
                 'court-order',
                 'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'continue',
             );
 
             it('paramName', () => {
@@ -62,7 +61,6 @@ describe('dropzoneJS', () => {
             });
 
             it('maxFiles', () => {
-                // hacking around a bug in the package - see dropzoneJS.setup() for details
                 expect(dz.options.maxFiles).toBe(1);
             });
 
@@ -101,7 +99,6 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'continue',
                 );
 
                 const acceptedTypes = ['image/tiff', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -122,7 +119,6 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'continue',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -157,7 +153,6 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'continue'
                 );
 
                 const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
@@ -178,7 +173,6 @@ describe('dropzoneJS', () => {
                         1,
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        'continue'
                     );
 
                     const spy = jest.spyOn(dz, 'removeFile');
@@ -200,7 +194,6 @@ describe('dropzoneJS', () => {
                         1,
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        'continue'
                     );
 
                     let mockFile = getMockFile('application/msword');
@@ -226,7 +219,6 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'continue'
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
