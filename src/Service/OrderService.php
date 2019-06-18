@@ -253,7 +253,11 @@ REGEX;
 
         $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
 
+
         switch ($bond) {
+            case "":
+                $order->setHasAssetsAboveThreshold(null);
+                break;
             case ($bond >= 21000):
                 $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
                 break;
