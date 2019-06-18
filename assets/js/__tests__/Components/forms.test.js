@@ -7,7 +7,6 @@ let setDocumentBody = (buttonDisabled) => {
         <div>
             ${button}
         </div>
-        <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
     `
 };
 
@@ -23,19 +22,6 @@ describe('forms', () => {
             expect(spy).toHaveBeenCalledTimes(2);
             expect(spy).toHaveBeenCalledWith('validDoc', expect.any(Function));
             expect(spy).toHaveBeenCalledWith('docRemoved', expect.any(Function));
-        });
-
-        it('adds required eventListeners to checkbox', () => {
-            setDocumentBody(true);
-
-            const checkBox = document.getElementById('cannot-find-checkbox');
-
-            const spy = jest.spyOn(checkBox, 'addEventListener');
-
-            forms.init('continue');
-
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith('click', expect.any(Function));
         });
     });
 
@@ -111,17 +97,6 @@ describe('forms', () => {
                 expect(button.getAttributeNames()).not.toContain('disabled');
             });
 
-            it('receiving a click event', () => {
-                const checkBox = document.getElementById('cannot-find-checkbox');
-                const button = document.getElementById('continue');
-
-                const event = new MouseEvent('click');
-
-                checkBox.dispatchEvent(event);
-
-                expect(button.getAttributeNames()).not.toContain('disabled');
-            })
-
             it('receiving a docRemoved event with fileLimitExceeded set to true', () => {
                 const button = document.getElementById('continue');
 
@@ -158,17 +133,6 @@ describe('forms', () => {
 
                 expect(button.getAttributeNames()).toContain('disabled');
             });
-
-            it('receiving a click event', () => {
-                const checkBox = document.getElementById('cannot-find-checkbox');
-                const button = document.getElementById('continue');
-
-                const event = new MouseEvent('click');
-
-                checkBox.dispatchEvent(event);
-
-                expect(button.getAttributeNames()).toContain('disabled');
-            })
         });
     });
 });

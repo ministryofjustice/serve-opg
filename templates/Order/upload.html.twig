@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block content %}
+    <p class="govuk-body-l">Upload the Microsoft Word version of the court order for {{ order.client.clientName }}</p>
+    <p class="govuk-body">If you cannot find the Word version, scan and upload the order instead</p>
+
     <div id="court-order" class='dropzone'>
         <div class="dz-default dz-message govuk-body">
             <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
@@ -42,15 +45,6 @@
             </ol>
 
             <p>Remember to upload the word version of the court order</p>
-
-            <div class="govuk-checkboxes" >
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
-                    <label class="govuk-label govuk-checkboxes__label" for="cannot-find-checkbox">
-                        I cannot find the microsoft word version of the court order
-                    </label>
-                </div>
-            </div>
         </div>
     </details>
 {% endblock %}

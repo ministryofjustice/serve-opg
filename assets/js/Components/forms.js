@@ -13,12 +13,6 @@ class forms {
             }
             this.addDisabledTo(elementId);
         });
-
-        const checkBox = document.getElementById('cannot-find-checkbox');
-
-        checkBox.addEventListener('click', (e) => {
-            this.toggleDisabled(elementId);
-        });
     }
 
     static removeDisabledFrom(elementId) {
