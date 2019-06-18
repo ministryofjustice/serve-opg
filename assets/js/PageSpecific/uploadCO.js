@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
         `/order/${orderId}/process-order-doc`,
         1,
         'court-order',
-        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,application/pdf',
         'continue'
     );
     forms.init('continue');

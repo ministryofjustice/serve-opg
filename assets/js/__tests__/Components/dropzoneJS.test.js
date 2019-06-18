@@ -139,7 +139,32 @@ describe('dropzoneJS', () => {
                         return done();
                     }
                     , 10);
-            })
+            });
+
+            it('should append the remove element dz-filename element', () => {
+                setDocumentBody();
+
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                );
+
+                const mockFile = getMockFile('application/msword');
+                dz.addFile(mockFile);
+
+                const removeElement = '<a class="dz-remove dropzone__file-remove" href="javascript:undefined;" data-dz-remove="">Remove file</a>';
+
+                // Add timeout here to give the queue time to process files
+                setTimeout(function() {
+                        let filenameElement = document.querySelector('.dz-filename');
+                        expect(filenameElement).toContain(removeElement);
+                        return done();
+                    }
+                    , 10);
+            });
         });
 
         describe('not listed in acceptedFiles', () => {
