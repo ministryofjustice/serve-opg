@@ -30,7 +30,7 @@ let setDocumentBody = () => {
     document.body.innerHTML = `
         <div id="court-order"></div>
         ${previewFileHTML}
-        <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
+        <button id="continue"></button>
     `;
 }
 
@@ -60,8 +60,7 @@ describe('dropzoneJS', () => {
             });
 
             it('maxFiles', () => {
-                // hacking around a bug in the package - see dropzoneJS.setup() for details
-                expect(dz.options.maxFiles).toBe(2);
+                expect(dz.options.maxFiles).toBe(1);
             });
 
             it('acceptedFiles', () => {
@@ -98,7 +97,8 @@ describe('dropzoneJS', () => {
                     '/orders/upload',
                     1,
                     'court-order',
-                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                );
 
                 const acceptedTypes = ['image/tiff', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
                 let mockFile = getMockFile();
@@ -117,7 +117,7 @@ describe('dropzoneJS', () => {
                     '/orders/upload',
                     1,
                     'court-order',
-                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -139,7 +139,32 @@ describe('dropzoneJS', () => {
                         return done();
                     }
                     , 10);
-            })
+            });
+
+            it('should append the remove element dz-filename element', () => {
+                setDocumentBody();
+
+                let element = document.getElementById("court-order");
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                );
+
+                const mockFile = getMockFile('application/msword');
+                dz.addFile(mockFile);
+
+                const removeElement = '<a class="dz-remove dropzone__file-remove" href="javascript:undefined;" data-dz-remove="">Remove file</a>';
+
+                // Add timeout here to give the queue time to process files
+                setTimeout(function() {
+                        let filenameElement = document.querySelector('.dz-filename');
+                        expect(filenameElement).toContain(removeElement);
+                        return done();
+                    }
+                    , 10);
+            });
         });
 
         describe('not listed in acceptedFiles', () => {
@@ -151,7 +176,7 @@ describe('dropzoneJS', () => {
                     '/orders/upload',
                     1,
                     'court-order',
-                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 );
 
                 const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
@@ -171,7 +196,7 @@ describe('dropzoneJS', () => {
                         '/orders/upload',
                         1,
                         'court-order',
-                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     );
 
                     const spy = jest.spyOn(dz, 'removeFile');
@@ -192,14 +217,14 @@ describe('dropzoneJS', () => {
                         '/orders/upload',
                         1,
                         'court-order',
-                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     );
 
                     let mockFile = getMockFile('application/msword');
-                    dz.addFile(mockFile);
+                    dz.files.push(mockFile);
                     dz.addFile(mockFile);
 
-                    const errorDiv = document.querySelector('.dz-error-message');
+                    const errorDiv = mockFile.previewElement.querySelector('.dz-error-message');
 
                     expect(errorDiv.innerText).toContain('Only 1 document(s) can be uploaded');
                 });
@@ -213,7 +238,12 @@ describe('dropzoneJS', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
 
@@ -237,7 +267,13 @@ describe('dropzoneJS', () => {
                 setDocumentBody();
 
                 let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element, '/orders/upload', 1, 'court-order');
+                let dz = DropzoneJS.setup(element,
+                    '/orders/upload',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'continue'
+                );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
 

@@ -12,19 +12,25 @@
 {% endblock %}
 
 {% block content %}
+    <p class="govuk-body-l">Upload the Microsoft Word version of the court order for {{ order.client.clientName }}</p>
+    <p class="govuk-body">If you cannot find the Word version, scan and upload the order instead</p>
+
     <div id="court-order" class='dropzone'>
         <div class="dz-default dz-message govuk-body">
             <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
             <div class="govuk-grid-column-one-half"></div>
             <span class="dropzone__template__instruction">Drag and drop the Court order for <strong>{{ order.client.clientName }}</strong> here</span>
             <div class="govuk-!-font-weight-bold">or</div>
-            <button class="govuk-button govuk-button--secondary">Choose documents</button>
+            <button class="govuk-button govuk-button--secondary" id="upload-doc-button">Choose documents</button>
         </div>
     </div>
 
-    <button type="submit" disabled="disabled" class="govuk-button" id="continue">
-        Continue
-    </button>
+    <form action='{{ path('order-summary', {'orderId': order.id}) }}' method='get'>
+        <button type='submit' disabled='disabled' class='govuk-button' id='continue'>
+            Continue
+        </button>
+    </form>
+
 
     <details class="govuk-details">
         <summary class="govuk-details__summary">
@@ -39,15 +45,6 @@
             </ol>
 
             <p>Remember to upload the word version of the court order</p>
-
-            <div class="govuk-checkboxes" >
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="cannot-find-checkbox" type="checkbox" value="cannot-find">
-                    <label class="govuk-label govuk-checkboxes__label" for="cannot-find-checkbox">
-                        I cannot find the microsoft word version of the court order
-                    </label>
-                </div>
-            </div>
         </div>
     </details>
 {% endblock %}

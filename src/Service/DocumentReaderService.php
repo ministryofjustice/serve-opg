@@ -7,10 +7,13 @@ use LukeMadhanga\DocumentParser;
 class DocumentReaderService
 {
     /**
-     * Get text from word document
+     * Get text from word document - supports .doc and .docx
+     *
+     * @param string $fileLocation, the path of the word doc to parse
+     * @return \LukeMadhanga\html|string
      */
-    public function readWordDocx($doc)
+    public function readWordDoc(string $fileLocation)
     {
-        return DocumentParser::parseFromFile($doc);
+        return DocumentParser::parseFromFile($fileLocation);
     }
 }

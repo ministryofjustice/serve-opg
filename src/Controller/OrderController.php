@@ -9,11 +9,15 @@ use App\Form\OrderForm;
 use App\Service\DocumentService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class OrderController extends AbstractController
 {
@@ -36,23 +40,16 @@ class OrderController extends AbstractController
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
+     * @param DocumentService $documentService
      */
-    public function __construct(EntityManager $em, OrderService $orderService, DocumentService $documentService)
-    {
+    public function __construct(
+        EntityManager $em,
+        OrderService $orderService,
+        DocumentService $documentService
+    ) {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
-    }
-
-
-    /**
-     * @Route("/order/{orderId}/upload", name="upload-order")
-     */
-    public function uploadOrder(Request $request, $orderId)
-    {
-        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
-
-        return $this->render('Order/upload.html.twig', ['order' => $order]);
     }
 
     /**
@@ -102,13 +99,14 @@ class OrderController extends AbstractController
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
-        // nothing answered -> go to step 1
-        if (empty($order->getHasAssetsAboveThreshold())
-            && empty($order->getSubType())
-            && empty($order->getAppointmentType())
-        ) {
-            return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
-        }
+       // nothing answered -> go to step 1
+       if (
+           empty($order->getHasAssetsAboveThreshold()) &&
+           empty($order->getSubType()) &&
+           empty($order->getAppointmentType())
+       ) {
+           return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
+       }
 
         return $this->render('Order/summary.html.twig', [
             'order' => $order,
@@ -161,22 +159,46 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{orderId}/step-1-process", name="step-1-process", methods={"POST"})
-     * @param Request $request
+     * @Route("/order/{orderId}/upload", name="upload-order")
+     *
+     * @param string $orderId
      * @return Response
      */
-    public function step1Process(Request $request)
+    public function uploadOrder(string $orderId)
     {
-        /** @var UploadedFile $file */
-        $file = $request->files->get('court-order');
-        $fileType = $file->getClientOriginalExtension();
-        $acceptedTypes = ['doc', 'docx', 'tif', 'tiff'];
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
-        if (!in_array($fileType, $acceptedTypes)) {
-            return new Response(json_encode(['valid' => false]));
-        }
-
-        return new Response(json_encode(['valid' => true]));
+        return $this->render('Order/upload.html.twig', ['order' => $order]);
     }
 
+    /**
+     * @Route("/order/{orderId}/process-order-doc", name="process-order-doc", methods={"POST"})
+     *
+     * @param Request $request
+     * @param string $orderId
+     * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function processOrderDocument(Request $request, int $orderId)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+        /** @var UploadedFile $file */
+        $file = $request->files->get('court-order');
+
+        try{
+            $hydratedOrder = $this->orderService->hydrateOrderFromDocument($file, $order);
+        } catch (Throwable $e) {
+            return new Response($e->getMessage());
+        }
+
+        $this->em->persist($hydratedOrder);
+        $this->em->flush($hydratedOrder);
+
+        // @todo check order to see:
+        //    - Order fully hydrated
+        //    - Order partially hydrated
+
+        return new Response();
+    }
 }
