@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\Order;
+use App\exceptions\WrongCaseNumberException;
 use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
@@ -188,8 +189,8 @@ class OrderController extends AbstractController
 
         try{
             $hydratedOrder = $this->orderService->hydrateOrderFromDocument($file, $order);
-        } catch (Throwable $e) {
-            return new Response($e->getMessage());
+        } catch (WrongCaseNumberException $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
         $this->em->persist($hydratedOrder);

@@ -242,6 +242,5 @@ class OrderServiceTest extends WebTestCase
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
         self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
-
     }
 }
