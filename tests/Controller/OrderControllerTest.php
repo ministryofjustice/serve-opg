@@ -70,7 +70,7 @@ class OrderControllerTest extends WebTestCase
         $request = new Request([], [], [], [], ['court-order' => $file]);
 
         /** @var Response $response */
-        $response = $sut->processOrderDocument($request, '12345');
+        $response = $sut->processOrderDocument($request, 12345);
 
         self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
