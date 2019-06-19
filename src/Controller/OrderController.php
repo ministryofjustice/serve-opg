@@ -180,9 +180,9 @@ class OrderController extends AbstractController
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function processOrderDocument(Request $request, string $orderId)
+    public function processOrderDocument(Request $request, int $orderId)
     {
-        $order = $this->orderService->getOrderByIdIfNotServed((int)$orderId);
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
         /** @var UploadedFile $file */
         $file = $request->files->get('court-order');
 
