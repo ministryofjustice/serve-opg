@@ -66,7 +66,7 @@ class OrderControllerTest extends WebTestCase
             $this->documentService->reveal()
         );
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO.docx', 'validCO.docx', 'application/msword');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 1339247T01.docx', 'validCO - 1339247T01.docx', 'application/msword');
         $request = new Request([], [], [], [], ['court-order' => $file]);
 
         /** @var Response $response */
