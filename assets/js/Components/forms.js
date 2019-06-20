@@ -13,6 +13,10 @@ class forms {
             }
             this.addDisabledTo(elementId);
         });
+
+        document.addEventListener('wrongCaseNumber', (e) => {
+            this.addDisabledTo(elementId);
+        });
     }
 
     static removeDisabledFrom(elementId) {

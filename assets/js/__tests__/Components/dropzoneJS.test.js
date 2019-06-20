@@ -230,6 +230,14 @@ describe('dropzoneJS', () => {
                 });
             });
         });
+
+        describe('error event', () => {
+            describe('when error response contains case number mismatch', () => {
+                it('shows an error message detailing the error', () => {
+                    // @todo look into mocking xhr responses OR another way of testing this
+                })
+            })
+        });
     });
 
     describe('removing a file', () => {
