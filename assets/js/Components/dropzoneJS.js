@@ -62,6 +62,22 @@ class DropzoneJS {
             dz.removeFile(file);
         });
 
+        dz.on('error', (file, errorMessage) => {
+            if (errorMessage.includes('The order provided does not have the correct case number for this record')) {
+                let errorDiv = document.querySelector('.dz-error-message');
+                let removeElement = document.querySelector('.dz-remove');
+
+                removeElement.classList.add('dropzone__file-remove');
+                document.querySelector('.dz-filename').append(removeElement);
+
+                const event = new CustomEvent('wrongCaseNumber');
+                document.dispatchEvent(event);
+
+                errorDiv.innerText = 'The case number in the document does not match the case number for this order. Please check the file and try again.';
+                errorDiv.hidden = false;
+            }
+        });
+
         return dz;
     }
 }
