@@ -11,8 +11,6 @@ RUN apk add --no-cache \
 && docker-php-ext-configure zip --with-libzip \
 && docker-php-ext-install zip
 
-#RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip --with-libzip=/usr/include && docker-php-ext-install zip
-
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
