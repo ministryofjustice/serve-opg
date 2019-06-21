@@ -186,6 +186,13 @@ class OrderController extends AbstractController
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
         /** @var UploadedFile $file */
         $file = $request->files->get('court-order');
+        $mimeType = $file->getClientMimeType();
+
+        $acceptedMimeTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
+        if (!in_array($mimeType, $acceptedMimeTypes)) {
+            return new Response('Document is not in .doc or .docx format');
+        }
 
         try{
             $hydratedOrder = $this->orderService->hydrateOrderFromDocument($file, $order);

@@ -44,7 +44,7 @@ class OrderControllerTest extends WebTestCase
 
     public function testProcessOrderDocSuccess()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
         $order->setId(12345);
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
@@ -66,7 +66,7 @@ class OrderControllerTest extends WebTestCase
             $this->documentService->reveal()
         );
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 1339247T01.docx', 'validCO - 1339247T01.docx', 'application/msword');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/msword');
         $request = new Request([], [], [], [], ['court-order' => $file]);
 
         /** @var Response $response */
@@ -77,7 +77,7 @@ class OrderControllerTest extends WebTestCase
 
     public function testProcessOrderDocCaseNumberMismatch()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
         $order->setId(12345);
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
@@ -108,5 +108,39 @@ class OrderControllerTest extends WebTestCase
         $response = $sut->processOrderDocument($request, 12345);
 
         self::assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    /** @dataProvider documentProvider */
+    public function testProcessOrderDocAcceptedFilesNotWord($fileLocation, $originalName, $mimeType)
+    {
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $order->setId(12345);
+
+        $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
+
+        $sut = new OrderController(
+            $this->em->reveal(),
+            $this->orderService->reveal(),
+            $this->documentService->reveal()
+        );
+
+        $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
+        $request = new Request([], [], [], [], ['court-order' => $file]);
+
+        /** @var Response $response */
+        $response = $sut->processOrderDocument($request, 12345);
+
+        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        self::assertEquals('Document is not in .doc or .docx format', $response->getContent());
+    }
+
+    public function documentProvider()
+    {
+        return [
+            'jpg' => ['/tests/TestData/test.jpg', 'test.jpg', 'image/jpeg'],
+            'jpeg' => ['/tests/TestData/test.jpeg', 'test.jpeg', 'image/jpeg'],
+            'pdf' => ['/tests/TestData/test.pdf', 'test.pdf', 'application/pdf'],
+            'tiff' => ['/tests/TestData/test.tiff', 'test.tiff', 'image/tiff'],
+        ];
     }
 }

@@ -142,7 +142,7 @@ services:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
   phpunit:
-    image: composer
+    image: prooph/composer:7.2
     volumes:
       - .:/app
     working_dir: /app
