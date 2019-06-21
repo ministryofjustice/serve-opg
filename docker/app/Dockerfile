@@ -4,13 +4,6 @@ FROM php:7.2-fpm-alpine
 RUN apk add --no-cache postgresql-dev \
   && docker-php-ext-install pdo pdo_pgsql
 
-# Install zip for php
-RUN apk add --no-cache \
-    libzip-dev \
-    zip \
-&& docker-php-ext-configure zip --with-libzip \
-&& docker-php-ext-install zip
-
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
