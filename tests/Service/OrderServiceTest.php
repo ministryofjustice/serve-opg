@@ -46,9 +46,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testJointAndSeveralNewHw() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
 
-        $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -62,9 +62,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testJointAndSeveralReplacementHw() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
 
-        $file = 'No. 93559316 ORDER APPOINTING NEW JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING NEW JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -78,9 +78,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testJointNewHw() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
 
-        $file = 'No. 93559316 ORDER APPOINTING NEW JOINT DEPUTIES security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING NEW JOINT DEPUTIES security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -94,9 +94,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testJointReplacementHw() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
 
-        $file = 'No. 93559316 ORDER APPOINTING JOINT DEPUTIES security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING JOINT DEPUTIES security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -110,9 +110,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testANewDeputyHw() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
 
-        $file = 'No. 93559316 ORDER APPOINTING A DEPUTY security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING A DEPUTY security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -126,9 +126,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testAReplacementDeputyHw() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
 
-        $file = 'No. 93559316 ORDER APPOINTING A NEW DEPUTY security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING A NEW DEPUTY security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -143,9 +143,9 @@ class OrderServiceTest extends WebTestCase
      */
     public function testAnswerQuestionsFromTextOrderPf()
     {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'PF');
 
-        $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -160,9 +160,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testBondLevelBelowThreshold() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'PF');
 
-        $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £15,000 in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £15,000 in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -175,9 +175,9 @@ class OrderServiceTest extends WebTestCase
      * @throws WrongCaseNumberException
      */
     public function testBondLevelBlank() {
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'PF');
 
-        $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £ in accordance';
+        $file = 'No. 1339247T01 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £ in accordance';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -194,9 +194,9 @@ class OrderServiceTest extends WebTestCase
         self::expectExceptionObject(new NoMatchesFoundException());
         self::expectExceptionMessage('No matches found');
 
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'PF');
 
-        $file = 'No. 93559316  RTY AND AFFAIRS';
+        $file = 'No. 1339247T01  RTY AND AFFAIRS';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -213,7 +213,7 @@ class OrderServiceTest extends WebTestCase
 
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', 'WRONGNUMBER', 'PF');
 
-        $file = 'No. 93559316  RTY AND AFFAIRS';
+        $file = 'No. 1339247T01  RTY AND AFFAIRS';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
@@ -235,9 +235,9 @@ class OrderServiceTest extends WebTestCase
 
         $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 1339247T01.docx', 'validCO - 1339247T01.docx', 'application/msword');
 
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
         $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
