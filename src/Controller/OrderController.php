@@ -203,6 +203,9 @@ class OrderController extends AbstractController
         $this->em->persist($hydratedOrder);
         $this->em->flush($hydratedOrder);
 
+        if (!$hydratedOrder->isOrderValid()) {
+            return new Response('Partial data extraction');
+        }
         // @todo check order to see:
         //    - Order fully hydrated
         //    - Order partially hydrated

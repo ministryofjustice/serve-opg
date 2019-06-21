@@ -36,7 +36,7 @@ abstract class Order
     /**
      * @return boolean
      */
-    abstract protected function isOrderValid();
+    abstract public function isOrderValid();
 
     /**
      * @var int|null

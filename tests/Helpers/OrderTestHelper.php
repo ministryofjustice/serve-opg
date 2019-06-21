@@ -32,7 +32,6 @@ class OrderTestHelper
             throw new Exception('$orderType should be either HW or PF');
         }
 
-        $order->setSubType($orderType);
         return $order;
     }
 }

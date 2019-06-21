@@ -32,10 +32,10 @@ class OrderPf extends Order
         return $requiredDocs;
     }
 
-    protected function isOrderValid()
+    public function isOrderValid()
     {
-        return !empty($this->getSubType())
-            && !empty($this->getAppointmentType())
-            && !empty($this->getHasAssetsAboveThreshold());
+        return !empty($this->getSubType()) &&
+            !empty($this->getAppointmentType()) &&
+            !empty($this->getHasAssetsAboveThreshold());
     }
 }
