@@ -252,6 +252,18 @@ describe('dropzoneJS', () => {
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     );
                 })
+
+                it('populates form fields with results of data extraction', () => {
+                    setDocumentBody();
+
+                    let element = document.getElementById("court-order");
+                    let dz = DropzoneJS.setup(element,
+                        '/orders/upload',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    );
+                })
             })
         });
     });

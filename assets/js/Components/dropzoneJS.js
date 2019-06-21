@@ -44,7 +44,6 @@ class DropzoneJS {
             document.querySelector('.dz-filename').append(removeElement);
 
             if (response.length > 0) {
-                console.log(`response is ${response}`);
                 let form = document.querySelector('#continue-form');
                 form.action = form.action.replace('summary', 'edit');
 
