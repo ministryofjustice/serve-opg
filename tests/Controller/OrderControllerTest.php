@@ -44,7 +44,7 @@ class OrderControllerTest extends WebTestCase
 
     public function testProcessOrderDocSuccess()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
         $order->setId(12345);
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
@@ -66,7 +66,7 @@ class OrderControllerTest extends WebTestCase
             $this->documentService->reveal()
         );
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 1339247T01.docx', 'validCO - 1339247T01.docx', 'application/msword');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/msword');
         $request = new Request([], [], [], [], ['court-order' => $file]);
 
         /** @var Response $response */
@@ -77,7 +77,7 @@ class OrderControllerTest extends WebTestCase
 
     public function testProcessOrderDocCaseNumberMismatch()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
         $order->setId(12345);
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
@@ -113,7 +113,7 @@ class OrderControllerTest extends WebTestCase
     /** @dataProvider documentProvider */
     public function testProcessOrderDocAcceptedFilesNotWord($fileLocation, $originalName, $mimeType)
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '1339247T01', 'HW');
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
         $order->setId(12345);
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
