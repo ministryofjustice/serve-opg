@@ -149,9 +149,9 @@ class OrderController extends AbstractController
                     ));
             }
 
-
             return $this->redirectToRoute('case-list');
         }
+
 
         return $this->render('Order/declaration.html.twig', [
             'order' => $order,
@@ -204,11 +204,20 @@ class OrderController extends AbstractController
         $this->em->flush($hydratedOrder);
 
         if (!$hydratedOrder->isOrderValid()) {
-            return new Response('Partial data extraction');
+            $subType = $hydratedOrder->getSubType() ? true : false;
+            $appointmentType = $hydratedOrder->getAppointmentType() ? true : false;
+            $bond = $hydratedOrder->getHasAssetsAboveThreshold() ? true : false;
+
+            return new Response(
+                json_encode(
+                    [
+                        'subTypeExtracted' => $subType,
+                        'appointmentTypeExtracted' => $appointmentType,
+                        'hasAssetsAboveThresholdExtracted' => $bond
+                    ]
+                )
+            );
         }
-        // @todo check order to see:
-        //    - Order fully hydrated
-        //    - Order partially hydrated
 
         return new Response();
     }

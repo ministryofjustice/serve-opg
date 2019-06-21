@@ -42,6 +42,26 @@ class DropzoneJS {
             let removeElement = document.querySelector('.dz-remove');
             removeElement.classList.add('dropzone__file-remove');
             document.querySelector('.dz-filename').append(removeElement);
+
+            if (response.length > 0) {
+                console.log(`response is ${response}`);
+                let form = document.querySelector('#continue-form');
+                form.action = form.action.replace('summary', 'edit');
+
+                JSON.parse(response, (key, value) => {
+                    if (key === 'subTypeExtracted') {
+                        form.elements.subType.value = value;
+                    }
+
+                    if (key === 'appointmentTypeExtracted') {
+                        form.elements.appointmentType.value = value;
+                    }
+
+                    if (key === 'hasAssetsAboveThresholdExtracted') {
+                        form.elements.hasAssetsAboveThreshold.value = value;
+                    }
+                });
+            }
         });
 
         dz.on('removedfile', (file) => {

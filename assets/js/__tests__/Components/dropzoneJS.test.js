@@ -238,6 +238,22 @@ describe('dropzoneJS', () => {
                 })
             })
         });
+
+        describe('success event', () => {
+            describe('response contains partial data extraction', () => {
+                it('amends the action of the continue button to be /case/{id}/edit', () => {
+                    setDocumentBody();
+
+                    let element = document.getElementById("court-order");
+                    let dz = DropzoneJS.setup(element,
+                        '/orders/upload',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    );
+                })
+            })
+        });
     });
 
     describe('removing a file', () => {
