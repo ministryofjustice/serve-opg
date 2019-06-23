@@ -26,11 +26,20 @@ let previewFileHTML = `
 </div> 
 `;
 
+let formHTML = `
+<form action="/order/1/summary" id="continue-form">
+    <button id="continue"></button>    
+    <input id="subType" name="subType" type="hidden" value=false>
+    <input id="appointmentType" name="appointmentType" type="hidden" value=false>
+    <input id="hasAssetsAboveThreshold" name="hasAssetsAboveThreshold" type="hidden" value=false>
+</form>
+`;
+
 let setDocumentBody = () => {
     document.body.innerHTML = `
         <div id="court-order"></div>
         ${previewFileHTML}
-        <button id="continue"></button>
+        ${formHTML}
     `;
 }
 
@@ -240,8 +249,8 @@ describe('dropzoneJS', () => {
         });
 
         describe('success event', () => {
-            describe('response contains partial data extraction', () => {
-                it('amends the action of the continue button to be /case/{id}/edit', () => {
+            describe('response not empty', () => {
+                it('amends the action of the continue button to be /order/{id}/edit', () => {
                     setDocumentBody();
 
                     let element = document.getElementById("court-order");
@@ -251,9 +260,21 @@ describe('dropzoneJS', () => {
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     );
-                })
 
-                it('populates form fields with results of data extraction', () => {
+                    const mockFile = getMockFile('application/msword');
+                    const responseText = '{"subTypeExtracted":true,"appointmentTypeExtracted":true,"hasAssetsAboveThresholdExtracted":false}';
+                    dz.emit("success", mockFile, responseText);
+
+                    let form = document.querySelector('#continue-form');
+                    expect(form.action).toContain('/order/1/edit');
+                });
+
+                it.each`
+                    response                                                                                                | inputName                    | expected
+                    ${'{"subTypeExtracted":true,"appointmentTypeExtracted":true,"hasAssetsAboveThresholdExtracted":false}'} | ${'hasAssetsAboveThreshold'} | ${'false'}
+                    ${'{"subTypeExtracted":true,"appointmentTypeExtracted":false,"hasAssetsAboveThresholdExtracted":true}'} | ${'appointmentType'}         | ${'false'}
+                    ${'{"subTypeExtracted":false,"appointmentTypeExtracted":true,"hasAssetsAboveThresholdExtracted":true}'} | ${'subType'}                 | ${'false'}
+                `('$inputName input is populated with $expected when $response is in response', ({response, inputName, expected}) => {
                     setDocumentBody();
 
                     let element = document.getElementById("court-order");
@@ -263,7 +284,13 @@ describe('dropzoneJS', () => {
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     );
-                })
+
+                    const mockFile = getMockFile('application/msword');
+                    dz.emit("success", mockFile, response);
+
+                    let form = document.querySelector('#continue-form');
+                    expect(form.elements[inputName].value).toEqual(expected);
+                });
             })
         });
     });

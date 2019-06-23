@@ -40,8 +40,10 @@ class DropzoneJS {
             document.dispatchEvent(event);
 
             let removeElement = document.querySelector('.dz-remove');
-            removeElement.classList.add('dropzone__file-remove');
-            document.querySelector('.dz-filename').append(removeElement);
+            if (removeElement !== null) {
+                removeElement.classList.add('dropzone__file-remove');
+                document.querySelector('.dz-filename').append(removeElement);
+            }
 
             if (response.length > 0) {
                 let form = document.querySelector('#continue-form');

@@ -19,9 +19,10 @@ describe('forms', () => {
 
             forms.init('continue');
 
-            expect(spy).toHaveBeenCalledTimes(2);
+            expect(spy).toHaveBeenCalledTimes(3);
             expect(spy).toHaveBeenCalledWith('validDoc', expect.any(Function));
             expect(spy).toHaveBeenCalledWith('docRemoved', expect.any(Function));
+            expect(spy).toHaveBeenCalledWith('wrongCaseNumber', expect.any(Function));
         });
     });
 
