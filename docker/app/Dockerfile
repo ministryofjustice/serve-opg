@@ -38,7 +38,7 @@ RUN chmod 777 xdebug.sh
 ARG WITH_XDEBUG
 ENV WITH_XDEBUG=${WITH_XDEBUG:-false}
 
-RUN ./xdebug.sh
+#RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \

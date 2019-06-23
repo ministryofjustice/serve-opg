@@ -134,7 +134,7 @@ class OrderControllerTest extends WebTestCase
         self::assertEquals('Document is not in .doc or .docx format', $response->getContent());
     }
 
-    public function acceptedDocTypesProvider()
+    private function acceptedDocTypesProvider()
     {
         return [
             'jpg' => ['/tests/TestData/test.jpg', 'test.jpg', 'image/jpeg'],
@@ -144,14 +144,30 @@ class OrderControllerTest extends WebTestCase
         ];
     }
 
-    public function testProcessOrderDocPartialExtractionMissingAppointmentType()
-    {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+    /** @dataProvider partialExtractionProvider
+     * @param string|null $appointmentType , the value of appointmentType
+     * @param string|null $subType , the value of subType
+     * @param string|null $hasAssetsAboveThreshold
+     * @param string $orderType, the type of Order (HW or PF)
+     * @throws WrongCaseNumberException
+     * @throws \App\exceptions\NoMatchesFoundException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function testProcessOrderDocPartialExtraction(
+        ?string $appointmentType,
+        ?string $subType,
+        ?string $hasAssetsAboveThreshold,
+        string $orderType
+    ) {
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', $orderType);
         $order->setId(12345);
 
         $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
 
-        $order->setSubType('NEW_APPLICATION');
+        $order->setSubType($subType);
+        $order->setAppointmentType($appointmentType);
+        $order->setHasAssetsAboveThreshold($hasAssetsAboveThreshold);
 
         $this->orderService->hydrateOrderFromDocument(
             Argument::type(UploadedFile::class),
@@ -179,83 +195,73 @@ class OrderControllerTest extends WebTestCase
         $response = $sut->processOrderDocument($request, 12345);
 
         self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        self::assertEquals('Partial data extraction', $response->getContent());
+        self::assertEquals('partial data extraction', $response->getContent());
     }
 
-    public function testProcessOrderDocPartialExtractionMissingSubType()
+    public function partialExtractionProvider()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
-        $order->setId(12345);
-
-        $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
-
-        $order->setAppointmentType('JOINT_AND_SEVERAL');
-
-        $this->orderService->hydrateOrderFromDocument(
-            Argument::type(UploadedFile::class),
-            Argument::type(Order::class)
-        )->shouldBeCalled()->willReturn($order);
-
-        $this->em->persist($order)->shouldBeCalled();
-        $this->em->flush($order)->shouldBeCalled();
-
-        $sut = new OrderController(
-            $this->em->reveal(),
-            $this->orderService->reveal(),
-            $this->documentService->reveal()
-        );
-
-        $file = FileTestHelper::createUploadedFile(
-            '/tests/TestData/Missing sub type - 93559316.docx',
-            'Missing sub type - 93559316.docx',
-            'application/msword'
-        );
-
-        $request = new Request([], [], [], [], ['court-order' => $file]);
-
-        /** @var Response $response */
-        $response = $sut->processOrderDocument($request, 12345);
-
-        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        self::assertEquals('Partial data extraction', $response->getContent());
+        return [
+            'Missing SubType' => [
+                'JOINT_AND_SEVERAL',
+                null,
+                null,
+                'HW'
+            ],
+            'Missing AppointmentType' => [
+                null,
+                'NEW_APPLICATION',
+                null,
+                'HW'
+            ],
+            'Missing HasAssetsAboveThreshold' => [
+                'JOINT_AND_SEVERAL',
+                'NEW_APPLICATION',
+                null,
+                'PF'
+            ],
+        ];
     }
 
-    public function testProcessOrderDocPartialExtractionMissingBondAmount()
-    {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
-        $order->setId(12345);
-
-        $this->orderService->getOrderByIdIfNotServed($order->getId())->shouldBeCalled()->willReturn($order);
-
-        $order->setAppointmentType('JOINT_AND_SEVERAL');
-        $order->setSubType('NEW_APPLICATION');
-
-        $this->orderService->hydrateOrderFromDocument(
-            Argument::type(UploadedFile::class),
-            Argument::type(Order::class)
-        )->shouldBeCalled()->willReturn($order);
-
-        $this->em->persist($order)->shouldBeCalled();
-        $this->em->flush($order)->shouldBeCalled();
-
-        $sut = new OrderController(
-            $this->em->reveal(),
-            $this->orderService->reveal(),
-            $this->documentService->reveal()
-        );
-
-        $file = FileTestHelper::createUploadedFile(
-            '/tests/TestData/Missing bond amount - 93559316.docx',
-            'Missing sub type - 93559316.docx',
-            'application/msword'
-        );
-
-        $request = new Request([], [], [], [], ['court-order' => $file]);
-
-        /** @var Response $response */
-        $response = $sut->processOrderDocument($request, 12345);
-
-        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        self::assertEquals('Partial data extraction', $response->getContent());
-    }
+//    public function testEditOrderDataExtractionResults($formValues, $missingElementIds, $visibleElementId)
+//    {
+//        $sut = new OrderController(
+//            $this->em->reveal(),
+//            $this->orderService->reveal(),
+//            $this->documentService->reveal()
+//        );
+//
+//        $request = new Request([], $formValues, [], [], []);
+//
+//        /** @var Response $response */
+//        $response = $sut->editAction($request, 12345);
+//
+//        self::assertEquals(Response::HTTP_OK, $response->getStatusCode());
+//
+//        foreach($missingElementIds as $id) {
+//            self::assertNotContains($id, $response->getContent());
+//        }
+//
+//        self::assertContains($visibleElementId, $response->getContent());
+//    }
+//
+//    public function dataExtractionFormValuesProvider()
+//    {
+//        return [
+//            'subType not extracted' => [
+//                ['subTypeExtracted' => false, 'appointmentTypeExtracted' => true],
+//                ['order_form_appointmentType'],
+//                'order_form_subType'
+//            ],
+//            'appointmentType not extracted' => [
+//                ['subTypeExtracted' => true, 'appointmentTypeExtracted' => false],
+//                ['order_form_subType'],
+//                'order_form_subType'
+//            ],
+//            'hasAssetsAboveThreshold not extracted' => [
+//                ['subTypeExtracted' => true, 'appointmentTypeExtracted' => true, 'hasAssetsAboveThresholdExtracted' => false],
+//                ['order_form_appointmentType, order_form_subType'],
+//                'order_form_hasAssetsAboveThreshold'
+//            ],
+//        ];
+//    }
 }

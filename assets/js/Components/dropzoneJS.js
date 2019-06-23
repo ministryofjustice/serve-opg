@@ -47,21 +47,7 @@ class DropzoneJS {
 
             if (response.length > 0) {
                 let form = document.querySelector('#continue-form');
-                form.action = form.action.replace('summary', 'edit');
-
-                JSON.parse(response, (key, value) => {
-                    if (key === 'subTypeExtracted') {
-                        form.elements.subType.value = value;
-                    }
-
-                    if (key === 'appointmentTypeExtracted') {
-                        form.elements.appointmentType.value = value;
-                    }
-
-                    if (key === 'hasAssetsAboveThresholdExtracted') {
-                        form.elements.hasAssetsAboveThreshold.value = value;
-                    }
-                });
+                form.action = form.action.replace('summary', 'confirm-order-details');
             }
         });
 
