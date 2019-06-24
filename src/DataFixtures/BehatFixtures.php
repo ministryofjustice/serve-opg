@@ -21,7 +21,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
     private $encoder;
 
     /**
-     * @var string
+     * @var bool
      */
     private $fixturesEnabled;
 
@@ -30,7 +30,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
      * @param UserPasswordEncoderInterface $encoder
      * @param string $fixturesEnabled
      */
-    public function __construct(UserPasswordEncoderInterface $encoder, string $fixturesEnabled)
+    public function __construct(UserPasswordEncoderInterface $encoder, $fixturesEnabled)
     {
         $this->encoder = $encoder;
         $this->fixturesEnabled = $fixturesEnabled;
