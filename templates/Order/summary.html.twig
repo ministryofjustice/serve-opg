@@ -163,7 +163,9 @@
             {% set doc = order.getDocumentsByType(docType) | first %}
             {% if docType == 'COURT_ORDER' and showCOUpload == '0' %}
                 {% if doc | length %}
-                    <p>{{ docType }} with filename {{ doc.filename }} has been  uploaded successfully</p>
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                    <p class="govuk-body govuk-!-font-weight-bold">Court Order with filename {{ doc.filename }} has been  uploaded successfully</p>
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
                 {%  else  %}
 
                 {% endif %}
