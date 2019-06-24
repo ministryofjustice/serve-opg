@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class OrderController extends AbstractController
 {
@@ -214,6 +215,15 @@ class OrderController extends AbstractController
 
         $this->em->persist($hydratedOrder);
         $this->em->flush($hydratedOrder);
+
+        $document = new Document($order, Document::TYPE_COURT_ORDER);
+
+        try {
+            $requestId = $request->headers->get('x-request-id') ?? 'test';
+            $this->documentService->persistAndUploadDocument($order, $document, $file, $requestId);
+        } catch (Throwable $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
 
         if (!$hydratedOrder->isOrderValid()) {
             $flashMessage = <<<MESSAGE

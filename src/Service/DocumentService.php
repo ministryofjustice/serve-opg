@@ -10,6 +10,7 @@ use App\Service\File\Checker\Exception\VirusFoundException;
 use App\Service\File\Checker\FileCheckerFactory;
 use App\Service\File\FileUploader;
 use App\Service\File\Storage\StorageInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\File;
@@ -53,9 +54,9 @@ class DocumentService
     private $translator;
 
     /**
-     * @var bool
+     * @var string
      */
-    private $debugModeEnabled;
+    private $appEnv;
 
     /**
      * DocumentService constructor.
@@ -65,7 +66,7 @@ class DocumentService
      * @param FileCheckerFactory $fileCheckerFactory
      * @param FileUploader $fileUploader
      * @param TranslatorInterface $translator
-     * @param bool $debugModeEnabled
+     * @param string $appEnv
      */
     public function __construct(
         EntityManager $em,
@@ -74,7 +75,7 @@ class DocumentService
         FileCheckerFactory $fileCheckerFactory,
         FileUploader $fileUploader,
         TranslatorInterface $translator,
-        bool $debugModeEnabled
+        string $appEnv
     ) {
         $this->em = $em;
         $this->storage = $s3Storage;
@@ -82,7 +83,7 @@ class DocumentService
         $this->fileCheckerFactory = $fileCheckerFactory;
         $this->fileUploader = $fileUploader;
         $this->translator = $translator;
-        $this->debugModeEnabled = $debugModeEnabled;
+        $this->appEnv = $appEnv;
     }
 
     public function deleteDocumentById($id)
@@ -102,7 +103,7 @@ class DocumentService
     /**
      * @param  Document   $document
      * @param  bool       $ignoreS3Failure
-     * @throws \Exception if the document doesn't exist (in addition to S3 network/access failures
+     * @throws Exception if the document doesn't exist (in addition to S3 network/access failures
      * @return bool       true if delete is successful
      *
      */
@@ -120,7 +121,7 @@ class DocumentService
             $this->logger->notice('RETURNED->>> ' . $return);
             $this->logger->notice("Deleting for $ref from S3: no exception thrown from deleteObject operation");
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error("deleting $ref from S3: exception (" . ($ignoreS3Failure ? '(ignored)' : '') . ' ' . $e->getMessage());
             if (!$ignoreS3Failure) {
                 throw $e;
@@ -128,7 +129,7 @@ class DocumentService
         }
     }
 
-    public function processDocument(
+    public function persistAndUploadDocument(
         Order $order,
         Document $document,
         UploadedFile $file,
@@ -140,30 +141,23 @@ class DocumentService
         );
 
         try {
-            $fileObject = $this->fileCheckerFactory->factory($file);
+            $document = $this->fileUploader->uploadFile(
+                $order,
+                $document,
+                $file
+            );
 
-            $fileObject->checkFile();
-            if ($fileObject->isSafe()) {
-                $document = $this->fileUploader->uploadFile(
-                    $order,
-                    $document,
-                    $file
-                );
+            $fileName = $file->getClientOriginalName();
+            $document->setFilename($fileName);
 
-                $fileName = $file->getClientOriginalName();
-                $document->setFilename($fileName);
+            $this->em->persist($document);
+            $this->em->flush($document);
 
-                $this->em->persist($document);
-                $this->em->flush($document);
+            $response["response"] = self::SUCCESS;
+            $response["id"] = $document->getId();
+            $response["message"] = 'File uploaded';
 
-                $response["response"] = self::SUCCESS;
-                $response["id"] = $document->getId();
-                $response["message"] = 'File uploaded';
-            } else {
-                $response["message"] = 'File could not be uploaded';
-            }
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $errorToErrorTranslationKey = [
                 InvalidFileTypeException::class => 'notSupported',
                 RiskyFileException::class => 'risky',
@@ -174,10 +168,10 @@ class DocumentService
                 $errorToErrorTranslationKey[get_class($e)] : 'generic';
 
             $message = $this->translator->trans("document.file.errors.{$errorKey}", [
-                '%techDetails%' => $this->debugModeEnabled ? $e->getMessage() : $requestId,
+                '%techDetails%' => $this->appEnv === 'dev' ? $e->getMessage() : $requestId,
             ], 'validators');
 
-            $this->logger->error($e->getMessage());
+            $this->logger->error($e->getMessage() . $file->getClientMimeType());
 
             $response["response"] = self::ERROR;
             $response["message"] = $message;

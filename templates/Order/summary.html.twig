@@ -163,12 +163,11 @@
             {% set doc = order.getDocumentsByType(docType) | first %}
             {% if docType == 'COURT_ORDER' and showCOUpload == '0' %}
                 {% if doc | length %}
-                    {{ doc.filename }}
+                    <p>{{ doc.filename }} has been uploaded successfully</p>
                 {%  else  %}
-                    -
+
                 {% endif %}
             {% else %}
-                {{ docType }}
                 <tr class="govuk-table__row" data-order-id="{{ order.id }}" data-doc-type="{{ docType }}" {% if doc | length %}data-doc-id="{{ doc.id }}"{% endif %}>
                     <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
                     <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
