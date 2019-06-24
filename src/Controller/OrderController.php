@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\Order;
+use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
+use App\Form\ConfirmOrderDetailsForm;
 use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
@@ -13,7 +15,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,14 +56,24 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/order/{orderId}/edit", name="order-edit")
+     * @param Request $request
+     * @param $orderId
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function editAction(Request $request, $orderId)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
-        $form = $this->createForm(OrderForm::class, $order, [
-            'show_assets_question' => $order->getType() == Order::TYPE_PF
-        ]);
+        $form = $this->createForm(
+            OrderForm::class,
+            $order,
+            [
+                'show_assets_question' => $order->getType() == Order::TYPE_PF
+            ]
+        );
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -109,8 +120,11 @@ class OrderController extends AbstractController
            return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
        }
 
+        $showCOUpload = $request->query->get('showCOUpload') ?? true;
+
         return $this->render('Order/summary.html.twig', [
             'order' => $order,
+            'showCOUpload' => $showCOUpload
         ]);
     }
 
@@ -149,9 +163,9 @@ class OrderController extends AbstractController
                     ));
             }
 
-
             return $this->redirectToRoute('case-list');
         }
+
 
         return $this->render('Order/declaration.html.twig', [
             'order' => $order,
@@ -203,10 +217,57 @@ class OrderController extends AbstractController
         $this->em->persist($hydratedOrder);
         $this->em->flush($hydratedOrder);
 
-        // @todo check order to see:
-        //    - Order fully hydrated
-        //    - Order partially hydrated
+        $document = new Document($order, Document::TYPE_COURT_ORDER);
 
+        try {
+            $requestId = $request->headers->get('x-request-id') ?? 'test';
+            $this->documentService->persistAndUploadDocument($order, $document, $file, $requestId);
+        } catch (Throwable $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$hydratedOrder->isOrderValid()) {
+            $flashMessage = <<<MESSAGE
+The order was uploaded successfully.  We could not get all the information we need from the document.
+Please enter some details below about the order
+MESSAGE;
+
+            $this->addFlash('success', $flashMessage);
+            return new Response('partial data extraction');
+        }
+
+        $this->addFlash('success', 'The order was uploaded successfully.');
         return new Response();
+    }
+
+    /**
+     * @Route("/order/{orderId}/confirm-order-details", name="confirm-order-details", methods={"GET", "POST"})
+     */
+    public function confirmOrderDetails(Request $request, $orderId)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        $form = $this->createForm(
+            ConfirmOrderDetailsForm::class,
+            $order,
+            [
+                'show_assets_question' => $order->getType() == Order::TYPE_PF && $order->getHasAssetsAboveThreshold() === null,
+                'show_subType_question' => $order->getSubType() === null,
+                'show_appointmentType_question' => $order->getAppointmentType() === null,
+            ]
+        );
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($order);
+            $this->em->flush($order);
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), 'showCOUpload' => false]);
+        }
+
+        return $this->render(
+            'Order/confirm-details.html.twig',
+            ['order' => $order, 'form' => $form->createView()]
+        );
     }
 }

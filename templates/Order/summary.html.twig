@@ -161,26 +161,35 @@
         <tbody class="govuk-table__body">
         {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
             {% set doc = order.getDocumentsByType(docType) | first %}
+            {% if docType == 'COURT_ORDER' and showCOUpload == '0' %}
+                {% if doc | length %}
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                    <p class="govuk-body govuk-!-font-weight-bold">Court Order with filename {{ doc.filename }} has been  uploaded successfully</p>
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                {%  else  %}
 
-            <tr class="govuk-table__row" data-order-id="{{ order.id }}" data-doc-type="{{ docType }}" {% if doc | length %}data-doc-id="{{ doc.id }}"{% endif %}>
-                <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
-                <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
-                    {% if doc | length %}
-                        {{ doc.filename }}
-                    {%  else  %}
-                        -
-                    {% endif %}
-                </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType | lower }}-actions">
-                    {% if doc | length %}
-                        <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">Remove</a>
-                    {% else %}
-                        <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">
-                            <span class="govuk-icon govuk-icon--plus behat-link"></span>Add document
-                        </a>
-                    {% endif %}
-                </td>
-            </tr>
+                {% endif %}
+            {% else %}
+                <tr class="govuk-table__row" data-order-id="{{ order.id }}" data-doc-type="{{ docType }}" {% if doc | length %}data-doc-id="{{ doc.id }}"{% endif %}>
+                    <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
+                    <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
+                        {% if doc | length %}
+                            {{ doc.filename }}
+                        {%  else  %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType | lower }}-actions">
+                        {% if doc | length %}
+                            <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">Remove</a>
+                        {% else %}
+                            <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">
+                                <span class="govuk-icon govuk-icon--plus behat-link"></span>Add document
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>

@@ -30,9 +30,9 @@ class OrderHw extends Order
         return $requiredDocs;
     }
 
-    protected function isOrderValid()
+    public function isOrderValid()
     {
-        return !empty($this->getSubType())
-            && !empty($this->getAppointmentType());
+        return !empty($this->getSubType()) &&
+            !empty($this->getAppointmentType());
     }
 }

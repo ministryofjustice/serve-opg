@@ -211,3 +211,7 @@ services:
     App\Controller\ManageController:
         arguments:
             $appEnv: "%env(APP_ENV)%"
+
+    App\Service\DocumentService:
+        arguments:
+            $appEnv: "%env(APP_ENV)%"

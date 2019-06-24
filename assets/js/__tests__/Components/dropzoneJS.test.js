@@ -26,11 +26,17 @@ let previewFileHTML = `
 </div> 
 `;
 
+let formHTML = `
+<form action="/order/1/summary" id="continue-form">
+    <button id="continue"></button>    
+</form>
+`;
+
 let setDocumentBody = () => {
     document.body.innerHTML = `
         <div id="court-order"></div>
         ${previewFileHTML}
-        <button id="continue"></button>
+        ${formHTML}
     `;
 }
 
@@ -236,6 +242,29 @@ describe('dropzoneJS', () => {
                 it('shows an error message detailing the error', () => {
                     // @todo look into mocking xhr responses OR another way of testing this
                 })
+            })
+        });
+
+        describe('success event', () => {
+            describe('response not empty', () => {
+                it('amends the action of the continue button to be /order/{id}/edit', () => {
+                    setDocumentBody();
+
+                    let element = document.getElementById("court-order");
+                    let dz = DropzoneJS.setup(element,
+                        '/orders/upload',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    );
+
+                    const mockFile = getMockFile('application/msword');
+                    const responseText = '{"subTypeExtracted":true,"appointmentTypeExtracted":true,"hasAssetsAboveThresholdExtracted":false}';
+                    dz.emit("success", mockFile, responseText);
+
+                    let form = document.querySelector('#continue-form');
+                    expect(form.action).toContain('/order/1/edit');
+                });
             })
         });
     });

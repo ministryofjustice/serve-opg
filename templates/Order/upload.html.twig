@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <form action='{{ path('order-summary', {'orderId': order.id}) }}' method='get'>
+    <form action='{{ path('order-summary', {'orderId': order.id}) }}' method='get' id="continue-form">
         <button type='submit' disabled='disabled' class='govuk-button' id='continue'>
             Continue
         </button>

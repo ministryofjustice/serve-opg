@@ -14,7 +14,6 @@ class OrderPf extends Order
 
     public function getAcceptedDocumentTypes()
     {
-
         $requiredDocs = [
             Document::TYPE_COURT_ORDER => true
         ];
@@ -32,10 +31,10 @@ class OrderPf extends Order
         return $requiredDocs;
     }
 
-    protected function isOrderValid()
+    public function isOrderValid()
     {
-        return !empty($this->getSubType())
-            && !empty($this->getAppointmentType())
-            && !empty($this->getHasAssetsAboveThreshold());
+        return !empty($this->getSubType()) &&
+            !empty($this->getAppointmentType()) &&
+            !empty($this->getHasAssetsAboveThreshold());
     }
 }

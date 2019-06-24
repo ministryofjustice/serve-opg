@@ -211,7 +211,7 @@ REGEX;
         preg_match(self::APPOINTMENT_TYPE_SUB_TYPE_REGEX, $text, $matches);
 
         if (empty($matches)) {
-            throw new NoMatchesFoundException('No matches found');
+            return;
         }
 
         switch ($matches[1]) {
@@ -251,8 +251,11 @@ REGEX;
     {
         preg_match(self::BOND_REGEX, $text, $matches);
 
-        $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
+        if (empty($matches)) {
+            return;
+        }
 
+        $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
 
         switch ($bond) {
             case "":
