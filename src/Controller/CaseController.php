@@ -56,4 +56,26 @@ class CaseController extends AbstractController
             ]
         ]);
     }
+
+    /**
+     * @Route("/test", name="case-list-test")
+     */
+    public function urTestCases(Request $request)
+    {
+        $limit = 50;
+
+        $filters = [
+            'type' => $request->get('type', 'pending'),
+            'q' => $request->get('q', ''),
+        ];
+
+        return $this->render('Case/index-test.html.twig', [
+            'orders' => $this->orderRepo->getOrders($filters, $limit),
+            'filters' => $filters,
+            'counts' => [
+                'pending' => $this->orderRepo->getOrdersCount(['type' => 'pending'] + $filters),
+                'served' => $this->orderRepo->getOrdersCount(['type' => 'served'] + $filters),
+            ]
+        ]);
+    }
 }
