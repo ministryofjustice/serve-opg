@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Unit Test
           command: |
-            docker-compose run --rm app bin/phpunit --verbose tests
+            docker-compose run --rm phpunit
       - run:
           name: Integration Test
           command: |
