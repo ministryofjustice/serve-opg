@@ -3,48 +3,32 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Order;
-use App\Entity\OrderHw;
-use App\Entity\User;
+use App\Tests\Helpers\EnhancedTestCase;
 use App\Tests\Helpers\FileTestHelper;
-use App\Tests\Helpers\OrderTestHelper;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OrderControllerTest extends WebTestCase
+class OrderControllerTest extends EnhancedTestCase
 {
     /**
      * @var void
      */
     private $testUser;
 
-    /**
-     * @var array
-     */
-    private $basicAuthCreds;
-
-    protected function setUp()
+    public function setUp()
     {
         self::bootKernel();
         $this->purgeDatabase();
-
-        $this->testUser = $this->createTestUser();
-        $this->basicAuthCreds = ['PHP_AUTH_USER' => 'test@justice.gov.uk', 'PHP_AUTH_PW'   => 'password123'];
+        $this->testUser = $this->createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
     }
 
     public function testProcessOrderDocSuccess()
     {
-        $this->markTestSkipped(
-            'Temporarily skipping to get prototype deployed for UR'
-        );
-
-        $order = $this->createOrder(12345, Order::TYPE_HW);
+        $order = $this->createOrder(Order::TYPE_HW);
 
         $file = FileTestHelper::createUploadedFile(
             '/tests/TestData/validCO - 93559316.docx',
@@ -56,7 +40,7 @@ class OrderControllerTest extends WebTestCase
         $client = $this->getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], $this->basicAuthCreds);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertEquals('', $client->getResponse()->getContent());
@@ -64,11 +48,7 @@ class OrderControllerTest extends WebTestCase
 
     public function testProcessOrderDocCaseNumberMismatch()
     {
-        $this->markTestSkipped(
-            'Temporarily skipping to get prototype deployed for UR'
-        );
-
-        $order = $this->createOrder(12345, Order::TYPE_HW);
+        $order = $this->createOrder(Order::TYPE_HW);
 
         $file = FileTestHelper::createUploadedFile(
             '/tests/TestData/validCO - WRONGCASENO.docx',
@@ -80,7 +60,7 @@ class OrderControllerTest extends WebTestCase
         $client = $this->getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], $this->basicAuthCreds);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
     }
@@ -88,11 +68,7 @@ class OrderControllerTest extends WebTestCase
     /** @dataProvider acceptedDocTypesProvider */
     public function testProcessOrderDocAcceptedFilesNotWord($fileLocation, $originalName, $mimeType)
     {
-        $this->markTestSkipped(
-            'Temporarily skipping to get prototype deployed for UR'
-        );
-
-        $order = $this->createOrder(12345, Order::TYPE_HW);
+        $order = $this->createOrder(Order::TYPE_HW);
 
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
@@ -100,7 +76,7 @@ class OrderControllerTest extends WebTestCase
         $client = $this->getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], $this->basicAuthCreds);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertEquals('Document is not in .doc or .docx format', $client->getResponse()->getContent());
@@ -124,11 +100,7 @@ class OrderControllerTest extends WebTestCase
      */
     public function testProcessOrderDocPartialExtraction(string $orderType, string $fileName)
     {
-        $this->markTestSkipped(
-            'Temporarily skipping to get prototype deployed for UR'
-        );
-
-        $order = $this->createOrder(12345, $orderType);
+        $order = $this->createOrder($orderType);
 
         $file = FileTestHelper::createUploadedFile(
             "/tests/TestData/${fileName}",
@@ -140,7 +112,7 @@ class OrderControllerTest extends WebTestCase
         $client = $this->getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], $this->basicAuthCreds);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertEquals('partial data extraction', $client->getResponse()->getContent());
@@ -173,11 +145,7 @@ class OrderControllerTest extends WebTestCase
         $visibleElementId,
         $orderType
     ) {
-        $this->markTestSkipped(
-            'Temporarily skipping to get prototype deployed for UR'
-        );
-
-        $order = $this->createOrder(12345, $orderType);
+        $order = $this->createOrder($orderType);
         $order->setSubType($subTypeValue);
         $order->setAppointmentType($appointmentTypeValue);
         $order->setHasAssetsAboveThreshold($hasAssetsAboveThresholdValue);
@@ -187,7 +155,7 @@ class OrderControllerTest extends WebTestCase
         $client = $this->getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], $this->basicAuthCreds);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -228,51 +196,5 @@ class OrderControllerTest extends WebTestCase
         ];
     }
 
-    protected function purgeDatabase()
-    {
-        $purger = new ORMPurger($this->getService('doctrine')->getManager());
-        $purger->purge();
-    }
 
-    protected function getService($id)
-    {
-        return self::$container->get($id);
-    }
-
-    /**
-     * @param int $id
-     * @return OrderHw
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    protected function createOrder(int $id, string $orderType)
-    {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', $orderType);
-        $order->setId($id);
-        return $this->persistEntity($order);
-    }
-
-    /**
-     * @return EntityManager
-     */
-    protected function getEntityManager()
-    {
-        return $this->getService('doctrine.orm.entity_manager');
-    }
-
-    protected function persistEntity(object $entity)
-    {
-        $this->getEntityManager()->persist($entity);
-        $this->getEntityManager()->flush();
-        return $entity;
-    }
-
-    protected function createTestUser()
-    {
-        $userModel = new User('test@justice.gov.uk');
-        $password = $this->getService('security.user_password_encoder.generic')->encodePassword($userModel, 'password123');
-        $userModel->setPassword($password);
-        $this->getEntityManager()->persist($userModel);
-        $this->getEntityManager()->flush();
-    }
 }
