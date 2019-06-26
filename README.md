@@ -80,13 +80,13 @@ Serve OPG uses PHPUnit and Behat to test the application
 ## Unit Testing
 Run php unit
 ```bash
-docker-compose run --rm phpunit
+docker-compose run --rm app bin/phpunit --verbose tests
 
 # specific test (if unique)
-docker-compose run --rm phpunit --filter testHomePage
+docker-compose run --rm app bin/phpunit --verbose tests --filter testHomePage
 
 # specific test (if not unique)
-docker-compose run --rm phpunit --filter testHomePage tests/Controller/IndexControllerTest.php
+docker-compose run --rm app bin/phpunit --verbose tests --filter testHomePage tests/Controller/IndexControllerTest.php
 
 # specific test using groups
 
@@ -102,7 +102,7 @@ public function testSomething()
 
 Then run:
 
-docker-compose run --rm phpunit --group failing
+docker-compose run --rm app bin/phpunit --verbose tests --group failing
 ```
 
 ## Integration Testing
