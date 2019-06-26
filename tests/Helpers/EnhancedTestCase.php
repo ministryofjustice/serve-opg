@@ -17,20 +17,13 @@ class EnhancedTestCase extends WebTestCase
     const TEST_USER_PASSWORD = 'password123';
     const TEST_USER_EMAIL = 'test@user.com';
     const BASIC_AUTH_CREDS = ['PHP_AUTH_USER' => self::TEST_USER_EMAIL, 'PHP_AUTH_PW'   => self::TEST_USER_PASSWORD];
-    /**
-     * @var array
-     */
-    protected $basicAuthCreds;
 
-    /**
-     * @var string
-     */
-    protected $testUserPassword;
-
-    /**
-     * @var string
-     */
-    protected $testUserEmail;
+    public function setUp()
+    {
+        self::bootKernel();
+        self::purgeDatabase();
+        self::createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
+    }
 
     protected function purgeDatabase()
     {

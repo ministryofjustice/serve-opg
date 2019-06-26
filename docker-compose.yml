@@ -161,8 +161,8 @@ services:
       - AWS_SECRET_ACCESS_KEY=bar
       - APP_ENV=test
     depends_on:
+      - loadbalancer
       - postgres
-      - app
 
   qa:
     image: jakzal/phpqa:alpine

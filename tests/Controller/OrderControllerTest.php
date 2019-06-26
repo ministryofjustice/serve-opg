@@ -5,8 +5,6 @@ namespace App\Tests\Controller;
 use App\Entity\Order;
 use App\Tests\Helpers\EnhancedTestCase;
 use App\Tests\Helpers\FileTestHelper;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,16 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrderControllerTest extends EnhancedTestCase
 {
-    /**
-     * @var void
-     */
-    private $testUser;
-
     public function setUp()
     {
-        self::bootKernel();
-        $this->purgeDatabase();
-        $this->testUser = $this->createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
+        parent::setUp();
     }
 
     public function testProcessOrderDocSuccess()
@@ -39,6 +30,7 @@ class OrderControllerTest extends EnhancedTestCase
         /** @var Client $client */
         $client = $this->getService('test.client');
         $orderId = $order->getId();
+
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
@@ -195,6 +187,4 @@ class OrderControllerTest extends EnhancedTestCase
             ],
         ];
     }
-
-
 }
