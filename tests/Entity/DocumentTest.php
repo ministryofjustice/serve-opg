@@ -20,6 +20,16 @@ class DocumentTest extends TestCase
         self::assertEquals($expectedResult, $document->isWordDocument());
     }
 
+    /** @dataProvider docTypesProvider */
+    public function testGetMimeType($fileLocation, $originalName, $mimeType)
+    {
+        $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
+        $order = OrderTestHelper::generateOrder('2018-01-01', '2018-01-01', '123456', OrderPf::TYPE_PF);
+        $document = new Document($order, Document::TYPE_COURT_ORDER);
+        $document->setFile($file);
+        self::assertEquals($mimeType, $document->getMimeType());
+    }
+
     public function docTypesProvider()
     {
         return [
@@ -29,5 +39,12 @@ class DocumentTest extends TestCase
             'word' => ['/tests/TestData/test.jpeg', 'test.jpeg', 'application/msword', true],
             'open-word' => ['/tests/TestData/test.pdf', 'test.pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', true]
         ];
+    }
+
+    public function testGetMimeTypeNoFile()
+    {
+        $order = OrderTestHelper::generateOrder('2018-01-01', '2018-01-01', '123456', OrderPf::TYPE_PF);
+        $document = new Document($order, Document::TYPE_COURT_ORDER);
+        self::assertEquals(null, $document->getMimeType());
     }
 }
