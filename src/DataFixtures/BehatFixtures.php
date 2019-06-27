@@ -68,24 +68,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
                 ['number' => '03427488', 'name' => 'Lia Shelton', 'type' => 'PF'],
                 ['number' => '51934429', 'name' => 'Abdullah Lang', 'type' => 'PF'],
                 ['number' => '6554033', 'name' => 'Angela Walker', 'type' => 'PF'],
-                ['number' => '98848454', 'name' => 'Justine Henderson', 'type' => 'PF'],
-                ['number' => '99900001', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900002', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900003', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900004', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900005', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900006', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900007', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900008', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900009', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900010', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900011', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900012', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900013', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900014', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900015', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900016', 'name' => 'Joe Bloggs', 'type' => 'PF'],
-                ['number' => '99900017', 'name' => 'Joe Bloggs', 'type' => 'PF'],
+                ['number' => '98848454', 'name' => 'Justine Henderson', 'type' => 'PF']
             ];
 
             $this->persistCases($manager, $cases);
