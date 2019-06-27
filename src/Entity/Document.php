@@ -35,7 +35,6 @@ class Document
     private $type;
 
     /**
-    *
     * @var UploadedFile
     */
     private $file;
@@ -265,5 +264,15 @@ class Document
             'mimeTypesMessage' => 'document.file.errors.mimeTypesMessage',
             'maxSizeMessage' => 'document.file.errors.maxSizeMessage'
         )));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWordDocument()
+    {
+        $mimeType = $this->getFile()->getClientMimeType();
+        $wordMimeTypes = ['application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        return in_array($mimeType, $wordMimeTypes);
     }
 }

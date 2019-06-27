@@ -3,14 +3,14 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Order;
-use App\Tests\Helpers\EnhancedTestCase;
+use App\Tests\ApiWebTestCase;
 use App\Tests\Helpers\FileTestHelper;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OrderControllerTest extends EnhancedTestCase
+class OrderControllerTest extends ApiWebTestCase
 {
     public function setUp()
     {
@@ -71,7 +71,7 @@ class OrderControllerTest extends EnhancedTestCase
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertEquals('Document is not in .doc or .docx format', $client->getResponse()->getContent());
+        self::assertEquals('partial data extraction or non-word document', $client->getResponse()->getContent());
     }
 
     public function acceptedDocTypesProvider()

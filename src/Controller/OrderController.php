@@ -200,24 +200,19 @@ class OrderController extends AbstractController
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
         /** @var UploadedFile $file */
         $file = $request->files->get('court-order');
-        $mimeType = $file->getClientMimeType();
-
-        $acceptedMimeTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-
-        if (!in_array($mimeType, $acceptedMimeTypes)) {
-            return new Response('Document is not in .doc or .docx format');
-        }
-
-        try{
-            $hydratedOrder = $this->orderService->hydrateOrderFromDocument($file, $order);
-        } catch (WrongCaseNumberException $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->em->persist($hydratedOrder);
-        $this->em->flush($hydratedOrder);
 
         $document = new Document($order, Document::TYPE_COURT_ORDER);
+        $document->setFile($file);
+
+        if ($document->isWordDocument()) {
+            try{
+                $order = $this->orderService->hydrateOrderFromDocument($file, $order);
+            } catch (WrongCaseNumberException $e) {
+                return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            }
+            $this->em->persist($order);
+            $this->em->flush($order);
+        }
 
         try {
             $requestId = $request->headers->get('x-request-id') ?? 'test';
@@ -226,14 +221,14 @@ class OrderController extends AbstractController
             return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        if (!$hydratedOrder->isOrderValid()) {
+        if (!$order->isOrderValid()) {
             $flashMessage = <<<MESSAGE
 The order was uploaded successfully.  We could not get all the information we need from the document.
 Please enter some details below about the order
 MESSAGE;
 
             $this->addFlash('success', $flashMessage);
-            return new Response('partial data extraction');
+            return new Response('partial data extraction or non-word document');
         }
 
         $this->addFlash('success', 'The order was uploaded successfully.');

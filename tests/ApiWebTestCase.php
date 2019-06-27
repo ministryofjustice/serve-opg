@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
 
-namespace App\Tests\Helpers;
-
+namespace App\Tests;
 
 use App\Entity\OrderHw;
 use App\Entity\User;
+use App\Tests\Helpers\OrderTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EnhancedTestCase extends WebTestCase
+class ApiWebTestCase extends WebTestCase
 {
     const TEST_USER_PASSWORD = 'password123';
     const TEST_USER_EMAIL = 'test@user.com';
