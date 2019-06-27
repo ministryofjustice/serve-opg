@@ -128,7 +128,7 @@ class OrderControllerTest extends ApiWebTestCase
         ];
     }
 
-    /** @dataProvider dataExtractionFormValuesProvider */
+    /** @dataProvider dataExtractionResultsProvider */
     public function testConfirmOrderDetailsDataExtractionResults(
         $subTypeValue,
         $appointmentTypeValue,
@@ -158,7 +158,7 @@ class OrderControllerTest extends ApiWebTestCase
         self::assertContains($visibleElementId, $client->getResponse()->getContent());
     }
 
-    public function dataExtractionFormValuesProvider()
+    public function dataExtractionResultsProvider()
     {
         return [
             'subType not extracted' => [
@@ -186,5 +186,23 @@ class OrderControllerTest extends ApiWebTestCase
                 'PF'
             ],
         ];
+    }
+
+    public function testConfirmOrderDetailsValidOrder()
+    {
+        $order = $this->createOrder('PF');
+        $order->setSubType(Order::SUBTYPE_NEW);
+        $order->setAppointmentType(Order::APPOINTMENT_TYPE_JOINT);
+        $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
+        $this->persistEntity($order);
+
+        /** @var Client $client */
+        $client = $this->getService('test.client');
+        $orderId = $order->getId();
+        /** @var Crawler $crawler */
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        self::assertEquals("/order/${orderId}/summary", $client->getResponse()->headers->get('location'));
     }
 }

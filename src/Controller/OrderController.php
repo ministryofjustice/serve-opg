@@ -242,6 +242,10 @@ MESSAGE;
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
+        if ($order->isOrderValid()) {
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
+        }
+
         $form = $this->createForm(
             ConfirmOrderDetailsForm::class,
             $order,
