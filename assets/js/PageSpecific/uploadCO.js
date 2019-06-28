@@ -2,7 +2,7 @@ import dropzoneJS from '../Components/dropzoneJS'
 import forms from '../Components/forms'
 
 window.addEventListener('DOMContentLoaded', () => {
-    const orderId = document.location.pathname.match("order\/(.*)\/upload")[1];
+    const orderId = document.location.pathname.match("order\/(.*)\/")[1];
 
     dropzoneJS.setup('div#court-order',
         `/order/${orderId}/process-order-doc`,

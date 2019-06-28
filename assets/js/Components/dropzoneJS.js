@@ -2,11 +2,12 @@ import Dropzone from 'dropzone/dist/min/dropzone.min';
 Dropzone.autoDiscover = false;
 
 class DropzoneJS {
-    static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes) {
+    static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes, removeUrl) {
         const previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
 
         let dz =  new Dropzone(elementID, {
             url: targetURL,
+            removeUrl: removeUrl,
             maxFiles: maxFiles,
             dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
             paramName: fileIdentifier,
@@ -59,6 +60,10 @@ class DropzoneJS {
                 }
             );
             document.dispatchEvent(event);
+
+            fetch(dz.options.removeUrl, {
+                method: 'DELETE',
+            })
         });
 
         dz.on('maxfilesexceeded', (file) => {

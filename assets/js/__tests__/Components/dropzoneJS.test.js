@@ -1,5 +1,6 @@
 import DropzoneJS from '../../Components/dropzoneJS';
 import Dropzone from 'dropzone/dist/min/dropzone.min';
+const fetchMock = require('fetch-mock');
 
 let getMockFile = (fileType='image/jpeg') => {
     return {
@@ -51,6 +52,7 @@ describe('dropzoneJS', () => {
                 1,
                 'court-order',
                 'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                '/orders/delete',
             );
 
             it('paramName', () => {
@@ -59,6 +61,10 @@ describe('dropzoneJS', () => {
 
             it('url', () => {
                 expect(dz.options.url).toBe('/orders/upload');
+            });
+
+            it('removeUrl', () => {
+                expect(dz.options.removeUrl).toBe('/orders/delete');
             });
 
             it('dictMaxFilesExceeded', () => {
@@ -104,6 +110,7 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/orders/delete',
                 );
 
                 const acceptedTypes = ['image/tiff', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -124,6 +131,7 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/orders/delete',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -156,6 +164,7 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/orders/delete',
                 );
 
                 const mockFile = getMockFile('application/msword');
@@ -183,6 +192,7 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/orders/delete',
                 );
 
                 const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
@@ -203,6 +213,7 @@ describe('dropzoneJS', () => {
                         1,
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '/orders/delete',
                     );
 
                     const spy = jest.spyOn(dz, 'removeFile');
@@ -224,6 +235,7 @@ describe('dropzoneJS', () => {
                         1,
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '/orders/delete',
                     );
 
                     let mockFile = getMockFile('application/msword');
@@ -256,6 +268,7 @@ describe('dropzoneJS', () => {
                         1,
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '/orders/delete',
                     );
 
                     const mockFile = getMockFile('application/msword');
@@ -263,7 +276,7 @@ describe('dropzoneJS', () => {
                     dz.emit("success", mockFile, responseText);
 
                     let form = document.querySelector('#continue-form');
-                    expect(form.action).toContain('/order/1/edit');
+                    expect(form.action).toContain('/order/1/confirm-order-details');
                 });
             })
         });
@@ -280,6 +293,7 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/orders/delete',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -309,7 +323,7 @@ describe('dropzoneJS', () => {
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'continue'
+                    '/orders/delete',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -330,5 +344,27 @@ describe('dropzoneJS', () => {
                 expect(spy).toHaveBeenCalledWith(expectedEvent);
             });
         });
+
+        describe('makes a DELETE request to removeUrl', () => {
+            setDocumentBody();
+
+            let element = document.getElementById("court-order");
+            let dz = DropzoneJS.setup(element,
+                '/orders/upload',
+                1,
+                'court-order',
+                'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                '/orders/delete',
+            );
+
+            fetchMock.delete('/orders/delete', 200);
+
+            const mockFile = getMockFile();
+
+            dz.addFile(mockFile);
+            dz.removeFile(mockFile);
+
+            expect(fetchMock.called('/orders/delete')).toBe(true)
+        })
     });
 });
