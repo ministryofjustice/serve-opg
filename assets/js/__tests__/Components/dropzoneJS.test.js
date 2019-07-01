@@ -404,7 +404,6 @@ describe('dropzoneJS', () => {
                 // Add timeout here to give the async code time to process
                 setTimeout(function() {
                         expect(spy).toHaveBeenCalledWith('Error removing file from S3: connection error');
-                        return done();
                     }
                     , 10);
 

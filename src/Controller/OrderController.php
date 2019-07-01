@@ -232,9 +232,9 @@ MESSAGE;
 
             $this->addFlash('success', $flashMessage);
             $partial = true;
+        } else {
+            $this->addFlash('success', 'The order was uploaded successfully.');
         }
-
-        $this->addFlash('success', 'The order was uploaded successfully.');
 
         return new JsonResponse(
             [
