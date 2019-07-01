@@ -35,7 +35,7 @@ class OrderControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertEquals('', $client->getResponse()->getContent());
+        self::assertJson($client->getResponse()->getContent());
     }
 
     public function testProcessOrderDocCaseNumberMismatch()
@@ -71,7 +71,7 @@ class OrderControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertEquals('partial data extraction or non-word document', $client->getResponse()->getContent());
+        self::assertJson($client->getResponse()->getContent());
     }
 
     public function acceptedDocTypesProvider()
@@ -107,7 +107,7 @@ class OrderControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertEquals('partial data extraction or non-word document', $client->getResponse()->getContent());
+        self::assertJson($client->getResponse()->getContent());
     }
 
     public function partialExtractionProvider()
