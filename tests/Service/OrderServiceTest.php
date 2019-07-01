@@ -209,7 +209,7 @@ class OrderServiceTest extends WebTestCase
     public function testWrongCaseNumberException()
     {
         self::expectExceptionObject(new WrongCaseNumberException());
-        self::expectExceptionMessage('The order provided does not have the correct case number for this record');
+        self::expectExceptionMessage('The case number in the document does not match the case number for this order. Please check the file and try again.');
 
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', 'WRONGNUMBER', 'PF');
 
