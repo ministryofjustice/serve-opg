@@ -16,6 +16,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -216,10 +217,12 @@ class OrderController extends AbstractController
 
         try {
             $requestId = $request->headers->get('x-request-id') ?? 'test';
-            $this->documentService->persistAndUploadDocument($order, $document, $file, $requestId);
+            $uploadDocResponse = $this->documentService->persistAndUploadDocument($order, $document, $file, $requestId);
         } catch (Throwable $e) {
             return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
+
+        $partial = false;
 
         if (!$order->isOrderValid()) {
             $flashMessage = <<<MESSAGE
@@ -228,11 +231,19 @@ Please enter some details below about the order
 MESSAGE;
 
             $this->addFlash('success', $flashMessage);
-            return new Response('partial data extraction or non-word document');
+            $partial = true;
         }
 
         $this->addFlash('success', 'The order was uploaded successfully.');
-        return new Response();
+
+        return new JsonResponse(
+            [
+                'success' => true,
+                'partial' => $partial,
+                'orderId' => $order->getId(),
+                'documentId' => $uploadDocResponse['id']
+            ]
+        );
     }
 
     /**

@@ -171,7 +171,7 @@ REGEX;
     {
         if (!$this->extractCaseNumber($fileContents, $order)) {
             throw new WrongCaseNumberException(
-                'The order provided does not have the correct case number for this record'
+                'The case number in the document does not match the case number for this order. Please check the file and try again.'
             );
         }
 

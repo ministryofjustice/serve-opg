@@ -1,8 +1,9 @@
 import DropzoneJS from '../../Components/dropzoneJS';
 import Dropzone from 'dropzone/dist/min/dropzone.min';
 const fetchMock = require('fetch-mock');
+fetchMock.config.overwriteRoutes = true;
 
-let getMockFile = (fileType='image/jpeg') => {
+let getMockFile = (fileType='image/tiff') => {
     return {
         status: Dropzone.ADDED,
         accepted: true,
@@ -35,7 +36,7 @@ let formHTML = `
 
 let setDocumentBody = () => {
     document.body.innerHTML = `
-        <div id="court-order"></div>
+        <div id="court-order" data-order-id="1"></div>
         ${previewFileHTML}
         ${formHTML}
     `;
@@ -47,12 +48,12 @@ describe('dropzoneJS', () => {
             setDocumentBody();
 
             let element = document.getElementById("court-order");
-            let dz = DropzoneJS.setup(element,
-                '/orders/upload',
+            let dz = DropzoneJS.setup("div#court-order",
+                '/order/{orderId}/process-order-doc',
                 1,
                 'court-order',
                 'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                '/orders/delete',
+                '/order/{orderId}/document/{documentId}',
             );
 
             it('paramName', () => {
@@ -60,19 +61,15 @@ describe('dropzoneJS', () => {
             });
 
             it('url', () => {
-                expect(dz.options.url).toBe('/orders/upload');
+                expect(dz.options.url).toBe('/order/1/process-order-doc');
             });
 
             it('removeUrl', () => {
-                expect(dz.options.removeUrl).toBe('/orders/delete');
+                expect(dz.options.removeUrl).toBe('/order/1/document/{documentId}');
             });
 
-            it('dictMaxFilesExceeded', () => {
-                expect(dz.options.dictMaxFilesExceeded).toBe('Only 1 document(s) can be uploaded');
-            });
-
-            it('maxFiles', () => {
-                expect(dz.options.maxFiles).toBe(1);
+            it('maxFilesCustom', () => {
+                expect(dz.options.maxFilesCustom).toBe(1);
             });
 
             it('acceptedFiles', () => {
@@ -104,13 +101,12 @@ describe('dropzoneJS', () => {
             it('should be accepted', () => {
                 setDocumentBody();
 
-                let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element,
-                    '/orders/upload',
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    '/orders/delete',
+                    '/order/{orderId}/document/{documentId}',
                 );
 
                 const acceptedTypes = ['image/tiff', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -125,13 +121,12 @@ describe('dropzoneJS', () => {
             it('should dispatch a validFile event', () => {
                 setDocumentBody();
 
-                let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element,
-                    '/orders/upload',
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    '/orders/delete',
+                    '/order/{orderId}/document/{documentId}',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -158,13 +153,12 @@ describe('dropzoneJS', () => {
             it('should append the remove element dz-filename element', () => {
                 setDocumentBody();
 
-                let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element,
-                    '/orders/upload',
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    '/orders/delete',
+                    '/order/{orderId}/document/{documentId}',
                 );
 
                 const mockFile = getMockFile('application/msword');
@@ -186,13 +180,12 @@ describe('dropzoneJS', () => {
             it('should be rejected', () => {
                 setDocumentBody();
 
-                let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element,
-                    '/orders/upload',
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    '/orders/delete',
+                    '/order/{orderId}/document/{documentId}',
                 );
 
                 const nonAcceptedTypes = ['text/css', 'text/csv', 'image/bmp', 'image/gif', 'text/javascript', 'application/zip'];
@@ -202,81 +195,103 @@ describe('dropzoneJS', () => {
             });
         });
 
-        describe('maxfilesexceeded event', () => {
-            describe('when maxfile limit has been exceeded', () => {
-                it('removes the last added file', () => {
-                    setDocumentBody();
+        describe('when maxFileCustom limit has been exceeded', () => {
+            it('removes the last added file', () => {
+                setDocumentBody();
 
-                    let element = document.getElementById("court-order");
-                    let dz = DropzoneJS.setup(element,
-                        '/orders/upload',
-                        1,
-                        'court-order',
-                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        '/orders/delete',
-                    );
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/order/{orderId}/document/{documentId}',
+                );
 
-                    const spy = jest.spyOn(dz, 'removeFile');
+                const spy = jest.spyOn(dz, 'removeFile');
 
-                    let mockFile = getMockFile('application/msword');
-                    dz.addFile(mockFile);
-                    dz.addFile(mockFile);
+                fetchMock.delete('/order/1/document/2', { success: 1 });
 
-                    expect(spy).toHaveBeenCalledTimes(1);
-                    expect(spy).toHaveBeenCalledWith(mockFile);
-                });
+                let mockFileWord = getMockFile('application/msword');
+                let mockFileTiff = getMockFile('image/tiff');
 
-                it('alerts user that max file limit has been reached', () => {
-                    setDocumentBody();
+                dz.files.push(mockFileWord);
 
-                    let element = document.getElementById("court-order");
-                    let dz = DropzoneJS.setup(element,
-                        '/orders/upload',
-                        1,
-                        'court-order',
-                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        '/orders/delete',
-                    );
+                // Mocking the success event here due to quirks in dropzone execution order
+                let responseText = {"success":true,"partial":true,"documentId":2};
+                dz.emit("success", mockFileTiff, responseText);
+                dz.addFile(mockFileTiff);
 
-                    let mockFile = getMockFile('application/msword');
-                    dz.files.push(mockFile);
-                    dz.addFile(mockFile);
-
-                    const errorDiv = mockFile.previewElement.querySelector('.dz-error-message');
-
-                    expect(errorDiv.innerText).toContain('Only 1 document(s) can be uploaded');
-                });
+                expect(spy).toHaveBeenCalledTimes(1);
+                expect(spy).toHaveBeenCalledWith(mockFileWord);
+                expect(dz.files).not.toContain(mockFileWord);
+                expect(dz.files).toContain(mockFileTiff);
             });
         });
+
 
         describe('error event', () => {
             describe('when error response contains case number mismatch', () => {
                 it('shows an error message detailing the error', () => {
-                    // @todo look into mocking xhr responses OR another way of testing this
+                    setDocumentBody();
+
+                    let dz = DropzoneJS.setup("div#court-order",
+                        '/order/{orderId}/process-order-doc',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '/order/{orderId}/document/{documentId}',
+                    );
+
+                    fetchMock.delete('/order/1/document/2', { success: 1 });
+
+                    let mockFile = getMockFile('application/msword');
+
+                    dz.addFile(mockFile);
+                    dz.emit("error", mockFile, 'The case number in the document does not match the case number for this order. Please check the file and try again.');
+
+                    const dzElement = document.querySelector('.dz-error-message').innerHTML;
+                    expect(dzElement).toEqual(expect.stringContaining('The case number in the document does not match the case number for this order. Please check the file and try again'));
                 })
             })
         });
 
         describe('success event', () => {
-            describe('response not empty', () => {
-                it('amends the action of the continue button to be /order/{id}/edit', () => {
+            describe('response JSON contains partial:true', () => {
+                it('amends the action of the continue button to be /order/{id}/confirm-order-details', () => {
                     setDocumentBody();
 
-                    let element = document.getElementById("court-order");
-                    let dz = DropzoneJS.setup(element,
-                        '/orders/upload',
+                    let dz = DropzoneJS.setup("div#court-order",
+                        '/order/{orderId}/process-order-doc',
                         1,
                         'court-order',
                         'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        '/orders/delete',
+                        '/order/{orderId}/document/{documentId}',
                     );
 
                     const mockFile = getMockFile('application/msword');
-                    const responseText = '{"subTypeExtracted":true,"appointmentTypeExtracted":true,"hasAssetsAboveThresholdExtracted":false}';
+                    const responseText = {"success":true,"partial":true,"documentId":1};
                     dz.emit("success", mockFile, responseText);
 
                     let form = document.querySelector('#continue-form');
                     expect(form.action).toContain('/order/1/confirm-order-details');
+                });
+
+                it('replaces {documentId} of the removeUrl variable with documentId returned in response', () => {
+                    setDocumentBody();
+
+                    let dz = DropzoneJS.setup("div#court-order",
+                        '/order/{orderId}/process-order-doc',
+                        1,
+                        'court-order',
+                        'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        '/order/{orderId}/document/{documentId}',
+                    );
+
+                    const mockFile = getMockFile('application/msword');
+                    const responseText = {"success":true,"partial":true,"documentId":3};
+                    dz.emit("success", mockFile, responseText);
+
+                    expect(dz.options.removeUrl).toBe('/order/1/document/3');
                 });
             })
         });
@@ -287,13 +302,12 @@ describe('dropzoneJS', () => {
             it('should dispatch a docRemoved event with fileLimitExceeded equal to false', () => {
                 setDocumentBody();
 
-                let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element,
-                    '/orders/upload',
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    '/orders/delete',
+                    '/order/{orderId}/document/{documentId}',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -305,25 +319,108 @@ describe('dropzoneJS', () => {
                     }
                 );
 
-                const mockFile = getMockFile();
-                dz.addFile(mockFile);
+                fetchMock.delete('/order/1/document/3', { success: 1 });
+
+                const mockFile = getMockFile('application/msword');
+
+                dz.files.push(mockFile);
+                const responseText = {"success":true,"partial":true,"documentId":3};
+                dz.emit("success", mockFile, responseText);
+
                 dz.removeFile(mockFile);
 
                 expect(spy).toHaveBeenCalledWith(expectedEvent);
             });
-        });
 
-        describe('more than max file limit', () => {
-            it('should not dispatch a docRemoved event with fileLimitExceeded equal to true', () => {
+            it('makes a DELETE request to removeUrl', () => {
                 setDocumentBody();
 
-                let element = document.getElementById("court-order");
-                let dz = DropzoneJS.setup(element,
-                    '/orders/upload',
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
                     1,
                     'court-order',
                     'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    '/orders/delete',
+                    '/order/{orderId}/document/{documentId}',
+                );
+
+                fetchMock.delete('/order/1/document/3', { success: 1 });
+
+                const mockFile = getMockFile('application/msword');
+
+                dz.files.push(mockFile);
+                const responseText = {"success":true,"partial":true,"documentId":3};
+                dz.emit("success", mockFile, responseText);
+
+                dz.removeFile(mockFile);
+
+                expect(fetchMock.called('/order/1/document/3')).toBe(true)
+            });
+
+            it('does not attempt to DELETE files when removeUrl has not been updated with a valid documentId', () => {
+                setDocumentBody();
+
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/order/{orderId}/document/{documentId}',
+                );
+
+                fetchMock.reset();
+                fetchMock.delete('/order/1/document/3', { success: 1 });
+
+                const mockFile = getMockFile('application/msword');
+
+                dz.files.push(mockFile);
+                dz.removeFile(mockFile);
+
+                expect(fetchMock.called('/order/1/document/3')).toBe(false)
+            })
+
+            it('console.logs when response from removeUrl endpoint is not successful', async () => {
+                setDocumentBody();
+
+                 let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/order/{orderId}/document/{documentId}',
+                );
+
+                const spy = jest.spyOn(global.console, 'log');
+
+                fetchMock.delete('/order/1/document/3', { success: 0, error: 'connection error' });
+
+                const mockFile = getMockFile('application/msword');
+
+                await dz.addFile(mockFile);
+                const responseText = {"success":true,"partial":true,"documentId":3};
+                dz.emit("success", mockFile, responseText);
+
+                dz.removeFile(mockFile);
+
+                // Add timeout here to give the async code time to process
+                setTimeout(function() {
+                        expect(spy).toHaveBeenCalledWith('Error removing file from S3: connection error');
+                        return done();
+                    }
+                    , 10);
+
+            })
+        });
+
+        describe('more than max file limit', () => {
+            it('should dispatch a docRemoved event with fileLimitExceeded equal to true', () => {
+                setDocumentBody();
+
+                let dz = DropzoneJS.setup("div#court-order",
+                    '/order/{orderId}/process-order-doc',
+                    1,
+                    'court-order',
+                    'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '/order/{orderId}/document/{documentId}',
                 );
 
                 const spy = jest.spyOn(document, 'dispatchEvent');
@@ -335,36 +432,19 @@ describe('dropzoneJS', () => {
                     }
                 );
 
-                const mockFile = getMockFile();
+                fetchMock.delete('/order/1/document/3', { success: 1 });
 
-                dz.addFile(mockFile);
-                dz.addFile(mockFile);
+                const mockFile = getMockFile('application/msword');
+
+                dz.files.push(mockFile);
+                dz.files.push(mockFile);
+                const responseText = {"success":true,"partial":true,"documentId":3};
+                dz.emit("success", mockFile, responseText);
+
                 dz.removeFile(mockFile);
 
                 expect(spy).toHaveBeenCalledWith(expectedEvent);
             });
         });
-
-        describe('makes a DELETE request to removeUrl', () => {
-            setDocumentBody();
-
-            let element = document.getElementById("court-order");
-            let dz = DropzoneJS.setup(element,
-                '/orders/upload',
-                1,
-                'court-order',
-                'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                '/orders/delete',
-            );
-
-            fetchMock.delete('/orders/delete', 200);
-
-            const mockFile = getMockFile();
-
-            dz.addFile(mockFile);
-            dz.removeFile(mockFile);
-
-            expect(fetchMock.called('/orders/delete')).toBe(true)
-        })
     });
 });
