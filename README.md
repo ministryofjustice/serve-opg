@@ -100,7 +100,7 @@ public function testSomething()
 ...
 }
 
-Then run:
+# Then run:
 
 docker-compose run --rm app bin/phpunit --verbose tests --group failing
 ```
@@ -143,13 +143,13 @@ docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 # Xdebug
 To enable Xdebug running via Docker in PHPStorm you will need to:
 
-- In settings, select `Docker for Mac` in `Build, Execution, Deployment > Docker`
-- Click the `...` button next to `CLI Interpreter` in `Languages and Frameworks > PHP`:
-- Click the `+` button to add a new CLI - select `From Docker, Vagrant, VM, Remote`
-- Select `Docker Compose` and then for `Server` choose `Docker` and select `app` for Service. Click `OK` and then `Apply`.
-- Click `Run > Edit Configurations` from the menu bar at the top, then `+` and select `PhpUnit`
-- Name this configuration `Docker` and select `Directory` for `Test Scope` and add the `tests` directory under `Directory`. Click `OK`.
-- Back in settings, go to `Language & Frameworks > PHP > Debug` and enter `10000` under Xdebug > Debug port. Hit `Apply` and `OK`.
+- In `Preferences > Build, Execution, Deployment > Docker` select `Docker for Mac` 
+- In `Preferences > Languages and Frameworks > PHP` Click the `...` button next to `CLI Interpreter`
+- Click the `+` button to add a new CLI  and select `From Docker, Vagrant, VM, Remote`
+- Select `Docker Compose`, for `Server` choose `Docker` and select `app` for Service. Click `OK` and `Apply`.
+- Click `Run > Edit Configurations` from the top menu bar, then `+` and select `PhpUnit`
+- Name this configuration `Docker`, under `Test Scope` select `Directory` add `tests` directory as the filepath. Click `OK`.
+- In `Preferences > Language & Frameworks > PHP > Debug` under `Xdebug > Debug port` enter `10000` . Hit `Apply` and `OK`.
 
 As Xdebug has a large performance hit, it is not installed as part of the Dockerfile by default. Instead it is set as a build argument in docker-compose.local.yml to ensure it will only ever be enabled for local dev. To build the app image with xdebug enabled, run:
 
