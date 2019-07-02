@@ -62,6 +62,10 @@
                                 <td class="govuk-table__cell">
                                     {% if order.servedAt %}
                                          {{ client.caseNumber }}
+                                    {% elseif order.orderValid and order.servedAt == null %}
+                                        <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
+                                            {{ client.caseNumber }}
+                                        </a>
                                     {% else %}
                                         <a href="{{ path('upload-order', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                             {{ client.caseNumber }}
