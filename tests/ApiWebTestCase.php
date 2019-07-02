@@ -25,6 +25,11 @@ class ApiWebTestCase extends WebTestCase
         self::createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
     }
 
+    protected function tearDown()
+    {
+        $this->purgeDatabase();
+    }
+
     protected function purgeDatabase()
     {
         $purger = new ORMPurger($this->getService('doctrine')->getManager());
@@ -37,13 +42,14 @@ class ApiWebTestCase extends WebTestCase
     }
 
     /**
+     * @param string $orderType
+     * @param string $caseNumber
      * @return OrderHw
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws \Exception
      */
-    protected function createOrder(string $orderType)
+    protected function createOrder(string $orderType, string $caseNumber='93559316')
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', $orderType);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', $caseNumber, $orderType);
         return $this->persistEntity($order);
     }
 

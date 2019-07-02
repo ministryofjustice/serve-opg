@@ -53,9 +53,8 @@ docker-compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
 # -d Detached mode: Run containers in the background
 
-# Add sample users and cases (local env only).
-# See docker-compose.yml app container, DC_FIXURES_USERS variable
-docker-compose run --rm app php bin/console doctrine:fixtures:load --append
+# Add sample users and cases (local env only)
+docker-compose run --rm app php bin/console doctrine:fixtures:load --group=behatTests --purge-with-truncate --no-interaction
 ```
 
 # View logs

@@ -63,7 +63,7 @@
                                     {% if order.servedAt %}
                                          {{ client.caseNumber }}
                                     {% else %}
-                                        <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
+                                        <a href="{{ path('upload-order', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                             {{ client.caseNumber }}
                                         </a>
                                     {% endif %}
