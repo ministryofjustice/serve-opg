@@ -2,9 +2,13 @@
 
 namespace App\Tests\Controller;
 
+use App\Controller\OrderController;
+use App\Entity\Document;
 use App\Entity\Order;
+use App\Entity\OrderPf;
 use App\Tests\ApiWebTestCase;
 use App\Tests\Helpers\FileTestHelper;
+use App\Tests\Helpers\OrderTestHelper;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,14 +16,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrderControllerTest extends ApiWebTestCase
 {
+    /**
+     * @var OrderController
+     */
+    private $sut;
+
     public function setUp()
     {
         parent::setUp();
+        /** @var OrderController sut */
+        $this->sut = $this->getService('App\Controller\OrderController');
     }
 
     public function testProcessOrderDocSuccess()
     {
-        $order = $this->createOrder(Order::TYPE_HW);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
 
         $file = FileTestHelper::createUploadedFile(
             '/tests/TestData/validCO - 93559316.docx',
@@ -40,7 +55,11 @@ class OrderControllerTest extends ApiWebTestCase
 
     public function testProcessOrderDocCaseNumberMismatch()
     {
-        $order = $this->createOrder(Order::TYPE_HW);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345', Order::TYPE_HW);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
 
         $file = FileTestHelper::createUploadedFile(
             '/tests/TestData/validCO - WRONGCASENO.docx',
@@ -60,7 +79,11 @@ class OrderControllerTest extends ApiWebTestCase
     /** @dataProvider acceptedDocTypesProvider */
     public function testProcessOrderDocAcceptedFilesNotWord($fileLocation, $originalName, $mimeType)
     {
-        $order = $this->createOrder(Order::TYPE_HW);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345', Order::TYPE_HW);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
 
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
@@ -92,7 +115,11 @@ class OrderControllerTest extends ApiWebTestCase
      */
     public function testProcessOrderDocPartialExtraction(string $orderType, string $fileName)
     {
-        $order = $this->createOrder($orderType);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', $orderType);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
 
         $file = FileTestHelper::createUploadedFile(
             "/tests/TestData/${fileName}",
@@ -137,11 +164,14 @@ class OrderControllerTest extends ApiWebTestCase
         $visibleElementId,
         $orderType
     ) {
-        $order = $this->createOrder($orderType);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345', $orderType);
         $order->setSubType($subTypeValue);
         $order->setAppointmentType($appointmentTypeValue);
         $order->setHasAssetsAboveThreshold($hasAssetsAboveThresholdValue);
-        $this->persistEntity($order);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
 
         /** @var Client $client */
         $client = $this->getService('test.client');
@@ -190,11 +220,14 @@ class OrderControllerTest extends ApiWebTestCase
 
     public function testConfirmOrderDetailsValidOrder()
     {
-        $order = $this->createOrder('PF');
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345', OrderPf::TYPE_PF);
         $order->setSubType(Order::SUBTYPE_NEW);
         $order->setAppointmentType(Order::APPOINTMENT_TYPE_JOINT);
         $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
-        $this->persistEntity($order);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
 
         /** @var Client $client */
         $client = $this->getService('test.client');
@@ -204,5 +237,38 @@ class OrderControllerTest extends ApiWebTestCase
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertEquals("/order/${orderId}/summary", $client->getResponse()->headers->get('location'));
+    }
+
+    public function testValidCasesCreatedBeforeOrderUploadFeatureWithoutWordOrderRedirectsToUploadPage()
+    {
+        $unservedValidOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345678', OrderPf::TYPE_PF);
+        $unservedValidOrder->setSubType(OrderPf::SUBTYPE_NEW);
+        $unservedValidOrder->setAppointmentType(OrderPf::APPOINTMENT_TYPE_JOINT);
+        $unservedValidOrder->setHasAssetsAboveThreshold(OrderPf::HAS_ASSETS_ABOVE_THRESHOLD_YES);
+
+        $em = $this->getEntityManager();
+        $em->persist($unservedValidOrder);
+
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/test.tiff', 'test.tiff', 'image/tiff');
+        $document = new Document($unservedValidOrder, Document::TYPE_COURT_ORDER);
+        $document->setFile($file);
+        $document->setFileName('test.tiff');
+        $document->setStorageReference('some-storage-reference.com/test.tiff');
+        $document->setRemoteStorageReference('some-remote-storage-reference.com/test.tiff');
+        $document->setCreatedAt($this->sut->featureReleaseDate->modify('-1 day'));
+
+        $em->persist($document);
+        $em->flush();
+
+        /** @var Client $client */
+        $client = $this->getService('test.client');
+
+        $orderId = $unservedValidOrder->getId();
+
+        /** @var Crawler $crawler */
+        $client->request(Request::METHOD_GET, "/order/${orderId}/summary", [], [], self::BASIC_AUTH_CREDS);
+        $crawler = $client->followRedirect();
+
+        self::assertContains("/order/${orderId}/upload", $crawler->getUri());
     }
 }

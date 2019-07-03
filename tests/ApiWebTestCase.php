@@ -47,7 +47,7 @@ class ApiWebTestCase extends WebTestCase
      * @return OrderHw
      * @throws \Exception
      */
-    protected function createOrder(string $orderType, string $caseNumber='93559316')
+    protected function createAndPersistOrder(string $orderType, string $caseNumber='93559316')
     {
         $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', $caseNumber, $orderType);
         return $this->persistEntity($order);
@@ -62,6 +62,12 @@ class ApiWebTestCase extends WebTestCase
     }
 
     protected function persistEntity(object $entity)
+    {
+        $this->getEntityManager()->persist($entity);
+        return $entity;
+    }
+
+    protected function persistAndFlushEntity(object $entity)
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();

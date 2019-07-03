@@ -10,6 +10,7 @@ use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
 use App\Service\OrderService;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -39,6 +40,11 @@ class OrderController extends AbstractController
     private $documentService;
 
     /**
+     * @var DateTime
+     */
+    public $featureReleaseDate;
+
+    /**
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
@@ -52,6 +58,7 @@ class OrderController extends AbstractController
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
+        $this->featureReleaseDate = new DateTime('2019-07-20');
     }
 
     /**
@@ -110,14 +117,15 @@ class OrderController extends AbstractController
     public function summaryAction(Request $request, $orderId)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+        /** @var Document $courtOrderDoc */
+        $courtOrderDoc = $order->getDocumentsByType(Document::TYPE_COURT_ORDER)->first();
 
-       // nothing answered -> go to step 1
+       // nothing answered OR non-word doc uploaded before upload feature launched -> go to step 1
        if (
-           empty($order->getHasAssetsAboveThreshold()) &&
-           empty($order->getSubType()) &&
-           empty($order->getAppointmentType())
+           (empty($order->getHasAssetsAboveThreshold()) && empty($order->getSubType()) && empty($order->getAppointmentType())) ||
+           (!$courtOrderDoc->isWordDocument() && $courtOrderDoc->getCreatedAt() < $this->featureReleaseDate)
        ) {
-           return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
+           return $this->redirectToRoute('upload-order', ['orderId' => $order->getId()]);
        }
 
         $showCOUpload = $request->query->get('showCOUpload') ?? true;
