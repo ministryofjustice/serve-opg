@@ -189,21 +189,17 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testNoMatchesFoundException()
+    public function testNoMatchesDoesNotUpdateOrder()
     {
-        $this->markTestSkipped(
-            'Temporarily skipping to get prototype deployed for UR'
-        );
-        
-        self::expectExceptionObject(new NoMatchesFoundException());
-        self::expectExceptionMessage('No matches found');
-
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
 
         $file = 'No. 93559316  RTY AND AFFAIRS';
 
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
+        self::assertNull($dehydratedOrder->getSubType());
+        self::assertNull($dehydratedOrder->getAppointmentType());
+        self::assertNull($dehydratedOrder->getHasAssetsAboveThreshold());
     }
 
     /**
@@ -213,7 +209,7 @@ class OrderServiceTest extends WebTestCase
     public function testWrongCaseNumberException()
     {
         self::expectExceptionObject(new WrongCaseNumberException());
-        self::expectExceptionMessage('The order provided does not have the correct case number for this record');
+        self::expectExceptionMessage('The case number in the document does not match the case number for this order. Please check the file and try again.');
 
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', 'WRONGNUMBER', 'PF');
 
