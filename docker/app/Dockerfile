@@ -11,6 +11,14 @@ RUN apk add --no-cache \
 && docker-php-ext-configure zip --with-libzip \
 && docker-php-ext-install zip
 
+RUN apk add --no-cache \
+        chromium \
+        chromium-chromedriver
+
+ENV PANTHER_CHROME_DRIVER_BINARY /usr/lib/chromium/chromedriver
+ENV PANTHER_NO_SANDBOX 1
+ENV PANTHER_WEB_SERVER_PORT 9800
+
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \

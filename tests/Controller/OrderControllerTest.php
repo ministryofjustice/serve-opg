@@ -43,11 +43,11 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
         $orderId = $order->getId();
 
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertJson($client->getResponse()->getContent());
@@ -68,10 +68,10 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
 
         self::assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
     }
@@ -88,10 +88,10 @@ class OrderControllerTest extends ApiWebTestCase
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertJson($client->getResponse()->getContent());
@@ -128,10 +128,10 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertJson($client->getResponse()->getContent());
@@ -174,10 +174,10 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], []);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -230,10 +230,10 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], []);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertEquals("/order/${orderId}/summary", $client->getResponse()->headers->get('location'));
@@ -261,12 +261,12 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
 
         $orderId = $unservedValidOrder->getId();
 
         /** @var Crawler $crawler */
-        $client->request(Request::METHOD_GET, "/order/${orderId}/summary", [], [], self::BASIC_AUTH_CREDS);
+        $client->request(Request::METHOD_GET, "/order/${orderId}/summary", [], []);
         $crawler = $client->followRedirect();
 
         self::assertContains("/order/${orderId}/upload", $crawler->getUri());

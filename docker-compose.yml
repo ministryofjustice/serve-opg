@@ -63,6 +63,9 @@ services:
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
       - FIXTURES_ENABLED=true
+      - ENV PANTHER_CHROME_DRIVER_BINARY=/usr/lib/chromium/chromedriver
+      - ENV PANTHER_NO_SANDBOX=1
+      - ENV PANTHER_WEB_SERVER_PORT=9800
     depends_on:
       - localstack
       - postgres
