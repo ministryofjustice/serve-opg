@@ -69,4 +69,11 @@ class ApiWebTestCase extends WebTestCase
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
+
+    protected function createAuthenticatedClient()
+    {
+        $client = $this->getService('test.client');
+        $client->setServerParameters(self::BASIC_AUTH_CREDS);
+        return $client;
+    }
 }

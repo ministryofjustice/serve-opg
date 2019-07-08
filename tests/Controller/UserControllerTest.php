@@ -21,12 +21,12 @@ class UserControllerTest extends ApiWebTestCase
         self::persistEntity($user);
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = $this->createAuthenticatedClient();
 
         /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_GET, "/users/view", [], [], self::BASIC_AUTH_CREDS);
+        $crawler = $client->request(Request::METHOD_GET, "/users/view");
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertJson($client->getResponse()->getContent());
+        self::assertContains('test@digital.justice.gov.uk', $client->getResponse()->getContent());
     }
 }

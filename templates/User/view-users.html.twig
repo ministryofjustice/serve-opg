@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block htmlTitle %}Sign in{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">View Users</h1>
+{% endblock %}
+
+{% block main %}
+    {% for user in users %}
+        {{ user.email }}
+    {% endfor %}
+{% endblock %}
