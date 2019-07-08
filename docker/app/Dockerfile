@@ -16,8 +16,10 @@ RUN apk add --no-cache \
         chromium-chromedriver
 
 ENV PANTHER_CHROME_DRIVER_BINARY /usr/lib/chromium/chromedriver
+ENV PANTHER_CHROME_BINARY /usr/lib/chromium/chrome
 ENV PANTHER_NO_SANDBOX 1
-ENV PANTHER_WEB_SERVER_PORT 9800
+ENV PANTHER_CHROME_ARGUMENTS '--no-sandbox --ignore-certificate-errors --allow-insecure-localhost --disable-dev-shm-usage --allow-running-insecure-content'
+#ENV PANTHER_NO_HEADLESS 1
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"

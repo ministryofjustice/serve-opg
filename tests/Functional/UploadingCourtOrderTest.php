@@ -37,21 +37,28 @@ class UploadingCourtOrderTest extends PantherTestCase
         $orderId = $order->getId();
         $caseNumber = $order->getClient()->getCaseNumber();
 
+        /** @var Client $client */
+//        $client = static::createPantherClient(['external_base_uri' => 'http://localhost']);
+
         $options = [
             '--headless',
             '--window-size=1200,1100',
             '--no-sandbox',
-            '--disable-gpu'
+            '--disable-gpu',
+            '--ignore-certificate-errors', '--allow-insecure-localhost', '--disable-dev-shm-usage', '--allow-running-insecure-content'
         ];
 
         /** @var Client $client */
-        $client = Client::createChromeClient(null, null, $options, 'http://localhost');
-        $client->followRedirects();
+        $client = Client::createChromeClient(null, $options, [], 'https://serve.localhost');
 
-        $client->request('GET', '/case', [], []);
-        $crawler = $client->clickLink($caseNumber);
+        $crawler = $client->request('GET', '/login', [], []);
+        $client->wait(1);
+        $client->takeScreenshot('alex.png');
 
-        self::assertContains("/order/${$orderId}/upload", $crawler->getUri());
+//        $ele = $crawler->filter('#login_username');
+//        $blah = $client->clickLink($caseNumber);
+
+        self::assertContains("/order/${orderId}/upload", $crawler->getUri());
 
         $crawler->selectButton('Choose documents')->form();
 
