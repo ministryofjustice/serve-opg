@@ -6,6 +6,7 @@ namespace App\Tests;
 use App\Entity\OrderHw;
 use App\Entity\User;
 use App\Tests\Helpers\OrderTestHelper;
+use App\Tests\Helpers\UserTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
@@ -64,10 +65,8 @@ class ApiWebTestCase extends WebTestCase
 
     protected function createTestUser(string $email, string $password)
     {
-        $userModel = new User($email);
-        $encodedPassword = $this->getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
-        $userModel->setPassword($encodedPassword);
-        $this->getEntityManager()->persist($userModel);
+        $user = UserTestHelper::createUser($email, $password);
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
 }
