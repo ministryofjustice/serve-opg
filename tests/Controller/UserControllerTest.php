@@ -2,14 +2,11 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\UserController;
-use App\Entity\Order;
 use App\Entity\User;
 use App\Tests\ApiWebTestCase;
-use App\Tests\Helpers\FileTestHelper;
 use App\Tests\Helpers\UserTestHelper;
 use DateTime;
-use PHPUnit\Framework\TestCase;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,5 +34,34 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertContains('test@digital.justice.gov.uk', $client->getResponse()->getContent());
         self::assertContains('2019-07-01 01:01:01', $client->getResponse()->getContent());
+    }
+
+    public function testUserLoginUpdatesLastLoginAt()
+    {
+        /** @var User $user */
+        $user = UserTestHelper::createUser('test@digital.justice.gov.uk', 'password');
+        $this->persistEntity($user);
+
+        self::assertNull($user->getLastLoginAt());
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient();
+
+        /** @var Crawler $crawler */
+        $crawler = $client->request(Request::METHOD_GET, "/login");
+
+        $form = $crawler->selectButton('Sign in')->form(
+            ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
+        );
+
+        $client->submit($form);
+
+        /** @var User $em */
+        $updatedUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail('test@digital.justice.gov.uk');
+        
+        self::assertInstanceOf(DateTime::class, $updatedUser->getLastLoginAt());
+
+        $today = (new DateTime('today'))->format('Y-m-d');
+        self::assertEquals($today, $updatedUser->getLastLoginAt()->format('Y-m-d'));
     }
 }
