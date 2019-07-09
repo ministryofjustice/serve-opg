@@ -142,7 +142,7 @@ class UserController extends AbstractController
 //    }
 
     /**
-     * @Route("/users/view", name="view-users")
+     * @Route("/users/view", name="view-users", methods={"GET"})
      */
     public function viewUsers()
     {

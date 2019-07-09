@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Tests\ApiWebTestCase;
 use App\Tests\Helpers\UserTestHelper;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +21,6 @@ class UserControllerTest extends ApiWebTestCase
         $loginDate = new DateTime('2019-07-01');
         $loginDate->setTime(01, 01, 01 );
         $user->setLastLoginAt($loginDate);
-
         $this->persistEntity($user);
 
         /** @var Client $client */
@@ -45,10 +43,12 @@ class UserControllerTest extends ApiWebTestCase
         self::assertNull($user->getLastLoginAt());
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = ApiWebTestCase::getService('test.client');;
 
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/login");
+
+        print_r($crawler->html());
 
         $form = $crawler->selectButton('Sign in')->form(
             ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
@@ -58,7 +58,7 @@ class UserControllerTest extends ApiWebTestCase
 
         /** @var User $em */
         $updatedUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail('test@digital.justice.gov.uk');
-        
+
         self::assertInstanceOf(DateTime::class, $updatedUser->getLastLoginAt());
 
         $today = (new DateTime('today'))->format('Y-m-d');
