@@ -1,9 +1,9 @@
 <?php
 namespace App\Entity;
 
+use DateTime;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class User implements UserInterface, EquatableInterface
 {
@@ -28,7 +28,7 @@ class User implements UserInterface, EquatableInterface
     private $password;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $activationTokenCreatedAt;
 
@@ -38,6 +38,16 @@ class User implements UserInterface, EquatableInterface
     private $activationToken;
 
     /**
+     * @var DateTime|null
+     */
+    private $createdAt;
+
+    /**
+     * @var DateTime|null
+     */
+    private $lastLoginAt;
+
+    /**
      * User constructor.
      * @param string $email
      */
@@ -45,7 +55,6 @@ class User implements UserInterface, EquatableInterface
     {
         $this->email = $email;
     }
-
 
     /**
      * @param int $id
@@ -118,7 +127,7 @@ class User implements UserInterface, EquatableInterface
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
     public function getActivationTokenCreatedAt()
     {
@@ -139,7 +148,7 @@ class User implements UserInterface, EquatableInterface
     public function setActivationToken($activationToken)
     {
         $this->activationToken = $activationToken;
-        $this->activationTokenCreatedAt = new \DateTime();
+        $this->activationTokenCreatedAt = new DateTime();
     }
 
     /**
@@ -150,7 +159,43 @@ class User implements UserInterface, EquatableInterface
     public function isTokenValid()
     {
         return $this->getActivationTokenCreatedAt()
-            && $this->getActivationTokenCreatedAt() >= new \DateTime(self::TOKEN_EXPIRY);
+            && $this->getActivationTokenCreatedAt() >= new DateTime(self::TOKEN_EXPIRY);
     }
 
+    /**
+     * @return DateTime|null
+     */
+    public function getLastLoginAt(): ?DateTime
+    {
+        return $this->lastLoginAt;
+    }
+
+    /**
+     * @param DateTime|null $lastLoginAt
+     */
+    public function setLastLoginAt(?DateTime $lastLoginAt): void
+    {
+        $this->lastLoginAt = $lastLoginAt;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getCreatedAt(): ?DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param DateTime|null $createdAt
+     */
+    public function setCreatedAt(?DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function onPrePersist()
+    {
+        $this->setCreatedAt(new DateTime());
+    }
 }

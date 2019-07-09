@@ -28,11 +28,11 @@ class ApiWebTestCase extends WebTestCase
 
     protected function purgeDatabase()
     {
-        $purger = new ORMPurger($this->getService('doctrine')->getManager());
+        $purger = new ORMPurger(ApiWebTestCase::getService('doctrine')->getManager());
         $purger->purge();
     }
 
-    protected function getService($id)
+    protected static function getService($id)
     {
         return self::$container->get($id);
     }
@@ -53,7 +53,7 @@ class ApiWebTestCase extends WebTestCase
      */
     protected function getEntityManager()
     {
-        return $this->getService('doctrine.orm.entity_manager');
+        return ApiWebTestCase::getService('doctrine.orm.entity_manager');
     }
 
     protected function persistEntity(object $entity)
@@ -72,7 +72,7 @@ class ApiWebTestCase extends WebTestCase
 
     protected function createAuthenticatedClient()
     {
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $client->setServerParameters(self::BASIC_AUTH_CREDS);
         return $client;
     }

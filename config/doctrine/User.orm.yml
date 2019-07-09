@@ -8,6 +8,8 @@ App\Entity\User:
         type: integer
         generator:
           strategy: AUTO
+    lifecycleCallbacks:
+      prePersist: [onPrePersist]
     fields:
       email:
         type: string
@@ -28,3 +30,12 @@ App\Entity\User:
         type: datetime
         nullable: true
         column: activation_token_created_at
+      createdAt:
+        type: datetime
+        nullable: true
+        column: created_at
+      lastLoginAt:
+        type: datetime
+        nullable: true
+        column: last_login_at
+
