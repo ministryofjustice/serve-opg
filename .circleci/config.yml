@@ -43,13 +43,6 @@ jobs:
 
             # Generate static assets
             docker-compose run --rm yarn build-dev
-
-            # Create schema and run migrations
-            # docker-compose run --rm app php bin/console doctrine:schema:create
-            # docker-compose run --rm app php bin/console doctrine:migrations:migrate
-
-            # Run phpunit tests
-            docker-compose run --rm app vendor/bin/simple-phpunit --verbose tests
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
@@ -58,16 +51,10 @@ jobs:
           key: node_modules-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-#      - run:
-#          name: Unit Test
-#          command: |
-#            ./generate_certs.sh
-#            docker-compose up --build -d loadbalancer
-#            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
-#            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
-#            docker-compose run --rm app php bin/console doctrine:schema:create --no-interaction
-#            docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
-#            docker-compose run --rm phpunit
+      - run:
+          name: Unit Test
+          command: |
+            docker-compose run --rm app php bin/phpunit --verbose tests
       - run:
           name: Integration Test
           command: |
