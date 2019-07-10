@@ -160,7 +160,6 @@ services:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
       - APP_ENV=test
-      - NOTIFICATION_API_KEY=fakeKey123
     depends_on:
       - loadbalancer
       - postgres
