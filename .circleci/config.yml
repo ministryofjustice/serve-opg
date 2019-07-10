@@ -45,11 +45,11 @@ jobs:
             docker-compose run --rm yarn build-dev
 
             # Create schema and run migrations
-            php bin/console doctrine:schema:create
-            php bin/console doctrine:migrations:migrate
+            # docker-compose run --rm app php bin/console doctrine:schema:create
+            # docker-compose run --rm app php bin/console doctrine:migrations:migrate
 
             # Run phpunit tests
-            bin/phpunit --verbose tests --log-junit /app/tests/artifacts/phpunit/junit.xml
+            docker-compose run --rm app bin/phpunit --verbose tests
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
