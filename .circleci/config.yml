@@ -54,6 +54,7 @@ jobs:
       - run:
           name: Unit Test
           command: |
+            docker-compose up --build -d loadbalancer
             docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 240
             docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
             docker-compose run --rm app php bin/console doctrine:schema:create
