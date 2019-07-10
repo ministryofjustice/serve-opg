@@ -44,7 +44,11 @@ jobs:
             # Generate static assets
             docker-compose run --rm yarn build-dev
 
-            # run phpunit tests
+            # Create schema and run migrations
+            docker-compose run --rm app php bin/console doctrine:schema:create
+            docker-compose run --rm app php bin/console doctrine:migrations:migrate
+
+            # Run phpunit tests
             docker-compose run --rm phpunit
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
