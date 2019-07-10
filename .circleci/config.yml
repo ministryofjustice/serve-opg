@@ -47,7 +47,7 @@ jobs:
 
             # Tests
             docker-compose run -e APP_ENV=test --rm app php bin/console doctrine:schema:create
-            docker-compose run --rm app php bin/phpunit --verbose tests
+            docker-compose run -e APP_ENV=test --rm app php bin/phpunit --verbose tests
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
