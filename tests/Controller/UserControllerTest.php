@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Tests\ApiWebTestCase;
 use App\Tests\Helpers\UserTestHelper;
 use DateTime;
+use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,9 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertContains('test@digital.justice.gov.uk', $client->getResponse()->getContent());
         self::assertContains('2019-07-01 01:01:01', $client->getResponse()->getContent());
+
+        $today = (new DateTime('today'))->format('Y-m-d');
+        self::assertContains($today, $client->getResponse()->getContent());
     }
 
     public function testUserLoginUpdatesLastLoginAt()
