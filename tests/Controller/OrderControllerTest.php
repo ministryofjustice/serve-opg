@@ -5,10 +5,14 @@ namespace App\Tests\Controller;
 use App\Controller\OrderController;
 use App\Entity\Document;
 use App\Entity\Order;
+use App\Entity\OrderHw;
 use App\Entity\OrderPf;
+use App\Service\TimeService;
 use App\Tests\ApiWebTestCase;
 use App\Tests\Helpers\FileTestHelper;
 use App\Tests\Helpers\OrderTestHelper;
+use DateTime;
+use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +25,21 @@ class OrderControllerTest extends ApiWebTestCase
      */
     private $sut;
 
+    public static function setUpBeforeClass()
+    {
+        ClockMock::register(TimeService::class);
+    }
+
     public function setUp()
     {
         parent::setUp();
         /** @var OrderController sut */
         $this->sut = $this->getService('App\Controller\OrderController');
+    }
+
+    protected function timeTravel(string $dateTime)
+    {
+        ClockMock::withClockMock(strtotime($dateTime));
     }
 
     public function testProcessOrderDocSuccess()
@@ -239,8 +253,19 @@ class OrderControllerTest extends ApiWebTestCase
         self::assertEquals("/order/${orderId}/summary", $client->getResponse()->headers->get('location'));
     }
 
+    /**
+     * @group time-sensitive
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function testValidCasesCreatedBeforeOrderUploadFeatureWithoutWordOrderRedirectsToUploadPage()
     {
+        // Change the time for this test to be BEFORE the feature release date so the order created date
+        // is prior to feature release date
+        $featureReleaseDate = new DateTime(self::$container->getParameter('coUploadReleaseDate'));
+        $oneDayBeforeFeatureRelease = $featureReleaseDate->modify('-1 day');
+        $this->timeTravel($oneDayBeforeFeatureRelease->format('Y-m-d'));
+
         $unservedValidOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345678', OrderPf::TYPE_PF);
         $unservedValidOrder->setSubType(OrderPf::SUBTYPE_NEW);
         $unservedValidOrder->setAppointmentType(OrderPf::APPOINTMENT_TYPE_JOINT);
@@ -255,7 +280,6 @@ class OrderControllerTest extends ApiWebTestCase
         $document->setFileName('test.tiff');
         $document->setStorageReference('some-storage-reference.com/test.tiff');
         $document->setRemoteStorageReference('some-remote-storage-reference.com/test.tiff');
-        $document->setCreatedAt($this->sut->featureReleaseDate->modify('-1 day'));
 
         $em->persist($document);
         $em->flush();

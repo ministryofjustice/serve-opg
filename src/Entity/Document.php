@@ -271,8 +271,12 @@ class Document
      */
     public function isWordDocument()
     {
-        $wordMimeTypes = ['application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        return in_array($this->getMimeType(), $wordMimeTypes);
+        if ($this->getMimeType() !== null) {
+            $wordMimeTypes = ['application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            return in_array($this->getMimeType(), $wordMimeTypes);
+        }
+
+        return in_array($this->getFileExtension(), ['docx', 'doc']);
     }
 
     /**
@@ -285,5 +289,13 @@ class Document
         }
 
         return $this->getFile()->getClientMimeType();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFileExtension()
+    {
+        return pathinfo($this->getFileName(), PATHINFO_EXTENSION);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
+use App\Service\TimeService as Time;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
@@ -124,7 +125,7 @@ abstract class Order
         $this->madeAt = $madeAt;
         $this->issuedAt = $issuedAt;
 
-        $this->createdAt = new DateTime();
+        $this->createdAt = Time::currentDateTime();
         $this->deputies = new ArrayCollection();
         $this->documents = new ArrayCollection();
 

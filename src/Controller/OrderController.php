@@ -10,7 +10,7 @@ use App\Form\DeclarationForm;
 use App\Form\OrderForm;
 use App\Service\DocumentService;
 use App\Service\OrderService;
-use DateTime;
+use App\Service\TimeService as Time;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -40,25 +40,29 @@ class OrderController extends AbstractController
     private $documentService;
 
     /**
-     * @var DateTime
+     * String representation of the date the CO Upload Feature was released in format YYYY-MM-DD.
+     * @var string
      */
-    public $featureReleaseDate;
+    private $coUploadReleaseDate;
 
     /**
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
      * @param DocumentService $documentService
+     * @param string $coUploadReleaseDate
+     * @throws \Exception
      */
     public function __construct(
         EntityManager $em,
         OrderService $orderService,
-        DocumentService $documentService
+        DocumentService $documentService,
+        string $coUploadReleaseDate
     ) {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
-        $this->featureReleaseDate = new DateTime('2019-07-20');
+        $this->coUploadReleaseDate = $coUploadReleaseDate;
     }
 
     /**
@@ -116,6 +120,7 @@ class OrderController extends AbstractController
      */
     public function summaryAction(Request $request, $orderId)
     {
+        /** @var Order $order */
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
         /** @var Document $courtOrderDoc */
         $courtOrderDoc = $order->getDocumentsByType(Document::TYPE_COURT_ORDER)->first();
@@ -123,7 +128,7 @@ class OrderController extends AbstractController
        // nothing answered OR non-word doc uploaded before upload feature launched -> go to step 1
        if (
            (empty($order->getHasAssetsAboveThreshold()) && empty($order->getSubType()) && empty($order->getAppointmentType())) ||
-           (!$courtOrderDoc->isWordDocument() && $courtOrderDoc->getCreatedAt() < $this->featureReleaseDate)
+           (!$courtOrderDoc->isWordDocument() && $order->getCreatedAt() < Time::newDateTimeFromDate($this->coUploadReleaseDate))
        ) {
            return $this->redirectToRoute('upload-order', ['orderId' => $order->getId()]);
        }

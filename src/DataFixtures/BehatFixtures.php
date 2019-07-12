@@ -68,7 +68,8 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
                 ['number' => '03427488', 'name' => 'Lia Shelton', 'type' => 'PF'],
                 ['number' => '51934429', 'name' => 'Abdullah Lang', 'type' => 'PF'],
                 ['number' => '6554033', 'name' => 'Angela Walker', 'type' => 'PF'],
-                ['number' => '98848454', 'name' => 'Justine Henderson', 'type' => 'PF']
+                ['number' => '98848454', 'name' => 'Justine Henderson', 'type' => 'PF'],
+                ['number' => '99900006', 'name' => 'Justine Henderson', 'type' => 'PF']
             ];
 
             $this->persistCases($manager, $cases);

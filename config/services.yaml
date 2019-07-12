@@ -5,12 +5,14 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    coUploadReleaseDate: '2019-07-20'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false
         bind:
             $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
             $projectDir: '%kernel.project_dir%'
@@ -215,3 +217,7 @@ services:
     App\Service\DocumentService:
         arguments:
             $appEnv: "%env(APP_ENV)%"
+
+    App\Controller\OrderController:
+        arguments:
+            $coUploadReleaseDate: '%coUploadReleaseDate%'
