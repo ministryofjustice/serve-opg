@@ -22,7 +22,6 @@ jobs:
 
             ./generate_certs.sh
             docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
-            docker-compose up -d localstack
             docker-compose run --rm waitforit -address=http://localstack:4572 -debug
             docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius_test_bucket
             docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
