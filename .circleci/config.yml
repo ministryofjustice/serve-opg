@@ -20,8 +20,8 @@ jobs:
             # Create the s3 buckets
             # & wait for the server to become available
 
-            ./generate_certs.sh
-            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
+            docker-compose up -d localstack
+
             docker-compose run --rm waitforit -address=http://localstack:4572 -debug
             docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius_test_bucket
             docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
@@ -45,6 +45,10 @@ jobs:
 
             # Generate static assets
             docker-compose run --rm yarn build-dev
+
+            # Build deps
+            ./generate_certs.sh
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
 
             # Tests
             docker-compose exec -e APP_ENV=test project_app php bin/console doctrine:schema:create
