@@ -34,4 +34,13 @@ class OrderTestHelper
 
         return $order;
     }
+
+    static public function generateValidOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType)
+    {
+        $order = self::generateOrder($madeAt, $issuedAt, $caseNumber, $orderType);
+        $order->setSubType(OrderPf::SUBTYPE_NEW);
+        $order->setAppointmentType(OrderPf::APPOINTMENT_TYPE_JOINT);
+        $order->setHasAssetsAboveThreshold(OrderPf::HAS_ASSETS_ABOVE_THRESHOLD_YES);
+        return $order;
+    }
 }

@@ -9,6 +9,7 @@ use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Service\TimeService;
 use App\Tests\ApiWebTestCase;
+use App\Tests\Helpers\DocumentTestHelper;
 use App\Tests\Helpers\FileTestHelper;
 use App\Tests\Helpers\OrderTestHelper;
 use DateTime;
@@ -234,10 +235,7 @@ class OrderControllerTest extends ApiWebTestCase
 
     public function testConfirmOrderDetailsValidOrder()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345', OrderPf::TYPE_PF);
-        $order->setSubType(Order::SUBTYPE_NEW);
-        $order->setAppointmentType(Order::APPOINTMENT_TYPE_JOINT);
-        $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
+        $order = OrderTestHelper::generateValidOrder('2018-08-01', '2018-08-10', '12345', OrderPf::TYPE_PF);
 
         $em = $this->getEntityManager();
         $em->persist($order);
@@ -266,20 +264,13 @@ class OrderControllerTest extends ApiWebTestCase
         $oneDayBeforeFeatureRelease = $featureReleaseDate->modify('-1 day');
         $this->timeTravel($oneDayBeforeFeatureRelease->format('Y-m-d'));
 
-        $unservedValidOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345678', OrderPf::TYPE_PF);
-        $unservedValidOrder->setSubType(OrderPf::SUBTYPE_NEW);
-        $unservedValidOrder->setAppointmentType(OrderPf::APPOINTMENT_TYPE_JOINT);
-        $unservedValidOrder->setHasAssetsAboveThreshold(OrderPf::HAS_ASSETS_ABOVE_THRESHOLD_YES);
+        $unservedValidOrder = OrderTestHelper::generateValidOrder('2018-08-01', '2018-08-10', '12345678', OrderPf::TYPE_PF);
 
         $em = $this->getEntityManager();
         $em->persist($unservedValidOrder);
 
         $file = FileTestHelper::createUploadedFile('/tests/TestData/test.tiff', 'test.tiff', 'image/tiff');
-        $document = new Document($unservedValidOrder, Document::TYPE_COURT_ORDER);
-        $document->setFile($file);
-        $document->setFileName('test.tiff');
-        $document->setStorageReference('some-storage-reference.com/test.tiff');
-        $document->setRemoteStorageReference('some-remote-storage-reference.com/test.tiff');
+        $document = DocumentTestHelper::generateDocumentFromFile($file, $unservedValidOrder, Document::TYPE_COURT_ORDER);
 
         $em->persist($document);
         $em->flush();
