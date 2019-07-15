@@ -51,8 +51,8 @@ jobs:
             docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
 
             # Tests
-            docker-compose exec -e APP_ENV=test project_app php bin/console doctrine:schema:create
-            docker-compose exec -e APP_ENV=test project_app php bin/phpunit --verbose tests
+            docker-compose exec -e APP_ENV=test project_app_1 php bin/console doctrine:schema:create
+            docker-compose exec -e APP_ENV=test project_app_1 php bin/phpunit --verbose tests
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
