@@ -49,7 +49,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         ];
 
         /** @var Client $client */
-        $client = Client::createChromeClient(null, $options, [], 'https://serve.localhost');
+        $client = Client::createChromeClient(null, $options, [], 'https://localhost');
 
         $crawler = $client->request('GET', '/login', [], []);
         $client->wait(1);
