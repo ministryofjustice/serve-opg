@@ -9,6 +9,9 @@ use App\Entity\User;
 use App\Tests\Helpers\OrderTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
+use Facebook\WebDriver\Remote\LocalFileDetector;
+use Facebook\WebDriver\Remote\RemoteWebElement;
+use Facebook\WebDriver\WebDriverBy;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Panther\PantherTestCase;
 use Symfony\Component\Panther\ProcessManager\WebServerReadinessProbeTrait;
@@ -17,7 +20,7 @@ class UploadingCourtOrderTest extends PantherTestCase
 {
     const TEST_USER_PASSWORD = 'password123';
     const TEST_USER_EMAIL = 'test@user.com';
-    const BASIC_AUTH_CREDS = ['PHP_AUTH_USER' => self::TEST_USER_EMAIL, 'PHP_AUTH_PW'   => self::TEST_USER_PASSWORD];
+    const BASIC_AUTH_CREDS = ['PHP_AUTH_USER' => self::TEST_USER_EMAIL, 'PHP_AUTH_PW' => self::TEST_USER_PASSWORD];
 
     public function setUp()
     {
@@ -28,7 +31,7 @@ class UploadingCourtOrderTest extends PantherTestCase
 
     public function testUploadValidWordDoc()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '12345', Order::TYPE_HW);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
 
         $em = $this->getEntityManager();
         $em->persist($order);
@@ -38,31 +41,29 @@ class UploadingCourtOrderTest extends PantherTestCase
         $caseNumber = $order->getClient()->getCaseNumber();
 
         /** @var Client $client */
-//        $client = static::createPantherClient(['external_base_uri' => 'http://localhost']);
+        $client = static::createPantherClient(['external_base_uri' => 'https://loadbalancer']);
+        $client->followRedirects();
 
-        $options = [
-            '--headless',
-            '--window-size=1200,1100',
-            '--no-sandbox',
-            '--disable-gpu',
-            '--ignore-certificate-errors', '--allow-insecure-localhost', '--disable-dev-shm-usage', '--allow-running-insecure-content'
-        ];
+        $client->request('GET', '/login', [], []);
+        $client->submitForm('Sign in', ['_username' => self::TEST_USER_EMAIL, '_password' => self::TEST_USER_PASSWORD]);
 
-        /** @var Client $client */
-        $client = Client::createChromeClient(null, $options, [], 'https://localhost');
+        $crawler = $client->clickLink($caseNumber);
+        self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
-        $crawler = $client->request('GET', '/login', [], []);
-        $client->wait(1);
-        $client->takeScreenshot('alex.png');
+        /** @var RemoteWebElement $fileInput */
+        $fileInput = $client->findElement(WebDriverBy::cssSelector('input[type="file"].dz-hidden-input'));
+        $fileInput->setFileDetector(new LocalFileDetector());
+        $fileInput->sendKeys('../TestData/validCO - 93559316.docx');
+        $client->waitFor('div.dz-filename', 5);
 
-//        $ele = $crawler->filter('#login_username');
-//        $blah = $client->clickLink($caseNumber);
+        $crawler->selectButton('Continue')->click();
 
-        self::assertContains("/order/${orderId}/upload", $crawler->getUri());
+        self::assertContains("/order/${orderId}/summary", $client->getCurrentURL());
 
-        $crawler->selectButton('Choose documents')->form();
+        $orderDetails = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('.govuk-table__body'))->getText();
 
-        $crawler = $client->submitForm();
+        self::assertContains('New application', $orderDetails);
+        self::assertContains('Joint and several', $orderDetails);
     }
 
     protected function purgeDatabase()

@@ -5,3 +5,7 @@ services:
   app:
     environment:
       APP_ENV: 'test'
+      PANTHER_CHROME_DRIVER_BINARY: '/usr/lib/chromium/chromedriver'
+      PANTHER_CHROME_BINARY: '/usr/lib/chromium/chrome'
+      PANTHER_NO_SANDBOX: 1
+      PANTHER_CHROME_ARGUMENTS: '--no-sandbox --ignore-certificate-errors --allow-insecure-localhost --disable-dev-shm-usage --allow-running-insecure-content'
