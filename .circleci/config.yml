@@ -45,14 +45,6 @@ jobs:
 
             # Generate static assets
             docker-compose run --rm yarn build-dev
-
-            # Build deps
-            ./generate_certs.sh
-            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
-
-            # Tests
-            docker-compose exec -e APP_ENV=test project_app_1 php bin/console doctrine:schema:create
-            docker-compose exec -e APP_ENV=test project_app_1 php bin/phpunit --verbose tests
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
@@ -61,14 +53,14 @@ jobs:
           key: node_modules-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-#      - run:
-#          name: Unit Test
-#          command: |
-#            ./generate_certs.sh
-#            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
-#            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
-#            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
-#            docker-compose run --rm app php bin/phpunit --verbose tests
+      - run:
+          name: Unit Test
+          command: |
+            ./generate_certs.sh
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
+            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
+            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
+            docker-compose run --rm app php bin/phpunit --verbose tests
       - run:
           name: Integration Test
           command: |
