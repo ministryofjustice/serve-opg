@@ -12,9 +12,8 @@ use Doctrine\ORM\EntityManager;
 use Facebook\WebDriver\Remote\LocalFileDetector;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
-use Symfony\Component\Panther\Client;
+use Symfony\Component\Panther\Client as PantherClient;
 use Symfony\Component\Panther\PantherTestCase;
-use Symfony\Component\Panther\ProcessManager\WebServerReadinessProbeTrait;
 
 class UploadingCourtOrderTest extends PantherTestCase
 {
@@ -31,30 +30,19 @@ class UploadingCourtOrderTest extends PantherTestCase
 
     public function testUploadValidWordDoc()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
-
-        $em = $this->getEntityManager();
-        $em->persist($order);
-        $em->flush();
-
+        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
         $orderId = $order->getId();
         $caseNumber = $order->getClient()->getCaseNumber();
 
-        /** @var Client $client */
-        $client = static::createPantherClient(['external_base_uri' => 'https://loadbalancer']);
-        $client->followRedirects();
+        /** @var PantherClient $client */
+        $client = self::createAuthenticatedClient();
 
-        $client->request('GET', '/login', [], []);
-        $client->submitForm('Sign in', ['_username' => self::TEST_USER_EMAIL, '_password' => self::TEST_USER_PASSWORD]);
-
+        $client->request('GET', '/case', [], []);
+        $client->takeScreenshot('testtesttest.png');
         $crawler = $client->clickLink($caseNumber);
         self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
-        /** @var RemoteWebElement $fileInput */
-        $fileInput = $client->findElement(WebDriverBy::cssSelector('input[type="file"].dz-hidden-input'));
-        $fileInput->setFileDetector(new LocalFileDetector());
-        $fileInput->sendKeys('../TestData/validCO - 93559316.docx');
-        $client->waitFor('div.dz-filename', 5);
+        self::uploadDropzoneFile($client, '../TestData/validCO - 93559316.docx');
 
         $crawler->selectButton('Continue')->click();
 
@@ -92,5 +80,45 @@ class UploadingCourtOrderTest extends PantherTestCase
     protected function getEntityManager()
     {
         return $this->getService('doctrine.orm.entity_manager');
+    }
+
+    /**
+     * @param string $madeAt
+     * @param string $issuedAt
+     * @param string $caseNumber
+     * @param string $orderType
+     * @return \App\Entity\OrderHw
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    protected function createAndPersistOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType)
+    {
+        $order = OrderTestHelper::generateOrder($madeAt, $issuedAt, $caseNumber, $orderType);
+
+        $em = $this->getEntityManager();
+        $em->persist($order);
+        $em->flush();
+        return $order;
+    }
+
+    protected function createAuthenticatedClient()
+    {
+        /** @var PantherClient $client */
+        $client = static::createPantherClient(['external_base_uri' => 'https://loadbalancer']);
+        $client->followRedirects();
+        // @todo find a way to hook into WebDriver cookie and set auth using session
+        // https://symfony.com/doc/current/testing/http_authentication.html https://twitter.com/dunglas/status/1039539719208660992?s=20
+        $client->request('GET', '/login', [], []);
+        $client->submitForm('Sign in', ['_username' => self::TEST_USER_EMAIL, '_password' => self::TEST_USER_PASSWORD]);
+        return $client;
+    }
+
+    protected function uploadDropzoneFile(PantherClient $client, string $localFileLocation)
+    {
+        /** @var RemoteWebElement $fileInput */
+        $fileInput = $client->findElement(WebDriverBy::cssSelector('input[type="file"].dz-hidden-input'));
+        $fileInput->setFileDetector(new LocalFileDetector());
+        $fileInput->sendKeys($localFileLocation);
+        $client->waitFor('div.dz-filename', 5);
     }
 }
