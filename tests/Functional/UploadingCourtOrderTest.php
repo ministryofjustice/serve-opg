@@ -38,20 +38,42 @@ class UploadingCourtOrderTest extends PantherTestCase
         $client = self::createAuthenticatedClient();
 
         $client->request('GET', '/case', [], []);
-        $client->takeScreenshot('testtesttest.png');
         $crawler = $client->clickLink($caseNumber);
         self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
         self::uploadDropzoneFile($client, '../TestData/validCO - 93559316.docx');
+        $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
 
+        $client->takeScreenshot('teeeest.png');
         self::assertContains("/order/${orderId}/summary", $client->getCurrentURL());
 
         $orderDetails = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('.govuk-table__body'))->getText();
 
         self::assertContains('New application', $orderDetails);
         self::assertContains('Joint and several', $orderDetails);
+    }
+
+    public function testUploadMissingAppointmentType()
+    {
+        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
+        $orderId = $order->getId();
+        $caseNumber = $order->getClient()->getCaseNumber();
+
+        /** @var PantherClient $client */
+        $client = self::createAuthenticatedClient();
+
+        $client->request('GET', '/case', [], []);
+        $crawler = $client->clickLink($caseNumber);
+        self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
+
+        self::uploadDropzoneFile($client, '../TestData/Missing appointment type - 93559316.docx');
+        $client->waitFor('a.dropzone__file-remove', 5);
+
+        $crawler->selectButton('Continue')->click();
+
+        self::assertContains("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
     }
 
     protected function purgeDatabase()
@@ -119,6 +141,5 @@ class UploadingCourtOrderTest extends PantherTestCase
         $fileInput = $client->findElement(WebDriverBy::cssSelector('input[type="file"].dz-hidden-input'));
         $fileInput->setFileDetector(new LocalFileDetector());
         $fileInput->sendKeys($localFileLocation);
-        $client->waitFor('div.dz-filename', 5);
     }
 }
