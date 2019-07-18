@@ -35,7 +35,7 @@ jobs:
             rm -rf symfony.lock
 
             # Vendor php dependencies
-            docker-compose run --rm composer
+            docker-compose run --rm app composer install
 
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
