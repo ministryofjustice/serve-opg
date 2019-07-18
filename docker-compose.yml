@@ -77,7 +77,6 @@ services:
       - ./vendor:/var/www/vendor
       - ./translations:/var/www/translations
       - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
-      - ./composer.json:/var/www/composer.json
 
   sirius-api:
     image: stoplight/prism
