@@ -45,15 +45,15 @@ class OrderControllerTest extends ApiWebTestCase
 
     public function testProcessOrderDocSuccess()
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '99900002', Order::TYPE_HW);
 
         $em = $this->getEntityManager();
         $em->persist($order);
         $em->flush();
 
         $file = FileTestHelper::createUploadedFile(
-            '/tests/TestData/validCO - 93559316.docx',
-            'validCO - 93559316.docx',
+            '/tests/TestData/validCO - 99900002.docx',
+            'validCO - 99900002.docx',
             'application/msword'
         );
 
@@ -130,7 +130,7 @@ class OrderControllerTest extends ApiWebTestCase
      */
     public function testProcessOrderDocPartialExtraction(string $orderType, string $fileName)
     {
-        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', $orderType);
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '99900002', $orderType);
 
         $em = $this->getEntityManager();
         $em->persist($order);
@@ -155,17 +155,13 @@ class OrderControllerTest extends ApiWebTestCase
     public function partialExtractionProvider()
     {
         return [
-            'Missing SubType' => [
+            'Missing AppointmentType and SubType' => [
                 'HW',
-                'Missing sub type - 93559316.docx'
-            ],
-            'Missing AppointmentType' => [
-                'HW',
-                'Missing appointment type - 93559316.docx'
+                'Missing appointment and sub type - 99900002.docx'
             ],
             'Missing HasAssetsAboveThreshold' => [
                 'PF',
-                'Missing bond amount - 93559316.docx'
+                'Missing bond amount - 99900002.docx'
             ],
         ];
     }
