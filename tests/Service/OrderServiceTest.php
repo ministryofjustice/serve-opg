@@ -235,9 +235,9 @@ class OrderServiceTest extends WebTestCase
 
         $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/Missing bond amount - 99900002.docx', 'Missing bond amount - 99900002.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '99900002', 'PF');
         $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());

@@ -30,7 +30,7 @@ class UploadingCourtOrderTest extends PantherTestCase
 
     public function testUploadValidWordDoc()
     {
-        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
+        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '99900002', Order::TYPE_HW);
         $orderId = $order->getId();
         $caseNumber = $order->getClient()->getCaseNumber();
 
@@ -41,12 +41,11 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/validCO - 93559316.docx');
+        self::uploadDropzoneFile($client, '../TestData/validCO - 99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
 
-        $client->takeScreenshot('teeeest.png');
         self::assertContains("/order/${orderId}/summary", $client->getCurrentURL());
 
         $orderDetails = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('.govuk-table__body'))->getText();
@@ -55,9 +54,9 @@ class UploadingCourtOrderTest extends PantherTestCase
         self::assertContains('Joint and several', $orderDetails);
     }
 
-    public function testUploadMissingAppointmentType()
+    public function testUploadMissingAppointmentAndSubTypeDoc()
     {
-        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '93559316', Order::TYPE_HW);
+        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '99900002', Order::TYPE_HW);
         $orderId = $order->getId();
         $caseNumber = $order->getClient()->getCaseNumber();
 
@@ -68,12 +67,40 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/Missing appointment type - 93559316.docx');
+        self::uploadDropzoneFile($client, '../TestData/Missing appointment and sub type - 99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
 
+        $confirmOrderDetailsForm = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('form[name="confirm_order_details_form"]'));
+
         self::assertContains("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
+        self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_subType'))->getText());
+        self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_appointmentType'))->getText());
+    }
+
+    public function testUploadMissingBondAmountDoc()
+    {
+        $order = self::createAndPersistOrder('2018-08-01', '2018-08-10', '99900002', Order::TYPE_PF);
+        $orderId = $order->getId();
+        $caseNumber = $order->getClient()->getCaseNumber();
+
+        /** @var PantherClient $client */
+        $client = self::createAuthenticatedClient();
+
+        $client->request('GET', '/case', [], []);
+        $crawler = $client->clickLink($caseNumber);
+        self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
+
+        self::uploadDropzoneFile($client, '../TestData/Missing bond amount - 99900002.docx');
+        $client->waitFor('a.dropzone__file-remove', 5);
+
+        $crawler->selectButton('Continue')->click();
+
+        $confirmOrderDetailsForm = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('form[name="confirm_order_details_form"]'));
+
+        self::assertContains("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
+        self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_hasAssetsAboveThreshold'))->getText());
     }
 
     protected function purgeDatabase()

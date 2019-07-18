@@ -18,6 +18,7 @@ REGEX;
 
     const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
     const BOND_REGEX = '/sum of (.*) in/';
+//    const BOND_REGEX = '/sum of (.*?)([\w]|)in/';
 
     /**
      * @var EntityManager
@@ -169,6 +170,8 @@ REGEX;
      */
     public function answerQuestionsFromText(string $fileContents, Order $order)
     {
+        $textTagsRemoved = preg_replace('~<[^>]*>~', "", $fileContents);
+
         if (!$this->extractCaseNumber($fileContents, $order)) {
             throw new WrongCaseNumberException(
                 'The case number in the document does not match the case number for this order. Please check the file and try again.'
@@ -257,16 +260,16 @@ REGEX;
 
         $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
 
-        switch ($bond) {
-            case "":
-                $order->setHasAssetsAboveThreshold(null);
-                break;
-            case ($bond >= 21000):
-                $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
-                break;
-            case ($bond < 21000):
-                $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_NO);
-                break;
+        if ($bond >= 21000) {
+            $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
+            return;
         }
+
+        if ($bond < 21000 ) {
+            $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_NO);
+            return;
+        }
+
+        $order->setHasAssetsAboveThreshold(null);
     }
 }
