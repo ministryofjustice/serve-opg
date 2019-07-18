@@ -2,7 +2,6 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\OrderHw;
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
 use App\Service\DocumentReaderService;
@@ -11,8 +10,6 @@ use App\Service\SiriusService;
 use App\Tests\Helpers\FileTestHelper;
 use App\Tests\Helpers\OrderTestHelper;
 use Doctrine\ORM\EntityManager;
-use Exception;
-use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -235,12 +232,13 @@ class OrderServiceTest extends WebTestCase
 
         $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/Missing bond amount - 99900002.docx', 'Missing bond amount - 99900002.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 99900002.docx', 'validCO - 99900002.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '99900002', 'PF');
         $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
         self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
+        self::assertEquals('yes', $hydratedOrder->getHasAssetsAboveThreshold());
     }
 }

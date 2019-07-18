@@ -97,9 +97,9 @@ class UploadingCourtOrderTest extends PantherTestCase
 
         $crawler->selectButton('Continue')->click();
 
-        $confirmOrderDetailsForm = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('form[name="confirm_order_details_form"]'));
-
         self::assertContains("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
+
+        $confirmOrderDetailsForm = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('form[name="confirm_order_details_form"]'));
         self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_hasAssetsAboveThreshold'))->getText());
     }
 
