@@ -15,12 +15,19 @@ RUN apk add --no-cache \
         chromium \
         chromium-chromedriver
 
-#ENV PANTHER_NO_HEADLESS 1
-
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
   && chmod +x /usr/local/bin/waitforit
+
+#COMPOSER
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+
+#PHPUNIT
+RUN composer global require "phpunit/phpunit"
+
+ENV PATH /root/.composer/vendor/bin:$PATH
 
 WORKDIR /var/www
 
