@@ -36,8 +36,7 @@ jobs:
 
             # Vendor php dependencies
             docker-compose run --rm composer
-
-            docker-compose run --rm app php bin/phpunit
+            docker-compose run --rm composer php bin/phpunit
 
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
