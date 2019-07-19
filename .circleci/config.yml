@@ -57,11 +57,6 @@ jobs:
       - run:
           name: Unit Test
           command: |
-#            ./generate_certs.sh
-#            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
-#            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
-#            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
-#            docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
             docker-compose run --rm app php bin/phpunit --verbose tests
       - run:
           name: Integration Test
