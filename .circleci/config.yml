@@ -34,18 +34,18 @@ jobs:
             rm -rf vendor
             rm -rf symfony.lock
 
-            # Vendor php dependencies
-            docker-compose run --rm composer
-
-            # Removes boilerplate feature test added during Symfony Flex recipe for behat
-            rm -rf features/demo.feature
-
             # Install js dependencies
             docker-compose run --rm yarn install
 
             # Generate static assets
             docker-compose run --rm yarn build-dev
 
+            # Vendor php dependencies
+            docker-compose run --rm composer
+
+            # Removes boilerplate feature test added during Symfony Flex recipe for behat
+            rm -rf features/demo.feature
+            
             docker-compose run --rm app php bin/phpunit
             docker-compose run --rm app php bin/console doctrine:migrations:migrate
       - save_cache:
