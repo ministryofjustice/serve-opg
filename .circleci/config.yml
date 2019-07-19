@@ -58,6 +58,7 @@ jobs:
       - run:
           name: Unit Test
           command: |
+            docker-compose run --rm app php bin/console doctrine:migrations:migrate
             docker-compose run --rm app php bin/phpunit --verbose tests
       - run:
           name: Integration Test
