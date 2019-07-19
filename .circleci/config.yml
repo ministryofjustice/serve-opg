@@ -36,7 +36,6 @@ jobs:
 
             # Vendor php dependencies
             docker-compose run --rm composer
-            docker-compose run --rm app php bin/phpunit
 
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
@@ -46,6 +45,8 @@ jobs:
 
             # Generate static assets
             docker-compose run --rm yarn build-dev
+
+            docker-compose run --rm app php bin/phpunit
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
