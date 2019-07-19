@@ -36,7 +36,7 @@ jobs:
 
             # Vendor php dependencies
             docker-compose run --rm composer
-            docker-compose run --rm composer php bin/phpunit
+            docker-compose run --rm app php bin/phpunit
 
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
@@ -57,11 +57,11 @@ jobs:
       - run:
           name: Unit Test
           command: |
-            ./generate_certs.sh
-            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
-            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
-            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
-            docker-compose run --rm app php bin/console doctrine:migrations:migrate
+#            ./generate_certs.sh
+#            docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer
+#            docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
+#            docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
+#            docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
             docker-compose run --rm app php bin/phpunit --verbose tests
       - run:
           name: Integration Test
