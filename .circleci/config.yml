@@ -48,7 +48,7 @@ jobs:
             docker-compose run --rm yarn build-dev
 
 
-            docker-compose run --rm app php bin/phpunit
+            docker-compose run --rm app php ./vendor/bin/simple-phpunit
             docker-compose run --rm app php bin/console doctrine:schema:create
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
