@@ -6,11 +6,11 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - vendor-{{ checksum "composer.lock" }}
+          keys:
+            - vendor-{{ checksum "composer.lock" }}
       - restore_cache:
-        keys:
-          - node_modules-{{ checksum "yarn.lock" }}
+          keys:
+            - node_modules-{{ checksum "yarn.lock" }}
       - run:
           name: Build Dependencies
           command: |
