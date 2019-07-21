@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CaseControllerTest extends ApiWebTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }

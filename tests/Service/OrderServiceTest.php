@@ -31,7 +31,7 @@ class OrderServiceTest extends WebTestCase
     private $documentReader;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->em = $this->prophesize(EntityManager::class);
         $this->siriusService = $this->prophesize(SiriusService::class);

@@ -26,12 +26,12 @@ class OrderControllerTest extends ApiWebTestCase
      */
     private $sut;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         ClockMock::register(TimeService::class);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         /** @var OrderController sut */
