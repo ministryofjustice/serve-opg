@@ -45,7 +45,8 @@ jobs:
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
 
-            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/console doctrine:migrations:migrate
+            docker-compose run --rm composer require phpunit/phpunit
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/console doctrine:migrations:migrate -n
             docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
