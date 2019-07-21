@@ -14,3 +14,4 @@ services:
       SIRIUS_PUBLIC_API_PASSWORD: 'FAKE_API_PASSWORD'
       AWS_ACCESS_KEY_ID: 'foo'
       AWS_SECRET_ACCESS_KEY: 'bar'
+      DATABASE_URL: "sqlite:///%kernel.project_dir%/var/test.db3"
