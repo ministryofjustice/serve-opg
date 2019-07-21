@@ -5,6 +5,12 @@ jobs:
       image: "circleci/classic:201808-01"
     steps:
       - checkout
+      - restore_cache:
+        keys:
+          - vendor-{{ checksum "composer.lock" }}
+      - restore_cache:
+        keys:
+          - node_modules-{{ checksum "yarn.lock" }}
       - run:
           name: Build Dependencies
           command: |
@@ -23,15 +29,15 @@ jobs:
             docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
             docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
 
+            # Vendor php dependencies
+            docker-compose run --rm composer
+            docker-compose run --rm composer sync-recipes --force
+
             # Install js dependencies
             docker-compose run --rm yarn install
 
             # Generate static assets
             docker-compose run --rm yarn build-dev
-
-            # Vendor php dependencies
-            docker-compose run --rm app composer install
-            docker-compose run --rm app composer sync-recipes --force
 
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
