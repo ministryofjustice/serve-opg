@@ -45,8 +45,8 @@ jobs:
             # Generate static assets
             docker-compose run --rm yarn build-dev
 
-            docker-compose run -f docker-compose.test.yml -f docker-compose.yml --rm app php bin/phpunit --verbose tests
-            docker-compose run -f docker-compose.test.yml -f docker-compose.yml --rm app php bin/console doctrine:schema:create
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/console doctrine:schema:create
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
