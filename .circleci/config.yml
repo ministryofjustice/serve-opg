@@ -31,7 +31,7 @@ jobs:
 
             # Vendor php dependencies
             docker-compose run --rm composer
-            docker-compose run --rm composer sync-recipes --force
+            docker-compose run --rm composer composer sync-recipes --force
 
             # Install js dependencies
             docker-compose run --rm yarn install
