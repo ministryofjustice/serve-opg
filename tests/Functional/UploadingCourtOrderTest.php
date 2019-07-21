@@ -158,7 +158,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         // @todo find a way to hook into WebDriver cookie and set auth using session
         // https://symfony.com/doc/current/testing/http_authentication.html https://twitter.com/dunglas/status/1039539719208660992?s=20
         $client->request('GET', '/login', [], []);
-        $client->takeScreenshot('error' . mt_rand(1, 200) . '.png');
+        $client->takeScreenshot('.artifacts/error' . mt_rand(1, 200) . '.png');
         $client->submitForm('Sign in', ['_username' => self::TEST_USER_EMAIL, '_password' => self::TEST_USER_PASSWORD]);
         return $client;
     }

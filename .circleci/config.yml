@@ -73,6 +73,8 @@ jobs:
           path: ./tests/artifacts
       - store_artifacts:
           path: /tmp/behat
+      - store_artifacts:
+          path: artifacts
 
   build:
     machine: true
