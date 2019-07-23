@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrderControllerTest extends ApiWebTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -152,10 +152,10 @@ class OrderControllerTest extends ApiWebTestCase
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
         foreach($missingElementIds as $id) {
-            self::assertNotContains($id, $client->getResponse()->getContent());
+            self::assertStringNotContainsString($id, $client->getResponse()->getContent());
         }
 
-        self::assertContains($visibleElementId, $client->getResponse()->getContent());
+        self::assertStringContainsString($visibleElementId, $client->getResponse()->getContent());
     }
 
     public function dataExtractionResultsProvider()

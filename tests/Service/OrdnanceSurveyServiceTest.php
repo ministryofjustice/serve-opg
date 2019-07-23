@@ -103,7 +103,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->andReturn($this->response);
         $result = $this->ordnanceSurveyService->lookupPostcode($postcode);
         // We expect an empty array.
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 

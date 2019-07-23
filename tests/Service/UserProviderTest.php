@@ -117,7 +117,7 @@ class UserProviderTest extends MockeryTestCase
     }
 
 
-    public function tearDown()
+    public function tearDown(): void
     {
         m::close();
     }
