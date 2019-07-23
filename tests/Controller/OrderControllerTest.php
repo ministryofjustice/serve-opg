@@ -157,7 +157,7 @@ class OrderControllerTest extends ApiWebTestCase
         return [
             'Missing AppointmentType and SubType' => [
                 'HW',
-                'Missing appointment and sub type - 99900002.docx'
+                'Missing_appointment_and_sub_type_99900002.docx'
             ],
             'Missing HasAssetsAboveThreshold' => [
                 'PF',
@@ -193,10 +193,10 @@ class OrderControllerTest extends ApiWebTestCase
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
         foreach($missingElementIds as $id) {
-            self::assertNotContains($id, $client->getResponse()->getContent());
+            self::assertStringNotContainsString($id, $client->getResponse()->getContent());
         }
 
-        self::assertContains($visibleElementId, $client->getResponse()->getContent());
+        self::assertStringContainsString($visibleElementId, $client->getResponse()->getContent());
     }
 
     public function dataExtractionResultsProvider()
@@ -280,6 +280,6 @@ class OrderControllerTest extends ApiWebTestCase
         $client->request(Request::METHOD_GET, "/order/${orderId}/summary", [], []);
         $crawler = $client->followRedirect();
 
-        self::assertContains("/order/${orderId}/upload", $crawler->getUri());
+        self::assertStringContainsString("/order/${orderId}/upload", $crawler->getUri());
     }
 }

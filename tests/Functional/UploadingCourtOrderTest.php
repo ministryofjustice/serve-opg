@@ -39,19 +39,19 @@ class UploadingCourtOrderTest extends PantherTestCase
 
         $client->request('GET', '/case', [], []);
         $crawler = $client->clickLink($caseNumber);
-        self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
+        self::assertStringContainsString("/order/${orderId}/upload", $client->getCurrentURL());
 
         self::uploadDropzoneFile($client, '../TestData/validCO_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
 
-        self::assertContains("/order/${orderId}/summary", $client->getCurrentURL());
+        self::assertStringContainsString("/order/${orderId}/summary", $client->getCurrentURL());
 
         $orderDetails = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('.govuk-table__body'))->getText();
 
-        self::assertContains('New application', $orderDetails);
-        self::assertContains('Joint and several', $orderDetails);
+        self::assertStringContainsString('New application', $orderDetails);
+        self::assertStringContainsString('Joint and several', $orderDetails);
     }
 
     public function testUploadMissingAppointmentAndSubTypeDoc()
@@ -65,16 +65,16 @@ class UploadingCourtOrderTest extends PantherTestCase
 
         $client->request('GET', '/case', [], []);
         $crawler = $client->clickLink($caseNumber);
-        self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
+        self::assertStringContainsString("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/Missing appointment and sub type - 99900002.docx');
+        self::uploadDropzoneFile($client, '../TestData/Missing_appointment_and_sub_type_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
 
         $confirmOrderDetailsForm = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('form[name="confirm_order_details_form"]'));
 
-        self::assertContains("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
+        self::assertStringContainsString("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
         self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_subType'))->getText());
         self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_appointmentType'))->getText());
     }
@@ -90,14 +90,14 @@ class UploadingCourtOrderTest extends PantherTestCase
 
         $client->request('GET', '/case', [], []);
         $crawler = $client->clickLink($caseNumber);
-        self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
+        self::assertStringContainsString("/order/${orderId}/upload", $client->getCurrentURL());
 
         self::uploadDropzoneFile($client, '../TestData/Missing_bond_amount_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
 
-        self::assertContains("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
+        self::assertStringContainsString("/order/${orderId}/confirm-order-details", $client->getCurrentURL());
 
         $confirmOrderDetailsForm = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('form[name="confirm_order_details_form"]'));
         self::assertNotNull($confirmOrderDetailsForm->findElement(WebDriverBy::id('confirm_order_details_form_hasAssetsAboveThreshold'))->getText());
@@ -158,7 +158,6 @@ class UploadingCourtOrderTest extends PantherTestCase
         // @todo find a way to hook into WebDriver cookie and set auth using session
         // https://symfony.com/doc/current/testing/http_authentication.html https://twitter.com/dunglas/status/1039539719208660992?s=20
         $client->request('GET', '/login', [], []);
-        $client->takeScreenshot('./tests/artifacts/error-' . time() . '.png');
         $client->submitForm('Sign in', ['_username' => self::TEST_USER_EMAIL, '_password' => self::TEST_USER_PASSWORD]);
         return $client;
     }

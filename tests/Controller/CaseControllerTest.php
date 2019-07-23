@@ -39,7 +39,7 @@ class CaseControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_GET, "/case", [], []);
         $caseLink = $crawler->selectLink($caseNumber)->link();
 
-        self::assertContains("/order/${orderId}/upload", $caseLink->getUri());
+        self::assertStringContainsString("/order/${orderId}/upload", $caseLink->getUri());
     }
 
     public function testCaseLinkForUnservedValidCasesLinksToSummaryView()
@@ -63,6 +63,6 @@ class CaseControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_GET, "/case", [], []);
         $caseLink = $crawler->selectLink($caseNumber)->link();
 
-        self::assertContains("/order/${orderId}/summary", $caseLink->getUri());
+        self::assertStringContainsString("/order/${orderId}/summary", $caseLink->getUri());
     }
 }
