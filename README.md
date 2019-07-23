@@ -15,8 +15,6 @@ Software to download and install
 Launch all the following commands from the project directory
 ```bash
 
-git config core.autocrlf true
-
 # Generate self-signed certificate for the local loadbalancer
 ./generate_certs.sh
 
