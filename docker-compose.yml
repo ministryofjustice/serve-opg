@@ -142,7 +142,6 @@ services:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
   phpunit:
-#   Reverting to php 7.2 due to bug in 7.3 with mime types https://bugs.php.net/bug.php?id=78028
     image: prooph/composer:7.2
     volumes:
       - .:/app

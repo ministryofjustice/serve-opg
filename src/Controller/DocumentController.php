@@ -244,17 +244,12 @@ class DocumentController extends AbstractController
      */
     public function deleteAction(Request $request, $orderId, $id)
     {
-        try {
-            $documentRemoved = $this->removeDocument($id);
-        } catch (\Throwable $e) {
-            $error = $e;
-        }
+        $documentRemoved = $this->removeDocument($id);
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         return new JsonResponse([
             'success' => $documentRemoved,
-            'readyToServe' => $order->readyToServe(),
-            'error' => $error
+            'readyToServe' => $order->readyToServe()
         ]);
     }
 }

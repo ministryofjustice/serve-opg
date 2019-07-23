@@ -2,34 +2,23 @@ import Dropzone from 'dropzone/dist/min/dropzone.min';
 Dropzone.autoDiscover = false;
 
 class DropzoneJS {
-     static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes, removeUrl) {
+    static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes) {
         const previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
 
         let dz =  new Dropzone(elementID, {
             url: targetURL,
-            removeUrl: removeUrl,
-            maxFilesCustom: maxFiles,
+            maxFiles: maxFiles,
+            dictMaxFilesExceeded: `Only ${maxFiles} document(s) can be uploaded`,
             paramName: fileIdentifier,
             acceptedFiles: acceptedTypes,
             autoDiscover: false,
             createImageThumbnails: false,
             previewTemplate: previewTemplate,
             addRemoveLinks: true,
-            orderId: null
         });
-
-         dz.options.orderId = document.querySelector(elementID).dataset.orderId;
-         dz.options.url = dz.options.url.replace('{orderId}', dz.options.orderId);
-         dz.options.removeUrl = dz.options.removeUrl.replace('{orderId}', dz.options.orderId);
 
         dz.on("addedfile", (file) => {
             if (dz.options.acceptedFiles.includes(file.type)){
-                if (dz.files.length > dz.options.maxFilesCustom) {
-                    file.fileLimitExceeded = true;
-                    const fileToRemove = dz.files[0];
-                    dz.removeFile(fileToRemove);
-                }
-
                 const event = new CustomEvent(
                     'validDoc',
                     {
@@ -45,8 +34,6 @@ class DropzoneJS {
         });
 
         dz.on("success", (file, response) => {
-            dz.options.removeUrl = dz.options.removeUrl.replace('{documentId}', response.documentId);
-
             const event = new CustomEvent(
                 'orderDocProcessed',
             );
@@ -58,32 +45,13 @@ class DropzoneJS {
                 document.querySelector('.dz-filename').append(removeElement);
             }
 
-            if (response.partial === true) {
+            if (response.length > 0) {
                 let form = document.querySelector('#continue-form');
                 form.action = form.action.replace('summary', 'confirm-order-details');
             }
         });
 
-        dz.on('removedfile', async function(file) {
-            if (dz.files.length > dz.options.maxFilesCustom) {
-                file.fileLimitExceeded = true;
-            }
-
-            if (dz.options.removeUrl.includes('{documentId}')) {
-                return
-            }
-
-            const response = await fetch(dz.options.removeUrl, {
-                method: 'DELETE',
-            });
-
-            await response.json()
-            .then(response => {
-                if (response.success !== 1) {
-                    console.log('Error removing file from S3: ' + response.error);
-                }
-            });
-
+        dz.on('removedfile', (file) => {
             const event = new CustomEvent(
                 'docRemoved',
                 {
@@ -93,14 +61,27 @@ class DropzoneJS {
             document.dispatchEvent(event);
         });
 
+        dz.on('maxfilesexceeded', (file) => {
+            let errorDiv = document.querySelector('.dz-error-message ');
+            errorDiv.innerText = dz.options.dictMaxFilesExceeded;
+            errorDiv.hidden = false;
+            file.fileLimitExceeded = true;
+            dz.removeFile(file);
+        });
+
         dz.on('error', (file, errorMessage) => {
-            if (errorMessage.includes('The case number in the document does not match the case number for this order. Please check the file and try again.')) {
+            if (errorMessage.includes('The order provided does not have the correct case number for this record')) {
+                let errorDiv = document.querySelector('.dz-error-message');
                 let removeElement = document.querySelector('.dz-remove');
+
                 removeElement.classList.add('dropzone__file-remove');
                 document.querySelector('.dz-filename').append(removeElement);
 
                 const event = new CustomEvent('wrongCaseNumber');
                 document.dispatchEvent(event);
+
+                errorDiv.innerText = 'The case number in the document does not match the case number for this order. Please check the file and try again.';
+                errorDiv.hidden = false;
             }
         });
 
