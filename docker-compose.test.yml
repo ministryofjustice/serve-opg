@@ -15,3 +15,4 @@ services:
       AWS_ACCESS_KEY_ID: 'foo'
       AWS_SECRET_ACCESS_KEY: 'bar'
       DATABASE_URL: "sqlite:///%kernel.project_dir%/var/test.db3"
+      SYMFONY_DEPRECATIONS_HELPER: 100
