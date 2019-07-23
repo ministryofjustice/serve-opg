@@ -17,7 +17,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:alpine
+    image: jwilder/nginx-proxy:alpine-0.7.0
     ports:
       - 443:443
     volumes:
@@ -79,7 +79,7 @@ services:
       - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
 
   sirius-api:
-    image: stoplight/prism
+    image: stoplight/prism:v2.0.20
     volumes:
       - .:/tmp
     command:
