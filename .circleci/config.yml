@@ -44,8 +44,6 @@ jobs:
 
             # Removes boilerplate feature test added during Symfony Flex recipe for behat
             rm -rf features/demo.feature
-
-            docker-compose run --rm composer require phpunit/phpunit
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths:
