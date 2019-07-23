@@ -232,7 +232,7 @@ class OrderServiceTest extends WebTestCase
 
         $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
 
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 99900002.docx', 'validCO - 99900002.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO_99900002.docx', 'validCO_99900002.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '99900002', 'PF');
         $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);

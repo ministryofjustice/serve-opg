@@ -52,8 +52,8 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         $file = FileTestHelper::createUploadedFile(
-            '/tests/TestData/validCO - 99900002.docx',
-            'validCO - 99900002.docx',
+            '/tests/TestData/validCO_99900002.docx',
+            'validCO_99900002.docx',
             'application/msword'
         );
 
@@ -77,8 +77,8 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         $file = FileTestHelper::createUploadedFile(
-            '/tests/TestData/validCO - WRONGCASENO.docx',
-            'validCO - WRONGCASENO.docx',
+            '/tests/TestData/validCO_WRONGCASENO.docx',
+            'validCO_WRONGCASENO.docx',
             'application/msword'
         );
 
@@ -161,7 +161,7 @@ class OrderControllerTest extends ApiWebTestCase
             ],
             'Missing HasAssetsAboveThreshold' => [
                 'PF',
-                'Missing bond amount - 99900002.docx'
+                'Missing_bond_amount_99900002.docx'
             ],
         ];
     }

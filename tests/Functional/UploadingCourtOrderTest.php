@@ -41,7 +41,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/validCO - 99900002.docx');
+        self::uploadDropzoneFile($client, '../TestData/validCO_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
@@ -92,7 +92,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertContains("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/Missing bond amount - 99900002.docx');
+        self::uploadDropzoneFile($client, '../TestData/Missing_bond_amount_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
