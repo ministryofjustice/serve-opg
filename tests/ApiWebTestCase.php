@@ -5,11 +5,11 @@ namespace App\Tests;
 
 use App\Entity\OrderHw;
 use App\Entity\User;
+use App\Service\TimeService;
 use App\Tests\Helpers\OrderTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiWebTestCase extends WebTestCase
@@ -17,6 +17,11 @@ class ApiWebTestCase extends WebTestCase
     const TEST_USER_PASSWORD = 'password123';
     const TEST_USER_EMAIL = 'test@user.com';
     const BASIC_AUTH_CREDS = ['PHP_AUTH_USER' => self::TEST_USER_EMAIL, 'PHP_AUTH_PW'   => self::TEST_USER_PASSWORD];
+
+    public static function setUpBeforeClass(): void
+    {
+        ClockMock::register(TimeService::class);
+    }
 
     public function setUp(): void
     {
@@ -88,5 +93,10 @@ class ApiWebTestCase extends WebTestCase
         $client = $this->getService('test.client');
         $client->setServerParameters(self::BASIC_AUTH_CREDS);
         return $client;
+    }
+
+    protected function timeTravel(string $dateTime)
+    {
+        ClockMock::withClockMock(strtotime($dateTime));
     }
 }

@@ -20,12 +20,14 @@ class UploadingCourtOrderTest extends PantherTestCase
     const TEST_USER_PASSWORD = 'password123';
     const TEST_USER_EMAIL = 'test@user.com';
     const BASIC_AUTH_CREDS = ['PHP_AUTH_USER' => self::TEST_USER_EMAIL, 'PHP_AUTH_PW' => self::TEST_USER_PASSWORD];
+    private $projectDir;
 
     public function setUp(): void
     {
         self::bootKernel();
         self::purgeDatabase();
         self::createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
+        $this->projectDir = $this->getService('kernel')->getProjectDir();
     }
 
     public function testUploadValidWordDoc()
@@ -41,7 +43,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertStringContainsString("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/validCO_99900002.docx');
+        self::uploadDropzoneFile($client, '/tests/TestData/validCO_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
@@ -67,7 +69,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertStringContainsString("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/Missing_appointment_and_sub_type_99900002.docx');
+        self::uploadDropzoneFile($client, '/tests/TestData/Missing_appointment_and_sub_type_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
@@ -92,7 +94,7 @@ class UploadingCourtOrderTest extends PantherTestCase
         $crawler = $client->clickLink($caseNumber);
         self::assertStringContainsString("/order/${orderId}/upload", $client->getCurrentURL());
 
-        self::uploadDropzoneFile($client, '../TestData/Missing_bond_amount_99900002.docx');
+        self::uploadDropzoneFile($client, '/tests/TestData/Missing_bond_amount_99900002.docx');
         $client->waitFor('a.dropzone__file-remove', 5);
 
         $crawler->selectButton('Continue')->click();
@@ -162,11 +164,15 @@ class UploadingCourtOrderTest extends PantherTestCase
         return $client;
     }
 
+    /**
+     * @param PantherClient $client
+     * @param string $localFileLocation, the full file path - e.g. '/tests/TestData/filename.png'
+     */
     protected function uploadDropzoneFile(PantherClient $client, string $localFileLocation)
     {
         /** @var RemoteWebElement $fileInput */
         $fileInput = $client->findElement(WebDriverBy::cssSelector('input[type="file"].dz-hidden-input'));
         $fileInput->setFileDetector(new LocalFileDetector());
-        $fileInput->sendKeys($localFileLocation);
+        $fileInput->sendKeys($this->projectDir . $localFileLocation);
     }
 }

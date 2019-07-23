@@ -19,6 +19,11 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group failing
+ * @throws \Doctrine\ORM\ORMException
+ * @throws \Doctrine\ORM\OptimisticLockException
+ */
 class OrderControllerTest extends ApiWebTestCase
 {
     /**
@@ -26,21 +31,11 @@ class OrderControllerTest extends ApiWebTestCase
      */
     private $sut;
 
-    public static function setUpBeforeClass(): void
-    {
-        ClockMock::register(TimeService::class);
-    }
-
     public function setUp(): void
     {
         parent::setUp();
         /** @var OrderController sut */
         $this->sut = $this->getService('App\Controller\OrderController');
-    }
-
-    protected function timeTravel(string $dateTime)
-    {
-        ClockMock::withClockMock(strtotime($dateTime));
     }
 
     public function testProcessOrderDocSuccess()
