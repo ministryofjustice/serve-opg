@@ -13,7 +13,7 @@ class UserTest extends ApiWebTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
