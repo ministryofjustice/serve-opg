@@ -141,29 +141,6 @@ services:
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
-  phpunit:
-#   Reverting to php 7.2 due to bug in 7.3 with mime types https://bugs.php.net/bug.php?id=78028
-    image: prooph/composer:7.2
-    volumes:
-      - .:/app
-    working_dir: /app
-    entrypoint:
-      - bin/phpunit
-      - --verbose
-      - tests
-      - --log-junit
-      - /app/tests/artifacts/phpunit/junit.xml
-    environment:
-      - DC_S3_ENDPOINT=http://localstack:4572
-      - DYNAMODB_ENDPOINT=http://localstack:4569
-      - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
-      - AWS_ACCESS_KEY_ID=foo
-      - AWS_SECRET_ACCESS_KEY=bar
-      - APP_ENV=test
-    depends_on:
-      - loadbalancer
-      - postgres
-
   qa:
     image: jakzal/phpqa:alpine
     volumes:
