@@ -2,19 +2,14 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\CaseController;
-use App\Entity\Document;
 use App\Entity\OrderPf;
-use App\Tests\ApiWebTestCase;
-use App\Tests\Helpers\FileTestHelper;
+use App\Tests\BaseFunctionalTestCase;
 use App\Tests\Helpers\OrderTestHelper;
-use DateTime;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 
-class CaseControllerTest extends ApiWebTestCase
+class CaseControllerTest extends BaseFunctionalTestCase
 {
     public function setUp(): void
     {
@@ -33,7 +28,7 @@ class CaseControllerTest extends ApiWebTestCase
         $caseNumber = $unservedNotValidOrder->getClient()->getCaseNumber();
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
 
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/case", [], []);
@@ -57,7 +52,7 @@ class CaseControllerTest extends ApiWebTestCase
         $caseNumber = $unservedValidOrder->getClient()->getCaseNumber();
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
 
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/case", [], []);

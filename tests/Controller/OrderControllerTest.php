@@ -5,26 +5,18 @@ namespace App\Tests\Controller;
 use App\Controller\OrderController;
 use App\Entity\Document;
 use App\Entity\Order;
-use App\Entity\OrderHw;
 use App\Entity\OrderPf;
-use App\Service\TimeService;
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 use App\Tests\Helpers\DocumentTestHelper;
 use App\Tests\Helpers\FileTestHelper;
 use App\Tests\Helpers\OrderTestHelper;
 use DateTime;
-use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @group failing
- * @throws \Doctrine\ORM\ORMException
- * @throws \Doctrine\ORM\OptimisticLockException
- */
-class OrderControllerTest extends ApiWebTestCase
+class OrderControllerTest extends BaseFunctionalTestCase
 {
     /**
      * @var OrderController
@@ -53,7 +45,7 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
         $orderId = $order->getId();
 
         /** @var Crawler $crawler */
@@ -78,7 +70,7 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
@@ -98,7 +90,7 @@ class OrderControllerTest extends ApiWebTestCase
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
@@ -138,7 +130,7 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file]);
@@ -180,7 +172,7 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], []);
@@ -233,7 +225,7 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], []);
@@ -267,7 +259,7 @@ class OrderControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedSymfonyClient();
 
         $orderId = $unservedValidOrder->getId();
 

@@ -9,7 +9,8 @@
 - smoke test for behat controller in production
 - move create buckets step
 - update CircleCI machine
-- look into reason behind loadbalancer failing on latest alpine version - currently pinned to alpine-0.7.0
+- look into reason behind loadbalancer failing on latest alpine version - currently pinned to `alpine-0.7.0`
+- Drop tearDown() from `BaseFunctionalTestCase` once behat tests are stateless
 
 # Solved
 - ~~add time based assets directory~~
