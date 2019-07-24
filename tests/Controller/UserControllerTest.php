@@ -31,11 +31,11 @@ class UserControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_GET, "/users/view");
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertContains('test@digital.justice.gov.uk', $client->getResponse()->getContent());
-        self::assertContains('2019-07-01 01:01:01', $client->getResponse()->getContent());
+        self::assertStringContainsString('test@digital.justice.gov.uk', $client->getResponse()->getContent());
+        self::assertStringContainsString('2019-07-01 01:01:01', $client->getResponse()->getContent());
 
         $today = (new DateTime('today'))->format('Y-m-d');
-        self::assertContains($today, $client->getResponse()->getContent());
+        self::assertStringContainsString($today, $client->getResponse()->getContent());
     }
 
     public function testUserLoginUpdatesLastLoginAt()
@@ -62,7 +62,7 @@ class UserControllerTest extends ApiWebTestCase
 
         /** @var User $em */
         $updatedUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail('test@digital.justice.gov.uk');
-
+        
         self::assertInstanceOf(DateTime::class, $updatedUser->getLastLoginAt());
 
         $today = (new DateTime('today'))->format('Y-m-d');
