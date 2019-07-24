@@ -196,7 +196,7 @@ class SiriusService
         try {
             $this->httpClient->get('/', ['connect_timeout' => 3.14]);
         } catch (ClientException $e) {
-            return $e->getResponse()->getStatusCode();
+            $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
         } catch (ConnectException $e) {
             return 'unavailable';
         }
