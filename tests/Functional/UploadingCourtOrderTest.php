@@ -38,8 +38,14 @@ class UploadingCourtOrderTest extends BaseFunctionalTestCase
 
         $orderDetails = $client->getWebDriver()->findElement(WebDriverBy::cssSelector('.govuk-table__body'))->getText();
 
-        self::assertStringContainsString('New application', $orderDetails);
-        self::assertStringContainsString('Joint and several', $orderDetails);
+        self::assertStringContainsString(
+            'New application',
+            $orderDetails,
+            "Expected 'New application' to be visible on the page but it wasn\'t (The properties of the Order may not have been set correctly. )");
+        self::assertStringContainsString(
+            'Joint and several',
+            $orderDetails,
+            "Expected 'Joint and several' to be visible on the page but it wasn\'t (The properties of the Order may not have been set correctly.)");
     }
 
     public function testUploadMissingAppointmentAndSubTypeDoc()
