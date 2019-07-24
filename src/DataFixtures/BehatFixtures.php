@@ -54,8 +54,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
                 ['email' => 'elvis.ciotti@digital.justice.gov.uk', 'password' => 'Abcd1234'],
                 ['email' => 'sean.privett@digital.justice.gov.uk', 'password' => 'Abcd1234'],
                 ['email' => 'shaun.lizzio@digital.justice.gov.uk', 'password' => 'Abcd1234'],
-                ['email' => 'robert.ford@digital.justice.gov.uk', 'password' => 'Abcd1234'],
-                ['email' => 'test@justice.gov.uk', 'password' => 'password123'],
+                ['email' => 'robert.ford@digital.justice.gov.uk', 'password' => 'Abcd1234']
             ];
 
             $this->persistUsers($manager, $users);
