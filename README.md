@@ -42,10 +42,6 @@ docker-compose run --rm yarn
 # Compile static assets
 docker-compose run --rm yarn build-dev
 
-OR
-
-docker-compose run --rm yarn watch (to autocompile on any file changes in assets folder)
-
 # Build app
 docker-compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
@@ -77,13 +73,13 @@ Serve OPG uses PHPUnit and Behat to test the application
 ## Unit Testing
 Run php unit
 ```bash
-docker-compose run --rm app bin/phpunit --verbose tests
+docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests
 
 # specific test (if unique)
-docker-compose run --rm app bin/phpunit --verbose tests --filter testHomePage
+docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --filter testHomePage
 
 # specific test (if not unique)
-docker-compose run --rm app bin/phpunit --verbose tests --filter testHomePage tests/Controller/IndexControllerTest.php
+docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --filter testHomePage tests/Controller/IndexControllerTest.php
 
 # specific test using groups
 
@@ -99,23 +95,19 @@ public function testSomething()
 
 # Then run:
 
-docker-compose run --rm app bin/phpunit --verbose tests --group failing
+docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --group failing
 ```
 
 ## Integration Testing
 ```bash
-# Load Fixtures
-docker-compose run --rm app php bin/console doctrine:fixtures:load --append
-
 # Load Fixtures truncating existing data (users, client, orders, deputies)
-docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate
+docker-compose run --rm app php bin/console doctrine:fixtures:load --group=behatTests --purge-with-truncate --no-interaction
 
 # Run Behat
 docker-compose run --rm behat --suite=local
 
 # Launch specific behat feature
 docker-compose run --rm behat features/00-security.feature:18
-
 ```
 
 ### Notify mocking
@@ -158,12 +150,14 @@ Alternatively you can run individual tests by hitting the debug button next to t
 
 # Front end assets
 
+Assets are compiled using Symfony Encore run via a yarn command.
+
 ```bash
-# Gulp tasks
-# Bash into the npm container
-docker-compose run npm bash
-# Then run any gulp tasks from there, ie:
-gulp watch
+# Build front end assets (JS, images, etc)
+docker-compose run --rm yarn build-dev
+
+# Build front end assets (JS, images, etc) and autocompile on any file changes in assets folder
+docker-compose run --rm yarn watch
 ```
 
 # Database Migrations
