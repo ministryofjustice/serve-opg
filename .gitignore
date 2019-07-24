@@ -3,7 +3,7 @@
 /.env.local.php
 /.env.*.local
 /public/bundles/
-/var/*
+/var/
 /vendor/
 ###< symfony/framework-bundle ###
 
@@ -17,7 +17,6 @@ behat.yml
 bootstrap.php.cache
 *.iml
 .env.local
-!/var/test/
 **/*.crt
 **/*.key
 web/behat

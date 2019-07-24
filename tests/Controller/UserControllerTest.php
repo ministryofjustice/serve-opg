@@ -52,8 +52,6 @@ class UserControllerTest extends ApiWebTestCase
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/login");
 
-        print_r($crawler->html());
-
         $form = $crawler->selectButton('Sign in')->form(
             ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
         );
@@ -62,7 +60,7 @@ class UserControllerTest extends ApiWebTestCase
 
         /** @var User $em */
         $updatedUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail('test@digital.justice.gov.uk');
-        
+
         self::assertInstanceOf(DateTime::class, $updatedUser->getLastLoginAt());
 
         $today = (new DateTime('today'))->format('Y-m-d');
