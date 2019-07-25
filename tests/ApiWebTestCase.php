@@ -70,10 +70,10 @@ class ApiWebTestCase extends WebTestCase
         $this->getEntityManager()->flush();
     }
 
-    protected function createAuthenticatedClient()
+    protected function createAuthenticatedClient($creds=self::BASIC_AUTH_CREDS)
     {
         $client = ApiWebTestCase::getService('test.client');
-        $client->setServerParameters(self::BASIC_AUTH_CREDS);
+        $client->setServerParameters($creds);
         return $client;
     }
 }

@@ -38,4 +38,8 @@ App\Entity\User:
         type: datetime
         nullable: true
         column: last_login_at
-
+      roles:
+        type: array
+        nullable: false
+        options:
+          default: []

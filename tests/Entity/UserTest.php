@@ -28,4 +28,14 @@ class UserTest extends ApiWebTestCase
 
         self::assertInstanceOf(DateTime::class, $user->getCreatedAt());
     }
+
+    public function testSettingRolesRetainsRoleUser()
+    {
+        $user = UserTestHelper::createUser('atest@user.com');
+        $user->setRoles(['SOME_ROLE_HERE', 'SOME_OTHER_ROLE']);
+
+        foreach( ['ROLE_USER', 'SOME_ROLE_HERE', 'SOME_OTHER_ROLE'] as $role) {
+            self::assertContains($role, $user->getRoles());
+        }
+    }
 }

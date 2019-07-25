@@ -146,6 +146,8 @@ class UserController extends AbstractController
      */
     public function viewUsers()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $users = $this->em->getRepository(User::class)->findAll();
         return $this->render('User/view-users.html.twig', ['users' => $users]);
     }
