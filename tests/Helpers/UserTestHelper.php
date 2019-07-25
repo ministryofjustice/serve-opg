@@ -16,4 +16,11 @@ class UserTestHelper extends ApiWebTestCase
         $userModel->setPassword($encodedPassword);
         return $userModel;
     }
+
+    static public function createAdminUser(string $email, string $password='Abcd1234')
+    {
+        $userModel = self::createUser($email, $password);
+        $userModel->setRoles(['ROLE_ADMIN']);
+        return $userModel;
+    }
 }

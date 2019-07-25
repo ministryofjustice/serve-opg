@@ -66,4 +66,28 @@ class UserControllerTest extends ApiWebTestCase
         $today = (new DateTime('today'))->format('Y-m-d');
         self::assertEquals($today, $updatedUser->getLastLoginAt()->format('Y-m-d'));
     }
+
+
+    public function testViewUsersAccessibleByAdminUsersOnly()
+    {
+        $adminUser = UserTestHelper::createAdminUser('admin@digital.justice.gov.uk');
+        $normalUser = UserTestHelper::createUser('user@digital.justice.gov.uk');
+
+        $this->getEntityManager()->persist($adminUser);
+        $this->getEntityManager()->persist($normalUser);
+        $this->getEntityManager()->flush();
+
+        $tests = [
+            ['creds' => ['PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234'], 'expectedResponse' => Response::HTTP_OK],
+            ['creds' => ['PHP_AUTH_USER' => 'user@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234'], 'expectedResponse' => Response::HTTP_FORBIDDEN],
+        ];
+
+        foreach ($tests as $test) {
+            $client = ApiWebTestCase::getService('test.client');
+            $client->setServerParameters($test['creds']);
+
+            $client->request(Request::METHOD_GET, "/users/view");
+            $this->assertEquals($test['expectedResponse'], $client->getResponse()->getStatusCode());
+        }
+    }
 }

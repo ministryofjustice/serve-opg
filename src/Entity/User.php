@@ -2,10 +2,11 @@
 namespace App\Entity;
 
 use DateTime;
+use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 
-class User implements UserInterface, EquatableInterface
+class User implements UserInterface, EquatableInterface, Serializable
 {
     /**
      * @var string
@@ -48,6 +49,11 @@ class User implements UserInterface, EquatableInterface
     private $lastLoginAt;
 
     /**
+     * @var array
+     */
+    private $roles = [];
+
+    /**
      * User constructor.
      * @param string $email
      */
@@ -82,7 +88,12 @@ class User implements UserInterface, EquatableInterface
 
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        return array_unique(array_merge(['ROLE_USER'], $this->roles));
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
     }
 
     /**
@@ -197,5 +208,27 @@ class User implements UserInterface, EquatableInterface
     public function onPrePersist()
     {
         $this->setCreatedAt(new DateTime());
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->email,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ]);
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        [
+            $this->id,
+            $this->email,
+            $this->password,
+        ] = unserialize($serialized, ['allowed_classes' => false]);
     }
 }
