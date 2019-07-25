@@ -16,8 +16,10 @@ class UserControllerTest extends ApiWebTestCase
 {
     public function testListUsers()
     {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
         /** @var User $user */
-        $user = UserTestHelper::createUser('test@digital.justice.gov.uk');
+        $user = UserTestHelper::createAdminUser('testUser@digital.justice.gov.uk');
 
         $loginDate = new DateTime('2019-07-01');
         $loginDate->setTime(01, 01, 01 );
@@ -25,13 +27,18 @@ class UserControllerTest extends ApiWebTestCase
         $this->persistEntity($user);
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient();
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
 
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/users/view");
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertStringContainsString('test@digital.justice.gov.uk', $client->getResponse()->getContent());
+        self::assertStringContainsString('testUser@digital.justice.gov.uk', $client->getResponse()->getContent());
         self::assertStringContainsString('2019-07-01 01:01:01', $client->getResponse()->getContent());
 
         $today = (new DateTime('today'))->format('Y-m-d');
@@ -41,8 +48,7 @@ class UserControllerTest extends ApiWebTestCase
     public function testUserLoginUpdatesLastLoginAt()
     {
         /** @var User $user */
-        $user = UserTestHelper::createUser('test@digital.justice.gov.uk', 'password');
-        $this->persistEntity($user);
+        $user = $this->persistEntity(UserTestHelper::createAdminUser('test@digital.justice.gov.uk', 'password'));
 
         self::assertNull($user->getLastLoginAt());
 
@@ -70,12 +76,8 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testViewUsersAccessibleByAdminUsersOnly()
     {
-        $adminUser = UserTestHelper::createAdminUser('admin@digital.justice.gov.uk');
-        $normalUser = UserTestHelper::createUser('user@digital.justice.gov.uk');
-
-        $this->getEntityManager()->persist($adminUser);
-        $this->getEntityManager()->persist($normalUser);
-        $this->getEntityManager()->flush();
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $this->persistEntity(UserTestHelper::createUser('user@digital.justice.gov.uk'));
 
         $tests = [
             ['creds' => ['PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234'], 'expectedResponse' => Response::HTTP_OK],
