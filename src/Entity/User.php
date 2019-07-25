@@ -217,8 +217,6 @@ class User implements UserInterface, EquatableInterface, Serializable
             $this->id,
             $this->email,
             $this->password,
-            // see section on salt below
-            // $this->salt,
         ]);
     }
 
