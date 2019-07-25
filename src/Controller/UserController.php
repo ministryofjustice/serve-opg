@@ -140,4 +140,13 @@ class UserController extends AbstractController
 //    {
 //        return new RedirectResponse('/');
 //    }
+
+    /**
+     * @Route("/users/view", name="view-users", methods={"GET"})
+     */
+    public function viewUsers()
+    {
+        $users = $this->em->getRepository(User::class)->findAll();
+        return $this->render('User/view-users.html.twig', ['users' => $users]);
+    }
 }

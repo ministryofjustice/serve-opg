@@ -28,7 +28,7 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
 
         /** @var Crawler $crawler */
@@ -49,7 +49,7 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
@@ -65,7 +65,7 @@ class OrderControllerTest extends ApiWebTestCase
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
@@ -101,7 +101,7 @@ class OrderControllerTest extends ApiWebTestCase
         );
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
@@ -144,7 +144,7 @@ class OrderControllerTest extends ApiWebTestCase
         $this->persistEntity($order);
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
@@ -197,7 +197,7 @@ class OrderControllerTest extends ApiWebTestCase
         $this->persistEntity($order);
 
         /** @var Client $client */
-        $client = $this->getService('test.client');
+        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
         /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);

@@ -17,7 +17,6 @@ behat.yml
 bootstrap.php.cache
 *.iml
 .env.local
-var
 **/*.crt
 **/*.key
 web/behat
