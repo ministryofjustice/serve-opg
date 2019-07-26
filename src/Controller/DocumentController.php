@@ -248,7 +248,7 @@ class DocumentController extends AbstractController
             $documentRemoved = $this->removeDocument($id);
             $error = '';
         } catch (\Throwable $e) {
-            $documentRemoved = 0;
+            $documentRemoved = self::ERROR;
             $error = $e;
         }
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
