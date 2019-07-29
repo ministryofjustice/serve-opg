@@ -10,9 +10,12 @@ use App\Service\MailSender;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -32,6 +35,10 @@ class UserController extends AbstractController
      * @var UserPasswordEncoderInterface
      */
     private $encoder;
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
 
     /**
      * UserController constructor.
@@ -150,5 +157,67 @@ class UserController extends AbstractController
 
         $users = $this->em->getRepository(User::class)->findAll();
         return $this->render('User/view-users.html.twig', ['users' => $users]);
+    }
+
+    /**
+     * @Route("/users/{id}/delete", name="delete-user", methods={"DELETE"})
+     * @param int $id
+     */
+    public function deleteUser(int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if ($id === $this->getUser()->getId()) {
+            return new Response(null, Response::HTTP_CONFLICT);
+        }
+
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (null === $user) {
+            return new Response(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Route("/users/{id}/delete-refresh", name="delete-user-refresh", methods={"POST"})
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function deleteUserAndRefreshUsers(Request $request, int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $deleteResponse = $this->deleteUser($id);
+
+        $noticeType = 'success';
+        $flashMessage = 'User successfully deleted';
+
+        switch ($deleteResponse->getStatusCode()) {
+            case Response::HTTP_NO_CONTENT:
+                break;
+            case Response::HTTP_CONFLICT:
+                $noticeType = 'error';
+                $flashMessage = 'A user cannot delete their own account';
+                break;
+            case Response::HTTP_NOT_FOUND:
+                $noticeType = 'error';
+                $flashMessage = 'The user does not exist';
+                break;
+            default:
+                $noticeType = 'error';
+                $flashMessage = 'There was an issue deleting the user. Contact the Serve-OPG dev team.';
+                break;
+        }
+
+        $this->addFlash($noticeType, $flashMessage);
+
+        $originUrl = $request->headers->get('referer');
+        return $this->redirect($originUrl);
     }
 }
