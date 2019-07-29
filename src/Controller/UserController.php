@@ -10,11 +10,14 @@ use App\Service\MailSender;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Throwable;
 
 class UserController extends AbstractController
 {
@@ -142,7 +145,7 @@ class UserController extends AbstractController
 //    }
 
     /**
-     * @Route("/users/view", name="view-users", methods={"GET"})
+     * @Route("/users", name="view-users", methods={"GET"})
      */
     public function viewUsers()
     {
@@ -150,5 +153,41 @@ class UserController extends AbstractController
 
         $users = $this->em->getRepository(User::class)->findAll();
         return $this->render('User/view-users.html.twig', ['users' => $users]);
+    }
+
+    /**
+     * @Route("/users/{id}/delete", name="delete-user", methods={"DELETE"})
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function deleteUser(Request $request, int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $originUrl = $request->headers->get('referer');
+
+        if ($id === $this->getUser()->getId()) {
+            $this->addFlash('error', 'A user cannot delete their own account');
+            return $this->redirect($originUrl);
+        }
+
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (null === $user) {
+            $this->addFlash('error', 'The user does not exist');
+            return $this->redirect($originUrl);
+        }
+
+        try{
+            $this->em->getRepository(User::class)->delete($user);
+        } catch(Throwable $e) {
+            $this->addFlash('error', 'There was an issue deleting the user. Contact the Serve-OPG dev team.');
+            return $this->redirect($originUrl);
+        }
+
+        $this->addFlash('success', 'User successfully deleted');
+
+        return $this->redirect($originUrl);
     }
 }

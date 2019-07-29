@@ -11,6 +11,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiWebTestCase extends WebTestCase
@@ -70,6 +71,10 @@ class ApiWebTestCase extends WebTestCase
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @param array $creds
+     * @return Client
+     */
     protected function createAuthenticatedClient($creds=self::BASIC_AUTH_CREDS)
     {
         $client = ApiWebTestCase::getService('test.client');

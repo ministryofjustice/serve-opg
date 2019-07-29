@@ -18,7 +18,6 @@ class UserControllerTest extends ApiWebTestCase
     {
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
 
-        /** @var User $user */
         $user = UserTestHelper::createAdminUser('testUser@digital.justice.gov.uk');
 
         $loginDate = new DateTime('2019-07-01');
@@ -26,7 +25,6 @@ class UserControllerTest extends ApiWebTestCase
         $user->setLastLoginAt($loginDate);
         $this->persistEntity($user);
 
-        /** @var Client $client */
         $client = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
@@ -34,8 +32,7 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_GET, "/users/view");
+        $client->request(Request::METHOD_GET, "/users");
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertStringContainsString('testUser@digital.justice.gov.uk', $client->getResponse()->getContent());
@@ -47,24 +44,18 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserLoginUpdatesLastLoginAt()
     {
-        /** @var User $user */
         $user = $this->persistEntity(UserTestHelper::createAdminUser('test@digital.justice.gov.uk', 'password'));
 
         self::assertNull($user->getLastLoginAt());
 
-        /** @var Client $client */
         $client = ApiWebTestCase::getService('test.client');;
-
-        /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/login");
-
         $form = $crawler->selectButton('Sign in')->form(
             ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
         );
 
         $client->submit($form);
 
-        /** @var User $em */
         $updatedUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail('test@digital.justice.gov.uk');
 
         self::assertInstanceOf(DateTime::class, $updatedUser->getLastLoginAt());
@@ -88,8 +79,70 @@ class UserControllerTest extends ApiWebTestCase
             $client = ApiWebTestCase::getService('test.client');
             $client->setServerParameters($test['creds']);
 
-            $client->request(Request::METHOD_GET, "/users/view");
+            $client->request(Request::METHOD_GET, "/users");
             $this->assertEquals($test['expectedResponse'], $client->getResponse()->getStatusCode());
         }
+    }
+
+    public function testDeleteUser()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $user = $this->persistEntity(UserTestHelper::createUser('user@digital.justice.gov.uk'));
+        $userId = $user->getId();
+
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        self::assertNull($this->getEntityManager()->getRepository(User::class)->find($userId));
+        self::assertEquals('User successfully deleted', $this->getService('session')->getFlashBag()->get('success')[0]);
+
+    }
+
+    public function testUserCannotDeleteThemselves()
+    {
+        $adminUser = $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $userId = $adminUser->getId();
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        self::assertNotNull($this->getEntityManager()->getRepository(User::class)->find($userId));
+        self::assertEquals('A user cannot delete their own account', $this->getService('session')->getFlashBag()->get('error')[0]);
+
+    }
+
+    public function testUnknownUserIsHandled()
+    {
+        $adminUser = $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $wrongUserId = $adminUser->getId() + 10;
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+
+        $client->request(Request::METHOD_DELETE, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 }
