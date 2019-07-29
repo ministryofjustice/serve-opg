@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Throwable;
 
 class UserRepository extends EntityRepository
 {
@@ -18,6 +19,17 @@ class UserRepository extends EntityRepository
         $newToken = sha1(time(true) . $user->getId() . $user->getEmail() . rand(17, PHP_INT_MAX));
         $user->setActivationToken($newToken);
         $this->_em->flush($user);
+    }
+
+    public function delete(User $user)
+    {
+        try{
+            $this->getEntityManager()->remove($user);
+            $this->getEntityManager()->flush();
+            return $user;
+        } catch(Throwable $e) {
+            return $e;
+        }
     }
 
 }

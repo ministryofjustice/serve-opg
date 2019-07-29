@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Throwable;
 
 class UserController extends AbstractController
 {
@@ -144,7 +145,7 @@ class UserController extends AbstractController
 //    }
 
     /**
-     * @Route("/users/view", name="view-users", methods={"GET"})
+     * @Route("/users", name="view-users", methods={"GET"})
      */
     public function viewUsers()
     {
@@ -156,63 +157,37 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/delete", name="delete-user", methods={"DELETE"})
+     * @param Request $request
      * @param int $id
+     * @return RedirectResponse
      */
-    public function deleteUser(int $id)
+    public function deleteUser(Request $request, int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $originUrl = $request->headers->get('referer');
+
         if ($id === $this->getUser()->getId()) {
-            return new Response(null, Response::HTTP_CONFLICT);
+            $this->addFlash('error', 'A user cannot delete their own account');
+            return $this->redirect($originUrl);
         }
 
         $user = $this->em->getRepository(User::class)->find($id);
 
         if (null === $user) {
-            return new Response(null, Response::HTTP_NOT_FOUND);
+            $this->addFlash('error', 'The user does not exist');
+            return $this->redirect($originUrl);
         }
 
-        $this->em->remove($user);
-        $this->em->flush();
-
-        return new Response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @Route("/users/{id}/delete-refresh", name="delete-user-refresh", methods={"POST"})
-     * @param Request $request
-     * @param int $id
-     * @return RedirectResponse
-     */
-    public function deleteUserAndRefresh(Request $request, int $id)
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        $deleteResponse = $this->deleteUser($id);
-
-        $noticeType = 'success';
-        $flashMessage = 'User successfully deleted';
-
-        switch ($deleteResponse->getStatusCode()) {
-            case Response::HTTP_NO_CONTENT:
-                break;
-            case Response::HTTP_CONFLICT:
-                $noticeType = 'error';
-                $flashMessage = 'A user cannot delete their own account';
-                break;
-            case Response::HTTP_NOT_FOUND:
-                $noticeType = 'error';
-                $flashMessage = 'The user does not exist';
-                break;
-            default:
-                $noticeType = 'error';
-                $flashMessage = 'There was an issue deleting the user. Contact the Serve-OPG dev team.';
-                break;
+        try{
+            $this->em->getRepository(User::class)->delete($user);
+        } catch(Throwable $e) {
+            $this->addFlash('error', 'There was an issue deleting the user. Contact the Serve-OPG dev team.');
+            return $this->redirect($originUrl);
         }
 
-        $this->addFlash($noticeType, $flashMessage);
+        $this->addFlash('success', 'User successfully deleted');
 
-        $originUrl = $request->headers->get('referer');
         return $this->redirect($originUrl);
     }
 }

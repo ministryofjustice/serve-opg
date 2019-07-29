@@ -97,8 +97,8 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete");
-        self::assertEquals(Response::HTTP_NO_CONTENT, $client->getResponse()->getStatusCode());
+        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users/view']);
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNull($this->getEntityManager()->getRepository(User::class)->find($userId));
     }
 
@@ -115,8 +115,8 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete");
-        self::assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
+        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users/view']);
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNotNull($this->getEntityManager()->getRepository(User::class)->find($userId));
     }
 
@@ -133,7 +133,7 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $client->request(Request::METHOD_DELETE, "/users/${wrongUserId}/delete");
-        self::assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        $client->request(Request::METHOD_DELETE, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users/view']);
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
     }
 }
