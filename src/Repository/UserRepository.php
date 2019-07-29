@@ -21,12 +21,15 @@ class UserRepository extends EntityRepository
         $this->_em->flush($user);
     }
 
+    /**
+     * @param User $user
+     * @return void|Throwable
+     */
     public function delete(User $user)
     {
         try{
             $this->getEntityManager()->remove($user);
             $this->getEntityManager()->flush();
-            return $user;
         } catch(Throwable $e) {
             return $e;
         }
