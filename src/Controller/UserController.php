@@ -184,7 +184,7 @@ class UserController extends AbstractController
      * @param int $id
      * @return RedirectResponse
      */
-    public function deleteUserAndRefreshUsers(Request $request, int $id)
+    public function deleteUserAndRefresh(Request $request, int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
