@@ -98,8 +98,11 @@ class UserControllerTest extends ApiWebTestCase
         );
 
         $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNull($this->getEntityManager()->getRepository(User::class)->find($userId));
+        self::assertEquals('User successfully deleted', $this->getService('session')->getFlashBag()->get('success')[0]);
+
     }
 
     public function testUserCannotDeleteThemselves()
@@ -116,8 +119,11 @@ class UserControllerTest extends ApiWebTestCase
         );
 
         $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNotNull($this->getEntityManager()->getRepository(User::class)->find($userId));
+        self::assertEquals('A user cannot delete their own account', $this->getService('session')->getFlashBag()->get('error')[0]);
+
     }
 
     public function testUnknownUserIsHandled()
@@ -133,7 +139,10 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
+
         $client->request(Request::METHOD_DELETE, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 }
