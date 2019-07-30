@@ -385,6 +385,9 @@
     "symfony/cache": {
         "version": "v4.2.9"
     },
+    "symfony/cache-contracts": {
+        "version": "v1.1.5"
+    },
     "symfony/config": {
         "version": "v4.2.9"
     },
@@ -437,6 +440,9 @@
     "symfony/event-dispatcher": {
         "version": "v4.2.9"
     },
+    "symfony/event-dispatcher-contracts": {
+        "version": "v1.1.5"
+    },
     "symfony/expression-language": {
         "version": "v4.2.9"
     },
@@ -480,9 +486,6 @@
             "src/Kernel.php"
         ]
     },
-    "symfony/http-client": {
-        "version": "v4.3.1"
-    },
     "symfony/http-foundation": {
         "version": "v4.2.9"
     },
@@ -494,6 +497,9 @@
     },
     "symfony/intl": {
         "version": "v4.2.9"
+    },
+    "symfony/mime": {
+        "version": "v4.3.3"
     },
     "symfony/monolog-bridge": {
         "version": "v4.2.9"
@@ -514,9 +520,6 @@
     },
     "symfony/options-resolver": {
         "version": "v4.2.9"
-    },
-    "symfony/panther": {
-        "version": "v0.4.1"
     },
     "symfony/phpunit-bridge": {
         "version": "4.1",
@@ -606,6 +609,9 @@
     "symfony/serializer-pack": {
         "version": "v1.0.2"
     },
+    "symfony/service-contracts": {
+        "version": "v1.1.5"
+    },
     "symfony/stopwatch": {
         "version": "v4.2.9"
     },
@@ -641,6 +647,9 @@
             "config/packages/translation.yaml",
             "translations/.gitignore"
         ]
+    },
+    "symfony/translation-contracts": {
+        "version": "v1.1.5"
     },
     "symfony/twig-bridge": {
         "version": "v4.2.9"
