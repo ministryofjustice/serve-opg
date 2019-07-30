@@ -7,8 +7,6 @@ framework:
         enabled: true
         enable_annotations: true
         email_validation_mode: strict
-    templating:
-        engines: ['twig']
     default_locale:  "en"
     session:
         name: serve-opg
