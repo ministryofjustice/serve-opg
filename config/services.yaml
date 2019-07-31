@@ -89,17 +89,8 @@ services:
     App\Service\SiriusClient:
         class: App\Service\SiriusClient
         arguments:
-            $args: [
-                base_uri: "%env(DC_SIRIUS_URL)%",
-                cookies: true,
-                verify: 0,
-                proxy: "",
-                debug: "false",
-                version: "1.1",
-                timeout: 10,
-                allow_redirects: "true"]
-            $headers: [
-                Content-Type: multipart-form-data]
+          $args: { base_uri: "%env(DC_SIRIUS_URL)%", cookies: true, verify: 0, proxy: "", debug: "false", , version: "1.1", timeout: 10, allow_redirects: true }
+          $headers: { Content-Type: multipart-form-data }
 
     # twig extensions
     App\Twig\AssetsExtension:
