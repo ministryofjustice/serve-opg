@@ -76,6 +76,11 @@
                                     <li class="govuk-header__navigation-item {{ currentRoute =='report' ? 'govuk-header__navigation-item--active' : '' }}">
                                         <a class="govuk-header__link" href="{{ path('report') }}">Report</a>
                                     </li>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <li class="govuk-header__navigation-item {{ currentRoute =='view-users' ? 'govuk-header__navigation-item--active' : '' }}">
+                                            <a class="govuk-header__link" href="{{ path('view-users') }}">User Management</a>
+                                        </li>
+                                    {% endif %}
                                     <li class="govuk-header__navigation-item">
                                         <a class="govuk-header__link" href="/logout">Sign out</a>
                                     </li>
