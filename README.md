@@ -41,10 +41,6 @@ docker-compose run --rm yarn
 # Compile static assets
 docker-compose run --rm yarn build-dev
 
-OR
-
-docker-compose run --rm yarn watch (to autocompile on any file changes in assets folder)
-
 # Build app
 docker-compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
@@ -91,7 +87,7 @@ Note - this will also enable xdebug which can make the test suite run slowly. If
 # Testing
 Serve OPG uses PHPUnit and Behat to test the application
 
-## Unit Testing
+## Unit and Functional Testing
 Run php unit
 ```bash
 docker-compose run --rm app bin/phpunit --verbose tests
@@ -186,12 +182,14 @@ Alternatively you can run individual tests by hitting the debug button next to t
 
 # Front end assets
 
+Assets are compiled using Symfony Encore run via a yarn command.
+
 ```bash
-# Gulp tasks
-# Bash into the npm container
-docker-compose run npm bash
-# Then run any gulp tasks from there, ie:
-gulp watch
+# Build front end assets (JS, images, etc)
+docker-compose run --rm yarn build-dev
+
+# Build front end assets (JS, images, etc) and autocompile on any file changes in assets folder
+docker-compose run --rm yarn watch
 ```
 
 # Database Migrations
