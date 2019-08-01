@@ -182,7 +182,7 @@ Alternatively you can run individual tests by hitting the debug button next to t
 
 # Front end assets
 
-Assets are compiled using Symfony Encore run via a yarn command.
+Assets are compiled using Symfony Webpack Encore run via a yarn command.
 
 ```bash
 # Build front end assets (JS, images, etc)
