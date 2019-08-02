@@ -47,10 +47,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
         if ($this->fixturesEnabled) {
             $this->fixtureHelper->loadUserFixture('adminUsers.yaml');
             $this->fixtureHelper->loadUserFixture('testUsers.yaml');
-
             $this->fixtureHelper->loadCaseFixture('cases.yaml');
-
-            $manager->flush();
         }
     }
 }
