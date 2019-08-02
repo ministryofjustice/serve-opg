@@ -38,14 +38,14 @@ class FixtureTestHelper
         $this->em = $em;
     }
 
-    protected function parseFixtureYaml(string $yamlFileName)
+    protected function parseYamlFixture(string $yamlFileName)
     {
         return Yaml::parse(file_get_contents($this->yamlFixtureLocation . $yamlFileName));
     }
 
     public function loadUserFixture(string $yamlFileName)
     {
-        $users = $this->parseFixtureYaml($yamlFileName);
+        $users = $this->parseYamlFixture($yamlFileName);
 
         foreach ($users as $key => $user) {
             $userModel = new User($user['email']);
@@ -59,7 +59,7 @@ class FixtureTestHelper
 
     public function loadCaseFixture(string $yamlFileName)
     {
-        $cases = $this->parseFixtureYaml($yamlFileName);
+        $cases = $this->parseYamlFixture($yamlFileName);
 
         foreach ($cases as $case) {
             $client = new Client($case['number'], $case['name'], new DateTime());
