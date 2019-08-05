@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master)
 
-Symfony 4.2 & PHP 7.2
+Symfony 4.3 & PHP 7.2
 
 # Prerequisites
 Software to download and install
@@ -14,9 +14,6 @@ Software to download and install
 ## Build
 Launch all the following commands from the project directory
 ```bash
-
-git config core.autocrlf true
-
 # Generate self-signed certificate for the local loadbalancer
 ./generate_certs.sh
 
@@ -44,10 +41,6 @@ docker-compose run --rm yarn
 # Compile static assets
 docker-compose run --rm yarn build-dev
 
-OR
-
-docker-compose run --rm yarn watch (to autocompile on any file changes in assets folder)
-
 # Build app
 docker-compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
@@ -57,6 +50,23 @@ docker-compose up -d --build --remove-orphans loadbalancer
 # See docker-compose.yml app container, DC_FIXURES_USERS variable
 docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 ```
+
+Alternatively use the `Makefile` commands if you're in a hurry:
+
+`make build-up-prod` - Build dependencies and spin up the project in prod mode. Purges database and loads fixtures.
+
+`make build-up-dev` - Build dependencies and spin up the project in dev mode, profiler and xdebug enabled. Purges database and loads fixtures.
+
+`make build-up-test` - Build dependencies and spin up the project in test mode, profiler and xdebug disabled. Purges database and loads fixtures.
+
+`make up-prod` - Brings the app up in prod mode - requires deps to be built
+
+`make up-dev` - Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
+
+`make up-test` - Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
+
+`make build-deps` - Builds the project dependencies and services
+
 
 # View logs
 ```bash
@@ -77,7 +87,7 @@ Note - this will also enable xdebug which can make the test suite run slowly. If
 # Testing
 Serve OPG uses PHPUnit and Behat to test the application
 
-## Unit Testing
+## Unit and Functional Testing
 Run php unit
 ```bash
 docker-compose run --rm app bin/phpunit --verbose tests
@@ -105,6 +115,10 @@ public function testSomething()
 docker-compose run --rm app bin/phpunit --verbose tests --group failing
 ```
 
+Or using the Makefile:
+
+`make phpunit-tests` - Runs the full suite of PHPUnit functional and unit tests - requires the app to be built and up before running
+
 ## Integration Testing
 ```bash
 # Load Fixtures
@@ -118,8 +132,11 @@ docker-compose run --rm behat --suite=local
 
 # Launch specific behat feature
 docker-compose run --rm behat features/00-security.feature:18
-
 ```
+
+Or using the Makefile:
+
+`make behat-tests` - Runs behat tests - requires the app to be built and up before running
 
 ### Notify mocking
 Notify is mocked via a custom script.
@@ -155,18 +172,24 @@ As Xdebug has a large performance hit, it is not installed as part of the Docker
 
 `docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
 
+or
+
+`make up-dev`
+
 Now you can add break points to any line of code by clicking in the gutter next to line numbers. Then you can either run the entire test suite by selecting `DOCKER` from the dropdown next to the test buttons in the top right of the page and click the phone icon so it turns green. Hit the debug button to run the suite.
 
 Alternatively you can run individual tests by hitting the debug button next to the test method name in the test class. Once the code gets to a break point you can step through and run executions on the current state of the app to help with debugging.
 
 # Front end assets
 
+Assets are compiled using Symfony Webpack Encore run via a yarn command.
+
 ```bash
-# Gulp tasks
-# Bash into the npm container
-docker-compose run npm bash
-# Then run any gulp tasks from there, ie:
-gulp watch
+# Build front end assets (JS, images, etc)
+docker-compose run --rm yarn build-dev
+
+# Build front end assets (JS, images, etc) and autocompile on any file changes in assets folder
+docker-compose run --rm yarn watch
 ```
 
 # Database Migrations
