@@ -4,6 +4,7 @@
 namespace App\Tests;
 
 use App\Entity\OrderHw;
+use App\Entity\User;
 use App\Tests\Helpers\OrderTestHelper;
 use App\Tests\Helpers\UserTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
