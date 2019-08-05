@@ -70,6 +70,8 @@
         width: 90px;
         height: 90px;
         margin-bottom: $govuk-gutter / 2;
+        transform: rotate(180deg);
+        transform-origin: 50% 50%;
 
         @include govuk-media-query($from: tablet) {
             margin-bottom: 0;
