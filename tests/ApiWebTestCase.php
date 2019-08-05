@@ -3,9 +3,7 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\BehatFixtures;
 use App\Entity\OrderHw;
-use App\Entity\User;
 use App\Tests\Helpers\OrderTestHelper;
 use App\Tests\Helpers\UserTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -14,7 +12,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class ApiWebTestCase extends WebTestCase
 {
