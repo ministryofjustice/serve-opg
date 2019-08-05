@@ -4,8 +4,8 @@ namespace App\Tests\Entity;
 
 use App\Entity\Document;
 use App\Entity\OrderPf;
-use App\Tests\Helpers\FileTestHelper;
-use App\Tests\Helpers\OrderTestHelper;
+use App\TestHelpers\FileTestHelper;
+use App\TestHelpers\OrderTestHelper;
 use PHPUnit\Framework\TestCase;
 
 class DocumentTest extends TestCase
