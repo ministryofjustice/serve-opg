@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace App\Tests\Helpers;
+namespace App\TestHelpers;
 
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;

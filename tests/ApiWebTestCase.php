@@ -4,8 +4,8 @@
 namespace App\Tests;
 
 use App\Entity\OrderHw;
-use App\Tests\Helpers\OrderTestHelper;
-use App\Tests\Helpers\UserTestHelper;
+use App\TestHelpers\OrderTestHelper;
+use App\TestHelpers\UserTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;

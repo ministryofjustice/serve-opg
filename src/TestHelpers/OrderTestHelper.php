@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\Helpers;
+namespace App\TestHelpers;
 
 use App\Entity\Client;
 use App\Entity\OrderHw;

@@ -3,8 +3,8 @@
 namespace App\Tests\Migrations;
 
 use App\Tests\ApiWebTestCase;
-use App\Tests\Helpers\CommandTestHelper;
-use App\Tests\Helpers\FixtureTestHelper;
+use App\TestHelpers\CommandTestHelper;
+use App\TestHelpers\FixtureTestHelper;
 
 class Version20190801154433Test extends ApiWebTestCase
 {
@@ -21,7 +21,7 @@ class Version20190801154433Test extends ApiWebTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->fixtureHelper = $this->getService('App\Tests\Helpers\FixtureTestHelper');
+        $this->fixtureHelper = $this->getService('App\TestHelpers\FixtureTestHelper');
         $this->client = $this->createClient();
         $this->client->followRedirects();
     }

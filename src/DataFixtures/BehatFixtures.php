@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 
-use App\Tests\Helpers\FixtureTestHelper;
+use App\TestHelpers\FixtureTestHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\Persistence\ObjectManager;

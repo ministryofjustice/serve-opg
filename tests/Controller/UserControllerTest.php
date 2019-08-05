@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Tests\ApiWebTestCase;
-use App\Tests\Helpers\UserTestHelper;
+use App\TestHelpers\UserTestHelper;
 use DateTime;
 use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Bundle\FrameworkBundle\Client;
