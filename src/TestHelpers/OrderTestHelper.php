@@ -34,4 +34,22 @@ class OrderTestHelper
 
         return $order;
     }
+
+    static public function generateOrders(int $numberOfOrders, bool $setAsServed)
+    {
+        $orders = [];
+        $lastOrderNumber = 99900000 + $numberOfOrders;
+
+        for ($i = 99900000; $i < $lastOrderNumber; $i++) {
+            $order = self::generateOrder('2019-01-01', '2019-01-01', (string) $i, 'HW');
+
+            if ($setAsServed) {
+                $order->setServedAt(new DateTime());
+            }
+
+            $orders[] = $order;
+        }
+
+        return $orders;
+    }
 }

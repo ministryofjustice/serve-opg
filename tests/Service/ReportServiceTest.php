@@ -7,13 +7,15 @@ use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Repository\OrderRepository;
 use App\Service\ReportService;
+use App\TestHelpers\FileTestHelper;
+use App\TestHelpers\OrderTestHelper;
+use App\Tests\ApiWebTestCase;
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class ReportServiceTest extends TestCase
+class ReportServiceTest extends ApiWebTestCase
 {
 
     public function testGenerateCsv()
@@ -61,5 +63,28 @@ CSV;
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
 
         self::assertEquals($expectedCsv, $actualCsvString);
+    }
+
+    /**
+     * Includes regression test for ensuring 1000 report limit bug is not re-introduced
+     */
+    public function testCsvLengthEqualsNumberOfCases()
+    {
+        $em = self::getEntityManager();
+
+        $orders = OrderTestHelper::generateOrders(1001, true);
+
+        foreach ($orders as $order) {
+            $em->persist($order);
+        }
+
+        $em->flush();
+
+        $sut = new ReportService($em);
+        $csv = $sut->generateCsv();
+
+        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
+
+        self::assertEquals(1001, $csvRows);
     }
 }

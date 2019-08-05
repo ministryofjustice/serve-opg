@@ -24,4 +24,10 @@ class FileTestHelper extends WebTestCase
 
         return new UploadedFile($location, $originalName, $mimeType, null);
     }
+
+    static public function countCsvRows(string $fileLocation, bool $excludeHeaderRow)
+    {
+        $csvRows = file($fileLocation);
+        return $excludeHeaderRow ? count($csvRows) - 1 : count($csvRows);
+    }
 }
