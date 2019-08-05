@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Order;
 use App\Tests\ApiWebTestCase;
-use App\Tests\Helpers\FileTestHelper;
+use App\TestHelpers\FileTestHelper;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;

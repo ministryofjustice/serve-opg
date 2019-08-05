@@ -5,7 +5,7 @@ namespace App\Tests\Entity;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Tests\ApiWebTestCase;
-use App\Tests\Helpers\UserTestHelper;
+use App\TestHelpers\UserTestHelper;
 use DateTime;
 
 class UserTest extends ApiWebTestCase
