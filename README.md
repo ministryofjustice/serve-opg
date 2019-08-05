@@ -57,7 +57,7 @@ Alternatively use the `Makefile` commands if you're in a hurry:
 
 `make build-up-dev` - Build dependencies and spin up the project in dev mode, profiler and xdebug enabled. Purges database and loads fixtures.
 
-`make build-up-dev` - Build dependencies and spin up the project in dev mode, profiler and xdebug disabled. Purges database and loads fixtures.
+`make build-up-test` - Build dependencies and spin up the project in test mode, profiler and xdebug disabled. Purges database and loads fixtures.
 
 `make up-prod` - Brings the app up in prod mode - requires deps to be built
 
