@@ -72,19 +72,27 @@ CSV;
     {
         $em = self::getEntityManager();
 
-        $orders = OrderTestHelper::generateOrders(1001, true);
+        $orders = OrderTestHelper::generateOrders(10000, true);
 
-        foreach ($orders as $order) {
+        $batchSize = 500;
+
+        foreach ($orders as $i => $order) {
             $em->persist($order);
+
+            if (($i % $batchSize) === 0) {
+                $em->flush();
+                $em->clear(); // Detaches all objects from Doctrine!
+            }
         }
 
         $em->flush();
+        $em->clear();
 
         $sut = new ReportService($em);
         $csv = $sut->generateCsv();
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
-        self::assertEquals(1001, $csvRows);
+        self::assertEquals(10000, $csvRows);
     }
 }
