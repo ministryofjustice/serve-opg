@@ -1,23 +1,14 @@
 # DOCKER TASKS
 
 build-up-prod: build-deps up-prod ## Build dependencies and spin up the project in prod mode. Purges database and loads fixtures.
-	# Wait for migrations to finish
-	sleep 2s
-
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 
 build-up-dev: build-deps up-dev ## Build dependencies and spin up the project in dev mode, profiler and xdebug enabled. Purges database and loading fixtures.
-	# Wait for migrations to finish
-	sleep 2s
-
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 
 build-up-test: build-deps up-test ## Build dependencies and spin up the project in test mode, profiler and xdebug disabled. Purges database and and fixtures.
-	# Wait for migrations to finish
-	sleep 2s
-
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 
