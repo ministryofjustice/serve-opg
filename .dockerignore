@@ -1,4 +1,5 @@
 *
+
 !/bin/
 !/config/
 !/docker/
@@ -10,4 +11,5 @@
 !/composer.*
 !/symfony.lock
 !/vendor/
-!/tests/
+!/phpunit.xml.dist
+!/tests
