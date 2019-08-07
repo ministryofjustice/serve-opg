@@ -67,19 +67,6 @@ class OrderTestHelper
     }
 
     /**
-     * @param []Order $orders
-     * @return []Order
-     */
-    protected static function sortOrdersByIssuedAtAscending(array $orders): array
-    {
-        usort($orders, function($a, $b) {
-            strtotime($a->getIssuedAt()->format('Y-m-d')) - strtotime($b->getIssuedAt()->format('Y-m-d'));
-        });
-
-        return $orders;
-    }
-
-    /**
      * @param array $orders, array or Order objects
      * @param string $datePropertyName , issuedAt|servedAt
      * @return array []Order
