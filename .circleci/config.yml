@@ -64,7 +64,7 @@ jobs:
           name: Integration Test
           command: |
             docker-compose run --rm app php bin/console doctrine:fixtures:load --group=behatTests --purge-with-truncate --no-interaction
-            docker-compose run -f docker-compose.test.yml -f docker-compose.yml --rm behat --suite=local
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
       - store_test_results:
           path: ./tests/artifacts
       - store_artifacts:
