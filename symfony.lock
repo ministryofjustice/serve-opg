@@ -38,22 +38,6 @@
     "behat/mink-goutte-driver": {
         "version": "v1.2.1"
     },
-    "behat/symfony2-extension": {
-        "version": "2.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.1",
-            "ref": "158be9d4b4c2127d9ec741c97e3cb1b6610b5294"
-        },
-        "files": [
-            "behat.yml.dist",
-            "config/bootstrap.php",
-            "features/bootstrap/FeatureContext.php",
-            "features/bootstrap/bootstrap.php",
-            "features/demo.feature"
-        ]
-    },
     "behat/transliterator": {
         "version": "v1.2.0"
     },
@@ -168,6 +152,21 @@
     },
     "firebase/php-jwt": {
         "version": "v3.0.0"
+    },
+    "friends-of-behat/symfony-extension": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "3d21344765fd3440a85bdd27d4cada186ec628bd"
+        },
+        "files": [
+            "behat.yml.dist",
+            "config/services_test.yaml",
+            "features/demo.feature",
+            "tests/Behat/DemoContext.php"
+        ]
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
@@ -560,6 +559,9 @@
     },
     "symfony/property-info": {
         "version": "v4.2.9"
+    },
+    "symfony/proxy-manager-bridge": {
+        "version": "v4.3.3"
     },
     "symfony/routing": {
         "version": "4.2",

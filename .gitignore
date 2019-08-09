@@ -6,10 +6,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> behat/symfony2-extension ###
-behat.yml
-###< behat/symfony2-extension ###
 .idea
 **/public/assets
 */bin/jp.php
@@ -48,3 +44,7 @@ yarn-error.log
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> friends-of-behat/symfony-extension ###
+/behat.yml
+###< friends-of-behat/symfony-extension ###
