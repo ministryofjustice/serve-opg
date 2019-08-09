@@ -1,8 +1,5 @@
 default:
-    autoload:
-        '': "%paths.base%/bootstrap"
     suites:
-
         main:
             description: End to end journey
             paths:    [ "%paths.base%/features" ]

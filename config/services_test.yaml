@@ -3,6 +3,9 @@ services:
         autowire: true
         autoconfigure: true
 
+    App\Behat\:
+        resource: '../src/Behat/*'
+
     alphagov.notifications.client:
         class: Alphagov\Notifications\Client
         arguments:

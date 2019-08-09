@@ -2,12 +2,13 @@
 
 namespace App\Behat;
 
+use Behat\Behat\Context\Context;
 use Behat\MinkExtension\Context\MinkContext;
 
 /**
  * Behat context class.
  */
-class FeatureContext extends MinkContext
+class FeatureContext extends MinkContext implements Context
 {
     use RegionLinksTrait;
     use FormTrait;
