@@ -85,7 +85,7 @@ class BaseFunctionalTestCase extends PantherTestCase
     protected function createAuthenticatedSymfonyClient($creds=self::BASIC_AUTH_CREDS)
     {
         $client = static::createClient();
-        $client->setServerParameters(self::BASIC_AUTH_CREDS);
+        $client->setServerParameters($creds);
         return $client;
     }
 
