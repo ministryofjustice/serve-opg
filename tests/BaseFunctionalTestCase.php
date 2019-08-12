@@ -5,7 +5,7 @@ namespace App\Tests;
 
 use App\Entity\User;
 use App\Service\TimeService;
-use App\Tests\Helpers\OrderTestHelper;
+use App\TestHelpers\OrderTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Facebook\WebDriver\Remote\LocalFileDetector;
