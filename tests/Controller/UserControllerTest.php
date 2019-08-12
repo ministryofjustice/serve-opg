@@ -1,18 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 use App\TestHelpers\UserTestHelper;
 use DateTime;
-use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserControllerTest extends ApiWebTestCase
+class UserControllerTest extends BaseFunctionalTestCase
 {
     public function testListUsers()
     {
@@ -25,7 +23,7 @@ class UserControllerTest extends ApiWebTestCase
         $user->setLastLoginAt($loginDate);
         $this->persistEntity($user);
 
-        $client = $this->createAuthenticatedClient(
+        $client = $this->createAuthenticatedSymfonyClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => 'Abcd1234'
@@ -48,7 +46,7 @@ class UserControllerTest extends ApiWebTestCase
 
         self::assertNull($user->getLastLoginAt());
 
-        $client = ApiWebTestCase::getService('test.client');;
+        $client = BaseFunctionalTestCase::getService('test.client');;
         $crawler = $client->request(Request::METHOD_GET, "/login");
         $form = $crawler->selectButton('Sign in')->form(
             ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
@@ -76,7 +74,7 @@ class UserControllerTest extends ApiWebTestCase
         ];
 
         foreach ($tests as $test) {
-            $client = ApiWebTestCase::getService('test.client');
+            $client = BaseFunctionalTestCase::getService('test.client');
             $client->setServerParameters($test['creds']);
 
             $client->request(Request::METHOD_GET, "/users");
@@ -90,7 +88,7 @@ class UserControllerTest extends ApiWebTestCase
         $user = $this->persistEntity(UserTestHelper::createUser('user@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
+        $client = $this->createAuthenticatedSymfonyClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => 'Abcd1234'
@@ -111,7 +109,7 @@ class UserControllerTest extends ApiWebTestCase
         $userId = $adminUser->getId();
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
+        $client = $this->createAuthenticatedSymfonyClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => 'Abcd1234'
@@ -132,7 +130,7 @@ class UserControllerTest extends ApiWebTestCase
         $wrongUserId = $adminUser->getId() + 10;
 
         /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
+        $client = $this->createAuthenticatedSymfonyClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => 'Abcd1234'

@@ -3,9 +3,10 @@
 
 namespace App\Tests;
 
-use App\Entity\User;
+use App\Entity\OrderHw;
 use App\Service\TimeService;
 use App\TestHelpers\OrderTestHelper;
+use App\TestHelpers\UserTestHelper;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Facebook\WebDriver\Remote\LocalFileDetector;
@@ -81,7 +82,7 @@ class BaseFunctionalTestCase extends PantherTestCase
         return $order;
     }
 
-    protected function createAuthenticatedSymfonyClient()
+    protected function createAuthenticatedSymfonyClient($creds=self::BASIC_AUTH_CREDS)
     {
         $client = static::createClient();
         $client->setServerParameters(self::BASIC_AUTH_CREDS);
@@ -114,11 +115,27 @@ class BaseFunctionalTestCase extends PantherTestCase
 
     protected function createTestUser(string $email, string $password)
     {
-        $userModel = new User($email);
-        $encodedPassword = $this->getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
-        $userModel->setPassword($encodedPassword);
-        $this->getEntityManager()->persist($userModel);
+        $user = UserTestHelper::createUser($email, $password);
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param string $orderType
+     * @return OrderHw
+     * @throws \Exception
+     */
+    protected function createOrder(string $orderType)
+    {
+        $order = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', $orderType);
+        return $this->persistEntity($order);
+    }
+
+    protected function persistEntity(object $entity)
+    {
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+        return $entity;
     }
 
     protected function timeTravel(string $dateTime)
