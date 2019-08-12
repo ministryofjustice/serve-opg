@@ -22,7 +22,7 @@ up-prod: ## Brings the app up in prod mode - requires deps to be built
 	docker-compose up -d --remove-orphans loadbalancer
 
 up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
-	docker-compose build app
+	docker-compose -f docker-compose.local.yml -f docker-compose.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
@@ -31,7 +31,7 @@ up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requ
 	docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
 
 up-test: ## Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
-	docker-compose build app
+	docker-compose -f docker-compose.test.yml -f docker-compose.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
@@ -45,7 +45,7 @@ phpunit-tests: ## Requires the app to be built and up before running
 behat-tests: ## Requires the app to be built and up before running
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
-	docker-compose run --rm behat --suite=local
+	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
 
 build-deps: ## Runs through all steps required before the app can be brought up
 	# Create the s3 buckets, generate localstack data in /localstack-data

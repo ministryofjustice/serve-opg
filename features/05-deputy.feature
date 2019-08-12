@@ -1,7 +1,8 @@
 Feature: deputy
 
   Scenario: HW: add invalid deputy data
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    When I go to "/case"
     When I follow "order-93559316-HW"
     Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
@@ -29,7 +30,8 @@ Feature: deputy
       | deputy_form_surname          |
 
   Scenario: HW order: add valid deputy data
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    When I go to "/case"
     When I follow "order-93559316-HW"
     When I follow "add-deputy"
       # check form validation
@@ -60,7 +62,8 @@ Feature: deputy
     And the order should be unservable
 
   Scenario: HW order: edit deputy data
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    When I go to "/case"
     When I follow "order-93559316-HW"
     Then I follow "edit-deputy-1"
   # check form validation
@@ -92,7 +95,8 @@ Feature: deputy
 
 
   Scenario: HW order: remove deputy
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    When I go to "/case"
     When I follow "order-93559316-HW"
     Then I follow "add-deputy"
     When I fill in the following:
@@ -127,7 +131,8 @@ Feature: deputy
 
 
   Scenario: PF order: add one deputy (just type, first and lastname)
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    When I go to "/case"
     When I follow "order-93559316-PF"
     When I follow "add-deputy"
       # check form validation
@@ -141,7 +146,8 @@ Feature: deputy
     And the order should be unservable
 
   Scenario: HW order: add one deputy (just type, first and lastname)
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    When I go to "/case"
     When I follow "order-93559316-HW"
     When I follow "add-deputy"
   # check form validation

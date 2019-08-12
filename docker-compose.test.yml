@@ -11,3 +11,4 @@ services:
       AWS_ACCESS_KEY_ID: 'foo'
       AWS_SECRET_ACCESS_KEY: 'bar'
       SYMFONY_DEPRECATIONS_HELPER: 100
+      APP_SECRET: 'aFakeSecret'
