@@ -4,12 +4,12 @@ namespace App\Tests\Controller;
 
 use App\Controller\CaseController;
 use App\TestHelpers\OrderTestHelper;
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Request;
 
-class CaseControllerTest extends ApiWebTestCase
+class CaseControllerTest extends BaseFunctionalTestCase
 {
     public function testOrdersToBeServedShowsOldestFiftyOrders()
     {
@@ -25,7 +25,7 @@ class CaseControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var KernelBrowser $client */
-        $client = ApiWebTestCase::getService('test.client');
+        $client = BaseFunctionalTestCase::getService('test.client');
         $crawler = $client->request(Request::METHOD_GET, '/case', [], [], self::BASIC_AUTH_CREDS);
 
         $tableBody = $crawler->filter('table.govuk-table tbody');
@@ -50,7 +50,7 @@ class CaseControllerTest extends ApiWebTestCase
         $em->flush();
 
         /** @var KernelBrowser $client */
-        $client = ApiWebTestCase::getService('test.client');
+        $client = BaseFunctionalTestCase::getService('test.client');
         $crawler = $client->request(Request::METHOD_GET, '/case?type=served', [], [], self::BASIC_AUTH_CREDS);
 
         $tableBody = $crawler->filter('table.govuk-table tbody');

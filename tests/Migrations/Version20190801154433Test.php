@@ -2,11 +2,11 @@
 
 namespace App\Tests\Migrations;
 
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 use App\TestHelpers\CommandTestHelper;
 use App\TestHelpers\FixtureTestHelper;
 
-class Version20190801154433Test extends ApiWebTestCase
+class Version20190801154433Test extends BaseFunctionalTestCase
 {
     /**
      * @var FixtureTestHelper

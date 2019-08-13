@@ -33,7 +33,7 @@ class BaseFunctionalTestCase extends PantherTestCase
         self::bootKernel();
         self::purgeDatabase();
         self::createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
-        $this->projectDir = $this->getService('kernel')->getProjectDir();
+        $this->projectDir = self::getService('kernel')->getProjectDir();
     }
 
     /**
@@ -46,11 +46,11 @@ class BaseFunctionalTestCase extends PantherTestCase
 
     protected function purgeDatabase()
     {
-        $purger = new ORMPurger($this->getService('doctrine')->getManager());
+        $purger = new ORMPurger(self::getService('doctrine')->getManager());
         $purger->purge();
     }
 
-    protected function getService($id)
+    protected static function getService($id)
     {
         return self::$container->get($id);
     }
@@ -60,7 +60,7 @@ class BaseFunctionalTestCase extends PantherTestCase
      */
     protected function getEntityManager()
     {
-        return $this->getService('doctrine.orm.entity_manager');
+        return self::getService('doctrine.orm.entity_manager');
     }
 
     /**

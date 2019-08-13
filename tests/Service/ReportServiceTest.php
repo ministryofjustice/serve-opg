@@ -9,13 +9,13 @@ use App\Repository\OrderRepository;
 use App\Service\ReportService;
 use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class ReportServiceTest extends ApiWebTestCase
+class ReportServiceTest extends BaseFunctionalTestCase
 {
 
     public function testGenerateCsv()

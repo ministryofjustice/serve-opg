@@ -4,11 +4,11 @@ namespace App\Tests\Entity;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 use App\TestHelpers\UserTestHelper;
 use DateTime;
 
-class UserTest extends ApiWebTestCase
+class UserTest extends BaseFunctionalTestCase
 {
     /**
      * {@inheritDoc}
@@ -23,8 +23,8 @@ class UserTest extends ApiWebTestCase
         $user = UserTestHelper::createUser('atest@user.com');
         self::assertNull($user->getCreatedAt());
 
-        ApiWebTestCase::getService('doctrine')->getManager()->persist($user);
-        ApiWebTestCase::getService('doctrine')->getManager()->flush();
+        BaseFunctionalTestCase::getService('doctrine')->getManager()->persist($user);
+        BaseFunctionalTestCase::getService('doctrine')->getManager()->flush();
 
         self::assertInstanceOf(DateTime::class, $user->getCreatedAt());
     }

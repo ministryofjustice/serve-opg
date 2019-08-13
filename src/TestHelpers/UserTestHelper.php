@@ -4,15 +4,15 @@
 namespace App\TestHelpers;
 
 use App\Entity\User;
-use App\Tests\ApiWebTestCase;
+use App\Tests\BaseFunctionalTestCase;
 
-class UserTestHelper extends ApiWebTestCase
+class UserTestHelper extends BaseFunctionalTestCase
 {
 
     static public function createUser(string $email, string $password='Abcd1234')
     {
         $userModel = new User($email);
-        $encodedPassword = ApiWebTestCase::getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
+        $encodedPassword = BaseFunctionalTestCase::getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
         $userModel->setPassword($encodedPassword);
         return $userModel;
     }

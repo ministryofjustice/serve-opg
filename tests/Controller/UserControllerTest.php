@@ -99,7 +99,7 @@ class UserControllerTest extends BaseFunctionalTestCase
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNull($this->getEntityManager()->getRepository(User::class)->find($userId));
-        self::assertEquals('User successfully deleted', $this->getService('session')->getFlashBag()->get('success')[0]);
+        self::assertEquals('User successfully deleted', BaseFunctionalTestCase::getService('session')->getFlashBag()->get('success')[0]);
 
     }
 
@@ -120,7 +120,7 @@ class UserControllerTest extends BaseFunctionalTestCase
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNotNull($this->getEntityManager()->getRepository(User::class)->find($userId));
-        self::assertEquals('A user cannot delete their own account', $this->getService('session')->getFlashBag()->get('error')[0]);
+        self::assertEquals('A user cannot delete their own account', BaseFunctionalTestCase::getService('session')->getFlashBag()->get('error')[0]);
 
     }
 
@@ -141,6 +141,6 @@ class UserControllerTest extends BaseFunctionalTestCase
         $client->request(Request::METHOD_DELETE, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
-        self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
+        self::assertEquals('The user does not exist', BaseFunctionalTestCase::getService('session')->getFlashBag()->get('error')[0]);
     }
 }
