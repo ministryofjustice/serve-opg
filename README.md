@@ -138,7 +138,23 @@ Or using the Makefile:
 
 `make behat-tests` - Runs behat tests - requires the app to be built and up before running
 
-### Notify mocking
+## Time based mocking
+
+To create tests that rely on manipulating time, the TimeService class can be used by replacing any instances of DateTime or Time in the code with TimeService.
+
+```php
+$this->createdAt = new DateTime();
+```
+
+becomes:
+
+```php
+$this->createdAt = TimeService::currentDateTime();
+```
+
+Then in a test class that extends BaseFunctionalTestCase you can call `$this->timeTravel(new DateTime('yesterday')->format('Y-m-d'))` to mock the time during the test.
+
+## Notify mocking
 Notify is mocked via a custom script.
 Requests to the service can be seen at
 
