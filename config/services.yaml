@@ -16,7 +16,6 @@ services:
             $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
             $projectDir: '%kernel.project_dir%'
             $yamlFixtureLocation: "%kernel.project_dir%/src/DataFixtures/"
-            $appEnv: "%kernel.environment%"
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -211,3 +210,7 @@ services:
     App\DataFixtures\BehatFixtures:
         arguments:
             $fixtureHelper: '@App\TestHelpers\FixtureTestHelper'
+
+    App\Behat\FeatureContext:
+        argument:
+            $appEnv: "%kernel.environment%"
