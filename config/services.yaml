@@ -216,4 +216,4 @@ services:
 
     App\Behat\FeatureContext:
         arguments:
-            $appEnv: "kernel.environment%"
+            $appEnv: "%kernel.environment%"
