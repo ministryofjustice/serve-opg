@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Behat;
 
@@ -15,7 +15,7 @@ class FeatureContext extends MinkContext implements Context
      */
     private $appEnv;
 
-    public function __construct(string $appEnv)
+    public function __construct($appEnv)
     {
         $this->appEnv = $appEnv;
     }
