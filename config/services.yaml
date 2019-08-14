@@ -23,6 +23,9 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
+    App\Behat\:
+        resource: '../src/Behat/*'
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
@@ -210,3 +213,7 @@ services:
     App\DataFixtures\BehatFixtures:
         arguments:
             $fixtureHelper: '@App\TestHelpers\FixtureTestHelper'
+
+    App\Behat\FeatureContext:
+        arguments:
+            $appEnv: "%kernel.environment%"
