@@ -8,7 +8,7 @@ services:
 
     App\Behat\FeatureContext:
         arguments:
-            $appEnv: "%env(APP_ENV)%"
+            $appEnv: "kernel.environment%"
 
     alphagov.notifications.client:
         class: Alphagov\Notifications\Client
