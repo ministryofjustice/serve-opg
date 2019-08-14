@@ -10,6 +10,16 @@ use Behat\MinkExtension\Context\MinkContext;
  */
 class FeatureContext extends MinkContext implements Context
 {
+    /**
+     * @var string
+     */
+    private $appEnv;
+
+    public function __construct(string $appEnv)
+    {
+        $this->appEnv = $appEnv;
+    }
+
     use RegionLinksTrait;
     use FormTrait;
     use DebugTrait;
@@ -52,7 +62,11 @@ class FeatureContext extends MinkContext implements Context
      */
     public function iAmAuthenticatedWith($user, $password)
     {
-        $this->getSession()->setBasicAuth($user, $password);
+        if ($this->appEnv !== 'prod') {
+            $this->getSession()->setBasicAuth($user, $password);
+        } else {
+            $this->iLogInAs($user, $password);
+        }
     }
 
     /**
