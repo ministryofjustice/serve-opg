@@ -1,7 +1,7 @@
 Feature: documents
 
   Scenario: PF: add documents
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559316-PF"
     Then the url should match "/order/\d+/summary"
@@ -47,7 +47,7 @@ Feature: documents
     And the url should match "/order/\d+/summary#documents"
 
   Scenario: HW: add COP3, CO documents
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559316-HW"
     Then the url should match "/order/\d+/summary"
@@ -85,7 +85,7 @@ Feature: documents
 
   Scenario: Test unsupported files
     # Add additional unsupported document
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559316-HW"
     Then the url should match "/order/\d+/summary"
@@ -107,7 +107,7 @@ Feature: documents
     Then the form should be invalid
 
   Scenario: PF: Interim order - check required docs
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559317-PF"
     Then the url should match "/order/\d+/summary"
@@ -116,7 +116,7 @@ Feature: documents
     And I should not see the "documents-cop4-actions" region
 
   Scenario: HW: Interim order - check required docs
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559317-HW"
     Then the url should match "/order/\d+/summary"

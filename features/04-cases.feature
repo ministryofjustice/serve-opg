@@ -4,7 +4,7 @@ Feature: cases
   # and cleared within the 00-init.feature (Reset Behat cases)
 
   Scenario: upload CSV
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/upload-csv"
     And I attach the file "behat-cases.csv" to "csv_upload_form_file"
     And I click on "submit"
@@ -17,7 +17,7 @@ Feature: cases
 
 
   Scenario: PA order: set assets, subtype, appointment type
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559316-PF"
     # check form validation
@@ -44,7 +44,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: HW order: set subtype, appointment type
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559316-HW"
     # check form validation
@@ -68,7 +68,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: PA order: set assets, interim subtype, appointment type
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559317-PF"
     # check form validation
@@ -96,7 +96,7 @@ Feature: cases
 
 
   Scenario: HW order: set interim subtype, appointment type
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/case"
     When I follow "order-93559317-HW"
     # check form validation
@@ -120,7 +120,7 @@ Feature: cases
     And the order should be unservable
 
   Scenario: test search
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     # fake q
     When I go to "/case"
     When I fill in "search" with "NOT EXISTING"

@@ -6,10 +6,6 @@ services:
     App\Behat\:
         resource: '../src/Behat/*'
 
-    App\Behat\FeatureContext:
-        arguments:
-            $appEnv: "%kernel.environment%"
-
     alphagov.notifications.client:
         class: Alphagov\Notifications\Client
         arguments:
