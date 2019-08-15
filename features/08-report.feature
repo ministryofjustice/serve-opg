@@ -8,11 +8,11 @@ Feature: Served Order Report
     Then I should be on "/login"
 
   Scenario: Access report page as authenticated user
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/report"
     Then the response status code should be 200
 
   Scenario: Access cases report page as authenticated user
-    Given I am authenticated with username "behat@digital.justice.gov.uk" password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/report/cases"
     Then the response status code should be 200

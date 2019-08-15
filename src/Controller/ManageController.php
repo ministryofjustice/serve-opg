@@ -101,6 +101,6 @@ class ManageController extends AbstractController
      */
     public function appEnv()
     {
-        return new Response($this->appEnv);
+        return new Response('appEnv is: ' . ($this->appEnv) . ' kernelEnv is: ' . $this->kernelEnv);
     }
 }

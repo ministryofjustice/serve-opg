@@ -213,7 +213,3 @@ services:
     App\DataFixtures\BehatFixtures:
         arguments:
             $fixtureHelper: '@App\TestHelpers\FixtureTestHelper'
-
-    App\Behat\FeatureContext:
-        arguments:
-            $appEnv: "%kernel.environment%"
