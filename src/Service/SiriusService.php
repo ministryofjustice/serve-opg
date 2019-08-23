@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJarInterface;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
@@ -196,6 +197,8 @@ class SiriusService
         try {
             $this->httpClient->get('/', ['connect_timeout' => 3.14]);
         } catch (ClientException $e) {
+            $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
+        } catch (ServerException $e) {
             $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
         } catch (ConnectException $e) {
             return 'unavailable';
