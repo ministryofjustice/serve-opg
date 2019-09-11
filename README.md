@@ -22,7 +22,7 @@ sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain certs/web.crt
 ```
 
-Then run either `make build-up-prod` or `make build-up-dev` to bring the app up in prod or dev mode. See the Makefile section below for further details on the make commands available.
+Then run either `make build-up-prod` or `make build-up-dev` to build and bring the app up in prod or dev mode. See the Makefile section below for further details on the make commands available.
 
 Once the app has been built once it can be brought up with `make up-prod` or `make up-dev`.
 
