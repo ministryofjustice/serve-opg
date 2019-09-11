@@ -12,7 +12,22 @@ Software to download and install
 
 # Usage
 ## Build
-Launch all the following commands from the project directory
+Launch the following commands from the project directory
+```bash
+# Generate self-signed certificate for the local loadbalancer
+./generate_certs.sh
+
+# Add certificate to your local trust store to avoid browser warnings
+sudo security add-trusted-cert -d -r trustRoot \
+-k /Library/Keychains/System.keychain certs/web.crt
+```
+
+Then run either `make build-up-prod` or `make build-up-dev` to bring the app up in prod or dev mode. See the Makefile section below for further details on the make commands available.
+
+Once the app has been built once it can be brought up with `make up-prod` or `make up-dev`.
+
+If there are any issues when using any of the make commands the full manual list of commands to build and bring the app up are below:
+
 ```bash
 # Generate self-signed certificate for the local loadbalancer
 ./generate_certs.sh
@@ -51,7 +66,8 @@ docker-compose up -d --build --remove-orphans loadbalancer
 docker-compose run --rm app php bin/console doctrine:fixtures:load --append
 ```
 
-Alternatively use the `Makefile` commands if you're in a hurry:
+## Makefile
+The Makefile included with the project includes a few different options for building the app and/or dependencies:
 
 `make build-up-prod` - Build dependencies and spin up the project in prod mode. Purges database and loads fixtures.
 
@@ -66,7 +82,6 @@ Alternatively use the `Makefile` commands if you're in a hurry:
 `make up-test` - Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
 
 `make build-deps` - Builds the project dependencies and services
-
 
 # View logs
 ```bash
