@@ -245,7 +245,7 @@
                 <p>To continue, please add one or more deputies and all the required order documents.</p>
             </div>
         </div>
-        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button" disabled="disabled">Continue</button>
+        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button" disabled="disabled" data-module="govuk-button">Continue</button>
     {% endif %}
 
 {% endblock %}
@@ -257,7 +257,7 @@
         <div class="govuk-grid-column-one-half"></div>
         <span class="dropzone__template__instruction">Drag and drop other relevant documents for <strong>{{order.client.clientName}}</strong> here</span>
         <div class="govuk-!-font-weight-bold">or</div>
-        <button class="govuk-button govuk-button--secondary">Choose documents</button>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Choose documents</button>
     </div>
 </div>
 <div id="dropzone__template__file">

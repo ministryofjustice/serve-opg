@@ -26,7 +26,7 @@
                         <td class="govuk-table__cell">
                             <form id="deleteUser" action="{{ path('delete-user', {'id': user.id}) }}" method="post">
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" id="deleteUser_submit" class="govuk-button govuk-button--warning govuk-!-margin-bottom-0">Delete user</button>
+                                <button type="submit" id="deleteUser_submit" class="govuk-button govuk-button--warning govuk-!-margin-bottom-0" data-module="govuk-button">Delete user</button>
                             </form>
                         </td>
                     </tr>
