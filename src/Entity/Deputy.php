@@ -4,10 +4,15 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="deputy")
+ */
 class Deputy
 {
     const DEPUTY_TYPE_LAY = 'LAY';
@@ -16,6 +21,10 @@ class Deputy
 
     /**
      * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -24,74 +33,101 @@ class Deputy
      */
     private $order;
 
-
     /**
      * @var string|null see DEPUTY_TYPE_* values
+     *
+     * @ORM\Column(name="deputy_type", type="string", length=255)
      */
     private $deputyType;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="forename", type="string", length=255)
      */
     private $forename;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="surname", type="string", length=255)
      */
     private $surname;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="dob", type="date", nullable=true)
      */
     private $dateOfBirth;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
      */
     private $emailAddress;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="daytime_contact_number", type="string", length=255, nullable=true)
      */
     private $daytimeContactNumber;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="evening_contact_number", type="string", length=255, nullable=true)
      */
     private $eveningContactNumber;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="mobile_contact_number", type="string", length=255, nullable=true)
      */
     private $mobileContactNumber;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
      */
     private $addressLine1;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="address_line_2", type="string", length=255, nullable=true)
      */
     private $addressLine2;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="address_line_3", type="string", length=255, nullable=true)
      */
     private $addressLine3;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
      */
     private $addressTown;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="address_county", type="string", length=255, nullable=true)
      */
     private $addressCounty;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
      */
     private $addressPostcode;
 
