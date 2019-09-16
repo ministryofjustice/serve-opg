@@ -70,7 +70,7 @@ Encore
 
     // copying govuk-frontend assets
     .copyFiles({
-        from: './node_modules/govuk-frontend/assets',
+        from: './node_modules/govuk-frontend/govuk/assets',
 
         // optional target path, relative to the output dir
         // to: 'images/[path][name].[ext]',
@@ -82,7 +82,7 @@ Encore
         //pattern: /\.(png|jpg|jpeg)$/
     })
 
-    // copying icons 
+    // copying icons
     .copyFiles({
         from: './assets/images',
         to: 'images/[path][name].[ext]',

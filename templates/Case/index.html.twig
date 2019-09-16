@@ -24,13 +24,13 @@
             Contents
         </h2>
         <ul class="govuk-tabs__list">
-            <li class="govuk-tabs__list-item" role="presentation">
-                <a class="govuk-tabs__tab behat-link-pending-tab {{ filters.type == 'pending' ? 'govuk-tabs__tab--selected' }}" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
+            <li class="govuk-tabs__list-item {{ filters.type == 'pending' ? 'govuk-tabs__list-item--selected' }}" role="presentation">
+                <a class="govuk-tabs__tab behat-link-pending-tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
                     To do ({{ counts.pending }})
                 </a>
             </li>
-            <li class="govuk-tabs__list-item" role="presentation">
-                <a class="govuk-tabs__tab behat-link- behat-link-served-tab {{ filters.type == 'served' ? 'govuk-tabs__tab--selected' }}" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
+            <li class="govuk-tabs__list-item {{ filters.type == 'served' ? 'govuk-tabs__list-item--selected' }}" role="presentation">
+                <a class="govuk-tabs__tab behat-link- behat-link-served-tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
                     Served ({{ counts.served }})
                 </a>
             </li>
@@ -84,7 +84,7 @@
                                     </td>
 
                                     <td class="govuk-table__cell">
-                                        <details class="govuk-details govuk-!-margin-bottom-0">
+                                        <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
                                             <summary class="govuk-details__summary">
                                                 <span class="govuk-details__summary-text">{{ order.documents | length }} documents</span>
                                             </summary>
