@@ -24,8 +24,8 @@ doctrine:
         auto_mapping: false
         mappings:
             commonEntities:
-                type: yml
-                dir: "%kernel.root_dir%/../config/doctrine"
+                type: annotation
+                dir: "%kernel.root_dir%/../src/Entity"
                 prefix: App\Entity
                 is_bundle: false
         dql:

@@ -2,11 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="document")
+ */
 class Document
 {
     const TYPE_COP1A = 'COP1A'; // required by PF
@@ -21,16 +26,25 @@ class Document
 
     /**
      * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var Order|null
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="documents", cascade={"persist"})
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $order;
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(name="type", type="string", length=100)
      */
     private $type;
 
@@ -41,16 +55,22 @@ class Document
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="filename", type="string", length=255, nullable=true)
      */
     private $fileName;
 
-    /***
+    /**
      * @var string
+     *
+     * @ORM\Column(name="storagereference", type="string", length=255)
      */
     private $storageReference;
 
-    /***
+    /**
      * @var string
+     *
+     * @ORM\Column(name="remotestoragereference", type="string", length=255, nullable=true)
      */
     private $remoteStorageReference;
 

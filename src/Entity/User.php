@@ -3,9 +3,15 @@ namespace App\Entity;
 
 use DateTime;
 use Serializable;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="dc_user")
+ * @ORM\HasLifecycleCallbacks
+ */
 class User implements UserInterface, EquatableInterface, Serializable
 {
     /**
@@ -15,41 +21,59 @@ class User implements UserInterface, EquatableInterface, Serializable
 
     /**
      * @var int
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, unique=true)
      */
     private $email;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
 
     /**
      * @var DateTime|null
+     *
+     * @ORM\Column(name="activation_token_created_at", type="datetime", nullable=true)
      */
     private $activationTokenCreatedAt;
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(name="activation_token", type="string", length=40, nullable=true)
      */
     private $activationToken;
 
     /**
      * @var DateTime|null
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
      * @var DateTime|null
+     *
+     * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
      */
     private $lastLoginAt;
 
     /**
      * @var array
+     *
+     * @ORM\Column(name="roles", type="array")
      */
     private $roles = [];
 
@@ -205,6 +229,9 @@ class User implements UserInterface, EquatableInterface, Serializable
         $this->createdAt = $createdAt;
     }
 
+    /**
+     * @ORM\PrePersist
+     */
     public function onPrePersist()
     {
         $this->setCreatedAt(new DateTime());

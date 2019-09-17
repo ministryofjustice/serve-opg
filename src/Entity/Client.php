@@ -3,34 +3,51 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="client")
+ */
 class Client
 {
     /**
      * @var int
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="case_number", type="string", length=8, unique=true)
      */
     private $caseNumber;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="client_name", type="string", length=255)
      */
     private $clientName;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
 
     /**
      * @var Collection of Order[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="client", cascade={"persist"})
      */
     private $orders;
 

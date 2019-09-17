@@ -7,8 +7,19 @@ use App\exceptions\WrongCaseNumberException;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "PF" = "App\Entity\OrderPf",
+ *     "HW" = "App\Entity\OrderHw",
+ * })
+ * @ORM\Table(name="dc_order")
+ */
 abstract class Order
 {
     const TYPE_PF = 'PF';
@@ -40,36 +51,57 @@ abstract class Order
 
     /**
      * @var int|null
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @var Client
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="orders", cascade={"persist"})
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $client;
 
     /**
      * @var string|null see SUBTYPE_* values
+     *
+     * @ORM\Column(name="sub_type", type="string", length=50, nullable=true)
      */
     private $subType;
 
     /**
      * @var string|null yes/no/na/null
+     *
+     * @ORM\Column(name="has_assets_above_threshold", type="string", length=50, nullable=true)
      */
     private $hasAssetsAboveThreshold;
 
     /**
      * @var ArrayCollection of Deputy[]
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Deputy", cascade={"persist"})
+     * @ORM\JoinTable(name="ordertype_deputy",
+     *   joinColumns={@ORM\JoinColumn(name="deputy_id", referencedColumnName="id", onDelete="CASCADE")},
+     *   inverseJoinColumns={@ORM\JoinColumn(name="order_type_id", referencedColumnName="id", onDelete="CASCADE")}
+     * )
      */
     private $deputies;
 
     /**
      * @var ArrayCollection of Document[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="order", cascade={"persist"})
      */
     private $documents;
 
     /**
      * @var string|null see APPOINTMENT_TYPE_* values
+     *
+     * @ORM\Column(name="appointment_type", type="string", length=50, nullable=true)
      */
     private $appointmentType;
 
@@ -77,6 +109,8 @@ abstract class Order
      * Date order was created in DC database
      *
      * @var DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
 
@@ -84,16 +118,22 @@ abstract class Order
      * Date order was first made outside DC
      *
      * @var DateTime
+     *
+     * @ORM\Column(name="made_at", type="datetime", options={"default":"2017-01-01 00:00:00"})
      */
     private $madeAt;
 
     /**
      * @var DateTime
+     *
+     * @ORM\Column(name="issued_at", type="datetime", nullable=true)
      */
     private $issuedAt;
 
     /**
      * @var DateTime|null
+     *
+     * @ORM\Column(name="served_at", type="datetime", nullable=true)
      */
     private $servedAt;
 
@@ -101,6 +141,8 @@ abstract class Order
      * JSON string served to the API
      *
      * @var string
+     *
+     * @ORM\Column(name="payload_served", type="json_array", nullable=true)
      */
     private $payloadServed;
 
@@ -108,6 +150,8 @@ abstract class Order
      * API response as a string
      *
      * @var string
+     *
+     * @ORM\Column(name="api_response", type="json_array", nullable=true)
      */
     private $apiResponse;
 
