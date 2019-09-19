@@ -89,7 +89,7 @@ services:
       - ./localstack-data:/tmp/localstack/data
 
   postgres:
-    image: postgres:9.6-alpine
+    image: postgres:10.7-alpine
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: serve-opg
