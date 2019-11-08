@@ -39,7 +39,7 @@ sudo security add-trusted-cert -d -r trustRoot \
 # Create the s3 buckets, generate localstack data in /localstack-data
 # & wait for the server to become available
 docker-compose up -d localstack
-docker-compose run --rm waitforit -address=http://localstack:4572 -debug
+docker-compose run --rm waitforit -address=http://localstack:4572 -debug -timeout=30
 docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius_test_bucket
 docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test_bucket
 
@@ -175,7 +175,7 @@ docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 # Xdebug
 To enable Xdebug running via Docker in PHPStorm you will need to:
 
-- In `Preferences > Build, Execution, Deployment > Docker` select `Docker for Mac` 
+- In `Preferences > Build, Execution, Deployment > Docker` select `Docker for Mac`
 - In `Preferences > Languages and Frameworks > PHP` Click the `...` button next to `CLI Interpreter`
 - Click the `+` button to add a new CLI  and select `From Docker, Vagrant, VM, Remote`
 - Select `Docker Compose`, for `Server` choose `Docker` and select `app` for Service. Click `OK` and `Apply`.
