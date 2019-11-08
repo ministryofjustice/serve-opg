@@ -92,6 +92,12 @@ jobs:
             docker-compose build web
             docker-compose build app
       - run:
+          name: List packages and versions
+          command: |
+            docker-compose run --rm web apk list | sort
+            docker-compose run --rm app apk list | sort
+            docker-compose run --rm app php -v
+      - run:
           name: Deploy
           command: |
             git tag $CIRCLE_BUILD_NUM
