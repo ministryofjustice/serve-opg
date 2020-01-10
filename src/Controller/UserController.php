@@ -183,6 +183,57 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/users/add", name="add-user", methods={"GET", "POST"})
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse|Response
+     */
+    public function addUser(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = new User('');
+
+        $form = $this->createForm(UserForm::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword('set-me-up');
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+            return $this->redirectToRoute('add-user-confirmation', ['id' => $user->getId()]);
+        }
+
+        return $this->render('User/add.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/users/{id}/confirmation", name="add-user-confirmation", methods={"GET"})
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse|Response
+     */
+    public function addUserConfirmation(int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (null === $user) {
+            $this->addFlash('error', 'The user does not exist');
+            return $this->redirectToRoute('view-users');
+        }
+
+        return $this->render('User/add-confirmation.html.twig', [
+            'email' => $user->getEmail(),
+        ]);
+    }
+
+    /**
      * @Route("/users/{id}/delete", name="delete-user", methods={"DELETE"})
      * @param Request $request
      * @param int $id
