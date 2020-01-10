@@ -131,6 +131,14 @@ class User implements UserInterface, EquatableInterface, Serializable
         return $this->email;
     }
 
+    /**
+     * @param string
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
     public function getRoles()
     {
         return array_unique(array_merge(['ROLE_USER'], $this->roles));
