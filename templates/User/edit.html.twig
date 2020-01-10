@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'Form/govuk_frontend.html.twig' %}
+
+{% block htmlTitle %}Edit user{% endblock %}
+
+{% block beforeContent %}
+    <a href="{{ path('view-users') }}" class="govuk-back-link">Back</a>
+{% endblock %}
+
+{% block pageTitle %}
+    <h1 class="govuk-heading-l">
+        <span class="govuk-caption-l">Users</span>
+        Edit
+    </h1>
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ form(form) }}
+        </div>
+    </div>
+{% endblock %}

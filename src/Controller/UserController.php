@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\PasswordChangeForm;
 use App\Form\PasswordResetForm;
+use App\Form\UserForm;
 use App\Repository\UserRepository;
 use App\Service\MailSender;
 use App\Service\Security\LoginAttempts\UserProvider;
@@ -137,14 +138,6 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="logout2")
-     */
-//    public function logoutAction(Request $request)
-//    {
-//        return new RedirectResponse('/');
-//    }
-
-    /**
      * @Route("/users", name="view-users", methods={"GET"})
      */
     public function viewUsers()
@@ -153,6 +146,40 @@ class UserController extends AbstractController
 
         $users = $this->em->getRepository(User::class)->findAll();
         return $this->render('User/view-users.html.twig', ['users' => $users]);
+    }
+
+    /**
+     * @Route("/users/{id}/edit", name="edit-user", methods={"GET", "POST"})
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse|Response
+     */
+    public function editUser(Request $request, int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (null === $user) {
+            $this->addFlash('error', 'The user does not exist');
+            return $this->redirectToRoute('view-users');
+        }
+
+        $form = $this->createForm(UserForm::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($user);
+            $this->em->flush();
+
+            $this->addFlash('success', 'User saved');
+            return $this->redirectToRoute('view-users');
+        }
+
+        return $this->render('User/edit.html.twig', [
+            'user' => $user,
+            'form' => $form->createView()
+        ]);
     }
 
     /**
