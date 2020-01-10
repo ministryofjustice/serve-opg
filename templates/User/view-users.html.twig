@@ -24,8 +24,8 @@
         <caption class="govuk-table__caption">{{ users | length }} users</caption>
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">User Email</th>
-            <th class="govuk-table__header" scope="col">Created</th>
+            <th class="govuk-table__header" scope="col">Name</th>
+            <th class="govuk-table__header" scope="col">Role</th>
             <th class="govuk-table__header" scope="col">Last Logged In</th>
             <th class="govuk-table__header table-column__centred" scope="col">Delete</th>
         </tr>
@@ -33,8 +33,8 @@
         <tbody class="govuk-table__body">
         {% for user in users %}
             <tr class="govuk-table__row" >
-                <td class="govuk-table__cell">{{ user.email }}</td>
-                <td class="govuk-table__cell">{{ user.createdAt|date('Y-m-d') }}</td>
+                <td class="govuk-table__cell">{{ user.fullName }}</td>
+                <td class="govuk-table__cell">{{ 'ROLE_ADMIN' in user.roles ? 'Admin' : 'Case manager' }}</td>
                 <td class="govuk-table__cell">{{ user.lastLoginAt|date('Y-m-d H:i:s') }}</td>
                 <td class="govuk-table__cell">
                     <form id="deleteUser" action="{{ path('delete-user', {'id': user.id}) }}" method="post">

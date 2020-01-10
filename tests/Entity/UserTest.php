@@ -38,4 +38,27 @@ class UserTest extends ApiWebTestCase
             self::assertContains($role, $user->getRoles());
         }
     }
+
+    /**
+     * @dataProvider userFullNameTestProvider
+     */
+    public function testFullNameReturnsSomething($firstName, $lastName, $expected)
+    {
+        $email = 'test@user.com';
+        $user = new User($email);
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+
+        self::assertEquals($expected, $user->getFullName());
+    }
+
+    public function userFullNameTestProvider()
+    {
+        return [
+            'userWithNoName' => ['', '', 'test@user.com'],
+            'userWithJustFirstName' => ['Jerrell', '', 'Jerrell'],
+            'userWithJustLastName' => ['', 'Niner', 'Niner'],
+            'userWithBothNames' => ['Karol', 'Gowey', 'Karol Gowey'],
+        ];
+    }
 }
