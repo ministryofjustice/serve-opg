@@ -68,7 +68,7 @@ services:
       - postgres
       - sirius-api
     volumes:
-      - .:/app
+      - .:/var/www
 
   sirius-api:
     image: stoplight/prism:v2.0.20
@@ -90,6 +90,8 @@ services:
 
   postgres:
     image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: serve-opg
