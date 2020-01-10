@@ -64,6 +64,7 @@
     ]
   },
   "dependencies": {
+    "@ministryofjustice/frontend": "^0.0.17-alpha",
     "gulp-replace": "^1.0.0",
     "node-sass": "^4.12.0"
   }
