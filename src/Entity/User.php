@@ -92,7 +92,7 @@ class User implements UserInterface, EquatableInterface, Serializable
     private $lastName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
      */

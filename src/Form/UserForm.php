@@ -22,7 +22,9 @@ class UserForm extends AbstractType
             ])
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
-            ->add('phoneNumber', TextType::class)
+            ->add('phoneNumber', TextType::class, [
+                'required' => false,
+            ])
             ->add('roleName', ChoiceType::class, [
                 'mapped' => false,
                 'choices' => [
