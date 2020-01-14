@@ -36,8 +36,6 @@ common:
     label: Save and continue
   upload:
     label: Upload file and add to order
-  cancel:
-    label: Cancel
 
 order:
   hasAssetsAboveThreshold:
@@ -71,10 +69,6 @@ user:
           at least 1 number
     passwordConfirm.label: Confirm password
     submit.label: Save password
-  add:
-    submit.label: Add user
-  edit:
-    submit.label: Update user
 
 document:
   type:

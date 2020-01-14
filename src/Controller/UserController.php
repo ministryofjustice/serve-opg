@@ -165,7 +165,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('view-users');
         }
 
-        $form = $this->createForm(UserForm::class, $user, ['submit_label' => 'user.edit.submit.label']);
+        $form = $this->createForm(UserForm::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -194,7 +194,7 @@ class UserController extends AbstractController
 
         $user = new User('');
 
-        $form = $this->createForm(UserForm::class, $user, ['submit_label' => 'user.add.submit.label']);
+        $form = $this->createForm(UserForm::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
