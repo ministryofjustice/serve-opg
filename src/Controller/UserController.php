@@ -260,6 +260,19 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/users/{id}/resend-activation", name="resend-activation-user", methods={"GET"})
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function resendActivationUser(Request $request, int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        return $this->json(null);
+    }
+
+    /**
      * @Route("/users/{id}/delete", name="delete-user", methods={"GET"})
      * @param Request $request
      * @param int $id
