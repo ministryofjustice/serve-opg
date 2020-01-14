@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -31,7 +32,7 @@ class UserForm extends AbstractType
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'common.submit.label'
+                'label' => $options['submit_label']
             ]);
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
@@ -61,7 +62,10 @@ class UserForm extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => User::class,
-            'translation_domain' => 'forms'
+            'translation_domain' => 'forms',
+            'submit_label' => 'common.submit.label'
         ));
+
+        $resolver->setAllowedTypes('submit_label', 'string');
     }
 }
