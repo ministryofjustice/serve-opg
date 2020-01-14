@@ -152,6 +152,118 @@ class UserControllerTest extends ApiWebTestCase
  *  - testUserInformedIfEmailFails
  */
 
+    public function testNewUserCreated()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $client->request('GET', '/users/add');
+        $client->submitForm('Add user', [
+            'user_form[email]' => 'b.vorpahl@digital.justice.gov.uk',
+            'user_form[firstName]' => 'Bennie',
+            'user_form[lastName]' => 'Vorpahl',
+            'user_form[roleName]' => 'ROLE_ADMIN'
+        ]);
+
+        $newUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail('b.vorpahl@digital.justice.gov.uk');
+
+        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
+        self::assertEquals('Bennie', $newUser->getFirstName());
+        self::assertEquals('Vorpahl', $newUser->getLastName());
+        self::assertEquals(['ROLE_USER', 'ROLE_ADMIN'], $newUser->getRoles());
+    }
+
+    public function testNewUserFieldsRequired()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $crawler = $client->request('GET', '/users/add');
+
+        self::assertEquals('required', $crawler->filter('#user_form_email')->attr('required'));
+        self::assertEquals('required', $crawler->filter('#user_form_firstName')->attr('required'));
+        self::assertEquals('required', $crawler->filter('#user_form_lastName')->attr('required'));
+        self::assertNull($crawler->filter('#user_form_phoneNumber')->attr('required'));
+
+        $submittedCrawler = $client->submitForm('Add user', []);
+
+        self::assertStringContainsString('govuk-form-group--error', $submittedCrawler->filter('#form-group-email')->attr('class'));
+        self::assertStringContainsString('govuk-form-group--error', $submittedCrawler->filter('#form-group-firstName')->attr('class'));
+        self::assertStringContainsString('govuk-form-group--error', $submittedCrawler->filter('#form-group-lastName')->attr('class'));
+        self::assertStringNotContainsString('govuk-form-group--error', $submittedCrawler->filter('#form-group-phoneNumber')->attr('class'));
+
+        self::assertStringContainsString('Enter an email address', $submittedCrawler->filter('#form-group-email')->text());
+    }
+
+    public function testNewUserRequiresEmailFormat()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $client->request('GET', '/users/add');
+        $crawler = $client->submitForm('Add user', [
+            'user_form[email]' => 'notanemail'
+        ]);
+
+        self::assertStringContainsString('govuk-form-group--error', $crawler->filter('#form-group-email')->attr('class'));
+        self::assertStringContainsString('The email "notanemail" is not a valid email', $crawler->filter('#form-group-email')->text());
+    }
+
+    public function testCannotCreateUserWithMissingFields()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $email = 'michele.gallington@digital.justice.gov.uk';
+
+        $client->request('GET', '/users/add');
+        $client->submitForm('Add user', [
+            'user_form[email]' => $email
+        ]);
+
+        $newUser = $this->getEntityManager()->getRepository(User::class)->findOneByEmail($email);
+
+        self::assertNull($newUser);
+    }
+
+    public function testCannotCreateUserWithExistingEmail()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $client->request('GET', '/users/add');
+        $crawler = $client->submitForm('Add user', [
+            'user_form[email]' => 'admin@digital.justice.gov.uk',
+            'user_form[firstName]' => 'Karol',
+            'user_form[lastName]' => 'Gowey'
+        ]);
+
+        $emailFormGroup = $crawler->filter('#form-group-email');
+
+        self::assertStringContainsString('govuk-form-group--error', $emailFormGroup->attr('class'));
+        self::assertStringContainsString('Email address already in use', $emailFormGroup->text());
+    }
+
+    public function testActivationEmailSentToNewUser()
+    {
+        
+    }
+
     public function testDeleteUser()
     {
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
