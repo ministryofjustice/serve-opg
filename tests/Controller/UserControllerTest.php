@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Service\NotifyClientMock;
 use App\Tests\ApiWebTestCase;
 use App\TestHelpers\UserTestHelper;
 use DateTime;
@@ -261,7 +262,23 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testActivationEmailSentToNewUser()
     {
-        
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $email = 'velia.santalucia@digital.justice.gov.uk';
+
+        $client->request('GET', '/users/add');
+        $client->submitForm('Add user', [
+            'user_form[email]' => $email,
+            'user_form[firstName]' => 'Velia',
+            'user_form[lastName]' => 'Santalucia',
+            'user_form[roleName]' => 'ROLE_USER'
+        ]);
+
+        self::assertEquals($email, NotifyClientMock::getLastEmail()['to']);
     }
 
     public function testDeleteUser()
