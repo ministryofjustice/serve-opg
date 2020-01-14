@@ -129,13 +129,6 @@ class UserControllerTest extends ApiWebTestCase
     }
 
 /**
- * /add
- *  - testNewUserCreated
- *  - testNewUserFieldsRequired
- *  - testNewUserRequiresEmailFormat
- *  - testCannotCreateUserWithMissingFields
- *  - testCannotCreateUserWithExistingEmail
- *  - testActivationEmailSentToNewUser
  * /add-confirmed
  *  - testAddConfirmationContainsEmail
  *  - testAddConfirmationLinksToDetails
