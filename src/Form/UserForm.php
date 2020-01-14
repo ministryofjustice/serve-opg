@@ -30,9 +30,7 @@ class UserForm extends AbstractType
                     'Admin' => 'ROLE_ADMIN'
                 ]
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'common.submit.label'
-            ]);
+            ->add('submit', SubmitType::class);
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
             $user = $event->getData();

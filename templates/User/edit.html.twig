@@ -17,7 +17,23 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {{ form(form) }}
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
+
+                {{ form_row(form.email) }}
+                {{ form_row(form.firstName) }}
+                {{ form_row(form.lastName) }}
+                {{ form_row(form.phoneNumber) }}
+                {{ form_row(form.roleName) }}
+
+                <div class="govuk-form-group">
+                    {{ form_widget(form.submit, { label: 'user.edit.submit.label' }) }}
+
+                    <a href="{{ path('view-users') }}" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        {{ 'common.cancel.label' | trans([], 'forms') }}
+                    </a>
+                </div>
+            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}
