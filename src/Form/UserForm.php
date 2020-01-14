@@ -38,7 +38,7 @@ class UserForm extends AbstractType
             $user = $event->getData();
             $form = $event->getForm();
 
-            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            if ($user->isAdmin()) {
                 $form->get('roleName')->setData('ROLE_ADMIN');
             }
         });

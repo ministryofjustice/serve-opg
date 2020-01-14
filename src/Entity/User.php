@@ -144,6 +144,11 @@ class User implements UserInterface, EquatableInterface, Serializable
         return array_unique(array_merge(['ROLE_USER'], $this->roles));
     }
 
+    public function isAdmin()
+    {
+        return in_array('ROLE_ADMIN', $this->roles);
+    }
+
     public function setRoles(array $roles)
     {
         $this->roles = $roles;
