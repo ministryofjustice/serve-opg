@@ -40,7 +40,7 @@ up-test: ## Brings the app up in test mode with profiler and xdebug disabled - r
 	docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
 
 phpunit-tests: ## Requires the app to be built and up before running
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests
+	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests $(args)
 
 behat-tests: ## Requires the app to be built and up before running
 	# Add sample users and cases (local env only).
