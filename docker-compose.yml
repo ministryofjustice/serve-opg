@@ -68,7 +68,7 @@ services:
       - postgres
       - sirius-api
     volumes:
-      - .:/var/www
+      - .:/app
 
   sirius-api:
     image: stoplight/prism:v2.0.20
@@ -100,9 +100,8 @@ services:
 
   composer:
     image: composer
-    working_dir: /var/www
     volumes:
-      - .:/var/www
+      - .:/app
     command:
       - install
       - --no-interaction
