@@ -149,7 +149,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}", name="view-user", methods={"GET", "POST"})
+     * @Route("/users/{id}/view", name="view-user", methods={"GET", "POST"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse|Response
@@ -224,6 +224,10 @@ class UserController extends AbstractController
 
             $this->em->persist($user);
             $this->em->flush();
+
+            $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
+            $userRepo->refreshActivationToken($user);
+            $this->mailerSender->sendPasswordResetEmail($user);
 
             return $this->redirectToRoute('add-user-confirmation', ['id' => $user->getId()]);
         }
