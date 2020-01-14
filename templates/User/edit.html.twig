@@ -4,7 +4,7 @@
 {% block htmlTitle %}Edit user{% endblock %}
 
 {% block beforeContent %}
-    <a href="{{ path('view-users') }}" class="govuk-back-link">Back</a>
+    <a href="{{ path('view-user', { id: user.id }) }}" class="govuk-back-link">Back</a>
 {% endblock %}
 
 {% block pageTitle %}
@@ -29,7 +29,7 @@
                 <div class="govuk-form-group">
                     {{ form_widget(form.submit, { label: 'user.edit.submit.label' }) }}
 
-                    <a href="{{ path('view-users') }}" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <a href="{{ path('view-user', { id: user.id }) }}" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                         {{ 'common.cancel.label' | trans([], 'forms') }}
                     </a>
                 </div>

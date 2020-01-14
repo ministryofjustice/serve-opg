@@ -149,6 +149,28 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/users/{id}", name="view-user", methods={"GET", "POST"})
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse|Response
+     */
+    public function viewUser(Request $request, int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = $this->em->getRepository(User::class)->find($id);
+
+        if (null === $user) {
+            $this->addFlash('error', 'The user does not exist');
+            return $this->redirectToRoute('view-users');
+        }
+
+        return $this->render('User/view.html.twig', [
+            'user' => $user
+        ]);
+    }
+
+    /**
      * @Route("/users/{id}/edit", name="edit-user", methods={"GET", "POST"})
      * @param Request $request
      * @param int $id
