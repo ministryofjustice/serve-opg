@@ -14,6 +14,50 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends ApiWebTestCase
 {
+    public function adminURLProvider()
+    {
+        return [
+            ['/users'],
+            ['/users/add'],
+            ['/users/{id}/edit'],
+            ['/users/{id}/view'],
+            ['/users/{id}/delete'],
+            ['/users/{id}/resend-activation'],
+        ];
+    }
+
+    /**
+     * @dataProvider adminURLProvider
+     */
+    public function testAdminURLsRequireRole($url)
+    {
+        $user = UserTestHelper::createUser('user@digital.justice.gov.uk');
+        $this->persistEntity($user);
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $userClient = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'user@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $adminClient = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $urlReplaced = str_replace('{id}', $user->getId(), $url);
+
+        $userClient->request(Request::METHOD_GET, $urlReplaced, [], [], ['HTTP_REFERER' => '/users']);
+        self::assertEquals(Response::HTTP_FORBIDDEN, $userClient->getResponse()->getStatusCode());
+
+        $adminClient->request(Request::METHOD_GET, $urlReplaced, [], [], ['HTTP_REFERER' => '/users']);
+        self::assertNotEquals(Response::HTTP_FORBIDDEN, $adminClient->getResponse()->getStatusCode());
+    }
+
     public function testListUsers()
     {
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
@@ -32,10 +76,13 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $client->request(Request::METHOD_GET, "/users");
+        $crawler = $client->request(Request::METHOD_GET, "/users");
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertStringContainsString('testUser@digital.justice.gov.uk', $client->getResponse()->getContent());
+
+        $linkUrl = $crawler->selectLink('Add new user')->link()->getUri();
+        self::assertStringContainsString('/users/add', $linkUrl);
     }
 
     public function testUserLoginUpdatesLastLoginAt()
@@ -79,6 +126,31 @@ class UserControllerTest extends ApiWebTestCase
             $this->assertEquals($test['expectedResponse'], $client->getResponse()->getStatusCode());
         }
     }
+
+/**
+ * /add
+ *  - testNewUserCreated
+ *  - testNewUserFieldsRequired
+ *  - testNewUserRequiresEmailFormat
+ *  - testCannotCreateUserWithMissingFields
+ *  - testCannotCreateUserWithExistingEmail
+ *  - testActivationEmailSentToNewUser
+ * /add-confirmed
+ *  - testAddConfirmationContainsEmail
+ *  - testAddConfirmationLinksToDetails
+ * /view
+ *  - testUserDetailsCorrect
+ *  - testUserDetailsLinkToEdit
+ *  - testUserDetailsShowActivationReminder
+ * /edit
+ *  - testUserDetailsEdited
+ *  - testCannotEditUserToWithExistingEmail
+ *  - testUserEditDoesntWarnActivationEmail
+ * (/delete)
+ * (/resend-activation)
+ *  - testResendsActivationEmail
+ *  - testUserInformedIfEmailFails
+ */
 
     public function testDeleteUser()
     {
