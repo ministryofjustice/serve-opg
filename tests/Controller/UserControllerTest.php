@@ -36,10 +36,6 @@ class UserControllerTest extends ApiWebTestCase
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertStringContainsString('testUser@digital.justice.gov.uk', $client->getResponse()->getContent());
-        self::assertStringContainsString('2019-07-01 01:01:01', $client->getResponse()->getContent());
-
-        $today = (new DateTime('today'))->format('Y-m-d');
-        self::assertStringContainsString($today, $client->getResponse()->getContent());
     }
 
     public function testUserLoginUpdatesLastLoginAt()
@@ -97,7 +93,7 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+        $client->request(Request::METHOD_GET, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNull($this->getEntityManager()->getRepository(User::class)->find($userId));
@@ -118,7 +114,7 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $client->request(Request::METHOD_DELETE, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+        $client->request(Request::METHOD_GET, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNotNull($this->getEntityManager()->getRepository(User::class)->find($userId));
@@ -140,7 +136,7 @@ class UserControllerTest extends ApiWebTestCase
         );
 
 
-        $client->request(Request::METHOD_DELETE, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
+        $client->request(Request::METHOD_GET, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
