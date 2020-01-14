@@ -256,7 +256,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/delete", name="delete-user", methods={"DELETE"})
+     * @Route("/users/{id}/delete", name="delete-user", methods={"GET"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse
