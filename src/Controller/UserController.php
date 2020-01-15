@@ -123,6 +123,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('User/password-change.html.twig', [
+            'isNewUser' => is_null($user->getLastLoginAt()),
             'form' => $form->createView(),
         ]);
     }
