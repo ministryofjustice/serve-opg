@@ -32,8 +32,7 @@ class UserControllerTest extends ApiWebTestCase
      */
     public function testAdminURLsRequireRole($url)
     {
-        $user = UserTestHelper::createUser('user@digital.justice.gov.uk');
-        $this->persistEntity($user);
+        $user = $this->persistEntity(UserTestHelper::createUser('user@digital.justice.gov.uk'));
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
 
         $userClient = $this->createAuthenticatedClient(
@@ -136,14 +135,6 @@ class UserControllerTest extends ApiWebTestCase
  *  - testUserDetailsCorrect
  *  - testUserDetailsLinkToEdit
  *  - testUserDetailsShowActivationReminder
- * /edit
- *  - testUserDetailsEdited
- *  - testCannotEditUserToWithExistingEmail
- *  - testUserEditDoesntWarnActivationEmail
- * (/delete)
- * (/resend-activation)
- *  - testResendsActivationEmail
- *  - testUserInformedIfEmailFails
  */
 
     public function testNewUserCreated()
@@ -274,6 +265,70 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals($email, NotifyClientMock::getLastEmail()['to']);
     }
 
+    public function testEditUser()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $user = $this->persistEntity(UserTestHelper::createUser('test@digital.justice.gov.uk'));
+        $userId = $user->getId();
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $client->request('GET', "/users/$userId/edit");
+        $client->submitForm('Update user', [
+            'user_form[email]' => 'scot.woehrle@digital.justice.gov.uk',
+            'user_form[firstName]' => 'Scot',
+            'user_form[lastName]' => 'Woehrle',
+            'user_form[roleName]' => 'ROLE_ADMIN'
+        ]);
+
+        $user = $this->getEntityManager()->getRepository(User::class)->find($userId);
+
+        self::assertEquals('scot.woehrle@digital.justice.gov.uk', $user->getEmail());
+        self::assertEquals('Scot', $user->getFirstName());
+        self::assertEquals('Woehrle', $user->getLastName());
+        self::assertEquals(['ROLE_USER', 'ROLE_ADMIN'], $user->getRoles());
+    }
+
+    public function testCannotEditUserToExistingEmail()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $this->persistEntity(UserTestHelper::createUser('existing-email@digital.justice.gov.uk'));
+        $user = $this->persistEntity(UserTestHelper::createUser('test@digital.justice.gov.uk'));
+        $userId = $user->getId();
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $client->request('GET', "/users/$userId/edit");
+        $crawler = $client->submitForm('Update user', [
+            'user_form[email]' => 'existing-email@digital.justice.gov.uk'
+        ]);
+
+        $emailFormGroup = $crawler->filter('#form-group-email');
+
+        self::assertStringContainsString('govuk-form-group--error', $emailFormGroup->attr('class'));
+        self::assertStringContainsString('Email address already in use', $emailFormGroup->text());
+    }
+
+    public function testUserEditDoesntWarnActivationEmail()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $user = $this->persistEntity(UserTestHelper::createUser('test@digital.justice.gov.uk'));
+        $userId = $user->getId();
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $crawler = $client->request('GET', "/users/$userId/edit");
+        $emailFormGroup = $crawler->filter('#form-group-email');
+
+        self::assertStringNotContainsString('An activation email will be sent to the provided email address', $emailFormGroup->text());
+    }
+
     public function testDeleteUser()
     {
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
@@ -329,10 +384,40 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-
         $client->request(Request::METHOD_GET, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
+    }
+
+    public function testResendsActivationEmail()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $user = $this->persistEntity(UserTestHelper::createUser('test-activation@digital.justice.gov.uk'));
+        $userId = $user->getId();
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        $client->request(Request::METHOD_GET, "/users/$userId/resend-activation");
+
+        self::assertEquals($user->getEmail(), NotifyClientMock::getLastEmail()['to']);
+    }
+
+    public function testUserInformedIfEmailFails()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $user = $this->persistEntity(UserTestHelper::createUser('test-activation@digital.justice.gov.uk'));
+        $userId = $user->getId();
+
+        $client = $this->createAuthenticatedClient(
+            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
+        );
+
+        NotifyClientMock::$failNext = true;
+        $client->request(Request::METHOD_GET, "/users/$userId/resend-activation");
+
+        self::assertEquals('Activation email could not be sent', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 }
