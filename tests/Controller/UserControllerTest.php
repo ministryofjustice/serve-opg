@@ -125,31 +125,6 @@ class UserControllerTest extends ApiWebTestCase
         }
     }
 
-/**
- * /add
- *  - testNewUserCreated
- *  - testNewUserFieldsRequired
- *  - testNewUserRequiresEmailFormat
- *  - testCannotCreateUserWithMissingFields
- *  - testCannotCreateUserWithExistingEmail
- *  - testActivationEmailSentToNewUser
- * /add-confirmed
- *  - testAddConfirmationContainsEmail
- *  - testAddConfirmationLinksToDetails
- * /view
- *  - testUserDetailsCorrect
- *  - testUserDetailsLinkToEdit
- *  - testUserDetailsShowActivationReminder
- * /edit
- *  - testUserDetailsEdited
- *  - testCannotEditUserToWithExistingEmail
- *  - testUserEditDoesntWarnActivationEmail
- * (/delete)
- * (/resend-activation)
- *  - testResendsActivationEmail
- *  - testUserInformedIfEmailFails
- */
-
     public function testNewUserCreated()
     {
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
@@ -462,12 +437,6 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString($expectedContent, $crawler->filter('body')->text());
     }
 
-    /**
-     * /add-confirmed - me
-     *  - testAddConfirmationContainsEmail
-     *  - testAddConfirmationLinksToDetails
-     */
-
     public function testAddConfirmationContainsEmail()
     {
         $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
@@ -507,15 +476,8 @@ class UserControllerTest extends ApiWebTestCase
         $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/confirmation", [], [], ['HTTP_REFERER' => '/users']);
 
         $activationTextLink = $crawler->selectLink('resend the activation email')->link()->getUri();
-        self::assertStringContainsString("/users/${addedUserId}/confirmation", $activationTextLink);
+        self::assertStringContainsString("/users/${addedUserId}/view", $activationTextLink);
     }
-
-    /**
-     * /view - me
-     *  - testUserDetailsCorrect
-     *  - testUserDetailsLinkToEdit
-     *  - testUserDetailsShowActivationReminder
-     */
 
     public function testUserDetailsCorrect()
     {
