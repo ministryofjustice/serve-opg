@@ -416,6 +416,7 @@ class UserControllerTest extends ApiWebTestCase
         NotifyClientMock::$failNext = true;
         $client->request(Request::METHOD_GET, "/users/$userId/resend-activation");
 
+        self::assertCount(1, $this->getService('session')->getFlashBag()->peekAll());
         self::assertEquals('Activation email could not be sent', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 }
