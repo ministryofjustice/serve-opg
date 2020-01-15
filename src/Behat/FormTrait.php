@@ -82,4 +82,13 @@ trait FormTrait
             $this->assertFieldContains($field, $value);
         }
     }
+
+    /**
+     * @When I delete the user :name
+     */
+    public function deleteUser($name) {
+        $userLink = $this->getSession()->getPage()->findLink($name);
+        $deleteLink = $userLink->find('xpath', '../ancestor::tr//a[normalize-space(text())="Delete"]');
+        $deleteLink->click();
+    }
 }
