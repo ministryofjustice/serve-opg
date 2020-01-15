@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Alphagov\Notifications\Exception\ApiException;
 use App\Entity\User;
 use App\Form\PasswordChangeForm;
 use App\Form\PasswordResetForm;
@@ -116,7 +117,7 @@ class UserController extends AbstractController
             $user->setActivationToken(null);
             $this->em->flush($user);
 
-            $request->getSession()->getFlashBag()->add('info', 'Password changed. Please sign in using the new password');
+            $this->addFlash('info', 'Password changed. Please sign in using the new password');
 
             return $this->redirectToRoute('login');
         }
@@ -269,7 +270,20 @@ class UserController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->json(null);
+        $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
+        $user = $userRepo->find($id);
+
+        $userRepo->refreshActivationToken($user);
+
+        try {
+            $this->mailerSender->sendPasswordResetEmail($user);
+        } catch (ApiException $e) {
+            $this->addFlash('error', 'Activation email could not be sent');
+            return $this->redirectToRoute('view-user', ['id' => $user->getId()]);
+        }
+
+        $this->addFlash('success', 'Activation email resent');
+        return $this->redirectToRoute('view-user', ['id' => $user->getId()]);
     }
 
     /**
