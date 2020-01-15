@@ -20,6 +20,7 @@ up-prod: ## Brings the app up in prod mode - requires deps to be built
 
 	# Build app
 	docker-compose up -d --remove-orphans loadbalancer
+	docker-compose run --rm app php bin/console cache:clear --env=test
 
 up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
 	docker-compose -f docker-compose.local.yml -f docker-compose.yml build app
@@ -29,6 +30,7 @@ up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requ
 
 	# Build app
 	docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
+	docker-compose run --rm app php bin/console cache:clear --env=test
 
 up-test: ## Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
 	docker-compose -f docker-compose.test.yml -f docker-compose.yml build app
@@ -38,6 +40,7 @@ up-test: ## Brings the app up in test mode with profiler and xdebug disabled - r
 
 	# Build app
 	docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
+	docker-compose run --rm app php bin/console cache:clear --env=test
 
 phpunit-tests: ## Requires the app to be built and up before running
 	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests $(args)
@@ -60,7 +63,7 @@ build-deps: ## Runs through all steps required before the app can be brought up
 	@-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
 
 	# Vendor php dependencies
-	docker-compose run --rm composer
+	docker-compose run --rm app composer install
 
 	# Install javascript dependencies
 	docker-compose run --rm yarn

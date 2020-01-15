@@ -255,7 +255,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('User/add-confirmation.html.twig', [
-            'email' => $user->getEmail(),
+            'user' => $user
         ]);
     }
 

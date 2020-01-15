@@ -207,10 +207,139 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-
         $client->request(Request::METHOD_GET, "/users/${wrongUserId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
+    }
+
+    /**
+     * /add-confirmed - me
+     *  - testAddConfirmationContainsEmail
+     *  - testAddConfirmationLinksToDetails
+     */
+
+    public function testAddConfirmationContainsEmail()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
+
+        $addedUserId = $addedUser->getId();
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $client->request(Request::METHOD_GET, "/users/${addedUserId}/confirmation", [], [], ['HTTP_REFERER' => '/users']);
+
+        self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        self::assertStringContainsString('addedUser@digital.justice.gov.uk', $client->getResponse()->getContent());
+    }
+
+    public function testAddConfirmationLinksToDetails()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
+
+        $addedUserId = $addedUser->getId();
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/confirmation", [], [], ['HTTP_REFERER' => '/users']);
+
+        $activationTextLink = $crawler->selectLink('resend the activation email')->link()->getUri();
+        self::assertStringContainsString("/users/${addedUserId}/confirmation", $activationTextLink);
+    }
+
+    /**
+     * /view - me
+     *  - testUserDetailsCorrect
+     *  - testUserDetailsLinkToEdit
+     *  - testUserDetailsShowActivationReminder
+     */
+
+    public function testUserDetailsCorrect()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $addedUser = UserTestHelper::createUser('addedUser@digital.justice.gov.uk');
+        $addedUser->setFirstName('Added');
+        $addedUser->setLastName('User');
+        $addedUser->setPhoneNumber('01211234567');
+
+        $this->persistEntity($addedUser);
+
+        $addedUserId = $addedUser->getId();
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
+
+        self::assertStringContainsString("Added User", $crawler->html());
+        self::assertStringContainsString("01211234567", $crawler->html());
+        self::assertStringContainsString("Case manager", $crawler->html());
+    }
+
+    public function testUserDetailsLinkToEdit()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
+
+        $addedUserId = $addedUser->getId();
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
+
+        $activationTextLink = $crawler->selectLink('Edit details')->link()->getUri();
+        self::assertStringContainsString("/users/${addedUserId}/edit", $activationTextLink);
+    }
+
+    public function testUserDetailsShowActivationReminder()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+        /** @var User $addedUser */
+        $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
+        $addedUser->setLastLoginAt(null);
+        $addedUser->setActivationToken('Abc123');
+
+        $addedUserId = $addedUser->getId();
+
+        /** @var Client $client */
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
+
+        self::assertEquals('This user has not activated their account. To resend activation email click here', $this->getService('session')->getFlashBag()->get('warn')[0]);
+
+        $resendActivationTextLink = $crawler->selectLink('here')->link()->getUri();
+        self::assertStringContainsString("/users/${addedUserId}/confirmation", $resendActivationTextLink);
     }
 }
