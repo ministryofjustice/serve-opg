@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Alphagov\Notifications\Exception\ApiException;
 use App\Entity\User;
 use App\Form\PasswordChangeForm;
 use App\Form\PasswordResetForm;
@@ -116,12 +117,13 @@ class UserController extends AbstractController
             $user->setActivationToken(null);
             $this->em->flush($user);
 
-            $request->getSession()->getFlashBag()->add('info', 'Password changed. Please sign in using the new password');
+            $this->addFlash('info', 'Password changed. Please sign in using the new password');
 
             return $this->redirectToRoute('login');
         }
 
         return $this->render('User/password-change.html.twig', [
+            'isNewUser' => is_null($user->getLastLoginAt()),
             'form' => $form->createView(),
         ]);
     }
@@ -257,6 +259,32 @@ class UserController extends AbstractController
         return $this->render('User/add-confirmation.html.twig', [
             'user' => $user
         ]);
+    }
+
+    /**
+     * @Route("/users/{id}/resend-activation", name="resend-activation-user", methods={"GET"})
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function resendActivationUser(Request $request, int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
+        $user = $userRepo->find($id);
+
+        $userRepo->refreshActivationToken($user);
+
+        try {
+            $this->mailerSender->sendPasswordResetEmail($user);
+        } catch (ApiException $e) {
+            $this->addFlash('error', 'Activation email could not be sent');
+            return $this->redirectToRoute('view-user', ['id' => $user->getId()]);
+        }
+
+        $this->addFlash('success', 'Activation email resent');
+        return $this->redirectToRoute('view-user', ['id' => $user->getId()]);
     }
 
     /**

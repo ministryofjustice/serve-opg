@@ -17,9 +17,7 @@ class UserForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', TextType::class, [
-                'help' => 'An activation email will be sent to the provided email address'
-            ])
+            ->add('email', TextType::class)
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('phoneNumber', TextType::class, [
