@@ -3,10 +3,14 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client;
+use Alphagov\Notifications\Exception\ApiException;
+use GuzzleHttp\Psr7\Response;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class NotifyClientMock extends Client
 {
+    public static $failNext = false;
+
     public function __construct(array $config)
     {
         return true;
@@ -14,6 +18,11 @@ class NotifyClientMock extends Client
 
     public function sendEmail($emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL)
     {
+        if (self::$failNext) {
+            throw new ApiException('Error sending email', 1, ['errors' => []], new Response());
+            self::$failNext = false;
+        }
+
         $cache = new FilesystemAdapter();
         $emailsItem = $cache->getItem('emails');
 
