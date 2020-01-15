@@ -419,4 +419,31 @@ class UserControllerTest extends ApiWebTestCase
         self::assertCount(1, $this->getService('session')->getFlashBag()->peekAll());
         self::assertEquals('Activation email could not be sent', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
+
+    public function passwordResetData()
+    {
+        return [
+            [null, 'Set your password', 'To set your password,'],
+            [new DateTime(), 'Reset your password', 'To reset your password,'],
+        ];
+    }
+
+    /**
+     * @dataProvider passwordResetData
+     */
+    public function testPasswordResetChangesContent($lastLoginAt, $expectedTitle, $expectedContent)
+    {
+        $token = uniqid();
+
+        $user = UserTestHelper::createUser('test-reset@digital.justice.gov.uk');
+        $user->setActivationToken($token);
+        $user->setLastLoginAt($lastLoginAt);
+        $this->persistEntity($user);
+
+        $client = ApiWebTestCase::getService('test.client');
+        $crawler = $client->request(Request::METHOD_GET, "/user/password-reset/change/$token");
+
+        self::assertStringContainsString($expectedTitle, $crawler->filter('title')->text());
+        self::assertStringContainsString($expectedContent, $crawler->filter('body')->text());
+    }
 }
