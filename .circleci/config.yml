@@ -34,7 +34,7 @@ jobs:
             rm -rf symfony.lock
 
             # Vendor php dependencies
-            docker-compose run --rm app composer install
+            docker-compose run --rm app composer install --no-interaction
 
             # Install js dependencies
             docker-compose run --rm yarn install
