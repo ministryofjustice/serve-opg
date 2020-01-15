@@ -7,9 +7,7 @@ use App\Service\NotifyClientMock;
 use App\Tests\ApiWebTestCase;
 use App\TestHelpers\UserTestHelper;
 use DateTime;
-use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
