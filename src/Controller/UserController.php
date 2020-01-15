@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Throwable;
+use Twig\Environment;
 
 class UserController extends AbstractController
 {
@@ -39,16 +40,23 @@ class UserController extends AbstractController
     private $encoder;
 
     /**
+     * @var Environment
+     */
+    private $twig;
+
+    /**
      * UserController constructor.
      * @param EntityManager $em
      * @param MailSender $mailerSender
      * @param UserPasswordEncoderInterface $encoder
+     * @param Environment $twig
      */
-    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder)
+    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder, Environment $twig)
     {
         $this->em = $em;
         $this->mailerSender = $mailerSender;
         $this->encoder = $encoder;
+        $this->twig = $twig;
     }
 
     /**
@@ -167,6 +175,16 @@ class UserController extends AbstractController
             return $this->redirectToRoute('view-users');
         }
 
+        if ($user->getActivationToken() && $user->getLastLoginAt() == null) {
+            $activationLink = $this->generateUrl('resend-activation-user', ['id' => $user->getId()]);
+
+            $flashMessage = $this->twig->render(
+                'FlashMessages\activate-user-reminder.html.twig',
+                ['activationLink' => $activationLink]
+            );
+
+            $this->addFlash('warn', $flashMessage);
+        }
         return $this->render('User/view.html.twig', [
             'user' => $user
         ]);

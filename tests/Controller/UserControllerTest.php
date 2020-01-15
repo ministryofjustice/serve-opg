@@ -584,11 +584,11 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
+        $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
 
-        self::assertEquals('This user has not activated their account. To resend activation email click here', $this->getService('session')->getFlashBag()->get('warn')[0]);
-
-        $resendActivationTextLink = $crawler->selectLink('here')->link()->getUri();
-        self::assertStringContainsString("/users/${addedUserId}/confirmation", $resendActivationTextLink);
+        self::assertRegExp(
+            '^This user has not activated their account. To resend an activation email click <a href="\/users\/[0-9]*\/resend-activation">here<\/a>\..*^',
+            $this->getService('session')->getFlashBag()->get('warn')[0]
+        );
     }
 }
