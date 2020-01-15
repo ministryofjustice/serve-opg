@@ -213,7 +213,3 @@ services:
     App\DataFixtures\BehatFixtures:
         arguments:
             $fixtureHelper: '@App\TestHelpers\FixtureTestHelper'
-
-    App\Controller\UserController:
-        arguments:
-            $twig: '@twig'

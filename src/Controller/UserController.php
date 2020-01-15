@@ -40,23 +40,16 @@ class UserController extends AbstractController
     private $encoder;
 
     /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
      * UserController constructor.
      * @param EntityManager $em
      * @param MailSender $mailerSender
      * @param UserPasswordEncoderInterface $encoder
-     * @param Environment $twig
      */
-    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder, Environment $twig)
+    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
         $this->mailerSender = $mailerSender;
         $this->encoder = $encoder;
-        $this->twig = $twig;
     }
 
     /**
@@ -178,7 +171,7 @@ class UserController extends AbstractController
         if ($user->getActivationToken() && $user->getLastLoginAt() == null) {
             $activationLink = $this->generateUrl('resend-activation-user', ['id' => $user->getId()]);
 
-            $flashMessage = $this->twig->render(
+            $flashMessage = $this->renderView(
                 'FlashMessages\activate-user-reminder.html.twig',
                 ['activationLink' => $activationLink]
             );
