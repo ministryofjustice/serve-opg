@@ -13,6 +13,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends ApiWebTestCase
 {
+    /**
+     * @return Client
+     */
+    public function createAdminUserAndAuthenticate()
+    {
+        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
+
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => 'Abcd1234'
+            ]
+        );
+
+        return $client;
+    }
+
     public function adminURLProvider()
     {
         return [
@@ -58,8 +75,6 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testListUsers()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
         $user = UserTestHelper::createAdminUser('testUser@digital.justice.gov.uk');
 
         $loginDate = new DateTime('2019-07-01');
@@ -67,12 +82,7 @@ class UserControllerTest extends ApiWebTestCase
         $user->setLastLoginAt($loginDate);
         $this->persistEntity($user);
 
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $crawler = $client->request(Request::METHOD_GET, "/users");
 
@@ -89,7 +99,7 @@ class UserControllerTest extends ApiWebTestCase
 
         self::assertNull($user->getLastLoginAt());
 
-        $client = ApiWebTestCase::getService('test.client');;
+        $client = ApiWebTestCase::getService('test.client');
         $crawler = $client->request(Request::METHOD_GET, "/login");
         $form = $crawler->selectButton('Sign in')->form(
             ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
@@ -127,11 +137,7 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testNewUserCreated()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request('GET', '/users/add');
         $client->submitForm('Add user', [
@@ -151,11 +157,7 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testNewUserFieldsRequired()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $crawler = $client->request('GET', '/users/add');
 
@@ -176,11 +178,7 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testNewUserRequiresEmailFormat()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request('GET', '/users/add');
         $crawler = $client->submitForm('Add user', [
@@ -193,11 +191,7 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testCannotCreateUserWithMissingFields()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $email = 'michele.gallington@digital.justice.gov.uk';
 
@@ -213,11 +207,7 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testCannotCreateUserWithExistingEmail()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request('GET', '/users/add');
         $crawler = $client->submitForm('Add user', [
@@ -234,11 +224,7 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testActivationEmailSentToNewUser()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $email = 'velia.santalucia@digital.justice.gov.uk';
 
@@ -255,13 +241,10 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testEditUser()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $user = $this->persistEntity(UserTestHelper::createUser('test@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request('GET', "/users/$userId/edit");
         $client->submitForm('Update user', [
@@ -281,14 +264,11 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testCannotEditUserToExistingEmail()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $this->persistEntity(UserTestHelper::createUser('existing-email@digital.justice.gov.uk'));
         $user = $this->persistEntity(UserTestHelper::createUser('test@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request('GET', "/users/$userId/edit");
         $crawler = $client->submitForm('Update user', [
@@ -303,13 +283,10 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserEditDoesntWarnActivationEmail()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $user = $this->persistEntity(UserTestHelper::createUser('test@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $crawler = $client->request('GET', "/users/$userId/edit");
         $emailFormGroup = $crawler->filter('#form-group-email');
@@ -319,16 +296,10 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testDeleteUser()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $user = $this->persistEntity(UserTestHelper::createUser('user@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request(Request::METHOD_GET, "/users/${userId}/delete", [], [], ['HTTP_REFERER' => '/users']);
 
@@ -343,7 +314,6 @@ class UserControllerTest extends ApiWebTestCase
         $adminUser = $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $userId = $adminUser->getId();
 
-        /** @var Client $client */
         $client = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
@@ -364,7 +334,6 @@ class UserControllerTest extends ApiWebTestCase
         $adminUser = $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $wrongUserId = $adminUser->getId() + 10;
 
-        /** @var Client $client */
         $client = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
@@ -380,13 +349,10 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testResendsActivationEmail()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $user = $this->persistEntity(UserTestHelper::createUser('test-activation@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request(Request::METHOD_GET, "/users/$userId/resend-activation");
 
@@ -395,13 +361,10 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserInformedIfEmailFails()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $user = $this->persistEntity(UserTestHelper::createUser('test-activation@digital.justice.gov.uk'));
         $userId = $user->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [ 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234' ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         NotifyClientMock::$failNext = true;
         $client->request(Request::METHOD_GET, "/users/$userId/resend-activation");
@@ -439,18 +402,11 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testAddConfirmationContainsEmail()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
 
         $addedUserId = $addedUser->getId();
 
-        /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request(Request::METHOD_GET, "/users/${addedUserId}/confirmation", [], [], ['HTTP_REFERER' => '/users']);
 
@@ -460,18 +416,11 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testAddConfirmationLinksToDetails()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
 
         $addedUserId = $addedUser->getId();
 
-        /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/confirmation", [], [], ['HTTP_REFERER' => '/users']);
 
@@ -481,8 +430,6 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserDetailsCorrect()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
-
         $addedUser = UserTestHelper::createUser('addedUser@digital.justice.gov.uk');
         $addedUser->setFirstName('Added');
         $addedUser->setLastName('User');
@@ -492,13 +439,7 @@ class UserControllerTest extends ApiWebTestCase
 
         $addedUserId = $addedUser->getId();
 
-        /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
 
@@ -509,18 +450,10 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserDetailsLinkToEdit()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
-
         $addedUserId = $addedUser->getId();
 
-        /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $crawler = $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
 
@@ -530,7 +463,6 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserDetailsShowActivationReminder()
     {
-        $this->persistEntity(UserTestHelper::createAdminUser('admin@digital.justice.gov.uk'));
         /** @var User $addedUser */
         $addedUser = $this->persistEntity(UserTestHelper::createUser('addedUser@digital.justice.gov.uk'));
         $addedUser->setLastLoginAt(null);
@@ -538,13 +470,7 @@ class UserControllerTest extends ApiWebTestCase
 
         $addedUserId = $addedUser->getId();
 
-        /** @var Client $client */
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
 
