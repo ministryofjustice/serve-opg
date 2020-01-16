@@ -8,6 +8,7 @@ RUN apk add --no-cache postgresql-dev \
 RUN apk add --no-cache \
     libzip-dev \
     zip \
+    su-exec \
 && docker-php-ext-configure zip --with-libzip \
 && docker-php-ext-install zip
 
@@ -42,7 +43,7 @@ RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
-  && php bin/console doctrine:migrations:migrate --no-interaction \
+  && su-exec www-data php bin/console doctrine:migrations:migrate --no-interaction \
   && chown -R www-data var \
   && php-fpm
 
