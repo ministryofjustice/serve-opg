@@ -9,8 +9,6 @@ App\Entity\User:
             message: Enter an email address
         - Email:
             message: The email {{ value }} is not a valid email.
-            checkMX: false
-            checkHost: false
     firstName:
         - NotBlank:
             message: Enter a first name
