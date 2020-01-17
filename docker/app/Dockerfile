@@ -8,7 +8,6 @@ RUN apk add --no-cache postgresql-dev \
 RUN apk add --no-cache \
     libzip-dev \
     zip \
-    su-exec \
 && docker-php-ext-configure zip --with-libzip \
 && docker-php-ext-install zip
 
