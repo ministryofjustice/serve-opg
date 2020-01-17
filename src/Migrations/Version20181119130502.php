@@ -12,21 +12,11 @@ final class Version20181119130502 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('INSERT INTO dc_user VALUES(9,\'gulled.hersi@justice.gov.uk\',\'set-me-up\')');
-        $this->addSql('INSERT INTO dc_user VALUES(10,\'jennifer.alleyne@justice.gov.uk\',\'set-me-up\')');
-        $this->addSql('INSERT INTO dc_user VALUES(11,\'sami.idris@justice.gov.uk\',\'set-me-up\')');
-        $this->addSql('INSERT INTO dc_user VALUES(12,\'kayne.hamilton@justice.gov.uk\',\'set-me-up\')');
-        $this->addSql('ALTER SEQUENCE dc_user_id_seq RESTART WITH 50');
+        // deprecated
     }
 
     public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DELETE FROM dc_user WHERE id = 9;');
-        $this->addSql('DELETE FROM dc_user WHERE id = 10;');
-        $this->addSql('DELETE FROM dc_user WHERE id = 11;');
-        $this->addSql('DELETE FROM dc_user WHERE id = 12;');
-
+        // deprecated
     }
 }
