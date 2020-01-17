@@ -69,6 +69,7 @@ services:
       - sirius-api
     volumes:
       - .:/var/www
+      - /var/www/var/
 
   sirius-api:
     image: stoplight/prism:v2.0.20

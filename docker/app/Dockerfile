@@ -43,7 +43,7 @@ RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
-  && su-exec www-data php bin/console doctrine:migrations:migrate --no-interaction \
+  && php bin/console doctrine:migrations:migrate --no-interaction \
   && chown -R www-data var \
   && php-fpm
 
