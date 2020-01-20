@@ -94,6 +94,11 @@ class BehatController extends AbstractController
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
             if (!$user) {
                 $user = new User($email);
+
+                if ($email === self::BEHAT_ADMIN_EMAIL) {
+                    $user->setRoles(['ROLE_ADMIN']);
+                }
+
                 $this->em->persist($user);
                 $ret = "User " . $email . " created";
             } else {
