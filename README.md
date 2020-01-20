@@ -48,7 +48,7 @@ docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:
 docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
 
 # Vendor php dependencies
-docker-compose run --rm composer
+docker-compose run --rm app composer install --no-interaction
 
 # Install javascript dependencies
 docker-compose run --rm yarn
