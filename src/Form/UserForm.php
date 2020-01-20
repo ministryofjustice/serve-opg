@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserForm extends AbstractType
 {
@@ -18,8 +19,16 @@ class UserForm extends AbstractType
     {
         $builder
             ->add('email', TextType::class)
-            ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
+            ->add('firstName', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'user.firstName.notBlank']),
+                ]
+            ])
+            ->add('lastName', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'user.lastName.notBlank']),
+                ]
+            ])
             ->add('phoneNumber', TextType::class, [
                 'required' => false,
             ])

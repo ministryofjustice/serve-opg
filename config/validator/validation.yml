@@ -9,12 +9,6 @@ App\Entity\User:
             message: Enter an email address
         - Email:
             message: The email {{ value }} is not a valid email.
-    firstName:
-        - NotBlank:
-            message: Enter a first name
-    lastName:
-        - NotBlank:
-            message: Enter a last name
 
 
 App\Entity\Order:
