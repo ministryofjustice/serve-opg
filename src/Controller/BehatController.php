@@ -24,8 +24,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class BehatController extends AbstractController
 {
-    const BEHAT_EMAIL = 'behat@digital.justice.gov.uk';
-    const BEHAT_ADMIN_EMAIL = 'behat+admin@digital.justice.gov.uk';
+    const BEHAT_USERS = [
+        [ 'email' => 'behat@digital.justice.gov.uk', 'admin' => false ],
+        [ 'email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false ],
+        [ 'email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
+    ];
     const BEHAT_PASSWORD = 'Abcd1234';
     // keep in sync with behat-cases.csv
     const BEHAT_CASE_NUMBER = '93559316';
@@ -90,13 +93,16 @@ class BehatController extends AbstractController
     {
         $this->securityChecks();
 
-        foreach ([self::BEHAT_EMAIL, self::BEHAT_ADMIN_EMAIL] as $email) {
+        foreach (self::BEHAT_USERS as $userDetails) {
+            $email = $userDetails['email'];
+            $isAdmin = $userDetails['admin'];
+
             // add user if not existing
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
             if (!$user) {
                 $user = new User($email);
 
-                if ($email === self::BEHAT_ADMIN_EMAIL) {
+                if ($isAdmin) {
                     $user->setRoles(['ROLE_ADMIN']);
                 }
 
@@ -122,11 +128,13 @@ class BehatController extends AbstractController
     {
         $this->securityChecks();
 
-        $user = $this->em->getRepository(User::class)->findOneByEmail('behat+newuser@digital.justice.gov.uk');
+        foreach (self::BEHAT_USERS as $userDetails) {
+            $user = $this->em->getRepository(User::class)->findOneByEmail($userDetails['email']);
 
-        if ($user) {
-            $entityManager->remove($user);
-            $entityManager->flush();
+            if ($user) {
+                $entityManager->remove($user);
+                $entityManager->flush();
+            }
         }
 
         return new Response('Test users reset');
@@ -164,9 +172,11 @@ class BehatController extends AbstractController
     {
         $this->securityChecks();
 
-        $this->userProvider->resetUsernameAttempts(self::BEHAT_EMAIL);
+        foreach (self::BEHAT_USERS as $user) {
+            $this->userProvider->resetUsernameAttempts($user['email']);
+        }
 
-        return new Response(self::BEHAT_EMAIL . " attempts reset done");
+        return new Response("attempts reset done");
     }
 
     /**
