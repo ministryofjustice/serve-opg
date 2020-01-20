@@ -26,7 +26,3 @@ admin7:
     email: stacey.cook@digital.justice.gov.uk
     password: Abcd1234
     roles: ['ROLE_ADMIN']
-admin8:
-    email: behat-admin@digital.justice.gov.uk
-    password: Abcd1234
-    roles: ['ROLE_ADMIN']
