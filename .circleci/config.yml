@@ -83,7 +83,7 @@ jobs:
           name: Build
           command: |
             # Vendor php dependencies
-            docker-compose run --rm composer
+            docker-compose run --rm app composer install --no-interaction
             # install js dependencies
             docker-compose run --rm yarn install
             # Generate static assets
