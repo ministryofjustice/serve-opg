@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% from 'Macros/_macros.html.twig' import notification %}
 {% form_theme form 'Form/govuk_frontend.html.twig' %}
 
 {% block htmlTitle %}Serve OPG{% endblock %}
@@ -18,8 +19,16 @@
         </div>
     </div>
 
+    {% if not isServiceAvailable %}
+        {{ notification('important', 'We cannot serve orders at the moment. All the information you’ve entered has been saved - please try to serve the order again later.\n\nYou can continue to upload order details as normal.') }}
+    {% endif %}
+
     {{ form_start(form) }}
-    {{ form_widget(form.submit, {'label': 'Serve OPG', 'attr': {'data-order-type': order.type }}) }}
+    {{ form_widget(form.submit, {
+        label: 'Serve OPG',
+        attr: {'data-order-type': order.type },
+        disabled: (not isServiceAvailable)
+    }) }}
     <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Back to summary</a>
 
     {{ form_end(form) }}
