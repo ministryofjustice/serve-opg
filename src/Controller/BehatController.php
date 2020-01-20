@@ -11,6 +11,7 @@ use App\Service\ClientService;
 use App\Service\OrderService;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
@@ -112,6 +113,23 @@ class BehatController extends AbstractController
         }
 
         return new Response($ret);
+    }
+
+    /**
+     * @Route("/reset-behat-test-users")
+     */
+    public function resetBehatTestUsersAction(EntityManagerInterface $entityManager)
+    {
+        $this->securityChecks();
+
+        $user = $this->em->getRepository(User::class)->findOneByEmail('behat+newuser@digital.justice.gov.uk');
+
+        if ($user) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        return new Response('Test users reset');
     }
 
     /**
