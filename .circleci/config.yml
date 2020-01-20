@@ -34,7 +34,7 @@ jobs:
             rm -rf symfony.lock
 
             # Vendor php dependencies
-            docker-compose run --rm composer
+            docker-compose run --rm app composer install --no-interaction
 
             # Install js dependencies
             docker-compose run --rm yarn install
@@ -59,7 +59,7 @@ jobs:
             docker-compose -f docker-compose.test.yml -f docker-compose.yml up --build -d loadbalancer
             docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
             docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
-            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --log-junit /app/tests/artifacts/phpunit/junit.xml
+            docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --log-junit /var/www/tests/artifacts/phpunit/junit.xml
       - run:
           name: Integration Test
           command: |

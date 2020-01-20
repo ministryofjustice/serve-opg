@@ -6,6 +6,7 @@
     <p class="debug-label">Custom: form_row</p>
     <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
         {{ form_label(form) }}
+        {{ form_help(form) }}
         {{ form_errors(form) }}
         {{ form_widget(form) }}
     </div>
@@ -52,6 +53,28 @@
         {%- endif -%}
     {%- endif -%}
 {%- endblock form_label -%}
+
+{# Help text #}
+{% block form_help %}
+    {%- if help is not empty -%}
+        {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' govuk-hint')|trim}) -%}
+        <span id="{{ id }}-hint"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+            {%- if translation_domain is same as(false) -%}
+                {%- if help_html is same as(false) -%}
+                    {{- help -}}
+                {%- else -%}
+                    {{- help|raw -}}
+                {%- endif -%}
+            {%- else -%}
+                {%- if help_html is same as(false) -%}
+                    {{- help|trans(help_translation_parameters, translation_domain) -}}
+                {%- else -%}
+                    {{- help|trans(help_translation_parameters, translation_domain)|raw -}}
+                {%- endif -%}
+            {%- endif -%}
+        </span>
+    {%- endif -%}
+{% endblock %}
 
 {% block _deputy_form_dateOfBirth_row %}
     <p class="debug-label">Custom: _deputy_form_dateOfBirth_row</p>

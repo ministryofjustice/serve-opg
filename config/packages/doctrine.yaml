@@ -21,11 +21,11 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"
-        auto_mapping: false
+        auto_mapping: true
         mappings:
             commonEntities:
                 type: annotation
-                dir: "%kernel.root_dir%/../src/Entity"
+                dir: "%kernel.project_dir%/src/Entity"
                 prefix: App\Entity
                 is_bundle: false
         dql:

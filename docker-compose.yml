@@ -10,9 +10,9 @@ services:
       - AWS_SECRET_ACCESS_KEY=bar
     entrypoint:
       - aws
-    working_dir: /app
+    working_dir: /var/www
     volumes:
-      - .:/app
+      - .:/var/www
     depends_on:
       - localstack
 
@@ -68,7 +68,8 @@ services:
       - postgres
       - sirius-api
     volumes:
-      - .:/app
+      - .:/var/www
+      - /var/www/var/
 
   sirius-api:
     image: stoplight/prism:v2.0.20
@@ -90,35 +91,29 @@ services:
 
   postgres:
     image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: serve-opg
       POSTGRES_USER: serve-opg
       POSTGRES_PASSWORD: dcdb2018!
 
-  composer:
-    image: composer
-    volumes:
-      - .:/app
-    command:
-      - install
-      - --no-interaction
-
   yarn:
     image: node:12.3-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
-    working_dir: /app
+    working_dir: /var/www
     volumes:
-      - .:/app
+      - .:/var/www
     entrypoint: ["yarn"]
 
   behat:
     image: php:7.2-fpm-alpine
     volumes:
-      - .:/app
+      - .:/var/www
       - ./features/screenshots:/tmp/behat
-    working_dir: /app
+    working_dir: /var/www
     entrypoint:
       - vendor/bin/behat
       - -c
@@ -133,34 +128,11 @@ services:
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
 
-  phpunit:
-#   Reverting to php 7.2 due to bug in 7.3 with mime types https://bugs.php.net/bug.php?id=78028
-    image: prooph/composer:7.2
-    volumes:
-      - .:/app
-    working_dir: /app
-    entrypoint:
-      - bin/phpunit
-      - --verbose
-      - tests
-      - --log-junit
-      - /app/tests/artifacts/phpunit/junit.xml
-    environment:
-      - DC_S3_ENDPOINT=http://localstack:4572
-      - DYNAMODB_ENDPOINT=http://localstack:4569
-      - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
-      - AWS_ACCESS_KEY_ID=foo
-      - AWS_SECRET_ACCESS_KEY=bar
-      - APP_ENV=test
-    depends_on:
-      - loadbalancer
-      - postgres
-
   qa:
     image: jakzal/phpqa:alpine
     volumes:
-      - .:/app:ro
-    working_dir: /app
+      - .:/var/www:ro
+    working_dir: /var/www
 
   waitforit:
     build:
