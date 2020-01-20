@@ -1,7 +1,7 @@
 Feature: User management
 
   Scenario: Add new user
-    Given I log in as "behat-admin@digital.justice.gov.uk" with password "Abcd1234"
+    Given I log in as "behat+admin@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/users"
     And I follow "Add new user"
     And I fill in the following:
@@ -19,7 +19,7 @@ Feature: User management
     And I should see "07123456789"
 
   Scenario: Edit user
-    Given I log in as "behat-admin@digital.justice.gov.uk" with password "Abcd1234"
+    Given I log in as "behat+admin@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/users"
     And I follow "normal.user@digital.justice.gov.uk"
     And I follow "Edit details"
@@ -36,7 +36,7 @@ Feature: User management
     Then I should see "Admin"
 
   Scenario: Delete user
-    Given I log in as "behat-admin@digital.justice.gov.uk" with password "Abcd1234"
+    Given I log in as "behat+admin@digital.justice.gov.uk" with password "Abcd1234"
     When I go to "/users"
     And I delete the user "Andreas Standaert"
     Then the response status code should be 200

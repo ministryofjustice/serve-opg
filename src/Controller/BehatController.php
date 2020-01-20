@@ -24,6 +24,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class BehatController extends AbstractController
 {
     const BEHAT_EMAIL = 'behat@digital.justice.gov.uk';
+    const BEHAT_ADMIN_EMAIL = 'behat+admin@digital.justice.gov.uk';
     const BEHAT_PASSWORD = 'Abcd1234';
     // keep in sync with behat-cases.csv
     const BEHAT_CASE_NUMBER = '93559316';
@@ -88,20 +89,27 @@ class BehatController extends AbstractController
     {
         $this->securityChecks();
 
-        // add user if not existing
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => self::BEHAT_EMAIL]);
-        if (!$user) {
-            $user = new User(self::BEHAT_EMAIL);
-            $this->em->persist($user);
-            $ret = "User " . self::BEHAT_EMAIL . " created";
-        } else {
-            $ret = "User " . self::BEHAT_EMAIL . " already present, password reset";
+        foreach ([self::BEHAT_EMAIL, self::BEHAT_ADMIN_EMAIL] as $email) {
+            // add user if not existing
+            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+            if (!$user) {
+                $user = new User($email);
+
+                if ($email === self::BEHAT_ADMIN_EMAIL) {
+                    $user->setRoles(['ROLE_ADMIN']);
+                }
+
+                $this->em->persist($user);
+                $ret = "User " . $email . " created";
+            } else {
+                $ret = "User " . $email . " already present, password reset";
+            }
+
+            $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
+            $user->setPassword($encodedPassword);
+
+            $this->em->flush($user);
         }
-
-        $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
-        $user->setPassword($encodedPassword);
-
-        $this->em->flush($user);
 
         return new Response($ret);
     }

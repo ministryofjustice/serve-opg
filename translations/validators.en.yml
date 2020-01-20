@@ -14,6 +14,10 @@ document:
          maxSizeMessage: "The file you selected to upload is too large. Please check your file size is less than 20Mb"
          mimeTypesMessage: "Please upload a valid file type. Supported file types include PDF, JPG, PNG, TIF and Word docs"
 user:
+   firstName:
+      notBlank: Enter a first name
+   lastName:
+      notBlank: Enter a last name
    password:
       doesNotMatch: Passwords do not match
       notBlank: "You can't leave this blank: please enter a password"
