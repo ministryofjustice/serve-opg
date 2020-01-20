@@ -14,6 +14,13 @@ consumes:
 produces:
   - application/json
 paths:
+  /:
+    summary: healthcheck
+    description: >
+      **NOTE** this endpoint is not guaranteed in the upstream contract, but is added locally as it's essential functionality
+    get:
+      responses:
+        200:
   /auth/login:
     summary: log in
     description: >
