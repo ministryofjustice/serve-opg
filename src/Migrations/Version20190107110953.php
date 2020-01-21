@@ -12,15 +12,11 @@ final class Version20190107110953 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('INSERT INTO dc_user VALUES(14,\'aidan.marlin@digital.justice.gov.uk\',\'set-me-up\')');
-
+        // deprecated
     }
 
     public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DELETE FROM dc_user WHERE id = 14;');
-
+        // deprecated
     }
 }
