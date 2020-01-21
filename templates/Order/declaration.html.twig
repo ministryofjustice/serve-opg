@@ -9,17 +9,17 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <p>You can now serve OPG with the deputyship order.</p>
+    {% if isServiceAvailable %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <p>You can now serve OPG with the deputyship order.</p>
 
-            <p>By clicking 'Serve OPG' you are confirming that, to the best of your knowledge, the information you're providing is correct.</p>
+                <p>By clicking 'Serve OPG' you are confirming that, to the best of your knowledge, the information you're providing is correct.</p>
 
-            <p class="govuk-!-font-weight-bold">You will not be able to change this order once you have clicked 'Serve OPG'.</p>
+                <p class="govuk-!-font-weight-bold">You will not be able to change this order once you have clicked 'Serve OPG'.</p>
+            </div>
         </div>
-    </div>
-
-    {% if not isServiceAvailable %}
+    {% else %}
         {{ notification('important', 'We cannot serve orders at the moment. All the information you’ve entered has been saved - please try to serve the order again later.\n\nYou can continue to upload order details as normal.') }}
     {% endif %}
 
