@@ -2,7 +2,7 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\OrderHw;
+use App\Entity\Order;
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
 use App\Service\DocumentReaderService;
@@ -11,8 +11,6 @@ use App\Service\SiriusService;
 use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
 use Doctrine\ORM\EntityManager;
-use Exception;
-use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -39,6 +37,20 @@ class OrderServiceTest extends WebTestCase
         $this->em = $this->prophesize(EntityManager::class);
         $this->siriusService = $this->prophesize(SiriusService::class);
         $this->documentReader = new DocumentReaderService();
+    }
+
+    public function testAvailabilitySuccess()
+    {
+        $this->siriusService->ping()->shouldBeCalled()->willReturn(true);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        self::assertEquals(true, $sut->isAvailable());
+    }
+
+    public function testAvailabilityFailure()
+    {
+        $this->siriusService->ping()->shouldBeCalled()->willReturn(false);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        self::assertEquals(false, $sut->isAvailable());
     }
 
     /**
@@ -242,5 +254,35 @@ class OrderServiceTest extends WebTestCase
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
         self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
+    }
+
+    public function testWontServeIfNotReady()
+    {
+        /** @var Order+ObjectProphecy $order */
+        $order = $this->prophesize(Order::class);
+        $order->readyToServe()->shouldBeCalled()->willReturn(false);
+
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Order not ready to be served');
+
+        $sut->serve($order->reveal());
+    }
+
+    public function testWontServeIfSiriusUnavailable()
+    {
+        /** @var Order+ObjectProphecy $order */
+        $order = $this->prophesize(Order::class);
+        $order->readyToServe()->shouldBeCalled()->willReturn(true);
+
+        $this->siriusService->ping()->shouldBeCalled()->willReturn(false);
+
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Sirius is currently unavilable');
+
+        $sut->serve($order->reveal());
     }
 }

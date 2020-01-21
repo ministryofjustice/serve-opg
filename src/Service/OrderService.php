@@ -51,10 +51,19 @@ REGEX;
         $this->documentReader = $documentReader;
     }
 
+    public function isAvailable(): bool
+    {
+        return $this->siriusService->ping();
+    }
+
     public function serve(Order $order)
     {
         if (!$order->readyToServe()) {
             throw new \RuntimeException("Order not ready to be served");
+        }
+
+        if (!$this->isAvailable()) {
+            throw new \RuntimeException('Sirius is currently unavilable');
         }
 
         // Make API call to Sirius

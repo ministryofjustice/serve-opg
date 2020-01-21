@@ -2,16 +2,10 @@
 
 namespace App\Service;
 
-use App\Controller\BehatController;
 use App\Entity\Client;
 use App\Entity\Deputy;
 use App\Entity\Document;
 use App\Entity\Order;
-use App\Entity\User;
-use Application\Factory\GuzzleClient;
-use Aws\CommandPool;
-use Aws\Exception\AwsException;
-use Aws\ResultInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
@@ -21,10 +15,10 @@ use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
 use App\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Aws\SecretsManager\SecretsManagerClient;
+use Throwable;
 
 class SiriusService
 {
@@ -65,10 +59,10 @@ class SiriusService
     private $siriusApiEmail;
 
     private $siriusApiPassword;
-  
+
     /**
      * SiriusService constructor.
-     * 
+     *
      * @param EntityManager $em
      * @param ClientInterface $httpClient  Used for Sirius API call
      * @param StorageInterface $S3storage
@@ -191,18 +185,22 @@ class SiriusService
 
     /**
      * Ping Sirius
+     * @return bool
      */
-    public function ping()
+    public function ping(): bool
     {
         try {
             $this->httpClient->get('/', ['connect_timeout' => 3.14]);
+            return true;
         } catch (ClientException $e) {
             $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
         } catch (ServerException $e) {
             $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
-        } catch (ConnectException $e) {
-            return 'unavailable';
+        } catch (Throwable $e) {
+            return false;
         }
+
+        return false;
     }
 
 

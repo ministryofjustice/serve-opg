@@ -48,7 +48,7 @@
                     <p>{{ message.body | trans }}</p>
                 {% endif %}
             {%  else %}
-                <p>{{ message | trans }}</p>
+                <p>{{ message | trans | nl2br }}</p>
             {% endif %}
         </div>
     </div>

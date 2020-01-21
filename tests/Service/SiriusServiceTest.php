@@ -42,6 +42,40 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockSecretsManager = $this->prophesize(SecretsManagerClient::class);
     }
 
+    public function testPingSuccess()
+    {
+        $this->mockHttpClient->get('/', Argument::cetera())->shouldBeCalled()->willReturn(new Response());
+
+        $this->sut = new SiriusService(
+            $this->mockEntityManager->reveal(),
+            $this->mockHttpClient->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockSecretsManager->reveal(),
+            null,
+            null
+        );
+
+        $this->assertEquals($this->sut->ping(), true);
+    }
+
+    public function testPingFailure()
+    {
+        $this->mockHttpClient->get('/', Argument::cetera())->shouldBeCalled()->willThrow(new \RuntimeException());
+
+        $this->sut = new SiriusService(
+            $this->mockEntityManager->reveal(),
+            $this->mockHttpClient->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockSecretsManager->reveal(),
+            null,
+            null
+        );
+
+        $this->assertEquals($this->sut->ping(), false);
+    }
+
     public function testServeOrderOK()
     {
         $expectedCourtReference = '1234512345';
@@ -88,7 +122,7 @@ class SiriusServiceTest extends MockeryTestCase
         $documents = $order->getDocuments();
 
         $this->mockS3Storage->moveDocuments($documents)->shouldBeCalled()->willReturn($documents);
-        
+
         $this->mockEntityManager->flush()->shouldBeCalled();
 
         $expectedPayload = [
