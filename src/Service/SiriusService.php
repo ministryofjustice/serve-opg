@@ -190,7 +190,7 @@ class SiriusService
     public function ping(): bool
     {
         try {
-            $this->httpClient->get('/', ['connect_timeout' => 3.14]);
+            $this->httpClient->get('/health-check/service-status', ['connect_timeout' => 3.14]);
             return true;
         } catch (ClientException $e) {
             $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
