@@ -14,7 +14,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /:
+  /health-check/service-status:
     summary: healthcheck
     description: >
       **NOTE** this endpoint is not guaranteed in the upstream contract, but is added locally as it's essential functionality
