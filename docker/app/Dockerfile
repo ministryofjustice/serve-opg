@@ -13,6 +13,7 @@ RUN apk add --no-cache \
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
+
 RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
   && chmod +x /usr/local/bin/waitforit
 
@@ -33,6 +34,7 @@ COPY . /var/www
 
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 COPY docker/app/xdebug.sh xdebug.sh
+COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN chmod 777 xdebug.sh
 
 ARG WITH_XDEBUG
