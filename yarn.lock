@@ -3817,9 +3817,9 @@ glogg@^1.0.0:
     sparkles "^1.0.0"
 
 govuk-frontend@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.2.0.tgz#0f935bee092929455bf7ed08bba40ab07ea72769"
-  integrity sha512-OtJozAGMEKFu195fNVVrQHUX7+znCkA4cXDKs4lgFlRQOTzN1ogT9010GBARuoTwbeL0VqQ8nerZYjVxH/wafA==
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.6.0.tgz#f0d1e6ec3c0eb33616adfdff28ff778fe518d085"
+  integrity sha512-wTxufdY8vFvKJ2EmmQKmarrQ7n30kzg+vvqgGib2dawl7c5Wst8dffkEJQpy9Zs99TE/yEEFgj0VUO4GRUO22A==
 
 graceful-fs@^4.0.0, graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.15"
