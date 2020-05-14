@@ -72,13 +72,17 @@ services:
       - /var/www/var/
 
   sirius-api:
-    image: stoplight/prism:v2.0.20
+    image: stoplight/prism:latest
+    ports:
+      - 4010:4010
     volumes:
       - .:/tmp
     command:
       - mock
-      - --spec
       - /tmp/api.public.v1.yaml
+      - -h
+      - 0.0.0.0
+      - --dynamic
 
   localstack:
     image: localstack/localstack:0.9.1
