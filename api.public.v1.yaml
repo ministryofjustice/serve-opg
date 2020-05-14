@@ -28,6 +28,11 @@ paths:
     post:
       responses:
         200:
+          headers:
+            X-XSRF-TOKEN:
+              schema:
+                type: string
+              description: CSRF token that is required for subsequent requests to Sirius
   /auth/logout:
     summary: log out
     description: >
