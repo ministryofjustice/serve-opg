@@ -136,13 +136,20 @@ class SiriusServiceTest extends MockeryTestCase
             'documents' => $expectedDocuments,
         ];
 
+        $this->mockHttpClient->post('auth/login', Argument::any())->shouldBeCalled()->willReturn(
+            new Response(200, ['X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA=='])
+        );
+
         $expectedPost = [
             'json' => $expectedPayload,
             'cookies' => new CookieJar(),
+            'headers' => [
+                'X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA=='
+            ]
         ];
 
         $this->mockHttpClient->post('api/public/v1/orders', $expectedPost)->shouldBeCalled()->willReturn(new Response());
-        $this->mockHttpClient->post('auth/login', Argument::any())->shouldBeCalled()->willReturn(new Response());
+
         $this->mockHttpClient->post('auth/logout')->shouldBeCalled()->willReturn(new Response());
         $this->mockHttpClient->getConfig('base_uri')->shouldBeCalled()->willReturn('FAKE-SIRIUS-URL');
 
