@@ -47,7 +47,7 @@ paths:
               schema:
                 type: string
           description: CSRF token that is required for subsequent requests to Sirius
-  /orders:
+  /api/public/v1/orders:
     post:
       description: Creates a new Client, order and deputies in Sirius and attaches a set of
         documents to the order. Each request must use a unique CASREC number
