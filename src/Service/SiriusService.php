@@ -129,7 +129,9 @@ class SiriusService
                         $order->setApiResponse(Psr7\str($apiResponse));
                     }
 
-                    $this->logger->debug('Sirius API response: statusCode: ' . $apiResponse->getStatusCode());
+                    if ($apiResponse->getStatusCode() !== 200) {
+                        $this->logger->error(Psr7\str($apiResponse));
+                    }
                 }
             }
 
@@ -197,12 +199,12 @@ class SiriusService
     public function ping(): bool
     {
         try {
-            $this->httpClient->get('/health-check/service-status', ['connect_timeout' => 3.14]);
+            $this->httpClient->get('health-check/service-status', ['connect_timeout' => 3.14]);
             return true;
         } catch (ClientException $e) {
-            $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
+            $this->logger->error('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode() . ' trying to reach ' . $e->getRequest()->getUri());
         } catch (ServerException $e) {
-            $this->logger->info('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode());
+            $this->logger->error('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode() . ' trying to reach ' . $e->getRequest()->getUri());
         } catch (Throwable $e) {
             return false;
         }
