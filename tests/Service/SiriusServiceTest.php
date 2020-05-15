@@ -44,7 +44,7 @@ class SiriusServiceTest extends MockeryTestCase
 
     public function testPingSuccess()
     {
-        $this->mockHttpClient->get('/health-check/service-status', Argument::cetera())->shouldBeCalled()->willReturn(new Response());
+        $this->mockHttpClient->get('health-check/service-status', Argument::cetera())->shouldBeCalled()->willReturn(new Response());
 
         $this->sut = new SiriusService(
             $this->mockEntityManager->reveal(),
