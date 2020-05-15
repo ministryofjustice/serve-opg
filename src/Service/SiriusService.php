@@ -117,7 +117,9 @@ class SiriusService
                     // Make API call
                     $this->logger->debug('Begin API call:');
 
-                    $apiResponse = $this->sendOrderToSirius($payload);
+                    $csrfToken = $apiResponse->getHeader('X-XSRF-TOKEN')[0];
+
+                    $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
                     if ($apiResponse instanceof Psr7\Response) {
                         $order->setApiResponse(Psr7\str($apiResponse));
@@ -210,13 +212,14 @@ class SiriusService
      * @param string $payload NOT JSON encoded. Client does this with 'json' parameter.
      * @return mixed|\Psr\Http\Message\ResponseInterface
      */
-    private function sendOrderToSirius($payload)
+    private function sendOrderToSirius($payload, string $csrfToken)
     {
         return $this->httpClient->post(
             'api/public/v1/orders',
             [
                 'json' => $payload,
-                'cookies' => $this->cookieJar
+                'cookies' => $this->cookieJar,
+                'headers' => ['X-XSRF-TOKEN' => $csrfToken]
             ]
         );
     }
