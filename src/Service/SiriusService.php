@@ -117,7 +117,11 @@ class SiriusService
                     // Make API call
                     $this->logger->debug('Begin API call:');
 
-                    $csrfToken = $apiResponse->getHeader('X-XSRF-TOKEN')[0];
+                    if ($apiResponse->hasHeader('X-XSRF-TOKEN')) {
+                        $csrfToken = $apiResponse->getHeader('X-XSRF-TOKEN')[0];
+                    } else {
+                        $csrfToken = urldecode($this->cookieJar->getCookieByName('XSRF-TOKEN')->getValue());
+                    }
 
                     $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
@@ -179,6 +183,7 @@ class SiriusService
         $this->logger->debug('Logging in to ' .
             $this->httpClient->getConfig('base_uri') .
             ', with params => ' . json_encode($params));
+
         return $this->httpClient->post(
             'auth/login',
             $params
