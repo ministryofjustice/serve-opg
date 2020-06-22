@@ -231,30 +231,31 @@ class OrderServiceTest extends WebTestCase
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
     }
 
-    /**
-     * @throws NoMatchesFoundException
-     * @throws WrongCaseNumberException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function testHydrateOrderFromDocument()
-    {
-        /** @var EntityManager|ObjectProphecy $em */
-        $em = $this->prophesize(EntityManager::class);
-        /** @var SiriusService|ObjectProphecy $siriusService */
-        $siriusService = $this->prophesize(SiriusService::class);
-        $documentReader = new DocumentReaderService();
-
-        $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
-
-        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-
-        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
-        $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
-
-        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
-        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
-    }
+// Removing due to: https://bugs.php.net/bug.php?id=77784
+//    /**
+//     * @throws NoMatchesFoundException
+//     * @throws WrongCaseNumberException
+//     * @throws \Doctrine\ORM\ORMException
+//     * @throws \Doctrine\ORM\OptimisticLockException
+//     */
+//    public function testHydrateOrderFromDocument()
+//    {
+//        /** @var EntityManager|ObjectProphecy $em */
+//        $em = $this->prophesize(EntityManager::class);
+//        /** @var SiriusService|ObjectProphecy $siriusService */
+//        $siriusService = $this->prophesize(SiriusService::class);
+//        $documentReader = new DocumentReaderService();
+//
+//        $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
+//
+//        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+//
+//        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+//        $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
+//
+//        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
+//        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
+//    }
 
     public function testWontServeIfNotReady()
     {

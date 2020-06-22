@@ -111,7 +111,8 @@ REGEX;
         if (!$order) {
             $order = new $orderClass($client, $madeAt, $issuedAt);
             $this->em->persist($order);
-            $this->em->flush($client);
+            $this->em->persist($client);
+            $this->em->flush();
         }
 
         return $order;

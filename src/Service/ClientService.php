@@ -32,7 +32,7 @@ class ClientService
         if (!$client) {
             $client = new Client($caseNumber, $clientName, new \DateTime());
             $this->em->persist($client);
-            $this->em->flush($client);
+            $this->em->flush();
         }
 
         return $client;

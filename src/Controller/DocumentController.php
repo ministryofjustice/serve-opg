@@ -113,7 +113,7 @@ class DocumentController extends AbstractController
                 $document->setFilename($fileName);
 
                 $this->em->persist($document);
-                $this->em->flush($document);
+                $this->em->flush();
 
                 $response["response"] = self::SUCCESS;
                 $response["id"] = $document->getId();

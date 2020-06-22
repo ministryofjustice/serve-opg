@@ -18,7 +18,8 @@ class UserRepository extends EntityRepository
         // if the token is still valid->
         $newToken = sha1(time(true) . $user->getId() . $user->getEmail() . rand(17, PHP_INT_MAX));
         $user->setActivationToken($newToken);
-        $this->_em->flush($user);
+        $this->_em->persist($user);
+        $this->_em->flush();
     }
 
     /**

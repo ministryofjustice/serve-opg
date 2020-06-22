@@ -37,10 +37,11 @@ class UserProviderTest extends MockeryTestCase
 
         // fail event
         $token = m::mock(TokenInterface::class)->shouldReceive('getUser')->andReturn($this->userName)->getMock();
-        $this->authenticationFailureEvent = m::mock(AuthenticationFailureEvent::class)
-            ->shouldReceive('getAuthenticationToken')
-            ->andReturn($token)
-            ->getMock();
+
+
+        $failureEvent = self::prophesize(AuthenticationFailureEvent::class);
+        $failureEvent->getAuthenticationToken()->willReturn($token);
+        $this->authenticationFailureEvent = $failureEvent->reveal();
 
         // success event
         $token = m::mock(TokenInterface::class)->shouldReceive('getUser')->andReturn($this->user)->getMock();

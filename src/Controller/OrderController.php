@@ -77,8 +77,8 @@ class OrderController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $this->em->flush($order);
+            $this->em->persist($order);
+            $this->em->flush();
 
             // Remove documents previously added that aren't applicable to SUBTYPE_INTERIM_ORDER
             if ($order->getSubType() === order::SUBTYPE_INTERIM_ORDER) {
@@ -212,7 +212,7 @@ class OrderController extends AbstractController
                 return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
             }
             $this->em->persist($order);
-            $this->em->flush($order);
+            $this->em->flush();
         }
 
         try {
@@ -271,7 +271,7 @@ MESSAGE;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($order);
-            $this->em->flush($order);
+            $this->em->flush();
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), 'showCOUpload' => false]);
         }
 

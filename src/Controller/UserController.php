@@ -116,7 +116,7 @@ class UserController extends AbstractController
             $newPassordEncoded = $this->encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($newPassordEncoded);
             $user->setActivationToken(null);
-            $this->em->flush($user);
+            $this->em->flush();
 
             $this->addFlash('info', 'Password changed. Please sign in using the new password');
 

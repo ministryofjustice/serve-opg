@@ -312,7 +312,7 @@ class User implements UserInterface, EquatableInterface, Serializable
     }
 
     /**
-     * @param string $lastName
+     * @param string $phoneNumber
      */
     public function setPhoneNumber(string $phoneNumber): void
     {
