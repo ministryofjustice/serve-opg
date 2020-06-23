@@ -76,7 +76,6 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->once()
             ->andReturn($this->response);
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessageRegExp( '/bad status code/' );
         $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testInvalidHttpLookupResponseBody()
@@ -88,7 +87,6 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
             ->once()
             ->andReturn($this->response);
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessageRegExp( '/invalid JSON/' );
         $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
     public function testValidHttpLookupResponse()
