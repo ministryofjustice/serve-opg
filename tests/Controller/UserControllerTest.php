@@ -8,6 +8,7 @@ use App\Tests\ApiWebTestCase;
 use App\TestHelpers\UserTestHelper;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -161,9 +162,9 @@ class UserControllerTest extends ApiWebTestCase
 
         $crawler = $client->request('GET', '/users/add');
 
-        self::assertEquals('required', $crawler->filter('#user_form_email')->attr('required'));
-        self::assertEquals('required', $crawler->filter('#user_form_firstName')->attr('required'));
-        self::assertEquals('required', $crawler->filter('#user_form_lastName')->attr('required'));
+        self::assertEquals('required', $crawler->filter('#user_form_email', false)->attr('required'));
+        self::assertEquals('required', $crawler->filter('#user_form_firstName', false)->attr('required'));
+        self::assertEquals('required', $crawler->filter('#user_form_lastName', false)->attr('required'));
         self::assertNull($crawler->filter('#user_form_phoneNumber')->attr('required'));
 
         $submittedCrawler = $client->submitForm('Add user', []);
@@ -173,7 +174,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('govuk-form-group--error', $submittedCrawler->filter('#form-group-lastName')->attr('class'));
         self::assertStringNotContainsString('govuk-form-group--error', $submittedCrawler->filter('#form-group-phoneNumber')->attr('class'));
 
-        self::assertStringContainsString('Enter an email address', $submittedCrawler->filter('#form-group-email')->text());
+        self::assertStringContainsString('Enter an email address', $submittedCrawler->filter('#form-group-email')->text(null, false));
     }
 
     public function testNewUserRequiresEmailFormat()
@@ -186,7 +187,7 @@ class UserControllerTest extends ApiWebTestCase
         ]);
 
         self::assertStringContainsString('govuk-form-group--error', $crawler->filter('#form-group-email')->attr('class'));
-        self::assertStringContainsString('The email "notanemail" is not a valid email', $crawler->filter('#form-group-email')->text());
+        self::assertStringContainsString('The email "notanemail" is not a valid email', $crawler->filter('#form-group-email')->text(null, false));
     }
 
     public function testCannotCreateUserWithMissingFields()
@@ -219,7 +220,7 @@ class UserControllerTest extends ApiWebTestCase
         $emailFormGroup = $crawler->filter('#form-group-email');
 
         self::assertStringContainsString('govuk-form-group--error', $emailFormGroup->attr('class'));
-        self::assertStringContainsString('Email address already in use', $emailFormGroup->text());
+        self::assertStringContainsString('Email address already in use', $emailFormGroup->text(null, false));
     }
 
     public function testActivationEmailSentToNewUser()
@@ -278,7 +279,7 @@ class UserControllerTest extends ApiWebTestCase
         $emailFormGroup = $crawler->filter('#form-group-email');
 
         self::assertStringContainsString('govuk-form-group--error', $emailFormGroup->attr('class'));
-        self::assertStringContainsString('Email address already in use', $emailFormGroup->text());
+        self::assertStringContainsString('Email address already in use', $emailFormGroup->text(null, false));
     }
 
     public function testUserEditDoesntWarnActivationEmail()
@@ -291,7 +292,7 @@ class UserControllerTest extends ApiWebTestCase
         $crawler = $client->request('GET', "/users/$userId/edit");
         $emailFormGroup = $crawler->filter('#form-group-email');
 
-        self::assertStringNotContainsString('An activation email will be sent to the provided email address', $emailFormGroup->text());
+        self::assertStringNotContainsString('An activation email will be sent to the provided email address', $emailFormGroup->text(null, false));
     }
 
     public function testDeleteUser()
@@ -394,10 +395,12 @@ class UserControllerTest extends ApiWebTestCase
         $this->persistEntity($user);
 
         $client = ApiWebTestCase::getService('test.client');
+
+        /** @var Crawler $crawler */
         $crawler = $client->request(Request::METHOD_GET, "/user/password-reset/change/$token");
 
-        self::assertStringContainsString($expectedTitle, $crawler->filter('title')->text());
-        self::assertStringContainsString($expectedContent, $crawler->filter('body')->text());
+        self::assertStringContainsString($expectedTitle, $crawler->filter('title')->text(null, false ));
+        self::assertStringContainsString($expectedContent, $crawler->filter('body')->text(null, false));
     }
 
     public function testAddConfirmationContainsEmail()

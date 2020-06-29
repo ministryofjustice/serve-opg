@@ -97,7 +97,7 @@ class DocumentService
         $this->deleteFromS3($document);
 
         $this->em->remove($document);
-        $this->em->flush($document);
+        $this->em->flush();
     }
 
     /**
@@ -151,7 +151,7 @@ class DocumentService
             $document->setFilename($fileName);
 
             $this->em->persist($document);
-            $this->em->flush($document);
+            $this->em->flush();
 
             $response["response"] = self::SUCCESS;
             $response["id"] = $document->getId();

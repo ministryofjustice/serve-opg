@@ -16,9 +16,10 @@ class UserRepository extends EntityRepository
     public function refreshActivationToken(User $user)
     {
         // if the token is still valid->
-        $newToken = sha1(time(true) . $user->getId() . $user->getEmail() . rand(17, PHP_INT_MAX));
+        $newToken = sha1(time() . $user->getId() . $user->getEmail() . rand(17, PHP_INT_MAX));
         $user->setActivationToken($newToken);
-        $this->_em->flush($user);
+        $this->_em->persist($user);
+        $this->_em->flush();
     }
 
     /**

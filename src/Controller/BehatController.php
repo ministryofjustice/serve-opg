@@ -115,7 +115,7 @@ class BehatController extends AbstractController
             $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
             $user->setPassword($encodedPassword);
 
-            $this->em->flush($user);
+            $this->em->flush();
         }
 
         return new Response($ret);

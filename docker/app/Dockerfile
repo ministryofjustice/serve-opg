@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.4-fpm-alpine
 
 # Install postgresql drivers
 RUN apk add --no-cache postgresql-dev \
@@ -8,7 +8,6 @@ RUN apk add --no-cache postgresql-dev \
 RUN apk add --no-cache \
     libzip-dev \
     zip \
-&& docker-php-ext-configure zip --with-libzip \
 && docker-php-ext-install zip
 
 # Add Waitforit to wait on db starting

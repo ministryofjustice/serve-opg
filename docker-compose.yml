@@ -28,6 +28,9 @@ services:
       - web
     environment:
       DHPARAM_GENERATION: 'false'
+      DEFAULT_HOST: localhost
+      CERT_NAME: web.crt
+
 
   web:
     build:
@@ -113,7 +116,7 @@ services:
     entrypoint: ["yarn"]
 
   behat:
-    image: php:7.2-fpm-alpine
+    image: php:7.4-fpm-alpine
     volumes:
       - .:/var/www
       - ./features/screenshots:/tmp/behat
