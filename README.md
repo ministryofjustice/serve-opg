@@ -88,7 +88,7 @@ The Makefile included with the project includes a few different options for buil
 docker-compose logs -f
 ```
 
-The app will be available locally at:
+The app will be available locally at :
 > [https://localhost](https://localhost/)
 
 
