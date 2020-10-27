@@ -1,10 +1,24 @@
-version: 2
+version: 2.1
+
+orbs:
+  dockerhub_helper:
+    orbs:
+      docker: circleci/docker@1.4.0
+    commands:
+      dockerhub_login:
+        steps:
+          - docker/install-docker-credential-helper
+          - docker/check:
+              docker-password: DOCKER_ACCESS_TOKEN
+              docker-username: DOCKER_USER
+
 jobs:
   test:
     machine:
-      image: "circleci/classic:201808-01"
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
+      - dockerhub_helper/dockerhub_login
       - restore_cache:
           keys:
             - vendor-{{ checksum "composer.lock" }}
@@ -79,6 +93,7 @@ jobs:
           fingerprints:
           - d5:8c:8f:b5:22:91:45:16:35:49:42:f2:2e:78:a0:5f
       - checkout
+      - dockerhub_helper/dockerhub_login
       - run:
           name: Build
           command: |
@@ -113,7 +128,6 @@ jobs:
             docker tag 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:latest 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:$CIRCLE_BUILD_NUM
             docker push 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:$CIRCLE_BUILD_NUM
             curl --silent --show-error --fail -X POST "https://circleci.com/api/v1.1/project/github/ministryofjustice/serve-opg-infrastructure/build?circle-token=${CIRCLE_API_TOKEN}"
-
 
 workflows:
   version: 2
