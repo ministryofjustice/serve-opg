@@ -160,15 +160,17 @@ abstract class Order
      * @param Client $client
      * @param DateTime $madeAt Date Order was first made, outside DC
      * @param DateTime $issuedAt Date Order was issues at
+     * @param string $createdAt
+     *
      * @throws Exception
      */
-    public function __construct(Client $client, DateTime $madeAt, DateTime $issuedAt)
+    public function __construct(Client $client, DateTime $madeAt, DateTime $issuedAt, string $createdAt = 'now')
     {
         $this->client = $client;
         $this->madeAt = $madeAt;
         $this->issuedAt = $issuedAt;
 
-        $this->createdAt = new DateTime();
+        $this->createdAt = new DateTime($createdAt);
         $this->deputies = new ArrayCollection();
         $this->documents = new ArrayCollection();
 

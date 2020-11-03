@@ -1,5 +1,5 @@
 ---
-version: '3'
+version: "3"
 
 services:
   aws:
@@ -27,10 +27,9 @@ services:
     depends_on:
       - web
     environment:
-      DHPARAM_GENERATION: 'false'
+      DHPARAM_GENERATION: "false"
       DEFAULT_HOST: localhost
       CERT_NAME: web.crt
-
 
   web:
     build:
@@ -54,14 +53,14 @@ services:
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
     env_file:
       - .env
-#    Setting here rather than .env to stop them being overwritten during build steps on prod
+      - .env.local
+    #    Setting here rather than .env to stop them being overwritten during build steps on prod
     environment:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
       - DC_BEHAT_CONTROLLER_ENABLED=1
       - DC_S3_ENDPOINT=http://localstack:4572
       - DYNAMODB_ENDPOINT=http://localstack:4569
-      - NOTIFICATION_API_KEY=fake-key1234-replace-with-key-from-notify45566-if-you-need-to-test-locally
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
