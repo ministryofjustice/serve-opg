@@ -58,6 +58,7 @@ class Deputy
      * @var \DateTime
      *
      * @ORM\Column(name="dob", type="date", nullable=true)
+     * @Assert\NotBlank(message="deputy.dateOfBirth.notBlank", groups={"deputy-add"})
      */
     private $dateOfBirth;
 
@@ -65,6 +66,7 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(message="deputy.emailAddress.notBlank", groups={"deputy-add"})
      */
     private $emailAddress;
 
@@ -93,6 +95,7 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(message="deputy.address_line_1.notBlank", groups={"deputy-add"})
      */
     private $addressLine1;
 
@@ -114,6 +117,7 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(message="deputy.address_town.notBlank", groups={"deputy-add"})
      */
     private $addressTown;
 
@@ -128,6 +132,7 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(message="deputy.address_postcode.notBlank", groups={"deputy-add"})
      */
     private $addressPostcode;
 
