@@ -26,3 +26,14 @@ user:
       noLowerCaseChars: The password must have at least one lowercase letter
       noUpperCaseChars: The password must have at least one capital letter
       noNumber: The password must have at least one number
+deputy:
+   dateOfBirth:
+      notBlank: Enter a date of birth
+   emailAddress:
+      notBlank: Enter a email address
+   address_line_1:
+      notBlank: Enter first line of address
+   address_town:
+      notBlank: Enter town of the address
+   address_postcode:
+      notBlank: Enter postcode of the address

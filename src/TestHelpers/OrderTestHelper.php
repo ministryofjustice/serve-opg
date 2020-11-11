@@ -21,16 +21,16 @@ class OrderTestHelper
      * @return Order
      * @throws Exception
      */
-    static public function generateOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType)
+    public static function generateOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType, string $createdAt = 'now')
     {
         $orderMadeDate = new DateTime($madeAt);
         $orderIssuedDate = new DateTime($issuedAt);
         $client = new Client($caseNumber, 'Bob Bobbins', $orderIssuedDate);
 
         if ($orderType === 'HW') {
-            $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate);
+            $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $createdAt);
         } elseif ($orderType === 'PF') {
-            $order = new OrderPf($client, $orderMadeDate, $orderIssuedDate);
+            $order = new OrderPf($client, $orderMadeDate, $orderIssuedDate, $createdAt);
         } else {
             throw new Exception('$orderType should be either HW or PF');
         }
@@ -44,7 +44,7 @@ class OrderTestHelper
      * @return Order[]
      * @throws Exception
      */
-    static public function generateOrders(int $numberOfOrders, bool $setAsServed)
+    public static function generateOrders(int $numberOfOrders, bool $setAsServed)
     {
         $orders = [];
         $lastOrderNumber = 99900000 + $numberOfOrders;
@@ -74,14 +74,14 @@ class OrderTestHelper
      */
     protected static function sortOrdersByDateAscending(array $orders, string $datePropertyName): array
     {
-        switch ($datePropertyName){
+        switch ($datePropertyName) {
             case 'issuedAt':
-                usort($orders, function($a, $b) {
+                usort($orders, function ($a, $b) {
                     strtotime($a->getIssuedAt()->format('Y-m-d')) - strtotime($b->getIssuedAt()->format('Y-m-d'));
                 });
                 return $orders;
             case 'servedAt':
-                usort($orders, function($a, $b) {
+                usort($orders, function ($a, $b) {
                     strtotime($a->getServedAt()->format('Y-m-d')) - strtotime($b->getServedAt()->format('Y-m-d'));
                 });
                 return $orders;

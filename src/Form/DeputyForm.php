@@ -42,7 +42,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('dateOfBirth', BirthdayType::class, [
                 'label' => 'deputy.dateOfBirth.label',
-                'required' => false,
+                'required' => true,
                 'widget' => 'text',
                 'placeholder' => array(
                     'day' => 'Day','month' => 'Month' , 'year' => 'Year'
@@ -51,7 +51,6 @@ class DeputyForm extends AbstractType
             ])
             ->add('emailAddress', TextType::class, [
                 'label' => 'deputy.emailAddress.label',
-                'hint' => 'deputy.emailAddress.hint',
                 'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
@@ -71,7 +70,7 @@ class DeputyForm extends AbstractType
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine1', TextType::class, [
-                'required' => false,
+                'required' => true,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine2', TextType::class, [
@@ -84,7 +83,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('addressTown', TextType::class, [
                 'label' => 'deputy.addressTown',
-                'required' => false,
+                'required' => true,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressCounty', TextType::class, [
@@ -94,7 +93,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('addressPostcode', TextType::class, [
                 'label' => 'deputy.addressPostcode',
-                'required' => false,
+                'required' => true,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('saveAndContinue', SubmitType::class);
