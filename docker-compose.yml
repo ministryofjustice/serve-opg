@@ -43,6 +43,8 @@ services:
       APP_PORT: 9000
       NGINX_LOG_LEVEL: warn
       VIRTUAL_HOST: web
+      BEHAT_PASSWORD: Abcd1234
+      BEHAT_PASSWORD_NEW: Abcd12345
     volumes:
       - ./public:/var/www/public
 
@@ -64,6 +66,9 @@ services:
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
       - FIXTURES_ENABLED=true
+      - NOTIFICATION_API_KEY=test-3256fbd6-df6e-43ea-862c-7120440ba955-1fa82c94-e832-485a-89be-dfe250a0d99c
+      - BEHAT_PASSWORD=Abcd1234
+      - BEHAT_PASSWORD_NEW=Abcd12345
     depends_on:
       - localstack
       - postgres
@@ -132,6 +137,8 @@ services:
       - loadbalancer
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
+      BEHAT_PASSWORD: Abcd1234
+      BEHAT_PASSWORD_NEW: Abcd12345
 
   qa:
     image: jakzal/phpqa:alpine

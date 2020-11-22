@@ -20,7 +20,7 @@ up-prod: ## Brings the app up in prod mode - requires deps to be built
 
 	# Build app
 	docker-compose up -d --remove-orphans loadbalancer
-	docker-compose run --rm app php bin/console cache:clear --env=test
+	docker-compose run --rm app php bin/console cache:clear --env=prod
 
 up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
 	docker-compose -f docker-compose.local.yml -f docker-compose.yml build app

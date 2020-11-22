@@ -11,9 +11,19 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class UserControllerTest extends ApiWebTestCase
 {
+
+    private $behatPassword;
+
+    public function setUp(): void
+    {
+        self::bootKernel();
+        $this->behatPassword = self::$container->get('Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface')->get('behat_password');
+    }
+
     /**
      * @return Client
      */
@@ -24,7 +34,7 @@ class UserControllerTest extends ApiWebTestCase
         $client = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
+                'PHP_AUTH_PW' => $this->behatPassword
             ]
         );
 
@@ -54,14 +64,14 @@ class UserControllerTest extends ApiWebTestCase
         $userClient = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'user@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
+                'PHP_AUTH_PW' => $this->behatPassword
             ]
         );
 
         $adminClient = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
+                'PHP_AUTH_PW' => $this->behatPassword
             ]
         );
 
@@ -123,8 +133,8 @@ class UserControllerTest extends ApiWebTestCase
         $this->persistEntity(UserTestHelper::createUser('user@digital.justice.gov.uk'));
 
         $tests = [
-            ['creds' => ['PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234'], 'expectedResponse' => Response::HTTP_OK],
-            ['creds' => ['PHP_AUTH_USER' => 'user@digital.justice.gov.uk', 'PHP_AUTH_PW' => 'Abcd1234'], 'expectedResponse' => Response::HTTP_FORBIDDEN],
+            ['creds' => ['PHP_AUTH_USER' => 'admin@digital.justice.gov.uk', 'PHP_AUTH_PW' => $this->behatPassword], 'expectedResponse' => Response::HTTP_OK],
+            ['creds' => ['PHP_AUTH_USER' => 'user@digital.justice.gov.uk', 'PHP_AUTH_PW' => $this->behatPassword], 'expectedResponse' => Response::HTTP_FORBIDDEN],
         ];
 
         foreach ($tests as $test) {
@@ -318,7 +328,7 @@ class UserControllerTest extends ApiWebTestCase
         $client = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
+                'PHP_AUTH_PW' => $this->behatPassword,
             ]
         );
 
@@ -338,7 +348,7 @@ class UserControllerTest extends ApiWebTestCase
         $client = $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => 'Abcd1234'
+                'PHP_AUTH_PW' => $this->behatPassword
             ]
         );
 

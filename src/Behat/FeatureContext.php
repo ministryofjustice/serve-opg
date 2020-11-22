@@ -3,6 +3,7 @@
 namespace App\Behat;
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
 
 /**
@@ -15,6 +16,26 @@ class FeatureContext extends MinkContext implements Context
     use DebugTrait;
     use SiriusTrait;
     use NotifyTrait;
+
+    /**
+     * @var string
+     */
+    private string $behatPasswordNew;
+    /**
+     * @var string
+     */
+    private string $behatPassword;
+
+    /**
+     * FeatureContext constructor.
+     * @param string $behatPassword
+     * @param string $behatPasswordNew
+     */
+    public function __construct(string $behatPassword, string $behatPasswordNew)
+    {
+        $this->behatPassword = $behatPassword;
+        $this->behatPasswordNew = $behatPasswordNew;
+    }
 
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
@@ -37,13 +58,22 @@ class FeatureContext extends MinkContext implements Context
     }
 
     /**
-     * @Given I log in as :user with password :password
+     * @Given I log in as :user with :password
      */
     public function iLogInAs($user, $password)
     {
+        if ($password == "correct password") {
+            $password_to_use = $this->behatPassword;
+        } elseif ($password == "new password") {
+             $password_to_use = $this->behatPasswordNew;
+        }
+        else {
+            $password_to_use = 'wrong password';
+        }
+
         $this->visit("/login");
         $this->fillField('login_username', $user);
-        $this->fillField('login_password', $password);
+        $this->fillField('login_password', $password_to_use);
         $this->pressButton('login_submit');
     }
 
@@ -87,5 +117,15 @@ class FeatureContext extends MinkContext implements Context
     {
         $page = $this->getSession()->getPage()->find('css', '#login')->getAttribute('autocomplete');
         $this->assertResponseContains('off');
+    }
+
+    /**
+     * @When /^I fill in new password details$/
+     */
+    public function iFillInNewPasswordDetails()
+    {
+        $this->fillField('password_change_form_password_first', $this->behatPasswordNew);
+        $this->fillField('password_change_form_password_second', $this->behatPasswordNew);
+        $this->pressButton('password_change_form_submit');
     }
 }
