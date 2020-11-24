@@ -25,8 +25,15 @@ class FeatureContext extends MinkContext implements Context
      */
     private string $behatPassword;
 
+//    /**
+//     * FeatureContext constructor.
+//     * @param string $behatPassword
+//     * @param string $behatPasswordNew
+//     */
     public function __construct()
     {
+//        $this->behatPassword = $behatPassword;
+//        $this->behatPasswordNew = $behatPasswordNew;
         $this->behatPassword = getenv("BEHAT_PASSWORD");
         $this->behatPasswordNew = getenv("BEHAT_PASSWORD_NEW");
     }
