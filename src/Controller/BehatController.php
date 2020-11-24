@@ -29,7 +29,6 @@ class BehatController extends AbstractController
         [ 'email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false ],
         [ 'email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
     ];
-    const BEHAT_PASSWORD = 'Abcd1234';
     // keep in sync with behat-cases.csv
     const BEHAT_CASE_NUMBER = '93559316';
     const BEHAT_INTERIM_CASE_NUMBER = '93559317';
@@ -60,20 +59,27 @@ class BehatController extends AbstractController
     private $userProvider;
 
     /**
+     * @string behatPassword
+     */
+    private string $behatPassword;
+
+    /**
      * BehatController constructor.
      * @param EntityManager $em
      * @param ClientService $clientService
      * @param OrderService $orderService
      * @param UserPasswordEncoderInterface $encoder
      * @param UserProvider $userProvider
+     * @param string $behatPassword
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider)
+    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider, string $behatPassword)
     {
         $this->em = $em;
         $this->clientService = $clientService;
         $this->orderService = $orderService;
         $this->encoder = $encoder;
         $this->userProvider = $userProvider;
+        $this->behatPassword = $behatPassword;
     }
 
     /**
@@ -112,7 +118,8 @@ class BehatController extends AbstractController
                 $ret = "User " . $email . " already present, password reset";
             }
 
-            $encodedPassword = $this->encoder->encodePassword($user, self::BEHAT_PASSWORD);
+
+            $encodedPassword = $this->encoder->encodePassword($user, $this->behatPassword);
             $user->setPassword($encodedPassword);
 
             $this->em->flush();

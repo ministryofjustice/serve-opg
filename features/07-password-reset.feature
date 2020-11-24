@@ -49,7 +49,7 @@ Feature: password reset
 #    And I press "password_change_form_submit"
 #    Then the form should be valid
 #    # login with old password
-#    When Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+#    When Given I log in as "behat@digital.justice.gov.uk" with "correct password"
 #    Then the form should be invalid
 #    # login with new password
 #    When I log in as "behat@digital.justice.gov.uk" with password "Abcd12345"

@@ -64,6 +64,8 @@ services:
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
       - FIXTURES_ENABLED=true
+      - BEHAT_PASSWORD=Abcd1234
+      - BEHAT_PASSWORD_NEW=Abcd12345
     depends_on:
       - localstack
       - postgres
@@ -132,7 +134,8 @@ services:
       - loadbalancer
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
-
+      BEHAT_PASSWORD: 'Abcd1234'
+      BEHAT_PASSWORD_NEW: 'Abcd12345'
   qa:
     image: jakzal/phpqa:alpine
     volumes:

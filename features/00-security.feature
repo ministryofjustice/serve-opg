@@ -19,21 +19,21 @@ Feature: security checks
       Given I go to "/logout"
       And I go to "/behat/reset-brute-force-attempts-logger"
       And the response status code should be 200
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      When I log in as "behat@digital.justice.gov.uk" with "wrong password"
       Then I should see the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      When I log in as "behat@digital.justice.gov.uk" with "wrong password"
       Then I should see the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      When I log in as "behat@digital.justice.gov.uk" with "wrong password"
       Then I should see the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      When I log in as "behat@digital.justice.gov.uk" with "wrong password"
       Then I should see the "form-errors" region
-      When I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      When I log in as "behat@digital.justice.gov.uk" with "wrong password"
       Then I should see the "form-locked-error" region
       # reset attempts and confirm that the error is now due to erorrs
       When I go to "/logout"
       And I go to "/behat/reset-brute-force-attempts-logger"
       And the response status code should be 200
-      And I log in as "behat@digital.justice.gov.uk" with password "wrong password"
+      And I log in as "behat@digital.justice.gov.uk" with "wrong password"
       Then I should not see the "form-locked-error" region
 
     Scenario: Login Autocomplete disabled

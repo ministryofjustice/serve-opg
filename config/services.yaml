@@ -16,8 +16,8 @@ services:
             $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
             $projectDir: '%kernel.project_dir%'
             $yamlFixtureLocation: "%kernel.project_dir%/src/DataFixtures/"
-            string $behatPassword: "Abcd1234"
-            string $behatPasswordNew: "Abcd12345"
+            string $behatPassword: '%env(BEHAT_PASSWORD)%'
+            string $behatPasswordNew: '%env(BEHAT_PASSWORD_NEW)%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

@@ -1,7 +1,7 @@
 Feature: serve order
   
   Scenario: Serve PF order
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with "correct password"
     When I go to "/case"
     When I follow "order-93559316-PF"
     # summary page
@@ -21,7 +21,7 @@ Feature: serve order
     And the documents for order "93559316-PF" should be transferred
 
   Scenario: Serve HW order
-    Given I log in as "behat@digital.justice.gov.uk" with password "Abcd1234"
+    Given I log in as "behat@digital.justice.gov.uk" with "correct password"
     When I go to "/case"
     When I follow "order-93559316-HW"
     # summary page
