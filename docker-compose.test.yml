@@ -12,3 +12,4 @@ services:
       AWS_SECRET_ACCESS_KEY: 'bar'
       SYMFONY_DEPRECATIONS_HELPER: 100
       APP_SECRET: 'aFakeSecret'
+      BEHAT_PASSWORD: 'Abcd1234'

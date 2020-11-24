@@ -18,12 +18,14 @@ class ApiWebTestCase extends WebTestCase
     const TEST_USER_PASSWORD = 'password123';
     const TEST_USER_EMAIL = 'test@user.com';
     const BASIC_AUTH_CREDS = ['PHP_AUTH_USER' => self::TEST_USER_EMAIL, 'PHP_AUTH_PW' => self::TEST_USER_PASSWORD];
+    protected $behatPassword;
 
     public function setUp(): void
     {
         self::bootKernel();
         self::purgeDatabase();
         self::createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
+        $this->behatPassword = self::$container->get('Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface')->get('behat_password');
     }
 
     protected function purgeDatabase()

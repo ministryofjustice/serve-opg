@@ -31,11 +31,17 @@ class FixtureTestHelper
      */
     private $em;
 
-    public function __construct(string $yamlFixtureLocation, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em)
+    /**
+     * @var string
+     */
+    private string $behatPassword;
+
+    public function __construct(string $yamlFixtureLocation, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em,  string $behatPassword)
     {
         $this->yamlFixtureLocation = $yamlFixtureLocation;
         $this->encoder = $encoder;
         $this->em = $em;
+        $this->behatPassword = $behatPassword;
     }
 
     protected function parseYamlFixture(string $yamlFileName)
@@ -49,7 +55,7 @@ class FixtureTestHelper
 
         foreach ($users as $key => $user) {
             $userModel = new User($user['email']);
-            $password = $this->encoder->encodePassword($userModel, $user['password']);
+            $password = $this->encoder->encodePassword($userModel, $this->behatPassword);
             $userModel->setPassword($password);
             $userModel->setRoles($user['roles']);
             $this->em->persist($userModel);
