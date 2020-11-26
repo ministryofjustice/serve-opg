@@ -52,21 +52,38 @@ class FeatureContext extends MinkContext implements Context
     }
 
     /**
-     * @Given I log in as :user with :password
+     * @Given I log in as :user with correct password
+     * @param $user
      */
-    public function iLogInAs($user, $password)
+    public function iLogInAsCorrect($user)
     {
-        if ($password == "correct password") {
-            $password_to_use = $this->behatPassword;
-        } elseif ($password == "new password") {
-            $password_to_use = $this->behatPasswordNew;
-        }
-        else {
-            $password_to_use = 'wrong password';
-        }
         $this->visit("/login");
         $this->fillField('login_username', $user);
-        $this->fillField('login_password', $password_to_use);
+        $this->fillField('login_password', $this->behatPassword);
+        $this->pressButton('login_submit');
+    }
+
+    /**
+     * @Given I log in as :user with wrong password
+     * @param $user
+     */
+    public function iLogInAsWrong($user)
+    {
+        $this->visit("/login");
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', 'wrong password');
+        $this->pressButton('login_submit');
+    }
+
+    /**
+     * @Given I log in as :user with new password
+     * @param $user
+     */
+    public function iLogInAs($user)
+    {
+        $this->visit("/login");
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', $this->behatPasswordNew);
         $this->pressButton('login_submit');
     }
 

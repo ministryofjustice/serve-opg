@@ -1,14 +1,14 @@
 Feature: User management
 
   Scenario: Add new user
-    Given I log in as "behat+admin@digital.justice.gov.uk" with "correct password"
+    Given I log in as "behat+admin@digital.justice.gov.uk" with correct password
     When I go to "/users"
     And I follow "Add new user"
     Then I should be on "/users/add"
     # Cannot actually add a user as it relies on sending an email
 
   Scenario: Edit user
-    Given I log in as "behat+admin@digital.justice.gov.uk" with "correct password"
+    Given I log in as "behat+admin@digital.justice.gov.uk" with correct password
     When I go to "/users"
     And I follow "behat+user-management@digital.justice.gov.uk"
     And I follow "Edit details"
@@ -25,7 +25,7 @@ Feature: User management
     Then I should see "Admin"
 
   Scenario: Delete user
-    Given I log in as "behat+admin@digital.justice.gov.uk" with "correct password"
+    Given I log in as "behat+admin@digital.justice.gov.uk" with correct password
     When I go to "/users"
     And I delete the user "Joaquin Lubic"
     Then the response status code should be 200
