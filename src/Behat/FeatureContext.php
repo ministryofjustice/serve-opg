@@ -79,7 +79,7 @@ class FeatureContext extends MinkContext implements Context
      * @Given I log in as :user with new password
      * @param $user
      */
-    public function iLogInAs($user)
+    public function iLogInAsNew($user)
     {
         $this->visit("/login");
         $this->fillField('login_username', $user);
@@ -87,6 +87,18 @@ class FeatureContext extends MinkContext implements Context
         $this->pressButton('login_submit');
     }
 
+    /**
+     * @Given I log in as :user with no password
+     * @param $user
+     */
+    public function iLogInAsNone($user)
+    {
+        $this->visit("/login");
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', '');
+        $this->pressButton('login_submit');
+    }
+    
     /**
      * @Then /^the order should be (?P<shouldBe>(servable|unservable))$/
      */

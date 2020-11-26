@@ -5,7 +5,7 @@ Feature: login
     Given I go to "/login"
     Then the response status code should be 200
         # emtpy data
-    When I log in as "" with ""
+    When I log in as "" with no password
     Then I should be on "/login"
         # wrong username
     When I log in as "wrongUser" with wrong password
