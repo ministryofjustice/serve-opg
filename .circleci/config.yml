@@ -13,13 +13,9 @@ orbs:
               docker-username: DOCKER_USER
 
   test:
-    orbs:
-      dockerhub_helper: dockerhub_helper
     commands:
       setup:
         steps:
-          - checkout
-          - dockerhub_helper/dockerhub_login
           - restore_cache:
               keys:
                 - vendor-{{ checksum "composer.lock" }}
@@ -92,6 +88,8 @@ jobs:
     machine:
       image: ubuntu-2004:202010-01
     steps:
+      - checkout
+      - dockerhub_helper/dockerhub_login
       - test/setup
       - test/unit
       - test/integration
