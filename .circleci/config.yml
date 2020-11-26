@@ -13,6 +13,7 @@ orbs:
               docker-username: DOCKER_USER
 
   test:
+    orbs: dockerhub_helper/dockerhub_login
     commands:
       setup:
         steps:
