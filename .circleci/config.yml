@@ -87,7 +87,6 @@ jobs:
   test:
     machine:
       image: ubuntu-2004:202010-01
-    resource_class: gpu.small
     steps:
       - checkout
       - dockerhub_helper/dockerhub_login
@@ -103,7 +102,6 @@ jobs:
 
   build:
     machine: true
-    resource_class: gpu.small
     steps:
       - add_ssh_keys:
           fingerprints:
