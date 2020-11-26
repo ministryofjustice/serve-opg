@@ -86,8 +86,8 @@ orbs:
 jobs:
   test:
     machine:
-      image: cimg/base:2020.11
-    resource_class: small
+      image: ubuntu-2004:202010-01
+    resource_class: gpu.small
     steps:
       - checkout
       - dockerhub_helper/dockerhub_login
@@ -102,9 +102,8 @@ jobs:
           path: ./tests/artifacts
 
   build:
-    machine:
-      image: cimg/base:2020.11
-    resource_class: small
+    machine: true
+    resource_class: gpu.small
     steps:
       - add_ssh_keys:
           fingerprints:
