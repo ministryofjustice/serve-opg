@@ -87,6 +87,7 @@ jobs:
   test:
     machine:
       image: ubuntu-2004:202010-01
+    resource_class: small
     steps:
       - checkout
       - dockerhub_helper/dockerhub_login
@@ -102,6 +103,7 @@ jobs:
 
   build:
     machine: true
+    resource_class: small
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -149,10 +151,10 @@ workflows:
   version: 2
   build:
     jobs:
-    - test:
-        filters: { branches: { ignore: [master] } }
-    - build:
-        filters: { branches: { only: [master] } }
+      - test:
+          filters: { branches: { ignore: [master] } }
+      - build:
+          filters: { branches: { only: [master] } }
 
   weekly_integration_run:
     triggers:
