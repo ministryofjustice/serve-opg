@@ -9,7 +9,7 @@ use App\Tests\ApiWebTestCase;
 class UserTestHelper extends ApiWebTestCase
 {
 
-    static public function createUser(string $email, string $password='Abcd1234')
+    static public function createUser(string $email, string $password)
     {
         $userModel = new User($email);
         $encodedPassword = ApiWebTestCase::getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
@@ -17,7 +17,7 @@ class UserTestHelper extends ApiWebTestCase
         return $userModel;
     }
 
-    static public function createAdminUser(string $email, string $password='Abcd1234')
+    static public function createAdminUser(string $email, string $password)
     {
         $userModel = self::createUser($email, $password);
         $userModel->setRoles(['ROLE_ADMIN']);

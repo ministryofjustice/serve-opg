@@ -17,6 +17,21 @@ class FeatureContext extends MinkContext implements Context
     use NotifyTrait;
 
     /**
+     * @var string
+     */
+    private string $behatPasswordNew;
+    /**
+     * @var string
+     */
+    private string $behatPassword;
+
+    public function __construct()
+    {
+        $this->behatPassword = getenv("BEHAT_PASSWORD");
+        $this->behatPasswordNew = $this->behatPassword . "9";
+    }
+
+    /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
      */
     public function theHeaderContains($name, $value)
@@ -37,16 +52,53 @@ class FeatureContext extends MinkContext implements Context
     }
 
     /**
-     * @Given I log in as :user with password :password
+     * @Given I log in as :user with correct password
+     * @param $user
      */
-    public function iLogInAs($user, $password)
+    public function iLogInAsCorrect($user)
     {
         $this->visit("/login");
         $this->fillField('login_username', $user);
-        $this->fillField('login_password', $password);
+        $this->fillField('login_password', $this->behatPassword);
         $this->pressButton('login_submit');
     }
 
+    /**
+     * @Given I log in as :user with wrong password
+     * @param $user
+     */
+    public function iLogInAsWrong($user)
+    {
+        $this->visit("/login");
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', 'wrong password');
+        $this->pressButton('login_submit');
+    }
+
+    /**
+     * @Given I log in as :user with new password
+     * @param $user
+     */
+    public function iLogInAsNew($user)
+    {
+        $this->visit("/login");
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', $this->behatPasswordNew);
+        $this->pressButton('login_submit');
+    }
+
+    /**
+     * @Given I log in as :user with no password
+     * @param $user
+     */
+    public function iLogInAsNone($user)
+    {
+        $this->visit("/login");
+        $this->fillField('login_username', $user);
+        $this->fillField('login_password', '');
+        $this->pressButton('login_submit');
+    }
+    
     /**
      * @Then /^the order should be (?P<shouldBe>(servable|unservable))$/
      */
@@ -87,5 +139,15 @@ class FeatureContext extends MinkContext implements Context
     {
         $page = $this->getSession()->getPage()->find('css', '#login')->getAttribute('autocomplete');
         $this->assertResponseContains('off');
+    }
+
+    /**
+     * @When /^I fill in new password details$/
+     */
+    public function iFillInNewPasswordDetails()
+    {
+        $this->fillField('password_change_form_password_first', $this->behatPasswordNew);
+        $this->fillField('password_change_form_password_second', $this->behatPasswordNew);
+        $this->pressButton('password_change_form_submit');
     }
 }
