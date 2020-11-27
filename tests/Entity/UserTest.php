@@ -20,7 +20,7 @@ class UserTest extends ApiWebTestCase
 
     public function testCreatedAtIsAddedOnPersist()
     {
-        $user = UserTestHelper::createUser('atest@user.com');
+        $user = UserTestHelper::createUser('atest@user.com', $this->behatPassword);
         self::assertNull($user->getCreatedAt());
 
         ApiWebTestCase::getService('doctrine')->getManager()->persist($user);
@@ -31,7 +31,7 @@ class UserTest extends ApiWebTestCase
 
     public function testSettingRolesRetainsRoleUser()
     {
-        $user = UserTestHelper::createUser('atest@user.com');
+        $user = UserTestHelper::createUser('atest@user.com', $this->behatPassword);
         $user->setRoles(['SOME_ROLE_HERE', 'SOME_OTHER_ROLE']);
 
         foreach( ['ROLE_USER', 'SOME_ROLE_HERE', 'SOME_OTHER_ROLE'] as $role) {
