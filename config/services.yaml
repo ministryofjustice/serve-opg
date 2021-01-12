@@ -54,7 +54,15 @@ services:
     App\Service\AddressLookup\OrdnanceSurvey:
         arguments:
             $apiKey: "%env(OS_PLACES_API_KEY)%"
-            $httpClient: "@guzzleClient"
+            $httpClient: "@OrdnanceGuzzleClient"
+
+    # OrdnanceSurvey (used for Postcode Lookup)
+    # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
+    OrdnanceGuzzleClient:
+        class: GuzzleHttp\Client
+        arguments:
+            $config:
+                base_uri: "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?"
 
     notificationHttpClient:
         class: Http\Adapter\Guzzle6\Client

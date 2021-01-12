@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\AddressLookup\OrdnanceSurvey;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,6 +11,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostcodeController extends AbstractController
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * PostcodeController constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * @Route("/postcode-lookup", name="postcode-lookup")
      */
@@ -24,7 +39,7 @@ class PostcodeController extends AbstractController
         try {
             $addresses = $ordnanceSurvey->lookupPostcode($postcode);
         }catch (\Exception $e) {
-            $this->get('logger')->error("Exception from postcode lookup: ". $e->getMessage());
+            $this->logger->error("Exception from postcode lookup: ". $e->getMessage());
             return new JsonResponse([ 'error'=> $e->getMessage()]);
         }
 
