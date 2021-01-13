@@ -61,7 +61,6 @@ class OrdnanceSurvey
         $request = new Request('GET', $url);
         $response = $this->httpClient->send($request);
 
-
         if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Error retrieving address details: bad status code');
         }
