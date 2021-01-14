@@ -58,9 +58,9 @@ class OrdnanceSurvey
         $url = new Uri($this->httpClient->getConfig('base_uri'));
         $url = URI::withQueryValue($url, 'key', $this->apiKey);
         $url = URI::withQueryValue($url, 'postcode', $postcode);
-        $url = URI::withQueryValue($url, 'lr', $this->httpClient->getConfig('lr'));
         $request = new Request('GET', $url);
         $response = $this->httpClient->send($request);
+
         if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Error retrieving address details: bad status code');
         }
