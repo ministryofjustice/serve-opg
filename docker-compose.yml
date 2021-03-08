@@ -43,6 +43,7 @@ services:
       APP_PORT: 9000
       NGINX_LOG_LEVEL: warn
       VIRTUAL_HOST: web
+
     volumes:
       - ./public:/var/www/public
 
@@ -64,6 +65,7 @@ services:
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
       - FIXTURES_ENABLED=true
+      - BEHAT_PASSWORD=Abcd1234
     depends_on:
       - localstack
       - postgres

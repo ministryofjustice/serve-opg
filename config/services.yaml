@@ -62,7 +62,7 @@ services:
         class: GuzzleHttp\Client
         arguments:
             $config:
-                base_uri: "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?"
+                base_uri: "https://api.os.uk/search/places/v1/postcode?"
 
     notificationHttpClient:
         class: Http\Adapter\Guzzle6\Client
