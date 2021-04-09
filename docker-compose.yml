@@ -145,3 +145,6 @@ services:
     build:
       context: .
       dockerfile: docker/waitforit/Dockerfile
+
+  api:
+    build: ./serve-api
