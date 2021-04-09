@@ -147,4 +147,8 @@ services:
       dockerfile: docker/waitforit/Dockerfile
 
   api:
+    image: api
     build: ./serve-api
+    ports: 
+      - 8000:8000
+      

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,9 +12,16 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello world")
+	//creating the serve mux
 	sm := mux.NewRouter().PathPrefix("serve-api").Subrouter()
+	//logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
+
+	sm.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	//setting up the http server
 	s := &http.Server{
 		Addr:         ":8000",
 		Handler:      sm,
@@ -33,6 +39,7 @@ func main() {
 		}
 	}()
 
+	//catching signal to gracefully shutdown
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, os.Kill)
 	sig := <-c
