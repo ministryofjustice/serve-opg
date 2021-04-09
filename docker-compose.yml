@@ -149,6 +149,5 @@ services:
   api:
     image: api
     build: ./serve-api
-    ports: 
-      - 8000:8000
-      
+    ports:
+      - 9000:9000

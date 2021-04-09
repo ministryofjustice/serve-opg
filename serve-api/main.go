@@ -12,18 +12,20 @@ import (
 )
 
 func main() {
-	//creating the serve mux
-	sm := mux.NewRouter().PathPrefix("serve-api").Subrouter()
 	//logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
+	//creating the serve mux
+	sm := mux.NewRouter().PathPrefix("/serve-api").Subrouter()
+
 	sm.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Running the health check handler")
 		w.WriteHeader(http.StatusOK)
 	})
 
 	//setting up the http server
 	s := &http.Server{
-		Addr:         ":8000",
+		Addr:         ":9000",
 		Handler:      sm,
 		ErrorLog:     l,
 		IdleTimeout:  120 * time.Second,

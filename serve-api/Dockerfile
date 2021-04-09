@@ -19,4 +19,4 @@ RUN apk --update --no-cache add \
 RUN apk --no-cache add tzdata
 
 COPY --from=build-env /go/bin/serve-api /go/bin/serve-api
-ENTRYPOINT ["/go/bin/serve-api"]
+ENTRYPOINT ["./go/bin/serve-api"]
