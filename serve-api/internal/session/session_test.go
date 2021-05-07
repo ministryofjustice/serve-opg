@@ -40,8 +40,8 @@ func TestNewSession(t *testing.T) {
 			assert.Nil(t, err)
 		}
 
-		assert.IsType(t, new(session.Session), got.AwsSession)
-		assert.Equal(t, tc.wantRegion, *got.AwsSession.Config.Region)
+		assert.IsType(t, new(session.Session), got.AWSSession)
+		assert.Equal(t, tc.wantRegion, *got.AWSSession.Config.Region)
 	}
 
 }
