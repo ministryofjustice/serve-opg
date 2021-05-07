@@ -43,6 +43,7 @@ func main() {
 		if err != nil {
 			l.Fatal(err)
 		}
+		l.Println("Up and running!")
 	}()
 
 	//catching signal to gracefully shutdown
