@@ -107,7 +107,7 @@ services:
       POSTGRES_PASSWORD: dcdb2018!
 
   yarn:
-    image: node:12.3-stretch
+    image: node:12.13-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
