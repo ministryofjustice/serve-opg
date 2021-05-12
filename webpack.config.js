@@ -89,4 +89,6 @@ Encore
     })
 ;
 
-module.exports = Encore.getWebpackConfig()
+const config = Encore.getWebpackConfig();
+config.target = ['web', 'es5'];
+module.exports = config;
