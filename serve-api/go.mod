@@ -1,4 +1,4 @@
-module serve-api
+module github.com/ministryofjustice/serve-opg/serve-api
 
 go 1.16
 
