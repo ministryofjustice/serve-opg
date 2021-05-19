@@ -21,7 +21,7 @@ services:
     ports:
       - 443:443
     volumes:
-      - ./serve-web/var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./serve-web/certs:/etc/nginx/certs
       - ./serve-web/docker/loadbalancer/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro
     depends_on:
@@ -72,7 +72,7 @@ services:
       - sirius-api
     volumes:
       - ./serve-web:/var/www
-      - ./serve-web/var/www/var/
+      - ./serve-web/var:/www/var/
 
   sirius-api:
     image: stoplight/prism:latest
