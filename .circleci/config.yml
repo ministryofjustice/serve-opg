@@ -18,10 +18,10 @@ orbs:
         steps:
           - restore_cache:
               keys:
-                - vendor-{{ checksum "composer.lock" }}
+                - vendor-{{ checksum "~/project/serve-web/composer.lock" }}
           - restore_cache:
               keys:
-                - node_modules-{{ checksum "yarn.lock" }}
+                - node_modules-{{ checksum "~/project/serve-web/yarn.lock" }}
           - run:
               name: Build Dependencies
               command: |
@@ -56,11 +56,11 @@ orbs:
                 # Removes boilerplate feature test added during Symfony Flex recipe for behat
                 rm -rf ~/project/serve-web/features/demo.feature
           - save_cache:
-              key: vendor-{{ checksum "composer.lock" }}
+              key: vendor-{{ checksum "~/project/serve-web/composer.lock" }}
               paths:
                 - vendor
           - save_cache:
-              key: node_modules-{{ checksum "yarn.lock" }}
+              key: node_modules-{{ checksum "~/project/serve-web/yarn.lock" }}
               paths:
                 - node_modules
 #      Requires test/setup
