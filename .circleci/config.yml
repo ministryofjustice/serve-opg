@@ -80,7 +80,7 @@ orbs:
           - run:
               name: Integration Test
               command: |
-                chmod -R 755 ~/project/serve-web
+                sudo chmod -R 755 ~/project/serve-web
                 docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/console doctrine:fixtures:load --group=behatTests --purge-with-truncate --no-interaction
                 docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
 
