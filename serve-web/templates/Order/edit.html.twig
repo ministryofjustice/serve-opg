@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'Form/govuk_frontend.html.twig' %}
+{% import 'Macros/_macros.html.twig' as macro %}
+
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order details{% endblock %}
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order details</h1>
+{% endblock %}
+
+{% block validationSummary %}
+    {{ macro.errorSummary(form) }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}

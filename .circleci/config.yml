@@ -18,10 +18,10 @@ orbs:
         steps:
           - restore_cache:
               keys:
-                - vendor-{{ checksum "composer.lock" }}
+                - vendor-{{ checksum "~/project/serve-web/composer.lock" }}
           - restore_cache:
               keys:
-                - node_modules-{{ checksum "yarn.lock" }}
+                - node_modules-{{ checksum "~/project/serve-web/yarn.lock" }}
           - run:
               name: Build Dependencies
               command: |
@@ -41,8 +41,8 @@ orbs:
                 docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
 
                 # Triggers Symfony Flex to run recipes during composer install - required for phpunit-bridge
-                rm -rf vendor
-                rm -rf symfony.lock
+                rm -rf ~/project/serve-web/vendor
+                rm -rf ~/project/serve-web/symfony.lock
 
                 # Vendor php dependencies
                 docker-compose run --rm app composer install --no-interaction
@@ -54,13 +54,13 @@ orbs:
                 docker-compose run --rm yarn build-dev
 
                 # Removes boilerplate feature test added during Symfony Flex recipe for behat
-                rm -rf features/demo.feature
+                rm -rf ~/project/serve-web/features/demo.feature
           - save_cache:
-              key: vendor-{{ checksum "composer.lock" }}
+              key: vendor-{{ checksum "~/project/serve-web/composer.lock" }}
               paths:
                 - vendor
           - save_cache:
-              key: node_modules-{{ checksum "yarn.lock" }}
+              key: node_modules-{{ checksum "~/project/serve-web/yarn.lock" }}
               paths:
                 - node_modules
 #      Requires test/setup
@@ -69,7 +69,7 @@ orbs:
           - run:
               name: Unit Test
               command: |
-                ./generate_certs.sh
+                ~/project/serve-web/generate_certs.sh
                 docker-compose -f docker-compose.test.yml -f docker-compose.yml up --build -d loadbalancer
                 docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
                 docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
@@ -80,6 +80,7 @@ orbs:
           - run:
               name: Integration Test
               command: |
+                sudo chmod -R 777 ~/project/serve-web
                 docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/console doctrine:fixtures:load --group=behatTests --purge-with-truncate --no-interaction
                 docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
 

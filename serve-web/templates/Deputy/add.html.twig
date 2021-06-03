@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'Form/govuk_frontend.html.twig' %}
+{% import 'Macros/_macros.html.twig' as macro %}
+
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} deputy details{% endblock %}
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }}: deputy details</h1>
+{% endblock %}
+
+
+{% block validationSummary %}
+    {{ macro.errorSummary(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent('app') }}
+    {{ encore_entry_script_tags('addDeputy') }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ form_start(form, { 'attr' : { 'class': 'js-PostcodeLookup' } }) }}
+                {{ form_row(form.deputyType) }}
+
+                <h2 class="govuk-heading-m">Name</h2>
+
+                {{ form_row(form.forename) }}
+                {{ form_row(form.surname) }}
+
+                <h2 class="govuk-heading-m">Address</h2>
+
+
+                {% include 'Common/_postcodeLookup.html.twig' with {} %}
+
+                <div class="address-wrapper">
+
+                {{ form_row(form.addressLine1) }}
+                {{ form_row(form.addressLine2) }}
+                {{ form_row(form.addressLine3.setRendered(false)) }}
+                {{ form_row(form.addressTown) }}
+                {{ form_row(form.addressCounty, { 'attr': {'class': 'govuk-!-width-two-thirds'}}) }}
+                {{ form_row(form.addressPostcode, { 'attr': {'class': 'govuk-input--width-10'}}) }}
+
+                </div>
+
+
+                <h2 class="govuk-heading-m">Contact details</h2>
+                <p>You can find the telephone numbers and email address on section 1.2 of the COP4.</p>
+
+                {{ form_row(form.daytimeContactNumber) }}
+                {{ form_row(form.eveningContactNumber) }}
+                {{ form_row(form.mobileContactNumber) }}
+
+                {{ form_row(form.emailAddress) }}
+
+                <h2 class="govuk-heading-m">Date of birth</h2>
+
+                {{ form_row(form.dateOfBirth) }}
+
+                {{ form_widget(form.saveAndContinue) }}
+                <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

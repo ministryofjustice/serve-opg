@@ -1,0 +1,6 @@
+swiftmailer:
+  transport: smtp
+  host:      localhost
+  username:  ~
+  password:  ~
+  spool:     { type: memory }
