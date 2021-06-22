@@ -23,13 +23,13 @@ up-prod: ## Brings the app up in prod mode - requires deps to be built
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
-	docker-compose -f docker-compose.local.yml -f docker-compose.yml build app
+	docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
 	# Build app
-	docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
+	docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 up-test: ## Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built

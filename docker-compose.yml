@@ -70,9 +70,6 @@ services:
       - localstack
       - postgres
       - sirius-api
-    volumes:
-      - ./serve-web:/var/www
-      - ./serve-web/var:/www/var/
 
   sirius-api:
     image: stoplight/prism:latest
