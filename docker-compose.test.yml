@@ -18,8 +18,8 @@ services:
       APP_SECRET: 'aFakeSecret'
       BEHAT_PASSWORD: 'Abcd1234'
     volumes:
-      - ./serve-web/features
-      - ./serve-web/src/Behat
+      - ./serve-web/features:/var/www/features
+      - ./serve-web/src/Behat:/var/www/src/Behat
   behat:
     environment:
       BEHAT_PASSWORD: 'Abcd1234'
