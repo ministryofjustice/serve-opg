@@ -3,7 +3,10 @@
 namespace App\Behat;
 
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Element\NodeElement;
 use Behat\MinkExtension\Context\MinkContext;
+use Exception;
 
 /**
  * Behat context class.
@@ -149,5 +152,58 @@ class FeatureContext extends MinkContext implements Context
         $this->fillField('password_change_form_password_first', $this->behatPasswordNew);
         $this->fillField('password_change_form_password_second', $this->behatPasswordNew);
         $this->pressButton('password_change_form_submit');
+    }
+
+    /**
+     * @Then :orderType order :caseNumber should have the following values under column headers:
+     */
+    public function orderShouldHaveValuesUnderHeaders(TableNode $table, string $orderType, string $caseNumber)
+    {
+        $this->assertValuesAreInCorrectColumns($table);
+        $this->assertOrderDetailsDisplayed($table, $orderType, $caseNumber);
+    }
+
+    private function assertValuesAreInCorrectColumns(TableNode $table)
+    {
+        foreach ($table->getRowsHash() as $expectedTableHeader => $expectedTableValue) {
+            $foundColumnValues = $this->getSession()->getPage()->findAll(
+                'xpath',
+                "//table/tbody/tr/td[count(//table/thead/tr/th[.='$expectedTableHeader']/preceding-sibling::th)+1]"
+            );
+
+            $columnValues = [];
+
+            if (empty($foundColumnValues)) {
+                throw new Exception("Could not find a column with header '$expectedTableHeader'");
+            }
+
+            foreach($foundColumnValues as $foundColumnValue) {
+                $columnValues[] = trim($foundColumnValue->getText());
+            }
+
+            assert(in_array($expectedTableValue, $columnValues), "'$expectedTableValue' was not found under the column '$expectedTableHeader'");
+        }
+    }
+
+    private function assertOrderDetailsDisplayed(TableNode $table, string $orderType, string $caseNumber)
+    {
+        $foundRows = $this->getSession()->getPage()->findAll('xpath', "//td[contains(.,'$caseNumber')]/..");
+
+        $orderRow = null;
+
+        foreach($foundRows as $foundRow) {
+            if (str_contains(trim($foundRow->getHtml()), $orderType)) {
+                $orderRow = $foundRow;
+                break;
+            }
+        }
+
+        if (is_null($orderRow)) {
+            throw new Exception("Could not find an order with case number '$caseNumber' and type '$orderType'");
+        }
+
+        foreach ($table->getRowsHash() as $expectedTableHeader => $expectedTableValue) {
+            assert(str_contains($orderRow->getHtml(), $expectedTableValue), "Could not find expected order detail '$expectedTableHeader' with value '$expectedTableValue' in the table row associated with order $caseNumber");
+        }
     }
 }

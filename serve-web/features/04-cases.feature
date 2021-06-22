@@ -1,3 +1,4 @@
+@acs
 Feature: cases
 
   # IMPORTANT: Any new case Order numbers created or used in *any* tests, must be checked they are present in the test below
@@ -15,6 +16,17 @@ Feature: cases
     And I should see the "order-93559317-HW" region
     Then the response status code should be 200
 
+  Scenario: Expected columns are displayed on dashboard
+    Given I log in as "behat@digital.justice.gov.uk" with correct password
+    When I go to "/case"
+    Then "Property and finance" order "93559316" should have the following values under column headers:
+      | Case number  | 93559316 |
+      | Order type   | Property and finance |
+#      | Order number |  |
+      | Client name  | Behat User |
+      | Order made   | 1 August 2018 |
+      | Order issued | 15 August 2018 |
+      | Status       | TO DO |
 
   Scenario: PA order: set assets, subtype, appointment type
     Given I log in as "behat@digital.justice.gov.uk" with correct password
