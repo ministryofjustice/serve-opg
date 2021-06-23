@@ -14,23 +14,26 @@ use http\Exception\InvalidArgumentException;
 class OrderTestHelper
 {
     /**
-     * @param string $madeAt, in format YYYY-MM-DD
-     * @param string $issuedAt, in format YYYY-MM-DD
+     * @param string $madeAt , in format YYYY-MM-DD
+     * @param string $issuedAt , in format YYYY-MM-DD
      * @param string $caseNumber
-     * @param string $orderType, HW or PF
+     * @param string $orderType , HW or PF
+     * @param string $createdAt
+     * @param string|null $orderNumber
      * @return Order
      * @throws Exception
      */
-    public static function generateOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType, string $createdAt = 'now')
+    public static function generateOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType, string $createdAt = 'now', ?string $orderNumber = null)
     {
         $orderMadeDate = new DateTime($madeAt);
         $orderIssuedDate = new DateTime($issuedAt);
         $client = new Client($caseNumber, 'Bob Bobbins', $orderIssuedDate);
+        $orderNumber = $orderNumber ?: strval((rand(1,100000) + rand(1,100000)));
 
         if ($orderType === 'HW') {
-            $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $createdAt);
+            $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
         } elseif ($orderType === 'PF') {
-            $order = new OrderPf($client, $orderMadeDate, $orderIssuedDate, $createdAt);
+            $order = new OrderPf($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
         } else {
             throw new Exception('$orderType should be either HW or PF');
         }
