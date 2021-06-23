@@ -28,7 +28,7 @@ class OrderTestHelper
         $orderMadeDate = new DateTime($madeAt);
         $orderIssuedDate = new DateTime($issuedAt);
         $client = new Client($caseNumber, 'Bob Bobbins', $orderIssuedDate);
-        $orderNumber = $orderNumber ?: strval((rand(1,100000) + rand(1,100000)));
+        $orderNumber = $orderNumber ?: strval(time() + mt_rand(1,1000000000));
 
         if ($orderType === 'HW') {
             $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
