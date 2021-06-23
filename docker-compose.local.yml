@@ -9,5 +9,7 @@ services:
     environment:
       APP_ENV: 'dev'
       APP_DEBUG: 'false'
+    env_file:
+      - .env.local
     volumes:
       - ./serve-web/docker/app/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
