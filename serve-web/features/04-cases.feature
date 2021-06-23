@@ -19,10 +19,10 @@ Feature: cases
   Scenario: Expected columns are displayed on dashboard
     Given I log in as "behat@digital.justice.gov.uk" with correct password
     When I go to "/case"
-    Then "Property and finance" order "93559316" should have the following values under column headers:
+    Then "PFA" order "93559316" should have the following values under column headers:
       | Case number  | 93559316 |
-      | Order type   | Property and finance |
-#      | Order number |  |
+      | Order type   | PFA |
+      | Order number | 1 |
       | Client name  | Behat User |
       | Order made   | 1 August 2018 |
       | Order issued | 15 August 2018 |

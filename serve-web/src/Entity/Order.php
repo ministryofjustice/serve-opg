@@ -194,7 +194,7 @@ abstract class Order
     /**
      * @return bool
      */
-    public function readyToServe()
+    public function readyToServe(): bool
     {
         if (!$this->isOrderValid() ||
             !count($this->getDeputies())

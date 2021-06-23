@@ -187,7 +187,7 @@ class FeatureContext extends MinkContext implements Context
 
     private function assertOrderDetailsDisplayed(TableNode $table, string $orderType, string $caseNumber)
     {
-        $foundRows = $this->getSession()->getPage()->findAll('xpath', "//td[contains(.,'$caseNumber')]/..");
+        $foundRows = $this->getSession()->getPage()->findAll('xpath', "//a[contains(.,'$caseNumber')]/../..");
 
         $orderRow = null;
 

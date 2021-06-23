@@ -50,6 +50,7 @@
                             {% if filters.type == 'pending' %}
                                 <th class="govuk-table__header" scope="col">Order made</th>
                                 <th class="govuk-table__header" scope="col">Order issued</th>
+                                <th class="govuk-table__header" scope="col">Status</th>
                             {% else %}
                                 <th class="govuk-table__header" scope="col">Date served</th>
                                 <th class="govuk-table__header" scope="col">Documents</th>
@@ -74,10 +75,21 @@
                                 <td class="govuk-table__cell">{{ client.clientName }}</td>
                                 {% if filters.type == 'pending' %}
                                     <td class="govuk-table__cell">
-                                        {{ order.madeAt | date('d/m/Y') }}
+                                        {{ order.madeAt | date('j F Y') }}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        {{ order.issuedAt | date('d/m/Y') }}
+                                        {{ order.issuedAt | date('j F Y') }}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        {% if order.readyToServe %}
+                                            <strong class="govuk-tag">
+                                                READY TO SERVE
+                                            </strong>
+                                        {% else %}
+                                            <strong class="govuk-tag govuk-tag--yellow">
+                                                TO DO
+                                            </strong>
+                                        {% endif %}
                                     </td>
                                 {% else %}
 
