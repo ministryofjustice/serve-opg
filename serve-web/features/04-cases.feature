@@ -24,8 +24,8 @@ Feature: cases
       | Order type   | PFA |
       | Order number | 1 |
       | Client name  | Behat User |
-      | Order made   | 1 August 2018 |
-      | Order issued | 15 August 2018 |
+      | Order made   | 1 Aug 2018 |
+      | Order issued | 15 Aug 2018 |
       | Status       | TO DO |
 
   Scenario: PA order: set assets, subtype, appointment type
