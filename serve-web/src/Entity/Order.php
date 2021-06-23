@@ -156,9 +156,9 @@ abstract class Order
     private $apiResponse;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="order_number", type="string", nullable=true)
+     * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
      */
     private $orderNumber;
 
@@ -212,18 +212,18 @@ abstract class Order
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getOrderNumber(): string
+    public function getOrderNumber(): ?string
     {
         return $this->orderNumber;
     }
 
     /**
-     * @param string $orderNumber
+     * @param string|null $orderNumber
      * @return Order
      */
-    public function setOrderNumber(string $orderNumber): Order
+    public function setOrderNumber(?string $orderNumber): Order
     {
         $this->orderNumber = $orderNumber;
         return $this;
