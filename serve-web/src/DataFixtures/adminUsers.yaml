@@ -1,0 +1,18 @@
+admin1:
+    email: alex.saunders@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin2:
+    email: greg.tyler@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin4:
+    email: alex.eves@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin5:
+    email: paul.mcqueen@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin6:
+    email: elizabeth.feenan@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin7:
+    email: stacey.cook@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']

@@ -1,0 +1,13 @@
+twig:
+  default_path: '%kernel.project_dir%/templates'
+  debug:            "%kernel.debug%"
+  strict_variables: "%kernel.debug%"
+  exception_controller: null
+  globals:
+    version_app: "%env(APP_VERSION)%"
+    version_web: "%env(WEB_VERSION)%"
+    version_infra: "%env(INFRA_VERSION)%"
+    gtm: "%env(DC_GTM)%"
+    # for the following two settings, use a multiple of 60
+    session_expires_seconds: "3900"
+    session_popup_show_after: "3600"
