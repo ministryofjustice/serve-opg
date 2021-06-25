@@ -1,0 +1,14 @@
+// Links
+// ==========================================================================
+
+@import "~govuk-frontend/govuk/settings/all";
+@import "~govuk-frontend/govuk/tools/all";
+@import "~govuk-frontend/govuk/helpers/all";
+
+
+@include govuk-exports("govuk/core/links-extended") {
+    .govuk-link--button {
+        @include govuk-font($size: 19);
+        display: inline-block;
+    }
+}

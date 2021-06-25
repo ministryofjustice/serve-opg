@@ -1,0 +1,81 @@
+// Icons
+// ==========================================================================
+
+@import "~govuk-frontend/govuk/settings/all";
+@import "~govuk-frontend/govuk/tools/all";
+@import "~govuk-frontend/govuk/helpers/all";
+
+// Icon mixin
+@mixin icon($icon-name, $icon-width, $icon-height, $icon-sub-folder:false) {
+
+    width: #{$icon-width}px;
+    height: #{$icon-height}px;
+
+    @if $icon-sub-folder {
+        background-image: govuk-image-url("#{$icon-sub-folder}/#{$icon-name}.png");
+
+        @include govuk-device-pixel-ratio() {
+            background-image: govuk-image-url("#{$icon-sub-folder}/#{$icon-name}-2x.png");
+            background-size: 100%;
+        }
+
+    } @else {
+        background-image: govuk-image-url("#{$icon-name}.png");
+
+        @include govuk-device-pixel-ratio() {
+            background-image: govuk-image-url("#{$icon-name}-2x.png");
+            background-size: 100%;
+        }
+    }
+}
+
+@include govuk-exports("govuk/component/icon") {
+
+    .govuk-icon {
+        display: inline-block;
+
+        background-position: 0 0;
+        background-repeat: no-repeat;
+    }
+
+    .govuk-icon--notification {
+        @include icon(icon-notification, 22, 22, 'icons');
+    }
+
+    .govuk-icon--tick,
+    .govuk-icon--success {
+        @include icon(icon-tick, 22, 22, 'icons');
+    }
+
+    .govuk-icon--cross,
+    .govuk-icon--error {
+        @include icon(icon-cross, 22, 22, 'icons');
+    }
+
+    .govuk-icon--information,
+    .govuk-icon--info {
+        @include icon(icon-information, 22, 22, 'icons');
+    }
+
+    .govuk-icon--important {
+        @include icon(icon-important, 22, 22, 'icons');
+    }
+
+    .govuk-icon--loader {
+        width: 22px;
+        height: 22px;
+        background-image: govuk-image-url("icons/icon-loader.gif");
+        background-size: contain;
+    }
+
+    .govuk-icon--plus {
+        @include icon(icon-plus, 22, 22, 'icons');
+        position: relative;
+        top: 3px;
+        margin-right: 5px;
+        background-size: contain;
+        a:hover & {
+            opacity: .7;
+        }
+    }
+}

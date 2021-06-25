@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block htmlTitle %}View Users{% endblock %}
+{% block pageTitle %}
+    <div class="moj-page-header-actions">
+      <div class="moj-page-header-actions__title">
+        <h1 class="govuk-heading-xl">Users</h1>
+      </div>
+
+      <div class="moj-page-header-actions__actions">
+        <div class="moj-button-menu">
+          <div class="moj-button-menu__wrapper">
+            <a href="{{ path('add-user') }}" class="govuk-button moj-button-menu__item govuk-button--secondary moj-page-header-actions__action" data-module="govuk-button">
+              Add new user
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <table class="govuk-table">
+        <caption class="govuk-table__caption">{{ users | length }} users</caption>
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Name</th>
+            <th class="govuk-table__header" scope="col">Role</th>
+            <th class="govuk-table__header" scope="col">
+              <span class="govuk-visually-hidden">Delete</span>
+            </th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        {% for user in users %}
+            <tr class="govuk-table__row" >
+                <th class="govuk-table__header" scope="row">
+                  <a href="{{ path('view-user', { id: user.id }) }}">
+                    {{ user.fullName }}
+                  </a>
+                </th>
+                <td class="govuk-table__cell">{{ user.isAdmin ? 'Admin' : 'Case manager' }}</td>
+                <td class="govuk-table__cell">
+                  <a href="{{ path('delete-user', { id: user.id }) }}" onclick="return confirm('Are you sure you want to delete this item?')">
+                    Delete
+                  </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
