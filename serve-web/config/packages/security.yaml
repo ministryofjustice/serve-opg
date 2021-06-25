@@ -1,0 +1,30 @@
+security:
+    providers:
+        webservice:
+            id: App\Service\Security\LoginAttempts\UserProvider
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+            cost: 12
+    firewalls:
+        main:
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: case-list
+            logout:
+                path:   /logout
+                target: login
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/user/password-reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/manage/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/behat/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # default: only ROLE_USER can access everything
+        - { path: ^/, roles: ROLE_USER }

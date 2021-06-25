@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% from 'Macros/_macros.html.twig' import notification %}
+{% form_theme form 'Form/govuk_frontend.html.twig' %}
+
+{% block htmlTitle %}Serve OPG{% endblock %}
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">Serve OPG</h1>
+{% endblock %}
+
+{% block content %}
+    {% if isServiceAvailable %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <p>You can now serve OPG with the deputyship order.</p>
+
+                <p>By clicking 'Serve OPG' you are confirming that, to the best of your knowledge, the information you're providing is correct.</p>
+
+                <p class="govuk-!-font-weight-bold">You will not be able to change this order once you have clicked 'Serve OPG'.</p>
+            </div>
+        </div>
+    {% else %}
+        {{ notification('important', 'We cannot serve orders at the moment. All the information you’ve entered has been saved - please try to serve the order again later.\n\nYou can continue to upload order details as normal.') }}
+    {% endif %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form.submit, {
+        label: 'Serve OPG',
+        attr: {'data-order-type': order.type },
+        disabled: (not isServiceAvailable)
+    }) }}
+    <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Back to summary</a>
+
+    {{ form_end(form) }}
+
+
+{% endblock %}
