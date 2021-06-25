@@ -1,0 +1,86 @@
+deputy:
+  type:
+    label: Deputy type
+    pleaseSelect: Please select
+    LAY: 'Lay'
+    PUBLIC_AUTHORITY: 'Public authority'
+    PROFESSIONAL: 'Professional'
+  forename: First name
+  surname: Last name
+  dateOfBirth:
+    label: Date of birth
+    hint: For example, 31 3 1980
+    day: Day
+    month: Month
+    year: Year
+  emailAddress:
+    label: Email address
+    hint: Always enter the email address if the deputy has given one on the COP4
+  daytimeContactNumber: Daytime contact number
+  eveningContactNumber: Evening contact number
+  mobileContactNumber: Mobile contact number
+  addressLine1:
+    label: Building and street
+    hidden: line 1 of 2
+  addressLine2: Building and street line 2 of 2
+  addressTown: Town or city
+  addressCounty: County
+  addressPostcode: Postcode
+
+common:
+  choices:
+    pleaseSelect: Please select
+    yes: Yes
+    no: No
+  submit:
+    label: Save and continue
+  upload:
+    label: Upload file and add to order
+  cancel:
+    label: Cancel
+
+order:
+  hasAssetsAboveThreshold:
+    label: Is the bond over £21,000?
+  subType:
+    label: Order subtype
+    choices:
+      NEW_APPLICATION: New application
+      REPLACEMENT_OF_DISCHARGED_DEPUTY: Replacement of discharged deputy
+      INTERIM_ORDER: Interim order
+  appointmentType:
+    label: Appointment type
+    choices:
+      SOLE: Sole
+      JOINT: Joint
+      JOINT_AND_SEVERAL: Joint and several
+user:
+  passwordReset:
+    email:
+      label: Email Address
+      hint: This must be the address you normally use to sign in to this service
+    submit.label: Reset your password
+  passwordChange:
+    password:
+      label: Password
+      hint: "Your password must have:"
+      hintList: |
+          at least 8 characters
+          at least 1 uppercase letter
+          at least 1 lowercase letter
+          at least 1 number
+    passwordConfirm.label: Confirm password
+    submit.label: Save password
+  add:
+    email.activationHint: An activation email will be sent to the provided email address
+    submit.label: Add user
+  edit:
+    submit.label: Update user
+
+document:
+  type:
+    COP1A: COP 1A
+    COP3: COP 3
+    COP4: COP 4
+    COURT_ORDER: court order
+    OTHER: additional

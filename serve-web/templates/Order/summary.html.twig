@@ -1,0 +1,272 @@
+{% extends 'base.html.twig' %}
+
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} order summary{% endblock %}
+
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }} order summary</h1>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('orderSummary') }}
+{% endblock %}
+
+{% block content %}
+    <h2 class="govuk-heading-m">Order details</h2>
+
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Question</th>
+                <th scope="col" class="govuk-table__header">Answer</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+
+        {# assets question only for PA orders #}
+        {% if order.type == constant('App\\Entity\\Order::TYPE_PF') %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                    Is the bond over £21,000?
+                </td>
+                <td class="govuk-table__cell behat-region-has-assets">
+                    {% if order.hasAssetsAboveThreshold %}
+                        {{ ('order.hasAssets.' ~ order.hasAssetsAboveThreshold) | trans }}
+                    {% endif %}
+                </td>
+                <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">Edit</a>
+                </td>
+            </tr>
+        {% endif %}
+
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Order subtype</td>
+            <td class="govuk-table__cell behat-region-order-subtype">
+                {% if order.subType %}
+                    {{ ('order.subType.' ~ order.subType) | trans }}
+                {% endif %}
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">Edit</a>
+            </td>
+        </tr>
+
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+                Appointment type
+            </td>
+            <td class="govuk-table__cell behat-region-app-type">
+                {% if order.appointmentType %}
+                    {{ ('order.appointmentType.' ~ order.appointmentType) | trans }}
+                {% endif %}
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+                <a href="{{ path('order-edit', {'orderId': order.id}) }}" class="govuk-link govuk-!-font-weight-bold">Edit</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+
+    {# ----- DEPUTIES ----- #}
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Deputies</h2>
+
+    {% if order.deputies | length %}
+        {% for deputy in order.deputies %}
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr>
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-third behat-region-deputy{{ loop.index }}-fullName">{{ deputy.fullname }}</th>
+                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">
+                            <a href="{{ path('deputy-edit', {'deputyId': deputy.id, 'orderId': order.id}) }}" class="govuk-!-margin-right-3" id="edit-deputy-{{ loop.index }}">Edit</a>
+                            <a href="{{ path('deputy-delete', {'deputyId': deputy.id, 'orderId': order.id}) }}" id="delete-deputy-{{ loop.index }}">Remove</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" scope="row">Deputy type</td>
+                        <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-deputyType">{{ ('deputy.type.' ~ deputy.deputyType) | trans({}, 'forms') }}</td>
+                    </tr>
+                    {% if deputy.emailAddress %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Email address</td>
+                                <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-emailAddress">{{ deputy.emailAddress }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if deputy.dateOfBirth %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Date of birth</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-dateOfBirth">{{ deputy.dateOfBirth | date("j F Y") }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if deputy.daytimeContactNumber %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Daytime contact number</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-daytimeContactNumber">{{ deputy.daytimeContactNumber }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if deputy.eveningContactNumber %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Evening contact number</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-eveningContactNumber">{{ deputy.eveningContactNumber }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if deputy.mobileContactNumber %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Mobile contact number</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-mobileContactNumber">{{ deputy.mobileContactNumber }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if deputy.addressFormatted %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" scope="row">Address</td>
+                            <td class="govuk-table__cell behat-region-deputy{{ loop.index }}-address">{{ deputy.addressFormatted }}</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% else %}
+        <p>Add the details of each deputy named on the order.</p>
+    {% endif %}
+
+    <p>
+        <a href="{{ path('deputy-add', {'orderId': order.id}) }}" id="add-deputy" class=" govuk-link govuk-!-font-weight-bold">
+            <span class="govuk-icon govuk-icon--plus"></span>Add a deputy
+        </a>
+    </p>
+
+
+    {# ----- DOCUMENTS ----- #}
+
+    <h2 id="documents" class="govuk-heading-m govuk-!-margin-top-9">Order documents</h2>
+
+    <p class="text dropzone__info">You can only upload JPG, PNG, TIFF, PDF and Word Doc files, and they cannot be larger than 20MB.</p>
+
+    <table class="govuk-table" id="documents-mandatory">
+        <thead class="govuk-table__head">
+            <tr>
+                <th scope="col" class="govuk-table__header">Document required</th>
+                <th scope="col" class="govuk-table__header">Document uploaded</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        {% for docType, docIsRequired in order.getAcceptedDocumentTypes() %}
+            {% set doc = order.getDocumentsByType(docType) | first %}
+            {% if docType == 'COURT_ORDER' and showCOUpload == '0' %}
+                {% if doc | length %}
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                    <p class="govuk-body govuk-!-font-weight-bold">Court Order with filename {{ doc.filename }} has been  uploaded successfully</p>
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                {%  else  %}
+
+                {% endif %}
+            {% else %}
+                <tr class="govuk-table__row" data-order-id="{{ order.id }}" data-doc-type="{{ docType }}" {% if doc | length %}data-doc-id="{{ doc.id }}"{% endif %}>
+                    <td class="govuk-table__cell govuk-!-width-one-third">{{ ('document.type.' ~ docType) | trans }}</td>
+                    <td class="govuk-table__cell behat-region-document-{{ docType | lower }}-filename">
+                        {% if doc | length %}
+                            {{ doc.filename }}
+                        {%  else  %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-{{ docType | lower }}-actions">
+                        {% if doc | length %}
+                            <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-remove-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">Remove</a>
+                        {% else %}
+                            <a href="{{ path('document-add', {'orderId': order.id, 'docType': docType}) }}" class="behat-link-add-document-{{ docType | lower }} govuk-link govuk-!-font-weight-bold">
+                                <span class="govuk-icon govuk-icon--plus behat-link"></span>Add document
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="govuk-heading-s">Other relevant documents (optional)</h3>
+
+    <p class="text dropzone__info">You can only upload JPG, PNG, TIFF, PDF and Word Doc files, and they cannot be larger than 20MB.</p>
+
+    <p class="text">If a <strong>COP24</strong> has been provided, it must be uploaded.</p>
+
+    {% set otherDocs = order.getDocumentsByType(constant('App\\Entity\\Document::TYPE_ADDITIONAL')) %}
+    <table class="govuk-table"  id="documents-additional" data-order-id="{{ order.id }}" data-doc-type="{{ constant('App\\Entity\\Document::TYPE_ADDITIONAL') }}">
+    {% if otherDocs | length %}
+        <thead class="govuk-table__head behat-region-documents-additional-filenames">
+            <tr>
+                <th scope="col" class="govuk-table__header">Document uploaded</th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        {% for doc in otherDocs %}
+            <tr class="govuk-table__row" data-doc-id="{{ doc.id }}">
+                <td class="govuk-table__cell">
+                    {% if doc.filename | length %}
+                        {{ doc.filename }}
+                    {% endif %}</td>
+                <td class="govuk-table__cell govuk-table__cell--numeric behat-region-documents-additional-actions">
+                    <a href="{{ path('document-remove', {'orderId': order.id, 'id': doc.id}) }}" class="behat-link-delete-documents-button govuk-link govuk-!-font-weight-bold">Remove</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% endif %}
+
+        <tfoot>
+        <td {% if otherDocs | length %}colspan="2"{% endif %} class="behat-region-documents-other {% if otherDocs | length %}govuk-!-padding-top-2{% endif %}">
+            <a href="{{ path('document-add', {'orderId': order.id, 'docType': constant('App\\Entity\\Document::TYPE_ADDITIONAL') }) }}"
+               class="govuk-link govuk-!-font-weight-bold behat-link-add-document-other">
+                <span class="govuk-icon govuk-icon--plus"></span>Add document
+            </a>
+        </td>
+        </tfoot>
+    </table>
+
+
+    {% if order.readyToServe %}
+        <a id="serve_order_button" class="govuk-button" href="{{ path('order-declaration', {'orderId': order.id}) }}" >Continue</a>
+    {% else %}
+        <div id="serve_order_notice" class="govuk-alert govuk-alert--info">
+            <span class="govuk-icon govuk-icon--info"></span>
+            <div class="govuk-alert__message">
+                <p>To continue, please add one or more deputies and all the required order documents.</p>
+            </div>
+        </div>
+        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button" disabled="disabled" data-module="govuk-button">Continue</button>
+    {% endif %}
+
+{% endblock %}
+
+{% block bodyEnd %}
+<div id="dropzone__template">
+    <div class="dz-default dz-message govuk-body">
+        <div class="govuk-grid-column-one-third arrow-icon"><p></p></div>
+        <div class="govuk-grid-column-one-half"></div>
+        <span class="dropzone__template__instruction">Drag and drop other relevant documents for <strong>{{order.client.clientName}}</strong> here</span>
+        <div class="govuk-!-font-weight-bold">or</div>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Choose documents</button>
+    </div>
+</div>
+<div id="dropzone__template__file">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-details govuk-body">
+            <div class="dz-filename"><span data-dz-name=""></span> <span class="dz-size" data-dz-size=""></span></div>
+            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+            <div class="dz-error-message govuk-error-message"><span data-dz-errormessage=""></span></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

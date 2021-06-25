@@ -1,0 +1,262 @@
+{# Custom Form Rendering #}
+{% use "form_div_layout.html.twig" %}
+
+{# Form Row #}
+{% block form_row %}
+    <p class="debug-label">Custom: form_row</p>
+    <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        {{ form_label(form) }}
+        {{ form_help(form) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock form_row %}
+
+{# Label #}
+{%- block form_label -%}
+    {% if label is not same as(false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label {% if label_attr %}{% with { attr: label_attr|merge({'class': (label_attr.class|default('') ~ ' govuk-label')|trim}) } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+            {%- if translation_domain is same as(false) -%}
+                {{- label -}}
+            {%- else -%}
+                {{- label|trans({}, translation_domain) -}}
+            {%- endif -%}
+        </label>
+        {% if form.vars.hint ?? false %}
+        <span id="{{ id }}-hint" class="govuk-hint">
+            {{ form.vars.hint | trans([], 'forms') }}
+        </span>
+        {%- endif -%}
+        {% if form.vars.hintList ?? false %}
+        {% set hintList = form.vars.hintList | trans([], 'forms') | split("\n") %}
+        <ul class="govuk-list govuk-list--bullet govuk-hint">
+            {%- for item in hintList -%}
+               {% if item %}<li>{{ item }}</li>{% endif %}
+            {%- endfor -%}
+        </ul>
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{# Help text #}
+{% block form_help %}
+    {%- if help is not empty -%}
+        {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' govuk-hint')|trim}) -%}
+        <span id="{{ id }}-hint"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+            {%- if translation_domain is same as(false) -%}
+                {%- if help_html is same as(false) -%}
+                    {{- help -}}
+                {%- else -%}
+                    {{- help|raw -}}
+                {%- endif -%}
+            {%- else -%}
+                {%- if help_html is same as(false) -%}
+                    {{- help|trans(help_translation_parameters, translation_domain) -}}
+                {%- else -%}
+                    {{- help|trans(help_translation_parameters, translation_domain)|raw -}}
+                {%- endif -%}
+            {%- endif -%}
+        </span>
+    {%- endif -%}
+{% endblock %}
+
+{% block _deputy_form_dateOfBirth_row %}
+    <p class="debug-label">Custom: _deputy_form_dateOfBirth_row</p>
+    <div class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend">
+            <h1 class="govuk-fieldset__heading">
+                {{ form_label(form) }}
+            </h1>
+        </legend>
+
+        <span id="dob-hint" class="govuk-hint">
+            {{ 'deputy.dateOfBirth.hint' | trans([], 'forms') }}
+        </span>
+
+        {{ form_errors(form) }}
+
+        <div class="govuk-date-input" id="form-group-{{ name }}">
+        {{ form_widget(form) }}
+        </div>
+    </div>
+{% endblock _deputy_form_dateOfBirth_row %}
+
+{% block birthday_widget %}
+    <p class="debug-label">Custom: birthday_widget</p>
+    <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_day">
+                {{ 'deputy.dateOfBirth.day' | trans([], 'forms') }}
+            </label>
+            {{ form_widget(form.day, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-2'} }) }}
+        </div>
+    </div>
+    <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_month">
+                {{ 'deputy.dateOfBirth.month' | trans([], 'forms') }}
+            </label>
+            {{ form_widget(form.month, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-2'} }) }}
+        </div>
+    </div>
+    <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-date-input__label" for="deputy_form_dateOfBirth_year">
+                {{ 'deputy.dateOfBirth.year' | trans([], 'forms') }}
+            </label>
+            {{ form_widget(form.year, { 'attr': {'class': 'govuk-date-input__input govuk-input--width-4'} }) }}
+        </div>
+    </div>
+{%- endblock birthday_widget -%}
+
+{% block _deputy_form_addressLine1_row %}
+    <p class="debug-label">Custom: addressLine1_row</p>
+    <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        <label for="addressLine1" class="govuk-label">{{ 'deputy.addressLine1.label' | trans([], 'forms') }} <span class="govuk-visually-hidden">{{ 'deputy.addressLine1.hidden' | trans([], 'forms') }}</span></label>
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock _deputy_form_addressLine1_row %}
+
+{% block _deputy_form_addressLine2_row %}
+    <p class="debug-label">Custom: addressLine2_row</p>
+    <div id="form-group-{{ name }}" class="govuk-form-group {% if errors is not empty %}govuk-form-group--error{% endif %}">
+        <label for="addressLine2" class="govuk-label"><span class="govuk-visually-hidden">{{ 'deputy.addressLine2' | trans([], 'forms') }}</span></label>
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock _deputy_form_addressLine2_row %}
+
+
+{# Select #}
+{% block choice_widget_collapsed %}
+    <p class="debug-label">Custom: choice_widget_collapsed</p>
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-select')|trim}) %}
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {%- if placeholder is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+        {%- endif -%}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('choice_widget_options') -}}
+            {%- if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif -%}
+        {%- endif -%}
+        {%- set options = choices -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+{% endblock choice_widget_collapsed %}
+
+{# Radio #}
+{% block radio_widget -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {%- if 'radio-inline' in parent_label_class -%}
+        {{- form_label(form, null, { widget: parent() }) -}}
+    {%- else -%}
+        <div class="govuk-radios__item">
+            <input type="radio" class="govuk-radios__input" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            {{- form_label(form, null) -}}
+        </div>
+    {%- endif -%}
+{%- endblock radio_widget %}
+
+{# Button #}
+{% block button_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-button')|trim}) -%}
+    {%- if label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- elseif label is same as(false) -%}
+            {% set translation_domain = false %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <button type="{{ type|default('button') }}" {{ block('button_attributes') }} data-module="govuk-button">{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</button>
+{%- endblock button_widget %}
+
+{# Radio - Outer #}
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }} class="govuk-radios">
+    {%- for child in form %}
+        {{- form_widget(child) -}}
+    {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{# Label for Checkboxes or Radio #}
+{% block checkbox_radio_label -%}
+    {# Do not display the label if widget is not defined in order to prevent double label rendering #}
+    {%- if required -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
+    {%- endif -%}
+    {%- if parent_label_class is defined -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) -%}
+    {%- endif -%}
+    {%- if label is not same as(false) and label is empty -%}
+        {%- if label_format is not empty -%}
+            {%- set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) -%}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        {{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)) -}}
+    </label>
+{%- endblock checkbox_radio_label %}
+
+{# Radio label #}
+{% block radio_label -%}
+    {%- set label_attr = label_attr|merge({'class': 'govuk-label govuk-radios__label'}) -%}
+
+    {{- block('checkbox_radio_label') -}}
+{%- endblock radio_label %}
+
+{# Simple input #}
+{% block form_widget_simple -%}
+    <p class="debug-label">Custom: form_widget_simple</p>
+    {% set additionalClass = type is defined and type == 'file' ? 'govuk-file-upload' : 'govuk-input' %}
+
+    {% if type is defined and type == 'file' %}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-file-upload')|trim}) -%}
+    {% elseif type is not defined or type not in ["hidden"] %}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' govuk-input')|trim}) -%}
+    {% endif %}
+
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{# Errors #}
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        {%- for error in errors -%}
+            <span class="govuk-error-message">{{ error.message }}</span>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}

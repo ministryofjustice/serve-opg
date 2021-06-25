@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Behat\:
+        resource: '../src/Behat/*'
+
+    App\Service\NotifyClientMock:
+        arguments:
+            $config: []
+
+    App\Service\MailSender:
+        arguments:
+            $notifyClient: "@App\\Service\\NotifyClientMock"
