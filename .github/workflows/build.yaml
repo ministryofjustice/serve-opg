@@ -1,0 +1,42 @@
+name: test and build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./serve-api
+
+jobs:
+  test:
+    name: "test-api"
+    runs-on: ubuntu-latest
+    env:
+      TEST_RESULTS: /tmp/test_results
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - uses: actions/setup-python@v2
+      - name: setup go-testsum
+        uses: autero1/action-gotestsum@v1.0.0
+        with:
+          gotestsum_version: 1.6.4
+      - name: resolve go cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+      - name: resolve go dependencies
+        run: go mod download
+      - run: mkdir -p ${{ env.TEST_RESULTS }}
+      - name: run unit tests
+        run: gotestsum --junitfile unit-tests.xml
+
+
