@@ -13,6 +13,8 @@ services:
       SYMFONY_DEPRECATIONS_HELPER: 100
       APP_SECRET: 'aFakeSecret'
       BEHAT_PASSWORD: 'Abcd1234'
+    env_file:
+      - .env.local
   behat:
     environment:
       BEHAT_PASSWORD: 'Abcd1234'

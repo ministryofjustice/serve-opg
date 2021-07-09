@@ -51,6 +51,27 @@ Encore
     //     corejs: 3
     // })
 
+  // copying govuk-frontend assets
+  .copyFiles(
+    {
+      from: './node_modules/govuk-frontend/govuk/assets/images',
+
+      // optional target path, relative to the output dir
+      to: './assets/images/[path][name].[ext]',
+
+      // if versioning is enabled, add the file hash too
+      // to: 'images/[path][name].[hash:8].[ext]',
+
+      // only copy files matching this pattern
+      //pattern: /\.(png|jpg|jpeg)$/
+    })
+
+  // copying icons
+  .copyFiles({
+    from: './assets/images',
+    to: 'images/[path][name].[ext]',
+  })
+
     // enables Sass/SCSS support
     .enableSassLoader()
 
@@ -67,26 +88,6 @@ Encore
     // uncomment if you use API Platform Admin (composer req api-admin)
     //.enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
-
-    // copying govuk-frontend assets
-    .copyFiles({
-        from: './node_modules/govuk-frontend/govuk/assets',
-
-        // optional target path, relative to the output dir
-        // to: 'images/[path][name].[ext]',
-
-        // if versioning is enabled, add the file hash too
-        // to: 'images/[path][name].[hash:8].[ext]',
-
-        // only copy files matching this pattern
-        //pattern: /\.(png|jpg|jpeg)$/
-    })
-
-    // copying icons
-    .copyFiles({
-        from: './assets/images',
-        to: 'images/[path][name].[ext]',
-    })
 ;
 
 module.exports = Encore.getWebpackConfig();
