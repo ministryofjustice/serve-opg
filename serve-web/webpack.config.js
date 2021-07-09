@@ -73,7 +73,9 @@ Encore
   })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    .enableSassLoader(options => {
+      options.implementation = require('dart-sass')
+    })
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
