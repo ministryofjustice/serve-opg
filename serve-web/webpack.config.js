@@ -42,54 +42,31 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
+    // copying govuk-frontend images
+    .copyFiles(
+      {
+        from: './node_modules/govuk-frontend/govuk/assets/images',
+        to: './images/[path][name].[ext]',
+      })
 
-    // enables @babel/preset-env polyfills
-    // .configureBabel((babelconfig) => {
-    //     babelconfig.presets.push('@babel/preset-env');
-    // }, {
-    //     useBuiltIns: 'usage',
-    //     corejs: 3
-    // })
+    // copying govuk-frontend fonts
+    .copyFiles(
+      {
+        from: './node_modules/govuk-frontend/govuk/assets/fonts',
+        to: './fonts/[path][name].[ext]',
+      })
 
-  // copying govuk-frontend assets
-  .copyFiles(
-    {
-      from: './node_modules/govuk-frontend/govuk/assets/images',
-
-      // optional target path, relative to the output dir
-      to: './assets/images/[path][name].[ext]',
-
-      // if versioning is enabled, add the file hash too
-      // to: 'images/[path][name].[hash:8].[ext]',
-
-      // only copy files matching this pattern
-      //pattern: /\.(png|jpg|jpeg)$/
+    // copying icons
+    .copyFiles({
+      from: './assets/images',
+      to: 'images/[path][name].[ext]',
     })
-
-  // copying icons
-  .copyFiles({
-    from: './assets/images',
-    to: 'images/[path][name].[ext]',
-  })
 
     // enables Sass/SCSS support
     .enableSassLoader(options => {
       options.implementation = require('dart-sass')
     })
-
-    // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
-
-    // uncomment to get integrity="..." attributes on your script & link tags
-    // requires WebpackEncoreBundle 1.4 or higher
-    //.enableIntegrityHashes()
-
-    // uncomment if you're having problems with a jQuery plugin
     .autoProvidejQuery()
-
-    // uncomment if you use API Platform Admin (composer req api-admin)
-    //.enableReactPreset()
-    //.addEntry('admin', './assets/js/admin.js')
 ;
 
 module.exports = Encore.getWebpackConfig();
