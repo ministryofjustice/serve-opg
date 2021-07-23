@@ -67,18 +67,18 @@ class FixtureTestHelper
     {
         $cases = $this->parseYamlFixture($yamlFileName);
 
-        foreach ($cases as $case) {
+        foreach ($cases as $index => $case) {
             $client = new Client($case['number'], $case['name'], new DateTime());
             $this->em->persist($client);
             $this->em->flush();
 
             if (!$client->hasOrder(Order::TYPE_PF) && ($case['type'] == Order::TYPE_BOTH || $case['type'] == Order::TYPE_PF)) {
-                $this->em->persist(new OrderPf($client, new DateTime(rand(11, 20).' days ago'), new DateTime(rand(1, 10).' days ago')));
+                $this->em->persist(new OrderPf($client, new DateTime(rand(11, 20).' days ago'), new DateTime(rand(1, 10).' days ago'), strval(time() + mt_rand(1,1000000000))));
                 $this->em->flush();
             }
 
             if (!$client->hasOrder(Order::TYPE_HW) && ($case['type'] == Order::TYPE_BOTH || $case['type'] == Order::TYPE_HW)) {
-                $this->em->persist(new OrderHw($client, new DateTime(rand(11, 20).' days ago'), new DateTime(rand(1, 10).' days ago')));
+                $this->em->persist(new OrderHw($client, new DateTime(rand(11, 20).' days ago'), new DateTime(rand(1, 10).' days ago'), strval(time() + mt_rand(1,1000000000))));
                 $this->em->flush();
             }
         }

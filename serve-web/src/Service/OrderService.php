@@ -6,6 +6,7 @@ use App\Entity\Client;
 use App\Entity\Order;
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -70,7 +71,7 @@ REGEX;
         try {
             $this->siriusService->serveOrder($order);
 
-            $order->setServedAt(new \DateTime());
+            $order->setServedAt(new DateTime());
             $this->em->persist($order);
             $this->em->flush();
         } catch (\Exception $e) {
@@ -100,16 +101,22 @@ REGEX;
     /**
      * @param Client $client
      * @param string $orderClass
-     * @param \DateTime $issuedAt
+     * @param DateTime $issuedAt
      *
      * @return Order
      */
-    public function upsert(Client $client, string $orderClass, \DateTime $madeAt, \DateTime $issuedAt)
+    public function upsert(
+        Client $client,
+        string $orderClass,
+        DateTime $madeAt,
+        DateTime $issuedAt,
+        string $orderNumber
+    )
     {
         /* @var $order Order */
         $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
         if (!$order) {
-            $order = new $orderClass($client, $madeAt, $issuedAt);
+            $order = new $orderClass($client, $madeAt, $issuedAt, $orderNumber);
             $this->em->persist($order);
             $this->em->persist($client);
             $this->em->flush();
