@@ -173,7 +173,8 @@ class SiriusServiceTest extends MockeryTestCase
      */
     private function generateOrder($client, $madeAt, $issuedAt)
     {
-        $order = new OrderPf($client, $madeAt, $issuedAt);
+        $orderNumber = strval(rand(1, 100000));
+        $order = new OrderPf($client, $madeAt, $issuedAt, $orderNumber);
 
         $mockDeputies = new ArrayCollection(
             [
