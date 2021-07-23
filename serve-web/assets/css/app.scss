@@ -1,7 +1,8 @@
 // Import GOVUK Frontend
 $govuk-global-styles: true;
 $govuk-page-width: 1200px;
-$govuk-assets-path: '/public/build/';
+$govuk-assets-path: '/public/build';
+//$govuk-images-path: '/public/build/images/';
 $govuk-font-family: helvetica, arial;
 @import "~govuk-frontend/govuk/all";
 
