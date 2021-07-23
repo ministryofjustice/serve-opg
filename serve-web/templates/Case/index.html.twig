@@ -52,7 +52,7 @@
                                 <th class="govuk-table__header" scope="col">Order issued</th>
                                 <th class="govuk-table__header" scope="col">Status</th>
                             {% else %}
-                                <th class="govuk-table__header" scope="col">Date served</th>
+                                <th class="govuk-table__header" scope="col">Order served</th>
                                 <th class="govuk-table__header" scope="col">Documents</th>
                             {% endif %}
                         </tr>
@@ -63,7 +63,9 @@
                             <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >
                                 <td class="govuk-table__cell">
                                     {% if order.servedAt %}
-                                         {{ client.caseNumber }}
+                                        <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}-served">
+                                            {{ client.caseNumber }}
+                                        </a>
                                     {% else %}
                                         <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                             {{ client.caseNumber }}
@@ -94,7 +96,7 @@
                                 {% else %}
 
                                     <td class="govuk-table__cell">
-                                        {{ order.servedAt | date('d/m/Y') }}
+                                        {{ order.servedAt | date('j M Y') }}
                                     </td>
 
                                     <td class="govuk-table__cell">
