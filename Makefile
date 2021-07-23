@@ -103,5 +103,5 @@ build-deps: ##@builds Runs through all steps required before the app can be brou
 	# Compile static assets
 	docker-compose run --rm yarn build-dev
 
-reset-fixtures: ##@application Reset the fixture data for the app 
+reset-fixtures: ##@application Reset the fixture data for the app
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
