@@ -11,3 +11,5 @@ services:
       APP_DEBUG: 'true'
     volumes:
       - ./serve-web/docker/app/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    env_file:
+      - .env.local
