@@ -10,12 +10,15 @@ security:
         main:
             anonymous: ~
             form_login:
-                login_path: login
-                check_path: login
+                login_path: app_login
+                check_path: app_login
                 default_target_path: case-list
             logout:
-                path:   /logout
-                target: login
+                path:   app_logout
+                target: app_login
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false

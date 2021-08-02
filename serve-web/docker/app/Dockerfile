@@ -18,7 +18,7 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
 
 #COMPOSER
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --version=1.10.16
+RUN php composer-setup.php --version=2.1.5
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 

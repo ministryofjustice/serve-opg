@@ -234,6 +234,9 @@
     "nikic/php-parser": {
         "version": "v4.2.2"
     },
+    "ocramius/package-versions": {
+        "version": "1.9.0"
+    },
     "ocramius/proxy-manager": {
         "version": "2.2.2"
     },
@@ -433,6 +436,9 @@
     "symfony/dependency-injection": {
         "version": "v4.2.9"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.4.0"
+    },
     "symfony/doctrine-bridge": {
         "version": "v4.2.9"
     },
@@ -505,6 +511,15 @@
     },
     "symfony/intl": {
         "version": "v4.2.9"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
     },
     "symfony/mime": {
         "version": "v4.3.3"
