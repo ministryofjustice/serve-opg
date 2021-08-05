@@ -1,12 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block htmlTitle %}Sign in{% endblock %}
+{% block pageTitle %}
+    <h1 class="govuk-heading-xl">Sign in</h1>
+{% endblock %}
 
-{% block body %}
-<form method="post">
+{% block validationSummary %}
     {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        {% if lockedForSeconds %}
+                            <div class="behat-region-form-locked-error">
+                                Too many failed attempts. User locked for {{ (lockedForSeconds / 60) | round(0, 'ceil') }} minutes
+                            </div>
+                        {% else %}
+                            <div class="behat-region-form-errors">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
+
+                    </li>
+                </ul>
+            </div>
+        </div>
     {% endif %}
+{% endblock %}
+
+{% block content %}
+<form method="post">
 
     {% if app.user %}
         <div class="mb-3">
@@ -14,15 +38,37 @@
         </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form id="login" action="{{ path('login') }}" method="post" autocomplete="off">
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="" role="group">
+
+                        <div class="govuk-form-group">
+
+                            <label for="email" class="govuk-label">Email:</label>
+                            <input type="email" id="inputEmail" name="email" value="" class="govuk-input form-control" />
+                        </div>
+
+                        <div class="govuk-form-group">
+
+                            <label for="password" class="govuk-label">Password:</label>
+                            <input type="password" id="inputPassword" name="password" class="govuk-input form-control" />
+                        </div>
+
+                        <input type="hidden" name="_csrf_token"
+                               value="{{ csrf_token('authenticate') }}"
+                        >
+
+                    </fieldset>
+                </div>
+
+                <button type="submit" id="login_submit" class="govuk-button" data-module="govuk-button">Sign in</button>
+
+            </form>
+        </div>
+    </div>
 
     {#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
@@ -35,8 +81,5 @@
         </div>
     #}
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
 </form>
 {% endblock %}
