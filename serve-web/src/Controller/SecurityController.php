@@ -10,10 +10,16 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    private UserProvider $userProvider;
+
+    public function __construct(UserProvider $userProvider)
+    {
+        $this->userProvider = $userProvider;
+    }
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(AuthenticationUtils $authenticationUtils, UserProvider $userProvider): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
@@ -27,8 +33,8 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
-            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
-                ? $userProvider->usernameLockedForSeconds($username)
+            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($lastUsername)
+                ? $this->userProvider->usernameLockedForSeconds($lastUsername)
                 : false
         ]);
     }
