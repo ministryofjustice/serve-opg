@@ -104,7 +104,7 @@ class UserControllerTest extends ApiWebTestCase
         $client = ApiWebTestCase::getService('test.client');
         $crawler = $client->request(Request::METHOD_GET, "/login");
         $form = $crawler->selectButton('Sign in')->form(
-            ['_username' => 'test@digital.justice.gov.uk', '_password' => 'password']
+            ['email' => 'test@digital.justice.gov.uk', 'password' => 'password']
         );
 
         $client->submit($form);

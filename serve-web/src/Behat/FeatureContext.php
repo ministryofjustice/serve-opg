@@ -58,8 +58,8 @@ class FeatureContext extends MinkContext implements Context
     public function iLogInAsCorrect($user)
     {
         $this->visit("/login");
-        $this->fillField('login_username', $user);
-        $this->fillField('login_password', $this->behatPassword);
+        $this->fillField('email', $user);
+        $this->fillField('password', $this->behatPassword);
         $this->pressButton('login_submit');
     }
 
@@ -70,8 +70,8 @@ class FeatureContext extends MinkContext implements Context
     public function iLogInAsWrong($user)
     {
         $this->visit("/login");
-        $this->fillField('login_username', $user);
-        $this->fillField('login_password', 'wrong password');
+        $this->fillField('inputEmail', $user);
+        $this->fillField('password', 'wrong password');
         $this->pressButton('login_submit');
     }
 
@@ -82,8 +82,8 @@ class FeatureContext extends MinkContext implements Context
     public function iLogInAsNew($user)
     {
         $this->visit("/login");
-        $this->fillField('login_username', $user);
-        $this->fillField('login_password', $this->behatPasswordNew);
+        $this->fillField('email', $user);
+        $this->fillField('password', $this->behatPasswordNew);
         $this->pressButton('login_submit');
     }
 
@@ -94,8 +94,8 @@ class FeatureContext extends MinkContext implements Context
     public function iLogInAsNone($user)
     {
         $this->visit("/login");
-        $this->fillField('login_username', $user);
-        $this->fillField('login_password', '');
+        $this->fillField('email', $user);
+        $this->fillField('password', '');
         $this->pressButton('login_submit');
     }
     

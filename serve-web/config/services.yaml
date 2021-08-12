@@ -222,3 +222,7 @@ services:
     App\DataFixtures\BehatFixtures:
         arguments:
             $fixtureHelper: '@App\TestHelpers\FixtureTestHelper'
+
+    App\Controller\SecurityController:
+        arguments:
+            $userProvider: '@App\Service\Security\LoginAttempts\UserProvider'
