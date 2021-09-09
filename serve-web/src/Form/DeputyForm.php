@@ -31,7 +31,8 @@ class DeputyForm extends AbstractType
                     'deputy.type.LAY' => Deputy::DEPUTY_TYPE_LAY,
                     'deputy.type.PUBLIC_AUTHORITY' => Deputy::DEPUTY_TYPE_PA,
                     'deputy.type.PROFESSIONAL' => Deputy::DEPUTY_TYPE_PROF
-                ]
+                ],
+                'data' => $deputyTypeValue
             ])
             ->add('forename', TextType::class, [
                 'label' => 'deputy.forename',

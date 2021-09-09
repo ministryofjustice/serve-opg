@@ -27,8 +27,8 @@ class DeputyFormTest extends TypeTestCase
         ];
 
         $model = new Deputy(OrderTestHelper::generateOrder('2016-01-01', '2016-01-02', '16472847', 'HW', $timeNow->format('Y-m-d')));
-
-        $form = $this->factory->create(DeputyForm::class, $model);
+        
+        $form = $this->factory->create(DeputyForm::class, $model, ['deputyType' => 'LAY']);
 
         $expected = new Deputy(OrderTestHelper::generateOrder('2016-01-01', '2016-01-02', '16472847', 'HW', $timeNow->format('Y-m-d')));
         $expected->setDeputyType('LAY');
