@@ -46,20 +46,20 @@ Encore
     .copyFiles(
       {
         from: './node_modules/govuk-frontend/govuk/assets/images',
-        to: '/images/[path][name].[ext]',
+        to: 'images/[path][name].[ext]',
       })
 
     // copying govuk-frontend fonts
     .copyFiles(
       {
         from: './node_modules/govuk-frontend/govuk/assets/fonts',
-        to: '/fonts/[path][name].[ext]',
+        to: 'fonts/[path][name].[ext]',
       })
 
     // copying icons
     .copyFiles({
       from: './assets/images/icons',
-      to: '/images/icons/[path][name].[ext]',
+      to: 'images/icons/[path][name].[ext]',
     })
 
     // enables Sass/SCSS support
