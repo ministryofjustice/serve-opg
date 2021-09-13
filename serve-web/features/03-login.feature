@@ -10,7 +10,7 @@ Feature: login
         # wrong username
     When I log in as "wrongUser" with wrong password
     Then I should be on "/login"
-    And I should see "Username could not be found." in the "form-errors" region
+    And I should see "Invalid credentials." in the "form-errors" region
     # correct
     When I log in as "behat@digital.justice.gov.uk" with correct password
     Then I should be on "/case"
