@@ -23,6 +23,7 @@ class S3Client extends \Aws\S3\S3Client
         // custom endpoint e.g. fakes3
         if ($s3Endpoint) {
             $args += [
+                'use_path_style_endpoint' => true,
                 'endpoint' => $s3Endpoint,
                 'validate' => false
             ];
