@@ -88,11 +88,14 @@ services:
       - --dynamic
 
   localstack:
-    image: localstack/localstack:0.9.1
+    image: localstack/localstack:0.10.9
     environment:
       - SERVICES=s3:4572,dynamodb:4569
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
+    ports:
+      - "4572:4572"
+      - "4569:4569"
     volumes:
       - ./serve-web/localstack-data:/tmp/localstack/data
 
