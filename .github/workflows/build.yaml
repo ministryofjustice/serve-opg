@@ -3,11 +3,10 @@ name: Build & Test API
 on:
   pull_request:
     branches:
-      - main
+      - master
   push:
     branches:
-      - main
-
+      - master
 defaults:
   run:
     shell: bash
