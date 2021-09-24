@@ -94,3 +94,79 @@ jobs:
           docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
           docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
           docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --log-junit /var/www/tests/artifacts/phpunit/junit.xm
+
+  build-and-push:
+    name: Build and Push Containers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract branch name
+        run: |
+          if [ "${{ github.head_ref }}" == "" ]; then
+            echo BRANCH_NAME=main >> $GITHUB_ENV
+          else
+            echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
+          fi
+        id: extract_branch
+      - uses: unfor19/install-aws-cli-action@v1
+      - name: Bump version
+        id: bump_version
+        uses: anothrNick/github-tag-action@1.33.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INITIAL_VERSION: 1.0.0
+          DEFAULT_BUMP: minor
+          PRERELEASE_SUFFIX: ${{ env.BRANCH_NAME }}
+          RELEASE_BRANCHES: main
+          WITH_V: true
+
+      - name: Build Containers
+        run: |
+            # Vendor php dependencies
+            docker-compose run --rm app composer install --no-interaction
+            # install js dependencies
+            docker-compose run --rm yarn install
+            # Generate static assets
+            docker-compose run --rm yarn build
+            # Build app
+            docker-compose build web
+            docker-compose build app
+            # Build API
+            docker-compose build api
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::311462405659:role/serve-actions-ci
+          role-duration-seconds: 3600
+          role-session-name: GitHubActions
+
+      - name: ECR Login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registries: 311462405659
+
+      - name: Push Containers
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
+          docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
+          docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
+          if [ "$BRANCH_NAME" == "main" ]; then
+            # We want all of the tags pushed
+            docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:main-${{ steps.bump_version.outputs.tag }}
+            docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:main-${{ steps.bump_version.outputs.tag }}
+            docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:main-${{ steps.bump_version.outputs.tag }}
+            docker push --all-tags $ECR_REGISTRY/serve-opg/app
+            docker push --all-tags $ECR_REGISTRY/serve-opg/web
+            docker push --all-tags $ECR_REGISTRY/serve-opg/api
+          else
+            docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
+            docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
+            docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
+          fi
