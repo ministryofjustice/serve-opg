@@ -1,4 +1,4 @@
-name: Build & Test API
+name: Build & Test
 
 on:
   pull_request:
@@ -10,12 +10,14 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./serve-api
 
 jobs:
-  test:
-    name: "test-api"
+  test-api:
+    name: Test API
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./serve-api
     env:
       TEST_RESULTS: /tmp/test_results
     steps:
@@ -34,8 +36,58 @@ jobs:
           restore-keys: ${{ runner.os }}-go-
       - name: resolve go dependencies
         run: go mod download
-      - run: mkdir -p ${{ env.TEST_RESULTS }}
+      - name: Create test result directory
+        run: mkdir -p ${{ env.TEST_RESULTS }}
       - name: run unit tests
         run: gotestsum --junitfile unit-tests.xml
+  test-web:
+    name: Test Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8.1
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.1
+      - name: Build Dependencies
+        run: |
+          # Create the s3 buckets
+          # & wait for the server to become available
+          docker-compose up -d localstack
 
+          docker-compose run --rm waitforit -address=http://localstack:4572 -debug -timeout=30
+          docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius-test-bucket
+          docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test-bucket
 
+          # Create dynamodb tables
+          docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
+          docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
+
+          # Triggers Symfony Flex to run recipes during composer install - required for phpunit-bridge
+          rm -rf ./serve-web/vendor
+          rm -rf ./serve-web/symfony.lock
+
+          # Vendor php dependencies
+          docker-compose run --rm app composer install --no-interaction
+
+          # Install js dependencies
+          docker-compose run --rm yarn install
+
+          # Generate static assets
+          docker-compose run --rm yarn build-dev
+
+          # Removes boilerplate feature test added during Symfony Flex recipe for behat
+          rm -rf ./serve-web/features/demo.feature
+
+          ./serve-web/generate_certs.sh
+          docker-compose -f docker-compose.test.yml -f docker-compose.yml up --build -d loadbalancer
+          docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 360
+          docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
+          docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --log-junit /var/www/tests/artifacts/phpunit/junit.xm
+      - name: Run Integrations Tests
+        run: |
+          ./serve-web/generate_certs.sh
+          docker-compose -f docker-compose.test.yml -f docker-compose.yml up --build -d loadbalancer
+          docker-compose run --rm waitforit -address=tcp://loadbalancer:443 -debug -timeout 120
+          docker-compose run --rm waitforit -address=tcp://postgres:5432 -debug
+          docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests --log-junit /var/www/tests/artifacts/phpunit/junit.xm
