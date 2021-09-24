@@ -98,6 +98,7 @@ jobs:
   build-and-push:
     name: Build and Push Containers
     runs-on: ubuntu-latest
+    depends_on: [test-api, test-web]
     steps:
       - uses: actions/checkout@v2
       - name: Extract branch name
