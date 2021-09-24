@@ -88,11 +88,14 @@ services:
       - --dynamic
 
   localstack:
-    image: localstack/localstack:0.9.1
+    image: localstack/localstack:0.10.9
     environment:
       - SERVICES=s3:4572,dynamodb:4569
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
+    ports:
+      - "4572:4572"
+      - "4569:4569"
     volumes:
       - ./serve-web/localstack-data:/tmp/localstack/data
 
@@ -107,11 +110,12 @@ services:
       POSTGRES_PASSWORD: dcdb2018!
 
   yarn:
-    image: node:12.13-stretch
+    image: node:14.17-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
     volumes:
+      - ./serve-web/node_modules:/var/www/node_modules
       - ./serve-web:/var/www
     entrypoint: ["yarn"]
 

@@ -129,7 +129,7 @@ class UserProvider implements UserProviderInterface
             return;
         }
 
-        $username = $event->getAuthenticationToken()->getUser();
+        $username = $event->getAuthenticationToken()->getCredentials()['email'];
         if ($username) {
             $this->storage->storeAttempt($username, time());
         }
