@@ -6,6 +6,7 @@
 parameters:
     locale: 'en'
     behat_password: '%env(BEHAT_PASSWORD)%'
+    fallback_notify_key: "mock-0b6deb72-13ec-45f5-b598-88c7be007000-0b6deb72-13ec-45f5-b598-88c7be007000"
 
 services:
     # default configuration for services in *this* file
@@ -83,7 +84,7 @@ services:
         class: Alphagov\Notifications\Client
         arguments:
             $config:
-                apiKey: "%env(NOTIFICATION_API_KEY)%"
+                apiKey: '%env(default:fallback_notify_key:NOTIFICATION_API_KEY)%'
                 httpClient: "@notificationHttpClient"
 
     # Notifications mock client for behat (local URL)
