@@ -1,31 +1,31 @@
-.opg-title {
+.app-title {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 
   &--subtitle-right {
-    h2.opg-main-title {
+    h2.app-main-title {
       order: 0
     }
 
-    h2.opg-subtitle {
+    h2.app-subtitle {
       margin-left: 0.5rem;
       order: 1
     }
   }
 
   &--subtitle-left {
-    h2.opg-subtitle {
+    h2.app-subtitle {
       margin-right: 0.5rem;
       order: 0
     }
 
-    h2.opg-main-title {
+    h2.app-main-title {
       order: 1
     }
   }
 }
 
-h2.opg-subtitle {
+h2.app-subtitle {
   @extend .govuk-grid-column-one-half;
 }
