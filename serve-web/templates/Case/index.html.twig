@@ -23,6 +23,7 @@
         <h2 class="govuk-tabs__title">
             Contents
         </h2>
+
         <ul class="govuk-tabs__list">
             <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                 <a class="govuk-tabs__tab" href="#to-do">
@@ -35,106 +36,161 @@
                 </a>
             </li>
         </ul>
+
         <div class="govuk-tabs__panel" id="to-do">
             <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds text--center">
-                    <div class="govuk-grid-column-full text--center">
-                        <div class="govuk-grid-column-one-quarter text--center">
-                            <div class="govuk-grid-column-one-half text--center">
-                                <div class="govuk-heading-l">6526</div>
+                <div class="govuk-grid-column-full text--center">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-one-half">
+                            <div class="opg-title opg-title--subtitle-right">
+                                <h2 class="govuk-heading-l opg-main-title">6526</h2>
+                                <h2 class="govuk-heading-m opg-subtitle">Total court order backlog</h2>
                             </div>
-                            <div class="govuk-grid-column-one-half text--center">
-                                <div class="govuk-heading-m">Total Court Order Backlog</div>
+                        </div>
+
+                        <div class="govuk-grid-column-one-half">
+                            <div class="govuk-form-group push--right">
+                                <label class="govuk-label" for="sort">
+                                    Show backlog by
+                                </label>
+                                <select class="govuk-select push--right" id="sort" name="sort">
+                                    <option value="published">Year breakdown</option>
+                                    <option value="updated" selected>Order type</option>
+                                    <option value="views">Order status</option>
+                                </select>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="govuk-grid-column-one-quarter text--center">
-                        <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-satisfaction-total-label">
-                            <a href="#" class="govuk-link">1234</a>
-                        </span>
-                        <span class="govuk-heading-m govuk-!-margin-bottom-4">
-                            1 Jan to 31 Dec 2018
-                        </span>
-                    </div>
+                <div class="govuk-grid-column-two-thirds text--center">
+                    <div class="opg-stat-items">
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">1234</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2018 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2018
+                            </p>
+                        </div>
 
-                    <div class="govuk-grid-column-one-quarter text--center">
-                        <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-reportsSubmitted-total-label">
-                            <a href="#" class="govuk-link">678</a>
-                        </span>
-                        <span class="govuk-heading-m govuk-!-margin-bottom-4">
-                            1 Jan to 31 Dec 2019
-                        </span>
-                    </div>
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">678</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2019 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2019
+                            </p>
+                        </div>
 
-                    <div class="govuk-grid-column-one-quarter text--center">
-                        <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-reportsSubmitted-total-label">
-                            <a href="#" class="govuk-link">465</a>
-                        </span>
-                            <span class="govuk-heading-m govuk-!-margin-bottom-4">
-                            1 Jan to 31 Dec 2020
-                        </span>
-                    </div>
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">465</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2020 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2020
+                            </p>
+                        </div>
 
-                    <div class="govuk-grid-column-one-quarter text--center">
-                        <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-reportsSubmitted-total-label">
-                            <a href="#" class="govuk-link">112</a>
-                        </span>
-                        <span class="govuk-heading-m govuk-!-margin-bottom-4">
-                            1 Jan to 31 Dec 2021
-                        </span>
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">112</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2021 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s">
+                                present
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="govuk-tabs__panel" id="served">
-            <h2 class="govuk-heading-l">13596 Total Court Order Backlog</h2>
+
 
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full text--center">
-                    <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-satisfaction-total-label">
-                       1234
-                    </span>
-                    <span class="govuk-heading-xl govuk-!-margin-bottom-4 govuk-!-font-size-80" aria-labelledby="metric-satisfaction-total-label">
-                        1 Jan to 31 Dec 2018
-                    </span>
-                </div>
-            </div>
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-one-half">
+                            <div class="opg-title opg-title--subtitle-right">
+                                <h2 class="govuk-heading-l opg-main-title">27568</h2>
+                                <h2 class="govuk-heading-m opg-subtitle">Total orders served</h2>
+                            </div>
+                        </div>
 
-            <div class="govuk-grid-row govuk-!-margin-bottom-9">
-                <div class="govuk-grid-column-one-third text--center">
-                    <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-reportsSubmitted-total-label">
-                        678
-                    </span>
-                    <span class="govuk-heading-xl govuk-!-margin-bottom-4" aria-labelledby="metric-reportsSubmitted-total-label">
-                        1 Jan to 31 Dec 2019
-                    </span>
+                        <div class="govuk-grid-column-one-half">
+                            <div class="govuk-form-group push--right">
+                                <label class="govuk-label" for="sort">
+                                    Show served Court Orders by
+                                </label>
+                                <select class="govuk-select push--right" id="sort" name="sort">
+                                    <option value="published">Year breakdown</option>
+                                    <option value="updated" selected>Order type</option>
+                                    <option value="views">Order status</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="govuk-grid-row govuk-!-margin-bottom-9">
-                <div class="govuk-grid-column-one-third text--center">
-                    <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-reportsSubmitted-total-label">
-                        465
-                    </span>
-                    <span class="govuk-heading-xl govuk-!-margin-bottom-4" aria-labelledby="metric-reportsSubmitted-total-label">
-                        1 Jan to 31 Dec 2020
-                    </span>
-                </div>
-            </div>
+                <div class="govuk-grid-column-full text--center">
+                    <div class="opg-stat-items">
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">6789</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2018 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2018
+                            </p>
+                        </div>
 
-            <div class="govuk-grid-row govuk-!-margin-bottom-9">
-                <div class="govuk-grid-column-one-third text--center">
-                    <span class="govuk-caption-l govuk-!-margin-top-2" id="metric-reportsSubmitted-total-label">
-                        112
-                    </span>
-                    <span class="govuk-heading-xl govuk-!-margin-bottom-4" aria-labelledby="metric-reportsSubmitted-total-label">
-                        1 Jan to 31 Dec 2021
-                    </span>
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">9221</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2019 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2019
+                            </p>
+                        </div>
+
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">8132</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2020 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2020
+                            </p>
+                        </div>
+
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">4222</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2021 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s">
+                                present
+                            </p>
+                        </div>
+
+                        <div class="opg-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">36</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">Served <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                today
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 
 
