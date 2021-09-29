@@ -280,4 +280,21 @@ MESSAGE;
             ['order' => $order, 'form' => $form->createView()]
         );
     }
+
+    /**
+     * @Route("/order/{orderId}/summary-served", name="served-order-summary", methods={"GET"})
+     */
+    public function servedOrderSummary(Request $request, string $orderId)
+    {
+        $order = $this->em->getRepository(Order::class)->find($orderId);
+
+        if (!$order->getServedAt()) {
+            return $this->redirectToRoute('order-summary', ['orderId' => $orderId]);
+        }
+
+        return $this->render(
+            'Order/summary-served.html.twig',
+            ['order' => $order, ]
+        );
+    }
 }
