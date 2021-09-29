@@ -96,9 +96,15 @@
                                     </td>
                                 {% else %}
 
-                                    <td class="govuk-table__cell">
-                                        {{ order.servedAt | date('j M Y') }}
-                                    </td>
+                        <div class="app-stat-item">
+                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                                <a href="#" class="govuk-link">678</a>
+                            </div>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2019 <span class="govuk-!-font-weight-regular">to</span></p>
+                            <p class="govuk-body-s govuk-!-font-weight-bold">
+                                31 Dec 2019
+                            </p>
+                        </div>
 
                                     <td class="govuk-table__cell">
                                         <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
@@ -133,7 +139,7 @@
                             </p>
                         </div>
 
-                        <div class="opg-stat-item">
+                        <div class="app-stat-item">
                             <div class="govuk-caption-xl govuk-!-margin-bottom-2">
                                 <a href="#" class="govuk-link">36</a>
                             </div>
