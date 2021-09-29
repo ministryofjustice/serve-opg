@@ -5,10 +5,10 @@ services:
   app:
     build:
       args:
-        WITH_XDEBUG: 'false'
+        WITH_XDEBUG: 'true'
     environment:
       APP_ENV: 'dev'
-      APP_DEBUG: 'false'
+      APP_DEBUG: 'true'
     env_file:
       - .env.local
     volumes:

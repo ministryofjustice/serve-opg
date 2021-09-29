@@ -1,7 +1,7 @@
 deputy:
   type:
     label: Deputy type
-    pleaseSelect: Please select
+    pleaseSelect: Please select a deputy type
     LAY: 'Lay'
     PUBLIC_AUTHORITY: 'Public authority'
     PROFESSIONAL: 'Professional'

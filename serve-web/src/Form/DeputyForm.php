@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Common\Form\Answers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
@@ -19,16 +20,19 @@ class DeputyForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $deputyTypeValue = !empty($options['deputyType']) ? $options['deputyType'] : '';
+
         $builder
             ->add('deputyType', ChoiceType::class, [
                 'label' => 'deputy.type.label',
-                'required' => false,
+                'required' => true,
                 'choices' => [
                     'deputy.type.pleaseSelect' => '',
                     'deputy.type.LAY' => Deputy::DEPUTY_TYPE_LAY,
                     'deputy.type.PUBLIC_AUTHORITY' => Deputy::DEPUTY_TYPE_PA,
                     'deputy.type.PROFESSIONAL' => Deputy::DEPUTY_TYPE_PROF
-                ]
+                ],
+                'data' => $deputyTypeValue
             ])
             ->add('forename', TextType::class, [
                 'label' => 'deputy.forename',
@@ -39,15 +43,6 @@ class DeputyForm extends AbstractType
                 'label' => 'deputy.surname',
                 'required' => false,
                 'attr' => ['maxlength'=> 255]
-            ])
-            ->add('dateOfBirth', BirthdayType::class, [
-                'label' => 'deputy.dateOfBirth.label',
-                'required' => true,
-                'widget' => 'text',
-                'placeholder' => array(
-                    'day' => 'Day','month' => 'Month' , 'year' => 'Year'
-                ),
-                'format' => 'dd-MM-yyyy',
             ])
             ->add('emailAddress', TextType::class, [
                 'label' => 'deputy.emailAddress.label',
@@ -97,6 +92,18 @@ class DeputyForm extends AbstractType
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('saveAndContinue', SubmitType::class);
+
+        if ($deputyTypeValue === 'LAY') {
+            $builder->add('dateOfBirth', BirthdayType::class, [
+                'label' => 'deputy.dateOfBirth.label',
+                'required' => true,
+                'widget' => 'text',
+                'placeholder' => array(
+                    'day' => 'Day','month' => 'Month' , 'year' => 'Year'
+                ),
+                'format' => 'dd-MM-yyyy',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -115,7 +122,8 @@ class DeputyForm extends AbstractType
                 }
 
                 return $validationGroups;
-            }
+            },
+            'deputyType' => ''
         ));
     }
 }

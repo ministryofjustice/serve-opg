@@ -12,20 +12,13 @@
     height: #{$icon-height}px;
 
     @if $icon-sub-folder {
-        background-image: govuk-image-url("#{$icon-sub-folder}/#{$icon-name}.png");
+        background-image: url("../../images/#{$icon-sub-folder}/#{$icon-name}.png");
 
         @include govuk-device-pixel-ratio() {
-            background-image: govuk-image-url("#{$icon-sub-folder}/#{$icon-name}-2x.png");
+            background-image: url("../../images/#{$icon-sub-folder}/#{$icon-name}-2x.png");
             background-size: 100%;
         }
 
-    } @else {
-        background-image: govuk-image-url("#{$icon-name}.png");
-
-        @include govuk-device-pixel-ratio() {
-            background-image: govuk-image-url("#{$icon-name}-2x.png");
-            background-size: 100%;
-        }
     }
 }
 
@@ -59,13 +52,6 @@
 
     .govuk-icon--important {
         @include icon(icon-important, 22, 22, 'icons');
-    }
-
-    .govuk-icon--loader {
-        width: 22px;
-        height: 22px;
-        background-image: govuk-image-url("icons/icon-loader.gif");
-        background-size: contain;
     }
 
     .govuk-icon--plus {
