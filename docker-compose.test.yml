@@ -19,6 +19,9 @@ services:
       BEHAT_PASSWORD: 'Abcd1234'
     env_file:
       - .env
+    volumes:
+      - ./serve-web/features:/var/www/features
+      - ./serve-web/src/Behat:/var/www/src/Behat
   behat:
     environment:
       BEHAT_PASSWORD: 'Abcd1234'

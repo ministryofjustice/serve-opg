@@ -6,37 +6,27 @@ Feature: deputy
     When I follow "order-93559316-HW"
     Then the url should match "order/\d+/summary"
     When I follow "add-deputy"
-    And the url should match "order/\d+/deputy/add"
+    And the url should match "order/\d+/deputy/add/deputy-type"
         # check form validation
     And I fill in the following:
-      | deputy_form_deputyType | LAY |
+      | deputyType | LAY |
+    And I press "deputyType_saveAndContinue"
+    And the url should match "order/\d+/deputy/add"
     And I press "deputy_form_saveAndContinue"
     Then the following fields should have an error:
       | deputy_form_forename |
       | deputy_form_surname  |
-    When I fill in the following:
-      | deputy_form_deputyType | PUBLIC_AUTHORITY |
-    And I press "deputy_form_saveAndContinue"
-    Then the response status code should be 200
-    And the following fields should have an error:
-      | deputy_form_forename         |
-      | deputy_form_surname          |
-    When I fill in the following:
-      | deputy_form_deputyType | PROFESSIONAL |
-    And I press "deputy_form_saveAndContinue"
-    Then the response status code should be 200
-    Then the following fields should have an error:
-      | deputy_form_forename         |
-      | deputy_form_surname          |
 
   Scenario: HW order: add valid deputy data
     Given I log in as "behat@digital.justice.gov.uk" with correct password
     When I go to "/case"
     When I follow "order-93559316-HW"
     When I follow "add-deputy"
-      # check form validation
+    And I fill in the following:
+      | deputyType | LAY |
+    And I press "deputyType_saveAndContinue"
+    # check form validation
     When I fill in the following:
-      | deputy_form_deputyType           | LAY                                         |
       | deputy_form_forename             | Dep                                         |
       | deputy_form_surname              | Uty                                         |
       | deputy_form_emailAddress         | behat-12345678-depy1@digital.justice.gov.uk |
@@ -68,7 +58,7 @@ Feature: deputy
     Then I follow "edit-deputy-1"
   # check form validation
     When I fill in the following:
-      | deputy_form_deputyType           | LAY                                         |
+      | deputy_form_deputyType           | PROFESSIONAL                                 |
       | deputy_form_forename             | DepE                                         |
       | deputy_form_surname              | UtyE                                          |
       | deputy_form_emailAddress         | behat-12345678-depy1E@digital.justice.gov.uk |
@@ -99,8 +89,10 @@ Feature: deputy
     When I go to "/case"
     When I follow "order-93559316-HW"
     Then I follow "add-deputy"
+    And I fill in the following:
+      | deputyType | LAY |
+    And I press "deputyType_saveAndContinue"
     When I fill in the following:
-      | deputy_form_deputyType           | LAY                                         |
       | deputy_form_forename             | Dep2                                         |
       | deputy_form_surname              | Uty2                                         |
       | deputy_form_emailAddress         | behat-12345678-depy2@digital.justice.gov.uk |
@@ -135,9 +127,11 @@ Feature: deputy
     When I go to "/case"
     When I follow "order-93559316-PF"
     When I follow "add-deputy"
+    And I fill in the following:
+      | deputyType | PUBLIC_AUTHORITY |
+    And I press "deputyType_saveAndContinue"
       # check form validation
     When I fill in the following:
-      | deputy_form_deputyType | PUBLIC_AUTHORITY |
       | deputy_form_forename   | PfPADep |
       | deputy_form_surname   | Uty |
     And I press "deputy_form_saveAndContinue"
@@ -150,9 +144,11 @@ Feature: deputy
     When I go to "/case"
     When I follow "order-93559316-HW"
     When I follow "add-deputy"
+    And I fill in the following:
+      | deputyType | PUBLIC_AUTHORITY |
+    And I press "deputyType_saveAndContinue"
   # check form validation
     When I fill in the following:
-      | deputy_form_deputyType | PUBLIC_AUTHORITY |
       | deputy_form_forename   | HwPADep |
       | deputy_form_surname   | Uty |
     And I press "deputy_form_saveAndContinue"
