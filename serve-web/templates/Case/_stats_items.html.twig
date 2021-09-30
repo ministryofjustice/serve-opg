@@ -1,0 +1,21 @@
+<div class="app-stat-items">
+    {% for item in items %}
+        <div class="app-stat-item">
+            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
+                <a href="#" class="govuk-link">{{ item.numberOfOrders }}</a>
+            </div>
+            {% if item.dateFrom is not defined %}
+                <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">Served</p>
+                <p class="govuk-body-s govuk-!-font-weight-bold">
+                    today
+                </p>
+            {% else %}
+                <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">{{ item.dateFrom | date('j M Y')}} <span class="govuk-!-font-weight-regular">to</span></p>
+                <p class="govuk-body-s govuk-!-font-weight-bold">
+                    {{ item.dateTo | date('j M Y')}}
+                </p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+

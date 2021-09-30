@@ -38,94 +38,12 @@
         </ul>
 
         <div class="govuk-tabs__panel" id="to-do">
-            {{ include('Case/_stats_panel.html.twig') }}
+            {% include 'Case/_stats_panel.html.twig' with { stats: toDoStats } %}
         </div>
 
         <div class="govuk-tabs__panel" id="served">
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full text--center">
-                    <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-one-half">
-                            <div class="app-title app-title--subtitle-right">
-                                <h2 class="govuk-heading-l app-main-title">27568</h2>
-                                <h2 class="govuk-heading-m app-subtitle">Total orders served</h2>
-                            </div>
-                        </div>
-
-                        <div class="govuk-grid-column-one-half">
-                            <div class="govuk-form-group push--right">
-                                <label class="govuk-label" for="sort">
-                                    Show served Court Orders by
-                                </label>
-                                <select class="govuk-select push--right" id="sort" name="sort">
-                                    <option value="published">Year breakdown</option>
-                                    <option value="updated" selected>Order type</option>
-                                    <option value="views">Order status</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="govuk-grid-column-full text--center">
-                    <div class="app-stat-items">
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">6789</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2018 <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s govuk-!-font-weight-bold">
-                                31 Dec 2018
-                            </p>
-                        </div>
-
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">9221</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2019 <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s govuk-!-font-weight-bold">
-                                31 Dec 2019
-                            </p>
-                        </div>
-
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">8132</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2020 <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s govuk-!-font-weight-bold">
-                                31 Dec 2020
-                            </p>
-                        </div>
-
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">4222</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2021 <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s">
-                                present
-                            </p>
-                        </div>
-
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">36</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">Served <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s govuk-!-font-weight-bold">
-                                today
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div>
-
-
-
-
+            {% include 'Case/_stats_panel.html.twig' with { stats: servedStats } %}
+        </div>
 
 {#    <div class="govuk-tabs">#}
 {#        <h2 class="govuk-tabs__title">#}
