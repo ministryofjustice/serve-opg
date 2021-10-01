@@ -42,6 +42,16 @@ up-test: ## Brings the app up in test mode with profiler and xdebug disabled - r
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
+up-xdebug: ## Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
+	WITH_XDEBUG=0 docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.local.yml build app
+
+	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
+	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
+
+	# Build app
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
+	docker-compose run --rm app php bin/console cache:clear --env=dev
+
 phpunit-tests: up-test ## Requires the app to be built and up before running
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm app php bin/phpunit --verbose tests $(args)
 

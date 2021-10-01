@@ -39,7 +39,7 @@ COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN chmod 777 xdebug.sh
 
 ARG WITH_XDEBUG
-ENV WITH_XDEBUG=${WITH_XDEBUG:-false}
+ENV WITH_XDEBUG=${WITH_XDEBUG:-0}
 
 RUN ./xdebug.sh
 

@@ -7,12 +7,18 @@ namespace App\Service\Stats\Model;
 
 class Stats
 {
-    /** @var array []OrderMadePeriodStats */
+    const STAT_STATUS_TO_DO = 'pending';
+    const STAT_STATUS_SERVED = 'served';
+
+    /** @var []OrderMadePeriodStat */
     private array $orderMadePeriodStats = [];
 
-    private ?Filter $filter = null;
+    private string $status;
 
-    private ?string $description = null;
+    public function __construct(string $status = self::STAT_STATUS_TO_DO)
+    {
+        $this->status = $status;
+    }
 
     /**
      * @return array
@@ -50,17 +56,7 @@ class Stats
      */
     public function getFilter(): ?Filter
     {
-        return $this->filter;
-    }
-
-    /**
-     * @param Filter|null $filter
-     * @return Stats
-     */
-    public function setFilter(?Filter $filter): Stats
-    {
-        $this->filter = $filter;
-        return $this;
+        return new Filter($this->status);
     }
 
     /**
@@ -68,16 +64,25 @@ class Stats
      */
     public function getDescription(): ?string
     {
-        return $this->description;
+        return $this->status === Stats::STAT_STATUS_TO_DO ? 'Total court order backlog' : 'Total orders served';
+    }
+
+    public function getTotalOrdersCount(): int
+    {
+        $total = 0;
+
+        foreach ($this->orderMadePeriodStats as $stat) {
+            $total += $stat->getNumberOfOrders();
+        }
+
+        return $total;
     }
 
     /**
-     * @param string|null $description
-     * @return Stats
+     * @return string
      */
-    public function setDescription(?string $description): Stats
+    public function getStatus(): string
     {
-        $this->description = $description;
-        return $this;
+        return $this->status;
     }
 }

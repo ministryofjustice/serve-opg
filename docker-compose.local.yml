@@ -5,7 +5,7 @@ services:
   app:
     build:
       args:
-        WITH_XDEBUG: 'false'
+        WITH_XDEBUG: 1
     environment:
       APP_ENV: 'dev'
       APP_DEBUG: 'true'

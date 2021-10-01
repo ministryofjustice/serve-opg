@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ $WITH_XDEBUG = "true" ]]; then
+if [[ $WITH_XDEBUG = 1 ]]; then
     apk --no-cache add autoconf alpine-sdk && \
       pecl install xdebug && \
       docker-php-ext-enable xdebug

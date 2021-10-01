@@ -4,7 +4,7 @@
     <div class="govuk-grid-column-full text--center">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
-                {{ macro.titleWithSideSubtitle(stats.totalOrders.amount, stats.totalOrders.description) }}
+                {{ macro.titleWithSideSubtitle(stats.totalOrdersCount, stats.description) }}
             </div>
 
             <div class="govuk-grid-column-one-half">
@@ -24,6 +24,6 @@
     </div>
 
     <div class="govuk-grid-column-full text--center">
-        {% include 'Case/_stats_items.html.twig' with { items: stats.breakdownItems } %}
+        {% include 'Case/_stats_items.html.twig' with { items: stats.orderMadePeriodStats, stats: stats } %}
     </div>
 </div>

@@ -2,9 +2,11 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Service\Stats\Model\Stats;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use InvalidArgumentException;
 
 class OrderRepository extends EntityRepository
 {
@@ -72,9 +74,9 @@ class OrderRepository extends EntityRepository
     private function applyFilters(QueryBuilder $qb, array $filters)
     {
         if ($filters['type'] == 'pending') {
-            $qb->where('o.servedAt IS NULL');
+            $qb->andWhere('o.servedAt IS NULL');
         } elseif ($filters['type'] == 'served') {
-            $qb->where('o.servedAt IS NOT NULL');
+            $qb->andWhere('o.servedAt IS NOT NULL');
         }
 
         if ($filters['q'] ?? false) {
@@ -100,17 +102,26 @@ class OrderRepository extends EntityRepository
      * @return int|mixed|string
      * @throws \Exception
      */
-    public function getOrdersCountByMadeDatePeriods(DateTime $from, DateTime $to)
+    public function getOrdersCountByMadeDatePeriods(DateTime $from, DateTime $to, string $orderStatus)
     {
         $from = new DateTime($from->format("Y-m-d")." 00:00:00");
         $to   = new DateTime($to->format("Y-m-d")." 23:59:59");
 
-        $qb = $this->createQueryBuilder("o");
-        $qb
-            ->andWhere('o.madeAt BETWEEN :from AND :to')
-            ->setParameter('from', $from )
-            ->setParameter('to', $to)
-        ;
+        $qb = $this->_em->getRepository(Order::class)->createQueryBuilder("o")
+            ->select('COUNT(o)');
+
+        if ($orderStatus === Stats::STAT_STATUS_TO_DO) {
+            $qb->andWhere('o.madeAt BETWEEN :from AND :to');
+        } elseif ($orderStatus === Stats::STAT_STATUS_SERVED) {
+            $qb->andWhere('o.servedAt BETWEEN :from AND :to');
+        } else {
+            throw new InvalidArgumentException('Order status must be "pending" or "served"');
+        }
+
+        $qb->setParameter('from', $from )
+            ->setParameter('to', $to);
+
+        $this->applyFilters($qb, ['type' => $orderStatus]);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
