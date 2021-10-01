@@ -25,17 +25,29 @@
         </h2>
 
         <ul class="govuk-tabs__list">
-            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                <a class="govuk-tabs__tab" href="#to-do">
+            <li class="govuk-tabs__list-item {{ filters.type == 'pending' ? 'govuk-tabs__list-item--selected' }}" role="presentation">
+                <a class="govuk-tabs__tab behat-link-pending-tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
                     To do
                 </a>
             </li>
-            <li class="govuk-tabs__list-item">
-                <a class="govuk-tabs__tab" href="#served">
+            <li class="govuk-tabs__list-item {{ filters.type == 'served' ? 'govuk-tabs__list-item--selected' }}" role="presentation">
+                <a class="govuk-tabs__tab behat-link- behat-link-served-tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
                     Served
                 </a>
             </li>
         </ul>
+
+        <div class="govuk-tabs__panel" id="to-do">
+            {% include 'Case/_stats_panel.html.twig' with { stats: toDoStats } %}
+        </div>
+
+        <div class="govuk-tabs__panel" id="served">
+            {% include 'Case/_stats_panel.html.twig' with { stats: servedStats } %}
+        </div>
+
+
+
+
 
         <section class="govuk-tabs__panel">
 
@@ -53,7 +65,7 @@
                                 <th class="govuk-table__header" scope="col">Order issued</th>
                                 <th class="govuk-table__header" scope="col">Status</th>
                             {% else %}
-                                <th class="govuk-table__header" scope="col">Order served</th>
+                                <th class="govuk-table__header" scope="col">Date served</th>
                                 <th class="govuk-table__header" scope="col">Documents</th>
                             {% endif %}
                         </tr>
@@ -64,9 +76,7 @@
                             <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >
                                 <td class="govuk-table__cell">
                                     {% if order.servedAt %}
-                                        <a href="{{ path('served-order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}-served">
-                                            {{ client.caseNumber }}
-                                        </a>
+                                         {{ client.caseNumber }}
                                     {% else %}
                                         <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                             {{ client.caseNumber }}
@@ -96,20 +106,14 @@
                                     </td>
                                 {% else %}
 
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">678</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2019 <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s govuk-!-font-weight-bold">
-                                31 Dec 2019
-                            </p>
-                        </div>
+                                    <td class="govuk-table__cell">
+                                        {{ order.servedAt | date('d/m/Y') }}
+                                    </td>
 
                                     <td class="govuk-table__cell">
                                         <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
                                             <summary class="govuk-details__summary">
-                                                <span class="govuk-details__summary-text">{{ order.documents | length }} attached documents</span>
+                                                <span class="govuk-details__summary-text">{{ order.documents | length }} documents</span>
                                             </summary>
                                             <div class="govuk-details__text">
                                                 {% for d in order.documents %}
@@ -133,134 +137,5 @@
 
         </section>
     </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">1 Jan 2021 <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s">
-                                present
-                            </p>
-                        </div>
-
-                        <div class="app-stat-item">
-                            <div class="govuk-caption-xl govuk-!-margin-bottom-2">
-                                <a href="#" class="govuk-link">36</a>
-                            </div>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">Served <span class="govuk-!-font-weight-regular">to</span></p>
-                            <p class="govuk-body-s govuk-!-font-weight-bold">
-                                today
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div>
-
-
-
-
-
-{#    <div class="govuk-tabs">#}
-{#        <h2 class="govuk-tabs__title">#}
-{#            Contents#}
-{#        </h2>#}
-{#        <ul class="govuk-tabs__list">#}
-{#            <li class="govuk-tabs__list-item {{ filters.type == 'pending' ? 'govuk-tabs__list-item--selected' }}" role="presentation">#}
-{#                <a class="govuk-tabs__tab behat-link-pending-tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>#}
-{#                    To do ({{ counts.pending }})#}
-{#                </a>#}
-{#            </li>#}
-{#            <li class="govuk-tabs__list-item {{ filters.type == 'served' ? 'govuk-tabs__list-item--selected' }}" role="presentation">#}
-{#                <a class="govuk-tabs__tab behat-link- behat-link-served-tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>#}
-{#                    Served ({{ counts.served }})#}
-{#                </a>#}
-{#            </li>#}
-{#        </ul>#}
-
-{#        <section class="govuk-tabs__panel">#}
-
-{#            {% if orders | length > 0 %}#}
-
-{#                <table class="govuk-table">#}
-{#                    <thead class="govuk-table__head">#}
-{#                        <tr class="govuk-table__row">#}
-{#                            <th class="govuk-table__header" scope="col">Case number</th>#}
-{#                            <th class="govuk-table__header" scope="col">Order type</th>#}
-{#                            <th class="govuk-table__header" scope="col">Order number</th>#}
-{#                            <th class="govuk-table__header" scope="col">Client name</th>#}
-{#                            {% if filters.type == 'pending' %}#}
-{#                                <th class="govuk-table__header" scope="col">Order made</th>#}
-{#                                <th class="govuk-table__header" scope="col">Order issued</th>#}
-{#                                <th class="govuk-table__header" scope="col">Status</th>#}
-{#                            {% else %}#}
-{#                                <th class="govuk-table__header" scope="col">Date served</th>#}
-{#                                <th class="govuk-table__header" scope="col">Documents</th>#}
-{#                            {% endif %}#}
-{#                        </tr>#}
-{#                    </thead>#}
-{#                    <tbody class="govuk-table__body">#}
-{#                        {% for order in orders %}#}
-{#                            {% set client = order.client %}#}
-{#                            <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >#}
-{#                                <td class="govuk-table__cell">#}
-{#                                    {% if order.servedAt %}#}
-{#                                         {{ client.caseNumber }}#}
-{#                                    {% else %}#}
-{#                                        <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">#}
-{#                                            {{ client.caseNumber }}#}
-{#                                        </a>#}
-{#                                    {% endif %}#}
-{#                                </td>#}
-{#                                <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>#}
-{#                                <td class="govuk-table__cell">{{ order.orderNumber }}</td>#}
-{#                                <td class="govuk-table__cell">{{ client.clientName }}</td>#}
-{#                                {% if filters.type == 'pending' %}#}
-{#                                    <td class="govuk-table__cell">#}
-{#                                        {{ order.madeAt | date('j M Y') }}#}
-{#                                    </td>#}
-{#                                    <td class="govuk-table__cell">#}
-{#                                        {{ order.issuedAt | date('j M Y') }}#}
-{#                                    </td>#}
-{#                                    <td class="govuk-table__cell">#}
-{#                                        {% if order.readyToServe %}#}
-{#                                            <strong class="govuk-tag">#}
-{#                                                READY TO SERVE#}
-{#                                            </strong>#}
-{#                                        {% else %}#}
-{#                                            <strong class="govuk-tag govuk-tag--yellow">#}
-{#                                                TO DO#}
-{#                                            </strong>#}
-{#                                        {% endif %}#}
-{#                                    </td>#}
-{#                                {% else %}#}
-
-{#                                    <td class="govuk-table__cell">#}
-{#                                        {{ order.servedAt | date('d/m/Y') }}#}
-{#                                    </td>#}
-
-{#                                    <td class="govuk-table__cell">#}
-{#                                        <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">#}
-{#                                            <summary class="govuk-details__summary">#}
-{#                                                <span class="govuk-details__summary-text">{{ order.documents | length }} documents</span>#}
-{#                                            </summary>#}
-{#                                            <div class="govuk-details__text">#}
-{#                                                {% for d in order.documents %}#}
-{#                                                    {{ d.fileName }}{% if not loop.last %}<br>{% endif %}#}
-{#                                                {% endfor %}#}
-{#                                            </div>#}
-{#                                        </details>#}
-{#                                    </td>#}
-{#                                {% endif %}#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
-{#                    </tbody>#}
-{#                </table>#}
-
-{#                <div class="govuk-pagination">#}
-{#                    <div class="govuk-pagination__summary">Showing 1 – {{ orders | length }} of {{ counts[filters['type']] }} orders</div>#}
-{#                </div>#}
-{#            {% else %}#}
-{#                <p class="govuk-!-font-weight-bold">No orders found</p>#}
-{#            {% endif %}#}
-
-{#        </section>#}
-{#    </div>#}
 
 {% endblock %}
