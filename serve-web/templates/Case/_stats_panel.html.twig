@@ -10,10 +10,10 @@
             <div class="govuk-grid-column-one-half">
                 <div class="govuk-form-group push--right">
                     <label class="govuk-label" for="sort">
-                        {{ stats.select.label }}
+                        {{ stats.filter.label }}
                     </label>
                     <select class="govuk-select push--right" id="sort" name="sort">
-                        {% for selectOption in stats.select.options %}
+                        {% for selectOption in stats.filter.options %}
                             {{ selectOption.value }}
                             <option value="{{ selectOption.value }}">{{ selectOption.description }}</option>
                         {% endfor %}

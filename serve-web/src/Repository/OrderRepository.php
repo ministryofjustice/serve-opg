@@ -2,6 +2,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -82,8 +83,8 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    public function getOrdersBeforeGoLive() {
-
+    public function getOrdersBeforeGoLive()
+    {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder("o")
             ->select("o")
@@ -91,5 +92,26 @@ class OrderRepository extends EntityRepository
             ->andWhere("o.servedAt IS NULL");
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param DateTime $from
+     * @param DateTime $to
+     * @return int|mixed|string
+     * @throws \Exception
+     */
+    public function getOrdersCountByMadeDatePeriods(DateTime $from, DateTime $to)
+    {
+        $from = new DateTime($from->format("Y-m-d")." 00:00:00");
+        $to   = new DateTime($to->format("Y-m-d")." 23:59:59");
+
+        $qb = $this->createQueryBuilder("o");
+        $qb
+            ->andWhere('o.madeAt BETWEEN :from AND :to')
+            ->setParameter('from', $from )
+            ->setParameter('to', $to)
+        ;
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

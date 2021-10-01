@@ -60,7 +60,7 @@ class CaseController extends AbstractController
                     'amount' => '6526',
                     'description' => 'Total court order backlog'
                 ],
-                'select' => [
+                'filter' => [
                     'label' => 'Show backlog by',
                     'options' => [
                         ['value' => 'year_breakdown', 'description' => 'Year Breakdown'],
@@ -80,7 +80,7 @@ class CaseController extends AbstractController
                     'amount' => '27568',
                     'description' => 'Total orders served'
                 ],
-                'select' => [
+                'filter' => [
                     'label' => 'Show served Court Orders by',
                     'options' => [
                         ['value' => 'year_breakdown', 'description' => 'Year Breakdown'],
