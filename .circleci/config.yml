@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   dockerhub_helper:
     orbs:
-      docker: circleci/docker@1.4.0
+      docker: circleci/docker@1.7.0
     commands:
       dockerhub_login:
         steps:
