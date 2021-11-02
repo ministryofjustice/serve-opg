@@ -86,8 +86,7 @@ orbs:
 
 jobs:
   test:
-    machine:
-      image: ubuntu-2004:202107-02
+    machine: true
     steps:
       - checkout
       - dockerhub_helper/dockerhub_login
