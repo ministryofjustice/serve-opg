@@ -108,3 +108,6 @@ reset-db-and-fixtures:
 	docker-compose run --rm app php bin/console doctrine:database:create
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate -n
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+
+cache-clear:
+	docker-compose run --rm app php bin/console cache:clear
