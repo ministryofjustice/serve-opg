@@ -100,7 +100,8 @@ services:
       - ./serve-web/localstack-data:/tmp/localstack/data
 
   postgres:
-    image: postgres:9.6-alpine
+    image: postgres
+    build: ./serve-api/internal/db
     ports:
       - 5432:5432
     environment:
@@ -108,6 +109,7 @@ services:
       POSTGRES_DB: serve-opg
       POSTGRES_USER: serve-opg
       POSTGRES_PASSWORD: dcdb2018!
+      POSTGRES_API_DB_USER: serve-opg-api
 
   yarn:
     image: node:14.17-stretch
