@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Connect() bool {
+func Connect() []string {
 	db_user := os.Getenv("POSTGRES_API_DB_USER")
 	db_pswd := os.Getenv("POSTGRES_PASSWORD")
 	db_name := os.Getenv("POSTGRES_DB")
@@ -21,7 +21,17 @@ func Connect() bool {
 		log.Fatal()
 	}
 
-	test := db.Raw("SELECT name FROM my_table").Rows()
+	rows, err := db.Raw("SELECT * FROM dc_user").Rows()
 
-	return string(test)
+	if err != nil {
+		log.Fatal()
+	}
+
+	columns, err := rows.Columns()
+
+	if err != nil {
+		log.Fatal()
+	}
+
+	return columns
 }
