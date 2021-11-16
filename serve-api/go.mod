@@ -7,4 +7,6 @@ require (
 	github.com/aws/aws-secretsmanager-caching-go v1.1.0
 	github.com/gorilla/mux v1.8.0
 	github.com/stretchr/testify v1.7.0
+	gorm.io/driver/postgres v1.2.2
+	gorm.io/gorm v1.22.2 // indirect
 )
