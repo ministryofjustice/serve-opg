@@ -75,7 +75,7 @@ services:
       - ./serve-web/var:/www/var/
 
   sirius-api:
-    image: stoplight/prism:latest
+    image: stoplight/prism:4.4.1
     ports:
       - 4010:4010
     volumes:
