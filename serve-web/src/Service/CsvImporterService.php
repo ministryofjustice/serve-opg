@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CsvImporterService
 {
@@ -23,16 +24,18 @@ class CsvImporterService
      * @var OrderService
      */
     private $orderService;
+    private EntityManagerInterface $em;
 
     /**
      * CsvImporterService constructor.
      * @param ClientService $clientService
      * @param OrderService $orderService
      */
-    public function __construct(ClientService $clientService, OrderService $orderService)
+    public function __construct(ClientService $clientService, OrderService $orderService, EntityManagerInterface $em)
     {
         $this->clientService = $clientService;
         $this->orderService = $orderService;
+        $this->em = $em;
     }
 
     /**
@@ -47,6 +50,8 @@ class CsvImporterService
      */
     public function importFile(string $filePath)
     {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+
         $csvToArray = new CsvToArray($filePath, [
             'Case',
             'Forename',
@@ -61,6 +66,12 @@ class CsvImporterService
         $count = 0;
         foreach ($rows as $row) {
             $this->importSingleRow($row);
+
+            if ($count % 25 === 0) {
+                $this->em->flush();
+                $this->em->clear();
+            }
+
             $count++;
         }
 

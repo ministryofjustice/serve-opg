@@ -119,11 +119,11 @@ REGEX;
             $order = new $orderClass($client, $madeAt, $issuedAt, $orderNumber);
             $this->em->persist($order);
             $this->em->persist($client);
-            $this->em->flush();
-        } else {
+        }
+
+        if ($order->getOrderNumber() !== $orderNumber){
             $order->setOrderNumber($orderNumber);
             $this->em->persist($order);
-            $this->em->flush();
         }
 
         return $order;
