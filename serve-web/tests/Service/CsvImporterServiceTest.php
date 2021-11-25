@@ -11,6 +11,7 @@ use App\Service\ClientService;
 use App\Service\CsvImporterService;
 use App\Service\OrderService;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 class CsvImporterServiceTest extends TestCase
@@ -22,6 +23,7 @@ class CsvImporterServiceTest extends TestCase
 
         $clientService = self::prophesize(ClientService::class);
         $orderService = self::prophesize(OrderService::class);
+        $em = self::prophesize(EntityManagerInterface::class);
 
         $row1Client = new Client(
             '93559316',
@@ -54,7 +56,7 @@ class CsvImporterServiceTest extends TestCase
             2
         )->shouldBeCalled();
 
-        $sut = new CsvImporterService($clientService->reveal(), $orderService->reveal());
+        $sut = new CsvImporterService($clientService->reveal(), $orderService->reveal(), $em->reveal());
         $sut->importFile($csvFilePath);
     }
 }
