@@ -26,11 +26,11 @@ class DeputyFormTest extends TypeTestCase
             'addressPostcode' => 'SW1A 2AA',
         ];
 
-        $model = new Deputy(OrderTestHelper::generateOrder('2016-01-01', '2016-01-02', '16472847', 'HW', $timeNow->format('Y-m-d')));
-        
+        $model = new Deputy(OrderTestHelper::generateOrder('2016-01-01', '2016-01-02', '16472847', 'HW', $timeNow->format('Y-m-d'), 123));
+
         $form = $this->factory->create(DeputyForm::class, $model, ['deputyType' => 'LAY']);
 
-        $expected = new Deputy(OrderTestHelper::generateOrder('2016-01-01', '2016-01-02', '16472847', 'HW', $timeNow->format('Y-m-d')));
+        $expected = new Deputy(OrderTestHelper::generateOrder('2016-01-01', '2016-01-02', '16472847', 'HW', $timeNow->format('Y-m-d'), 123));
         $expected->setDeputyType('LAY');
         $expected->setForename('John');
         $expected->setSurname('Doe');
