@@ -120,6 +120,10 @@ REGEX;
             $this->em->persist($order);
             $this->em->persist($client);
             $this->em->flush();
+        } else {
+            $order->setOrderNumber($orderNumber);
+            $this->em->persist($order);
+            $this->em->flush();
         }
 
         return $order;
