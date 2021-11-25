@@ -58,7 +58,7 @@ class CaseControllerTest extends ApiWebTestCase
         $rows = $tableBody->filter('tr');
 
         self::assertEquals(50, $rows->count());
-        self::assertStringContainsString($mostRecentOrder->getIssuedAt()->format('j/m/Y'), $tableBody->html());
-        self::assertStringNotContainsString($oldestOrder->getIssuedAt()->format('j/m/Y') ,$tableBody->html());
+        self::assertStringContainsString($mostRecentOrder->getIssuedAt()->format('j M Y'), $tableBody->html());
+        self::assertStringNotContainsString($oldestOrder->getIssuedAt()->format('j M Y') ,$tableBody->html());
     }
 }

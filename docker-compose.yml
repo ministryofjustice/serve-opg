@@ -72,7 +72,7 @@ services:
       - sirius-api
 
   sirius-api:
-    image: stoplight/prism:latest
+    image: stoplight/prism:4.4.1
     ports:
       - 4010:4010
     volumes:
@@ -107,7 +107,7 @@ services:
       POSTGRES_PASSWORD: dcdb2018!
 
   yarn:
-    image: node:14.17-stretch
+    image: node:16-alpine
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
@@ -120,7 +120,7 @@ services:
     image: php:7.4-fpm-alpine
     volumes:
       - ./serve-web:/var/www
-      - ./serve-web/features/screenshots:/tmp/behat
+      - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
     working_dir: /var/www
     entrypoint:
       - vendor/bin/behat
