@@ -71,3 +71,5 @@ build-deps: ## Runs through all steps required before the app can be brought up
 	# Compile static assets
 	docker-compose run --rm yarn build-dev
 
+reset-fixtures:
+	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
