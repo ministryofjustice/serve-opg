@@ -95,11 +95,9 @@ jobs:
       - test/unit
       - test/integration
       - store_test_results:
-          path: ./tests/artifacts
+          path: ./serve-web/tests/artifacts
       - store_artifacts:
-          path: /tmp/behat
-      - store_artifacts:
-          path: ./tests/artifacts
+          path: ./serve-web/tests/artifacts
 
   build:
     machine:
