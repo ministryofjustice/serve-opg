@@ -50,8 +50,6 @@ class CsvImporterService
      */
     public function importFile(string $filePath)
     {
-        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
-
         $csvToArray = new CsvToArray($filePath, [
             'Case',
             'Forename',
