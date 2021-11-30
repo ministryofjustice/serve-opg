@@ -8,7 +8,11 @@ type Client struct {
 	gorm.Model
 	CaseNumber string `gorm:"size:8;not null;unique"`
 	ClientName string `gorm:"size:255;not null"`
-	Entity     `gorm:"-"`
+}
+
+func Migrate(db *gorm.DB) {
+	// Migrate the schema
+	db.AutoMigrate(&Client{})
 }
 
 func Create(db *gorm.DB, case_number string, client_name string) {
