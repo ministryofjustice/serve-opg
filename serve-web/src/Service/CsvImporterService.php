@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CsvImporterService
 {
@@ -23,20 +24,22 @@ class CsvImporterService
      * @var OrderService
      */
     private $orderService;
+    private EntityManagerInterface $em;
 
     /**
      * CsvImporterService constructor.
      * @param ClientService $clientService
      * @param OrderService $orderService
      */
-    public function __construct(ClientService $clientService, OrderService $orderService)
+    public function __construct(ClientService $clientService, OrderService $orderService, EntityManagerInterface $em)
     {
         $this->clientService = $clientService;
         $this->orderService = $orderService;
+        $this->em = $em;
     }
 
     /**
-     * @param array $filePath file CSV with keys:
+     * @param string $filePath file CSV with keys:
      * Case : 8 digits. might end with a T
      * Forename
      * Surname
@@ -45,7 +48,7 @@ class CsvImporterService
      *
      * @return integer added columns
      */
-    public function importFile($filePath)
+    public function importFile(string $filePath)
     {
         $csvToArray = new CsvToArray($filePath, [
             'Case',
@@ -54,12 +57,19 @@ class CsvImporterService
             'Order Type',
             'Made Date',
             'Issue Date',
+            'Order No'
         ], true);
         $rows = $csvToArray->getData();
 
         $count = 0;
         foreach ($rows as $row) {
             $this->importSingleRow($row);
+
+            if ($count % 25 === 0) {
+                $this->em->flush();
+                $this->em->clear();
+            }
+
             $count++;
         }
 
@@ -74,6 +84,7 @@ class CsvImporterService
     private function importSingleRow(array $row)
     {
         $row = array_map('trim', $row);
+
         $case = strtoupper($row['Case']);
         $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
         $orderType = $row['Order Type'] == 2 ? OrderHw::class : OrderPf::class;
@@ -84,7 +95,8 @@ class CsvImporterService
         // order
         $issuedAt = new \DateTime($row['Issue Date']);
         $madeAt = new \DateTime($row['Made Date']);
+        $orderNumber = $row['Order No'];
 
-        return $this->orderService->upsert($client, $orderType, $madeAt, $issuedAt);
+        return $this->orderService->upsert($client, $orderType, $madeAt, $issuedAt, $orderNumber);
     }
 }

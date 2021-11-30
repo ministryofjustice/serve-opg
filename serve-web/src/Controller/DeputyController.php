@@ -47,13 +47,15 @@ class DeputyController extends AbstractController
     /**
      * @Route("/order/{orderId}/deputy/add", name="deputy-add")
      */
-    public function addAction(Request $request, $orderId)
+    public function add(Request $request, $orderId)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
         $deputy = new Deputy($order);
 
-        $form = $this->createForm(DeputyForm::class, $deputy);
+        $deputyType = !empty($request->get('deputyType')) ? $request->get('deputyType') : null;
+
+        $form = $this->createForm(DeputyForm::class, $deputy, ['deputyType' => $deputyType]);
         $form->handleRequest($request);
 
         $buttonClicked = $form->getClickedButton();
@@ -73,7 +75,20 @@ class DeputyController extends AbstractController
         return $this->render('Deputy/add.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'deputyType' => $deputyType
+        ]);
+    }
+
+    /**
+     * @Route("/order/{orderId}/deputy/add/deputy-type", name="deputy-type")
+     */
+    public function chooseDeputyType(Request $request, $orderId)
+    {
+        $order = $this->orderService->getOrderByIdIfNotServed($orderId);
+
+        return $this->render('Deputy/type.html.twig', [
+            'order' => $order,
         ]);
     }
 
@@ -85,7 +100,7 @@ class DeputyController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function editAction(Request $request, $orderId, $deputyId)
+    public function edit(Request $request, $orderId, $deputyId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
@@ -95,7 +110,7 @@ class DeputyController extends AbstractController
             throw new \RuntimeException('Unknown Deputy');
         }
 
-        $form = $this->createForm(DeputyForm::class, $deputy);
+        $form = $this->createForm(DeputyForm::class, $deputy, ['deputyType' => $deputy->getDeputyType()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -108,7 +123,8 @@ class DeputyController extends AbstractController
         return $this->render('Deputy/add.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'deputyType' => $deputy->getDeputyType()
         ]);
     }
 
@@ -120,7 +136,7 @@ class DeputyController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function deleteAction(Request $request, $orderId, $deputyId)
+    public function delete(Request $request, $orderId, $deputyId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 

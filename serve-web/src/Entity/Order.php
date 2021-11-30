@@ -156,19 +156,33 @@ abstract class Order
     private $apiResponse;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
+     */
+    private $orderNumber;
+
+    /**
      * Order constructor.
      * @param Client $client
      * @param DateTime $madeAt Date Order was first made, outside DC
      * @param DateTime $issuedAt Date Order was issues at
+     * @param string $orderNumber The order number from casrec
      * @param string $createdAt
      *
      * @throws Exception
      */
-    public function __construct(Client $client, DateTime $madeAt, DateTime $issuedAt, string $createdAt = 'now')
+    public function __construct(
+        Client $client,
+        DateTime $madeAt,
+        DateTime $issuedAt,
+        string $orderNumber,
+        string $createdAt = 'now')
     {
         $this->client = $client;
         $this->madeAt = $madeAt;
         $this->issuedAt = $issuedAt;
+        $this->orderNumber = $orderNumber;
 
         $this->createdAt = new DateTime($createdAt);
         $this->deputies = new ArrayCollection();
@@ -180,7 +194,7 @@ abstract class Order
     /**
      * @return bool
      */
-    public function readyToServe()
+    public function readyToServe(): bool
     {
         if (!$this->isOrderValid() ||
             !count($this->getDeputies())
@@ -195,6 +209,24 @@ abstract class Order
         }
 
         return true;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOrderNumber(): ?string
+    {
+        return $this->orderNumber;
+    }
+
+    /**
+     * @param string|null $orderNumber
+     * @return Order
+     */
+    public function setOrderNumber(?string $orderNumber): Order
+    {
+        $this->orderNumber = $orderNumber;
+        return $this;
     }
 
     /**

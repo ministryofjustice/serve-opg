@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block htmlTitle %}{{ order.client.caseNumber }} order summary{% endblock %}
+
+{% block pageTitle %}
+    <span class="govuk-caption-l">Case number:{{ order.client.caseNumber }}</span>
+    <h1 class="govuk-heading-l">Order summary</h1>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Client name:</p>
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Court order number:</p>
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Order served:</p>
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Order type:</p>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body govuk-!-margin-bottom-1">{{ order.client.clientName }}</p>
+            <p class="govuk-body govuk-!-margin-bottom-1">{{ order.client.caseNumber }}</p>
+            <p class="govuk-body govuk-!-margin-bottom-1">{{ order.servedAt | date('j M Y') }}</p>
+            <p class="govuk-body govuk-!-margin-bottom-1">{{ order.type }}</p>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Client address:
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        TO BE ADDED LATER - WE DON'T CURRENTLY SAVE THS DATA ON CLIENT
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="#">
+                            Edit
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Deputy name(s):
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ order.deputies | map(deputy => "#{deputy.fullName}") | join(', ') }}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="#">
+                            Edit
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">Documents</caption>
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">Type</th>
+                    <th scope="col" class="govuk-table__header">Date added</th>
+                </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                {% for document in order.documents %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ document.fileName }}</th>
+                        <td class="govuk-table__cell">{{ document.type }}</td>
+                        <td class="govuk-table__cell">{{ document.createdAt | date('j M Y') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

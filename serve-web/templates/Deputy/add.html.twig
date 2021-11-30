@@ -55,9 +55,10 @@
 
                 {{ form_row(form.emailAddress) }}
 
-                <h2 class="govuk-heading-m">Date of birth</h2>
-
-                {{ form_row(form.dateOfBirth) }}
+                {% if deputyType == 'LAY' %}
+                    <h2 class="govuk-heading-m">Date of birth</h2>
+                    {{ form_row(form.dateOfBirth) }}
+                {% endif %}
 
                 {{ form_widget(form.saveAndContinue) }}
                 <a href="{{ path('order-summary', {'orderId': order.id}) }}" class="govuk-link govuk-!-margin-left-3 govuk-!-padding-top-2 govuk-link--button">Cancel</a>

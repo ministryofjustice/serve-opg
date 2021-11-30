@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% import 'Macros/_macros.html.twig' as macro %}
+
+{% block htmlTitle %}{{ ('order.' ~ order.type) | trans }} deputy details{% endblock %}
+{% block pageTitle %}
+    <span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>
+    <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }}: deputy details</h1>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent('app') }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form class="form-group" action="{{ path('deputy-add', {'orderId': order.id}) }}" method="get">
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="deputyType">
+                        {{ 'deputy.type.pleaseSelect' | trans({}, 'forms') }}
+                    </label>
+                    <select class="govuk-select" id="deputyType" name="deputyType">
+                        <option selected="" value="LAY">Lay</option>
+                        <option value="PUBLIC_AUTHORITY">Public authority</option>
+                        <option value="PROFESSIONAL">Professional</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button" id="deputyType_saveAndContinue">Save and continue</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
