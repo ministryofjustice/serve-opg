@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   dockerhub_helper:
     orbs:
-      docker: circleci/docker@1.4.0
+      docker: circleci/docker@1.7.0
     commands:
       dockerhub_login:
         steps:
@@ -87,7 +87,7 @@ orbs:
 jobs:
   test:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:202107-02
     steps:
       - checkout
       - dockerhub_helper/dockerhub_login
@@ -95,14 +95,13 @@ jobs:
       - test/unit
       - test/integration
       - store_test_results:
-          path: ./tests/artifacts
+          path: ./serve-web/tests/artifacts
       - store_artifacts:
-          path: /tmp/behat
-      - store_artifacts:
-          path: ./tests/artifacts
+          path: ./serve-web/tests/artifacts
 
   build:
-    machine: true
+    machine:
+      image: ubuntu-2004:202107-02
     steps:
       - add_ssh_keys:
           fingerprints:

@@ -45,12 +45,14 @@
                         <tr class="govuk-table__row">
                             <th class="govuk-table__header" scope="col">Case number</th>
                             <th class="govuk-table__header" scope="col">Order type</th>
-                            <th class="govuk-table__header" scope="col">Client</th>
+                            <th class="govuk-table__header" scope="col">Order number</th>
+                            <th class="govuk-table__header" scope="col">Client name</th>
                             {% if filters.type == 'pending' %}
                                 <th class="govuk-table__header" scope="col">Order made</th>
                                 <th class="govuk-table__header" scope="col">Order issued</th>
+                                <th class="govuk-table__header" scope="col">Status</th>
                             {% else %}
-                                <th class="govuk-table__header" scope="col">Date served</th>
+                                <th class="govuk-table__header" scope="col">Order served</th>
                                 <th class="govuk-table__header" scope="col">Documents</th>
                             {% endif %}
                         </tr>
@@ -61,7 +63,9 @@
                             <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >
                                 <td class="govuk-table__cell">
                                     {% if order.servedAt %}
-                                         {{ client.caseNumber }}
+                                        <a href="{{ path('served-order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}-served">
+                                            {{ client.caseNumber }}
+                                        </a>
                                     {% else %}
                                         <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                             {{ client.caseNumber }}
@@ -69,24 +73,36 @@
                                     {% endif %}
                                 </td>
                                 <td class="govuk-table__cell">{{ ('order.' ~ order.type) | trans }}</td>
+                                <td class="govuk-table__cell">{{ order.orderNumber }}</td>
                                 <td class="govuk-table__cell">{{ client.clientName }}</td>
                                 {% if filters.type == 'pending' %}
                                     <td class="govuk-table__cell">
-                                        {{ order.madeAt | date('d/m/Y') }}
+                                        {{ order.madeAt | date('j M Y') }}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        {{ order.issuedAt | date('d/m/Y') }}
+                                        {{ order.issuedAt | date('j M Y') }}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        {% if order.readyToServe %}
+                                            <strong class="govuk-tag">
+                                                READY TO SERVE
+                                            </strong>
+                                        {% else %}
+                                            <strong class="govuk-tag govuk-tag--yellow">
+                                                TO DO
+                                            </strong>
+                                        {% endif %}
                                     </td>
                                 {% else %}
 
                                     <td class="govuk-table__cell">
-                                        {{ order.servedAt | date('d/m/Y') }}
+                                        {{ order.servedAt | date('j M Y') }}
                                     </td>
 
                                     <td class="govuk-table__cell">
                                         <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
                                             <summary class="govuk-details__summary">
-                                                <span class="govuk-details__summary-text">{{ order.documents | length }} documents</span>
+                                                <span class="govuk-details__summary-text">{{ order.documents | length }} attached documents</span>
                                             </summary>
                                             <div class="govuk-details__text">
                                                 {% for d in order.documents %}

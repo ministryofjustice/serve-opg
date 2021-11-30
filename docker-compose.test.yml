@@ -3,8 +3,12 @@ version: '3'
 
 services:
   app:
+    build:
+      args:
+        WITH_XDEBUG: 'false'
     environment:
       APP_ENV: 'test'
+      APP_DEBUG: 'false'
       DC_S3_ENDPOINT: 'http://localstack:4572'
       DYNAMODB_ENDPOINT: 'http://localstack:4569'
       SIRIUS_PUBLIC_API_PASSWORD: 'FAKE_API_PASSWORD'
@@ -15,6 +19,9 @@ services:
       BEHAT_PASSWORD: 'Abcd1234'
     env_file:
       - .env
+    volumes:
+      - ./serve-web/features:/var/www/features
+      - ./serve-web/src/Behat:/var/www/src/Behat
   behat:
     environment:
       BEHAT_PASSWORD: 'Abcd1234'

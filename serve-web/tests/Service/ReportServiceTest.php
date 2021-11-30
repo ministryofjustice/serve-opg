@@ -32,11 +32,11 @@ class ReportServiceTest extends ApiWebTestCase
         $expectedIssuedAt = '2019-05-23';
         $expectedServedAt = '2019-05-24';
 
-        $orderPf = new OrderPf($client, $expectedMadeAt, new DateTime($expectedIssuedAt));
+        $orderPf = new OrderPf($client, $expectedMadeAt, new DateTime($expectedIssuedAt), '123');
         $orderPf->setServedAt(new DateTime($expectedServedAt));
         $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
 
-        $orderHw = new OrderHw($client, $expectedMadeAt, new DateTime($expectedIssuedAt));
+        $orderHw = new OrderHw($client, $expectedMadeAt, new DateTime($expectedIssuedAt), '124');
         $orderHw->setServedAt(new DateTime($expectedServedAt));
         $orderHw->setAppointmentType('SOLE');
 
