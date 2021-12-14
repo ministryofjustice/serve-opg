@@ -1,7 +1,6 @@
 package db
 
 import (
-	"log"
 	"os"
 	"testing"
 
@@ -9,63 +8,51 @@ import (
 	"gorm.io/gorm"
 )
 
-// var database *gorm.DB
+var database *gorm.DB
 
-func TestMain(m *testing.M) {
+func setUpTest() {
 	os.Setenv("POSTGRES_API_DB_USER", "serve-opg-api")
 	os.Setenv("POSTGRES_PASSWORD", "dcdb2018!")
 	os.Setenv("POSTGRES_DB", "serve-opg")
 
+	database = Connect()
+}
+
+func removeDBColumns(e entity.Entity) {
+	columnNames := []string{"updated_at", "deleted_at"}
+
+	for _, name := range columnNames {
+		if database.Migrator().HasColumn(e, name) {
+			database.Migrator().DropColumn(e, name)
+		}
+	}
 }
 
 func TestMigrate(t *testing.T) {
-
+	setUpTest()
 	entityTests := []struct {
-		e           entity.Entity
-		preMigrate  int
-		postMigrate int
+		e               entity.Entity
+		migratedColumns []string
 	}{
-		{&entity.Client{}, 4, 6},
-		{&entity.User{}, 11, 18},
+		{&entity.Client{}, []string{"updated_at", "deleted_at"}},
+		{&entity.User{}, []string{"updated_at", "deleted_at"}},
 	}
 
-	database := Connect()
-
 	for _, tt := range entityTests {
-		table := tt.e.TableName()
+		removeDBColumns(tt.e)
 
-		originalColumns := getDBColumns(database, table)
-
-		got := len(originalColumns)
-
-		if got != tt.preMigrate {
-			t.Errorf("got %d want %d", got, tt.preMigrate)
+		for _, colName := range tt.migratedColumns {
+			if database.Migrator().HasColumn(tt.e, colName) {
+				t.Errorf("database columns already exist!")
+			}
 		}
 
 		Migrate(database, tt.e)
 
-		migratedColumns := getDBColumns(database, table)
-
-		got = len(migratedColumns)
-
-		if got != tt.postMigrate {
-			t.Errorf("got %d want %d", got, tt.postMigrate)
+		for _, colName := range tt.migratedColumns {
+			if !database.Migrator().HasColumn(tt.e, colName) {
+				t.Errorf("database columns have not been migrated!")
+			}
 		}
 	}
-}
-
-func getDBColumns(database *gorm.DB, table string) []string {
-	rows, err := database.Table(table).Rows()
-
-	if err != nil {
-		log.Fatal()
-	}
-
-	columns, err := rows.Columns()
-
-	if err != nil {
-		log.Fatal()
-	}
-
-	return columns
 }
