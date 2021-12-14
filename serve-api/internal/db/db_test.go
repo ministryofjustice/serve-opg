@@ -1,58 +1,69 @@
 package db
 
 import (
+	"log"
 	"os"
 	"testing"
 
 	"github.com/ministryofjustice/serve-opg/serve-api/entity"
-	"gorm.io/gorm"
 )
 
-var database *gorm.DB
-
-func setUpTest() {
+func TestMigrate(t *testing.T) {
 	os.Setenv("POSTGRES_API_DB_USER", "serve-opg-api")
 	os.Setenv("POSTGRES_PASSWORD", "dcdb2018!")
 	os.Setenv("POSTGRES_DB", "serve-opg")
 
-	database = Connect()
-}
-
-func removeDBColumns(e entity.Entity) {
-	columnNames := []string{"updated_at", "deleted_at"}
-
-	for _, name := range columnNames {
-		if database.Migrator().HasColumn(e, name) {
-			database.Migrator().DropColumn(e, name)
-		}
-	}
-}
-
-func TestMigrate(t *testing.T) {
-	setUpTest()
 	entityTests := []struct {
-		e               entity.Entity
-		migratedColumns []string
+		e           entity.Entity
+		preMigrate  int
+		postMigrate int
 	}{
-		{&entity.Client{}, []string{"updated_at", "deleted_at"}},
-		{&entity.User{}, []string{"updated_at", "deleted_at"}},
+		{&entity.Client{}, 4, 6},
+		{&entity.User{}, 11, 13},
 	}
+
+	database := Connect()
 
 	for _, tt := range entityTests {
-		removeDBColumns(tt.e)
+		table := tt.e.TableName()
 
-		for _, colName := range tt.migratedColumns {
-			if database.Migrator().HasColumn(tt.e, colName) {
-				t.Errorf("database columns already exist!")
-			}
+		originalRows, err := database.Table(table).Rows()
+
+		if err != nil {
+			log.Fatal()
+		}
+
+		originalColumns, err := originalRows.Columns()
+
+		if err != nil {
+			log.Fatal()
+		}
+
+		got := len(originalColumns)
+
+		if got != tt.preMigrate {
+			t.Errorf("got %d want %d", got, tt.preMigrate)
 		}
 
 		Migrate(database, tt.e)
 
-		for _, colName := range tt.migratedColumns {
-			if !database.Migrator().HasColumn(tt.e, colName) {
-				t.Errorf("database columns have not been migrated!")
-			}
+		migratedRows, err := database.Table(table).Rows()
+
+		if err != nil {
+			log.Fatal()
+		}
+
+		migratedColumns, err := migratedRows.Columns()
+
+		if err != nil {
+			log.Fatal()
+		}
+
+		got = len(migratedColumns)
+
+		if got != tt.postMigrate {
+			t.Errorf("got %d want %d", got, tt.postMigrate)
 		}
 	}
+
 }
