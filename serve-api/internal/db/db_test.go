@@ -6,12 +6,19 @@ import (
 	"testing"
 
 	"github.com/ministryofjustice/serve-opg/serve-api/entity"
+	"gorm.io/gorm"
 )
 
-func TestMigrate(t *testing.T) {
+// var database *gorm.DB
+
+func TestMain(m *testing.M) {
 	os.Setenv("POSTGRES_API_DB_USER", "serve-opg-api")
 	os.Setenv("POSTGRES_PASSWORD", "dcdb2018!")
 	os.Setenv("POSTGRES_DB", "serve-opg")
+
+}
+
+func TestMigrate(t *testing.T) {
 
 	entityTests := []struct {
 		e           entity.Entity
@@ -19,7 +26,7 @@ func TestMigrate(t *testing.T) {
 		postMigrate int
 	}{
 		{&entity.Client{}, 4, 6},
-		{&entity.User{}, 11, 13},
+		{&entity.User{}, 11, 18},
 	}
 
 	database := Connect()
@@ -27,17 +34,7 @@ func TestMigrate(t *testing.T) {
 	for _, tt := range entityTests {
 		table := tt.e.TableName()
 
-		originalRows, err := database.Table(table).Rows()
-
-		if err != nil {
-			log.Fatal()
-		}
-
-		originalColumns, err := originalRows.Columns()
-
-		if err != nil {
-			log.Fatal()
-		}
+		originalColumns := getDBColumns(database, table)
 
 		got := len(originalColumns)
 
@@ -47,17 +44,7 @@ func TestMigrate(t *testing.T) {
 
 		Migrate(database, tt.e)
 
-		migratedRows, err := database.Table(table).Rows()
-
-		if err != nil {
-			log.Fatal()
-		}
-
-		migratedColumns, err := migratedRows.Columns()
-
-		if err != nil {
-			log.Fatal()
-		}
+		migratedColumns := getDBColumns(database, table)
 
 		got = len(migratedColumns)
 
@@ -65,5 +52,20 @@ func TestMigrate(t *testing.T) {
 			t.Errorf("got %d want %d", got, tt.postMigrate)
 		}
 	}
+}
 
+func getDBColumns(database *gorm.DB, table string) []string {
+	rows, err := database.Table(table).Rows()
+
+	if err != nil {
+		log.Fatal()
+	}
+
+	columns, err := rows.Columns()
+
+	if err != nil {
+		log.Fatal()
+	}
+
+	return columns
 }
