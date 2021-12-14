@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/ministryofjustice/serve-opg/serve-api/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -24,21 +25,6 @@ func Connect() *gorm.DB {
 	return db
 }
 
-func Test() []string {
-
-	db := Connect()
-
-	rows, err := db.Raw("SELECT * FROM dc_user").Rows()
-
-	if err != nil {
-		log.Fatal()
-	}
-
-	columns, err := rows.Columns()
-
-	if err != nil {
-		log.Fatal()
-	}
-
-	return columns
+func Migrate(db *gorm.DB, entity entity.Entity) {
+	db.AutoMigrate(&entity)
 }
