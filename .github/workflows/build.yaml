@@ -106,7 +106,7 @@ jobs:
       - name: Extract branch name
         run: |
           if [ "${{ github.head_ref }}" == "" ]; then
-            echo BRANCH_NAME=main >> $GITHUB_ENV
+            echo BRANCH_NAME=master >> $GITHUB_ENV
           else
             echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
           fi
