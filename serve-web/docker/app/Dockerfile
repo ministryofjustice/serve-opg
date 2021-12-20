@@ -1,4 +1,4 @@
-FROM php:7.4.16-fpm-alpine
+FROM php:7.4.27-fpm-alpine
 
 # Install postgresql drivers
 RUN apk add --no-cache postgresql-dev \
