@@ -177,6 +177,7 @@ jobs:
       - name: Trigger infra deploy
         uses: actions/github-script@v5
         with:
+          github-token: ${{ secrets.MY_PAT }}
           script: |
 #            How to add auth?
             await github.rest.actions.createWorkflowDispatch({
