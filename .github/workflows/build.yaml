@@ -160,7 +160,7 @@ jobs:
           docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
-          if [ "$BRANCH_NAME" == "main" ]; then
+          if [ "$BRANCH_NAME" == "master" ]; then
             # We want all of the tags pushed
             docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:main-${{ steps.bump_version.outputs.tag }}
             docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:main-${{ steps.bump_version.outputs.tag }}
@@ -168,6 +168,7 @@ jobs:
             docker push --all-tags $ECR_REGISTRY/serve-opg/app
             docker push --all-tags $ECR_REGISTRY/serve-opg/web
             docker push --all-tags $ECR_REGISTRY/serve-opg/api
+            curl --silent --show-error --fail -X POST "https://circleci.com/api/v1.1/project/github/ministryofjustice/serve-opg-infrastructure/build?circle-token=${secrets.CIRCLE_API_KEY}"
           else
             docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
             docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
