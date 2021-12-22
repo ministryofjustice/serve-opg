@@ -177,9 +177,9 @@ jobs:
       - name: Trigger infra deploy
         uses: actions/github-script@v5
         with:
-          github-token: ${{ secrets.MY_PAT }}
+#          Temp set to api token registered against acsauk user - due to expire in 30 days, find long term solution
+          github-token: ${{ secrets.GH_API_TOKEN }}
           script: |
-#            How to add auth?
             await github.rest.actions.createWorkflowDispatch({
               context.repo.owner,
               'serve-opg-infrastructure',
