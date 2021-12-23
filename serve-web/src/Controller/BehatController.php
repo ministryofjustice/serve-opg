@@ -12,10 +12,14 @@ use App\Service\OrderService;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -217,5 +221,33 @@ class BehatController extends AbstractController
         $repo = $orderType == 'PF' ? OrderPf::class : OrderHw::class;
 
         return $this->em->getRepository($repo)->findOneBy(['client' => $client->getId()]);
+    }
+
+    /**
+     * @Route("/reset-database")
+     */
+    public function resetDatabase(KernelInterface $kernel)
+    {
+        $this->securityChecks();
+
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput([
+            'command' => 'doctrine:fixtures:load',
+            '--purge-with-truncate' => null,
+            '-n' => null,
+        ]);
+
+        $output = new BufferedOutput();
+
+        try {
+            $content = $output->fetch();
+            $application->run($input, $output);
+
+            return new Response($content);
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage());
+        }
     }
 }
