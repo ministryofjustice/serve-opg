@@ -79,7 +79,7 @@ Feature: deputy
     And I should see "DepE UtyE"
     And I should see "behat-12345678-depy1E@digital.justice.gov.uk"
     And I should see "1 November 1999"
-    And I should see "lay"
+    And I should see "Professional"
     And I should see "Emb houseE, victoria roadE, LondonE2, LondonE3, SW1 E"
     And the order should be unservable
 
