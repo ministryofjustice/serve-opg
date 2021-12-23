@@ -42,6 +42,7 @@ jobs:
         run: mkdir -p ${{ env.TEST_RESULTS }}
       - name: run unit tests
         run: gotestsum --junitfile unit-tests.xml
+
   test-web:
     name: Test Web
     runs-on: ubuntu-latest
