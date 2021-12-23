@@ -155,11 +155,12 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
+          docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
+          docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
+          docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
+          
           if [ "$BRANCH_NAME" == "master" ]; then
             # We want all of the tags pushed
-            docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
-            docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
-            docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
             docker push --all-tags $ECR_REGISTRY/serve-opg/app
             docker push --all-tags $ECR_REGISTRY/serve-opg/web
             docker push --all-tags $ECR_REGISTRY/serve-opg/api
