@@ -160,29 +160,11 @@ jobs:
           docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
-          if [ "$BRANCH_NAME" == "master" ]; then
-            # We want all of the tags pushed
-            docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:master-${{ steps.bump_version.outputs.tag }}
-            docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:master-${{ steps.bump_version.outputs.tag }}
-            docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:master-${{ steps.bump_version.outputs.tag }}
-            docker push --all-tags $ECR_REGISTRY/serve-opg/app
-            docker push --all-tags $ECR_REGISTRY/serve-opg/web
-            docker push --all-tags $ECR_REGISTRY/serve-opg/api
-          else
-            docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
-            docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
-            docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
+          docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
+          docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
+          docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
           fi
 
       - name: Trigger infra deploy
-        uses: actions/github-script@v5
-        with:
-#          Temp set to api token registered against acsauk user - due to expire in 30 days, find long term solution
-          github-token: ${{ secrets.GH_API_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              context.repo.owner,
-              'serve-opg-infrastructure',
-              'deploy.yml',
-              'master',
-            });
+        run: |
+          curl --silent --show-error --fail -X POST "https://circleci.com/api/v1.1/project/github/ministryofjustice/serve-opg-infrastructure/build?circle-token=${{ secrets.CIRCLE_API_KEY }}"
