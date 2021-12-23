@@ -163,7 +163,6 @@ jobs:
           docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
           docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
           docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
-          fi
 
       - name: Trigger infra deploy
         run: |
