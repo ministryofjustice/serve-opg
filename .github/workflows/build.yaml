@@ -106,7 +106,7 @@ jobs:
       - name: Extract branch name
         run: |
           if [ "${{ github.head_ref }}" == "" ]; then
-            echo BRANCH_NAME=main >> $GITHUB_ENV
+            echo BRANCH_NAME=master >> $GITHUB_ENV
           else
             echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
           fi
@@ -160,16 +160,10 @@ jobs:
           docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
-          if [ "$BRANCH_NAME" == "main" ]; then
-            # We want all of the tags pushed
-            docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:main-${{ steps.bump_version.outputs.tag }}
-            docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:main-${{ steps.bump_version.outputs.tag }}
-            docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:main-${{ steps.bump_version.outputs.tag }}
-            docker push --all-tags $ECR_REGISTRY/serve-opg/app
-            docker push --all-tags $ECR_REGISTRY/serve-opg/web
-            docker push --all-tags $ECR_REGISTRY/serve-opg/api
-          else
-            docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
-            docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
-            docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
-          fi
+          docker push $ECR_REGISTRY/serve-opg/app:${{ steps.bump_version.outputs.tag }}
+          docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
+          docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
+
+      - name: Trigger infra deploy
+        run: |
+          curl --silent --show-error --fail -X POST "https://circleci.com/api/v1.1/project/github/ministryofjustice/serve-opg-infrastructure/build?circle-token=${{ secrets.CIRCLE_API_KEY }}"
