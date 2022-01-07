@@ -18,10 +18,10 @@ We will use Architecture Decision Records, as [described by Michael Nygard](http
 
 See Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's [adr-tools](https://github.com/npryce/adr-tools).
 
-Instaall the adr tool using:
+Install the adr tool using:
 
 ```brew install adr-tools```
 
-Add a new asdr using:
+Add a new adrs using:
 
 ```adr new Title of Decision```
