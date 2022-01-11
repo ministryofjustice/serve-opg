@@ -17,7 +17,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:0.9.3-alpine
+    image: jwilder/nginx-proxy:alpine-0.7.0
     ports:
       - 443:443
     volumes:
@@ -30,12 +30,6 @@ services:
       DHPARAM_GENERATION: "false"
       DEFAULT_HOST: localhost
       CERT_NAME: web.crt
-
-  api:
-    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/api:latest
-    build: ./serve-api
-    ports:
-      - 9000:9000
 
   web:
     build:
@@ -65,8 +59,8 @@ services:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
       - DC_BEHAT_CONTROLLER_ENABLED=1
-      - DC_S3_ENDPOINT=http://localstack:4566
-      - DYNAMODB_ENDPOINT=http://localstack:4566
+      - DC_S3_ENDPOINT=http://localstack:4572
+      - DYNAMODB_ENDPOINT=http://localstack:4569
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - APP_SECRET=aFakeSecret
@@ -76,9 +70,12 @@ services:
       - localstack
       - postgres
       - sirius-api
+    volumes:
+      - ./serve-web:/var/www
+      - ./serve-web/var:/www/var/
 
   sirius-api:
-    image: stoplight/prism:4.4.1
+    image: stoplight/prism:latest
     ports:
       - 4010:4010
     volumes:
@@ -91,18 +88,20 @@ services:
       - --dynamic
 
   localstack:
-    image: localstack/localstack:0.12.6
+    image: localstack/localstack:0.10.9
     environment:
-      - SERVICES=s3,dynamodb
+      - SERVICES=s3:4572,dynamodb:4569
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     ports:
-      - "4566:4566"
+      - "4572:4572"
+      - "4569:4569"
     volumes:
       - ./serve-web/localstack-data:/tmp/localstack/data
 
   postgres:
-    image: postgres:10-alpine
+    image: postgres
+    build: ./serve-api/internal/db
     ports:
       - 5432:5432
     environment:
@@ -110,22 +109,23 @@ services:
       POSTGRES_DB: serve-opg
       POSTGRES_USER: serve-opg
       POSTGRES_PASSWORD: dcdb2018!
+      POSTGRES_API_DB_USER: serve-opg-api
 
   yarn:
-    image: node:16-alpine
+    image: node:14.17-stretch
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
     volumes:
       - ./serve-web/node_modules:/var/www/node_modules
       - ./serve-web:/var/www
-    entrypoint: ["yarn"]
+    entrypoint: [ "yarn" ]
 
   behat:
     image: php:7.4-fpm-alpine
     volumes:
       - ./serve-web:/var/www
-      - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
+      - ./serve-web/features/screenshots:/tmp/behat
     working_dir: /var/www
     entrypoint:
       - vendor/bin/behat
@@ -152,3 +152,8 @@ services:
       context: ./serve-web
       dockerfile: docker/waitforit/Dockerfile
 
+  api:
+    image: api
+    build: ./serve-api
+    ports:
+      - 9000:9000
