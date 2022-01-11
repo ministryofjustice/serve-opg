@@ -42,8 +42,8 @@
                   </a>
                 </th>
                 <td class="govuk-table__cell">{{ user.isAdmin ? 'Admin' : 'Case manager' }}</td>
-                <td class="govuk-table__cell">{{ user.createdAt | date }}</td>
-                <td class="govuk-table__cell">{{ user.lastLoginAt | date }}</td>
+                <td class="govuk-table__cell">{{ user.createdAt is empty ? "-" : user.createdAt | date }}</td>
+                <td class="govuk-table__cell">{{ user.lastLoginAt is empty ? "-" : user.lastLoginAt | date }}</td>
                 <td class="govuk-table__cell">
                   <a href="{{ path('delete-user', { id: user.id }) }}" onclick="return confirm('Are you sure you want to delete this item?')">
                     Delete
