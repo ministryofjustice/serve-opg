@@ -25,8 +25,41 @@ type Deputy struct {
 	AddressCountry       string `gorm:"size:255;not null"`
 }
 
-func CreateDeputy(db *gorm.DB, email string, password string, roles []string, firstName string, lastName string, phoneNumber string) {
-	db.Create(&User{Email: email, Password: password, Roles: roles})
+func CreateDeputy(
+	db *gorm.DB,
+	deputyType string,
+	forename string,
+	surname string,
+	dateOfBirth time.Time,
+	emailAddress string,
+	daytimeContactNumber string,
+	eveningContactNumber string,
+	mobileContactNumber string,
+	addressLine1 string,
+	addressLine2 string,
+	addressLine3 string,
+	addressTown string,
+	addressCounty string,
+	addressPostcode string,
+	addressCountry string,
+) {
+	db.Create(&Deputy{
+		DeputyType:           deputyType,
+		Forename:             forename,
+		Surname:              surname,
+		DateOfBirth:          dateOfBirth,
+		EmailAddress:         emailAddress,
+		DaytimeContactNumber: daytimeContactNumber,
+		EveningContactNumber: eveningContactNumber,
+		MobileContactNumber:  mobileContactNumber,
+		AddressLine1:         addressLine1,
+		AddressLine2:         addressLine2,
+		AddressLine3:         addressLine3,
+		AddressTown:          addressTown,
+		AddressCounty:        addressCounty,
+		AddressPostcode:      addressPostcode,
+		AddressCountry:       addressCountry,
+	})
 }
 
 func SelectDeputyById(db *gorm.DB, id int) *gorm.DB {
