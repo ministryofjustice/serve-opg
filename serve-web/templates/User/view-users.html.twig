@@ -26,6 +26,8 @@
         <tr class="govuk-table__row">
             <th class="govuk-table__header" scope="col">Name</th>
             <th class="govuk-table__header" scope="col">Role</th>
+            <th class="govuk-table__header" scope="col">Created</th>
+            <th class="govuk-table__header" scope="col">Last Logged In</th>
             <th class="govuk-table__header" scope="col">
               <span class="govuk-visually-hidden">Delete</span>
             </th>
@@ -40,6 +42,8 @@
                   </a>
                 </th>
                 <td class="govuk-table__cell">{{ user.isAdmin ? 'Admin' : 'Case manager' }}</td>
+                <td class="govuk-table__cell">{{ user.createdAt | date }}</td>
+                <td class="govuk-table__cell">{{ user.lastLoginAt | date }}</td>
                 <td class="govuk-table__cell">
                   <a href="{{ path('delete-user', { id: user.id }) }}" onclick="return confirm('Are you sure you want to delete this item?')">
                     Delete
