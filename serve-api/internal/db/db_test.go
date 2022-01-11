@@ -19,7 +19,7 @@ func setUpTest() {
 }
 
 func removeDBColumns(e entity.Entity) {
-	columnNames := []string{"updated_at", "deleted_at"}
+	columnNames := []string{"updated_at", "deleted_at", "created_at"}
 
 	for _, name := range columnNames {
 		if database.Migrator().HasColumn(e, name) {
@@ -36,6 +36,7 @@ func TestMigrate(t *testing.T) {
 	}{
 		{&entity.Client{}, []string{"updated_at", "deleted_at"}},
 		{&entity.User{}, []string{"updated_at", "deleted_at"}},
+		{&entity.Deputy{}, []string{"updated_at", "deleted_at", "created_at"}},
 	}
 
 	for _, tt := range entityTests {
@@ -43,7 +44,7 @@ func TestMigrate(t *testing.T) {
 
 		for _, colName := range tt.migratedColumns {
 			if database.Migrator().HasColumn(tt.e, colName) {
-				t.Errorf("database columns already exist!")
+				t.Errorf("database column %s already exist for table %s!", colName, tt.e.TableName())
 			}
 		}
 
@@ -51,7 +52,7 @@ func TestMigrate(t *testing.T) {
 
 		for _, colName := range tt.migratedColumns {
 			if !database.Migrator().HasColumn(tt.e, colName) {
-				t.Errorf("database columns have not been migrated!")
+				t.Errorf("database column %s have not been migrated for table %s!", colName, tt.e.TableName())
 			}
 		}
 	}

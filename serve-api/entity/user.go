@@ -9,6 +9,7 @@ import (
 
 type User struct {
 	gorm.Model
+	Id                       string `gorm:"migration"`
 	Email                    string `gorm:"size:255;not null;unique"`
 	Password                 string `gorm:"size:255;not null"`
 	ActivationToken          string `gorm:"size:40;not null"`

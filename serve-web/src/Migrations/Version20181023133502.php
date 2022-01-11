@@ -15,11 +15,12 @@ final class Version20181023133502 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        $this->addSql('CREATE SEQUENCE client_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE deputy_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE document_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE dc_order_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE dc_user_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE client (id BIGSERIAL NOT NULL, case_number VARCHAR(8) NOT NULL, client_name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE client (id INT NOT NULL, case_number VARCHAR(8) NOT NULL, client_name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_C74404553F7E58FD ON client (case_number)');
         $this->addSql('CREATE TABLE deputy (id INT NOT NULL, deputy_type VARCHAR(255) NOT NULL, forename VARCHAR(255) NOT NULL, surname VARCHAR(255) NOT NULL, dob DATE DEFAULT NULL, email_address VARCHAR(255) DEFAULT NULL, daytime_contact_number VARCHAR(255) DEFAULT NULL, evening_contact_number VARCHAR(255) DEFAULT NULL, mobile_contact_number VARCHAR(255) DEFAULT NULL, address_line_1 VARCHAR(255) DEFAULT NULL, address_line_2 VARCHAR(255) DEFAULT NULL, address_line_3 VARCHAR(255) DEFAULT NULL, address_town VARCHAR(255) DEFAULT NULL, address_county VARCHAR(255) DEFAULT NULL, address_postcode VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE document (id INT NOT NULL, order_id INT DEFAULT NULL, type VARCHAR(100) NOT NULL, fileName VARCHAR(255) DEFAULT NULL, storageReference VARCHAR(255) NOT NULL, remoteStorageReference VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');

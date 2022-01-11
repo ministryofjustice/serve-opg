@@ -8,6 +8,7 @@ import (
 
 type Deputy struct {
 	gorm.Model
+	Id                   string `gorm:"migration"`
 	DeputyType           string `gorm:"size:255;not null"`
 	Forename             string `gorm:"size:255;not null"`
 	Surname              string `gorm:"size:255;not null"`
@@ -63,8 +64,8 @@ func CreateDeputy(
 }
 
 func SelectDeputyById(db *gorm.DB, id int) *gorm.DB {
-	var user User
-	return db.First(&user, id)
+	var deputy Deputy
+	return db.First(&deputy, id)
 }
 
 func (deputy *Deputy) TableName() string {

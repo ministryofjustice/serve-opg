@@ -6,6 +6,7 @@ import (
 
 type Client struct {
 	gorm.Model
+	Id         string `gorm:"migration"`
 	CaseNumber string `gorm:"size:8;not null;unique"`
 	ClientName string `gorm:"size:255;not null"`
 	Entity     `gorm:"-"`
