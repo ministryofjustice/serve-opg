@@ -29,6 +29,6 @@ func SelectUserById(db *gorm.DB, id int) *gorm.DB {
 	return db.First(&user, id)
 }
 
-func (client *User) TableName() string {
+func (user *User) TableName() string {
 	return "dc_user"
 }
