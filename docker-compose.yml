@@ -102,7 +102,7 @@ services:
       - ./serve-web/localstack-data:/tmp/localstack/data
 
   postgres:
-    image: postgres:9.6-alpine
+    image: postgres:10-alpine
     ports:
       - 5432:5432
     environment:
