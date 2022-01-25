@@ -37,6 +37,7 @@ func TestMigrate(t *testing.T) {
 		{&entity.Client{}, []string{"updated_at", "deleted_at"}},
 		{&entity.User{}, []string{"updated_at", "deleted_at"}},
 		{&entity.Deputy{}, []string{"updated_at", "deleted_at", "created_at"}},
+		{&entity.Order{}, []string{"updated_at", "deleted_at"}},
 	}
 
 	for _, tt := range entityTests {
