@@ -11,6 +11,7 @@ import (
 type Order struct {
 	gorm.Model
 	Id                      string `gorm:"migration"`
+	Client                  Client
 	SubType                 string `gorm:"size:50"`
 	HasAssetsAboveThreshold string `gorm:"size:50"`
 	AppointmentType         string `gorm:"size:50"`
