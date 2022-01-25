@@ -6,11 +6,10 @@ import (
 
 type Client struct {
 	gorm.Model
-	Id         string `gorm:"migration"`
-	Order      []Order
+	Id         uint32 `gorm:"not null;"`
+	Orders     []Order
 	CaseNumber string `gorm:"size:8;not null;unique"`
 	ClientName string `gorm:"size:255;not null"`
-	Entity     `gorm:"-"`
 }
 
 func CreateClient(db *gorm.DB, case_number string, client_name string) {

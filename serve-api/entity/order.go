@@ -10,18 +10,21 @@ import (
 
 type Order struct {
 	gorm.Model
-	Id                      string `gorm:"migration"`
-	Client                  Client
-	SubType                 string `gorm:"size:50"`
-	HasAssetsAboveThreshold string `gorm:"size:50"`
-	AppointmentType         string `gorm:"size:50"`
+	Id                      uint32 `gorm:"not null;"`
+	ClientID                uint32
+	SubType                 string   `gorm:"size:50;"`
+	HasAssetsAboveThreshold string   `gorm:"size:50;"`
+	Deputies                []Deputy `gorm:"many2many:ordertype_deputy;"`
+	Documents               []Document
+	AppointmentType         string `gorm:"size:50;"`
 	CreatedAt               time.Time
-	MadeAt                  time.Time
+	MadeAt                  time.Time `gorm:"not null;"`
 	IssuedAt                time.Time
 	ServedAt                time.Time
-	PayloadServed           string
-	ApiResponse             string
-	OrderNumber             string `gorm:"unique"`
+	// Drop PayloadServed and ApiResponse. Manual migration to drop these from database
+	PayloadServed string
+	ApiResponse   string
+	OrderNumber   string
 }
 
 func CreateOrder(

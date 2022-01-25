@@ -9,16 +9,16 @@ import (
 
 type User struct {
 	gorm.Model
-	Id                       string `gorm:"migration"`
-	Email                    string `gorm:"size:255;not null;unique"`
-	Password                 string `gorm:"size:255;not null"`
-	ActivationToken          string `gorm:"size:40;not null"`
+	Id                       uint32 `gorm:"not null;"`
+	Email                    string `gorm:"size:255;not null;unique;"`
+	Password                 string `gorm:"size:255;not null;"`
 	ActivationTokenCreatedAt time.Time
+	ActivationToken          string `gorm:"size:40;"`
 	LastLoginAt              time.Time
-	Roles                    pq.StringArray `gorm:"type:text[]"`
-	FirstName                string         `gorm:"size:100;not null"`
-	LastName                 string         `gorm:"size:100;not null"`
-	PhoneNumber              string         `gorm:"size:20;not null"`
+	Roles                    pq.StringArray `gorm:"type:text[];not null;"`
+	FirstName                string         `gorm:"size:100;"`
+	LastName                 string         `gorm:"size:100;"`
+	PhoneNumber              string         `gorm:"size:20;"`
 }
 
 func CreateUser(db *gorm.DB, email string, password string, roles []string, firstName string, lastName string, phoneNumber string) {

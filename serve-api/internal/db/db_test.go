@@ -38,6 +38,7 @@ func TestMigrate(t *testing.T) {
 		{&entity.User{}, []string{"updated_at", "deleted_at"}},
 		{&entity.Deputy{}, []string{"updated_at", "deleted_at", "created_at"}},
 		{&entity.Order{}, []string{"updated_at", "deleted_at"}},
+		{&entity.Document{}, []string{"updated_at", "deleted_at", "created_at"}},
 	}
 
 	for _, tt := range entityTests {
@@ -56,5 +57,29 @@ func TestMigrate(t *testing.T) {
 				t.Errorf("database column %s have not been migrated for table %s!", colName, tt.e.TableName())
 			}
 		}
+	}
+}
+
+func TestJoinTableMigration(t *testing.T) {
+	setUpTest()
+
+	Migrate(database, &entity.Order{})
+
+	if !database.Migrator().HasTable("ordertype_deputy") {
+		t.Error("Failed to migrate join table: ordertype_deputy!")
+	}
+
+	expectedColumns := []string{"deputy_id", "order_type_id"}
+
+	for _, col := range expectedColumns {
+		if !database.Migrator().HasColumn("ordertype_deputy", col) {
+			t.Errorf("Failed to migrate column: %s!", col)
+		}
+	}
+
+	rows, _ := database.Table("ordertype_deputy").Rows()
+	cols, _ := rows.Columns()
+	if !(len(cols) == 2) {
+		t.Errorf("Wrong number of columns in table. Expected: 2, got %d!", len(cols))
 	}
 }

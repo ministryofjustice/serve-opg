@@ -8,22 +8,22 @@ import (
 
 type Deputy struct {
 	gorm.Model
-	Id                   string `gorm:"migration"`
-	DeputyType           string `gorm:"size:255;not null"`
-	Forename             string `gorm:"size:255;not null"`
-	Surname              string `gorm:"size:255;not null"`
+	Id                   uint32  `gorm:"not null;"`
+	DeputyType           string  `gorm:"size:255;not null;"`
+	Orders               []Order `gorm:"many2many:ordertype_deputy;"`
+	Forename             string  `gorm:"size:255;not null;"`
+	Surname              string  `gorm:"size:255;not null;"`
 	DateOfBirth          time.Time
-	EmailAddress         string `gorm:"size:255;not null"`
-	DaytimeContactNumber string `gorm:"size:255;not null"`
-	EveningContactNumber string `gorm:"size:255;not null"`
-	MobileContactNumber  string `gorm:"size:255;not null"`
-	AddressLine1         string `gorm:"size:255;not null"`
-	AddressLine2         string `gorm:"size:255;not null"`
-	AddressLine3         string `gorm:"size:255;not null"`
-	AddressTown          string `gorm:"size:255;not null"`
-	AddressCounty        string `gorm:"size:255;not null"`
-	AddressPostcode      string `gorm:"size:255;not null"`
-	AddressCountry       string `gorm:"size:255;not null"`
+	EmailAddress         string `gorm:"size:255;"`
+	DaytimeContactNumber string `gorm:"size:255;"`
+	EveningContactNumber string `gorm:"size:255;"`
+	MobileContactNumber  string `gorm:"size:255;"`
+	AddressLine1         string `gorm:"size:255;"`
+	AddressLine2         string `gorm:"size:255;"`
+	AddressLine3         string `gorm:"size:255;"`
+	AddressTown          string `gorm:"size:255;"`
+	AddressCounty        string `gorm:"size:255;"`
+	AddressPostcode      string `gorm:"size:255;"`
 }
 
 func CreateDeputy(
@@ -42,7 +42,6 @@ func CreateDeputy(
 	addressTown string,
 	addressCounty string,
 	addressPostcode string,
-	addressCountry string,
 ) {
 	db.Create(&Deputy{
 		DeputyType:           deputyType,
@@ -59,7 +58,6 @@ func CreateDeputy(
 		AddressTown:          addressTown,
 		AddressCounty:        addressCounty,
 		AddressPostcode:      addressPostcode,
-		AddressCountry:       addressCountry,
 	})
 }
 
