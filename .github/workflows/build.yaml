@@ -3,10 +3,10 @@ name: Build & Test
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     
 defaults:
@@ -105,7 +105,7 @@ jobs:
       - name: Extract branch name
         run: |
           if [ "${{ github.head_ref }}" == "" ]; then
-            echo BRANCH_NAME=master >> $GITHUB_ENV
+            echo BRANCH_NAME=main >> $GITHUB_ENV
           else
             echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
           fi
@@ -119,7 +119,7 @@ jobs:
           INITIAL_VERSION: 1.0.0
           DEFAULT_BUMP: minor
           PRERELEASE_SUFFIX: ${{ env.BRANCH_NAME }}
-          RELEASE_BRANCHES: master
+          RELEASE_BRANCHES: main
           WITH_V: true
 
       - name: Build Containers
@@ -160,7 +160,7 @@ jobs:
           docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
           
-          if [ "$BRANCH_NAME" == "master" ]; then
+          if [ "$BRANCH_NAME" == "main" ]; then
             # We want all of the tags pushed
             docker push --all-tags $ECR_REGISTRY/serve-opg/app
             docker push --all-tags $ECR_REGISTRY/serve-opg/web
