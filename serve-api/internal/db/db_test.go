@@ -83,3 +83,13 @@ func TestJoinTableMigration(t *testing.T) {
 		t.Errorf("Wrong number of columns in table. Expected: 2, got %d!", len(cols))
 	}
 }
+
+func TestOrderEntity(t *testing.T) {
+	setUpTest()
+
+	Migrate(database, &entity.Order{})
+
+	order := &entity.Order{}
+	order.SelectOrderById(database, 2)
+	t.Log(order.GetType())
+}

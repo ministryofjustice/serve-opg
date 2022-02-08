@@ -6,10 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrderTyper interface {
-	GetType() string
-}
-
 type OrderType string
 
 const (
@@ -19,7 +15,6 @@ const (
 )
 
 // Client, Deputies, Documents need including
-
 type Order struct {
 	gorm.Model
 	Id                      uint32 `gorm:"not null;"`
@@ -38,14 +33,6 @@ type Order struct {
 	ApiResponse   string
 	OrderNumber   string
 	Type          OrderType `gorm:"not null;"`
-}
-
-type OrderHW struct {
-	Order
-}
-
-type OrderPF struct {
-	Order
 }
 
 func CreateOrder(
@@ -75,17 +62,12 @@ func CreateOrder(
 	})
 }
 
-func SelectOrderById(db *gorm.DB, id int) *gorm.DB {
-	var order Order
-	return db.First(&order, id)
+func (o *Order) SelectOrderById(db *gorm.DB, id int) *gorm.DB {
+	return db.First(o, id)
 }
 
-func (*OrderHW) GetType() string {
-	return string(HW)
-}
-
-func (*OrderPF) GetType() string {
-	return string(PF)
+func (o *Order) GetType() string {
+	return string(o.Type)
 }
 
 func (order *Order) TableName() string {
