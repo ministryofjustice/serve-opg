@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ministryofjustice/serve-opg/serve-api/entity"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
 
@@ -87,9 +88,21 @@ func TestJoinTableMigration(t *testing.T) {
 func TestOrderEntity(t *testing.T) {
 	setUpTest()
 
+	orderTypeTests := []struct {
+		id        int
+		orderType string
+	}{
+		{id: 1, orderType: entity.OrderTypePF},
+		{id: 2, orderType: entity.OrderTypeHW},
+	}
+
 	Migrate(database, &entity.Order{})
 
-	order := &entity.Order{}
-	order.SelectOrderById(database, 2)
-	t.Log(order.GetType())
+	for _, tt := range orderTypeTests {
+
+		order := &entity.Order{}
+		order.SelectOrderByID(database, tt.id)
+		assert.Equal(t, tt.orderType, order.GetType())
+	}
+
 }

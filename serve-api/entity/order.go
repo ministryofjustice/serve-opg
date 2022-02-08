@@ -6,12 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrderType string
-
 const (
-	HW   OrderType = "HW"
-	PF   OrderType = "PF"
-	BOTH OrderType = "BOTH"
+	OrderTypeHW   string = "HW"
+	OrderTypePF   string = "PF"
+	OrderTypeBOTH string = "BOTH"
 )
 
 // Client, Deputies, Documents need including
@@ -19,20 +17,21 @@ type Order struct {
 	gorm.Model
 	ID                      uint32 `gorm:"not null;"`
 	ClientID                uint32
-	SubType                 string   `gorm:"size:50;"`
-	HasAssetsAboveThreshold string   `gorm:"size:50;"`
-	Deputies                []Deputy `gorm:"many2many:ordertype_deputy;"`
-	Documents               []Document
-	AppointmentType         string `gorm:"size:50;"`
-	CreatedAt               time.Time
-	MadeAt                  time.Time `gorm:"not null;"`
-	IssuedAt                time.Time
-	ServedAt                time.Time
+	SubType                 string `gorm:"size:50;"`
+	HasAssetsAboveThreshold string `gorm:"size:50;"`
+	// Need to rename order_type_id column in ordertype_deputy table to order_id. Manual migration to rename
+	Deputies        []Deputy `gorm:"many2many:ordertype_deputy;"`
+	Documents       []Document
+	AppointmentType string `gorm:"size:50;"`
+	CreatedAt       time.Time
+	MadeAt          time.Time `gorm:"not null;"`
+	IssuedAt        time.Time
+	ServedAt        time.Time
+	OrderNumber     string
+	Type            string `gorm:"not null;"`
 	// Drop PayloadServed and ApiResponse. Manual migration to drop these from database
 	PayloadServed string
 	ApiResponse   string
-	OrderNumber   string
-	Type          OrderType `gorm:"not null;"`
 }
 
 func CreateOrder(
@@ -47,6 +46,7 @@ func CreateOrder(
 	payloadServed string,
 	apiResponse string,
 	orderNumber string,
+	orderType string,
 ) {
 	db.Create(&Order{
 		SubType:                 subType,
@@ -59,6 +59,7 @@ func CreateOrder(
 		PayloadServed:           payloadServed,
 		ApiResponse:             apiResponse,
 		OrderNumber:             orderNumber,
+		Type:                    orderType,
 	})
 }
 
@@ -67,9 +68,9 @@ func (o *Order) SelectOrderByID(db *gorm.DB, id int) *gorm.DB {
 }
 
 func (o *Order) GetType() string {
-	return string(o.Type)
+	return o.Type
 }
 
-func (order *Order) TableName() string {
+func (*Order) TableName() string {
 	return "dc_order"
 }
