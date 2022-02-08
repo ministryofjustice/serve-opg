@@ -8,7 +8,7 @@ import (
 
 type Deputy struct {
 	gorm.Model
-	Id                   uint32  `gorm:"not null;"`
+	ID                   uint32  `gorm:"not null;"`
 	DeputyType           string  `gorm:"size:255;not null;"`
 	Orders               []Order `gorm:"many2many:ordertype_deputy;"`
 	Forename             string  `gorm:"size:255;not null;"`
@@ -61,11 +61,10 @@ func CreateDeputy(
 	})
 }
 
-func SelectDeputyById(db *gorm.DB, id int) *gorm.DB {
-	var deputy Deputy
-	return db.First(&deputy, id)
+func (d *Deputy) SelectDeputyByID(db *gorm.DB, id int) *gorm.DB {
+	return db.First(d, id)
 }
 
-func (deputy *Deputy) TableName() string {
+func (d *Deputy) TableName() string {
 	return "deputy"
 }

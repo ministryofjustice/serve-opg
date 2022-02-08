@@ -17,7 +17,7 @@ const (
 // Client, Deputies, Documents need including
 type Order struct {
 	gorm.Model
-	Id                      uint32 `gorm:"not null;"`
+	ID                      uint32 `gorm:"not null;"`
 	ClientID                uint32
 	SubType                 string   `gorm:"size:50;"`
 	HasAssetsAboveThreshold string   `gorm:"size:50;"`
@@ -62,7 +62,7 @@ func CreateOrder(
 	})
 }
 
-func (o *Order) SelectOrderById(db *gorm.DB, id int) *gorm.DB {
+func (o *Order) SelectOrderByID(db *gorm.DB, id int) *gorm.DB {
 	return db.First(o, id)
 }
 

@@ -6,7 +6,7 @@ import (
 
 type Document struct {
 	gorm.Model
-	Id                     uint32 `gorm:"not null;"`
+	ID                     uint32 `gorm:"not null;"`
 	OrderID                uint32
 	Type                   string `gorm:"size:100;not null;"`
 	FileName               string `gorm:"size:255"`
@@ -31,11 +31,11 @@ func CreateDocument(
 	})
 }
 
-func SelectDocumentById(db *gorm.DB, id int) *gorm.DB {
+func (d *Document) SelectDocumentByID(db *gorm.DB, id int) *gorm.DB {
 	var document Document
 	return db.First(&document, id)
 }
 
-func (document *Document) TableName() string {
+func (d *Document) TableName() string {
 	return "document"
 }
