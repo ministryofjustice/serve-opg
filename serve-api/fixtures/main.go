@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/go-testfixtures/testfixtures/v3"
+	_ "github.com/lib/pq"
 )
 
 /*  POSTGRES_HOST: localhost
@@ -37,11 +38,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	fixtures, err = testfixtures.New(
-		testfixtures.Database(db),          // You database connection
-		testfixtures.Dialect("postgresql"), // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
-		testfixtures.Directory("data/"),    // The directory containing the YAML files
+		testfixtures.Database(db),               // You database connection
+		testfixtures.Dialect("postgresql"),      // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
+		testfixtures.Directory("fixtures/data"), // The directory containing the YAML files
 	)
 
 	if err != nil {
