@@ -14,25 +14,27 @@ defaults:
     shell: bash
 
 jobs:
-  # Service containers to run with `container-job`
-  services:
-    # Label used to access the service container
-    postgres:
-      # Docker Hub image
-      image: postgres
-      # Provide the password for postgres
-      env:
-        POSTGRES_HOST: postgres
-        POSTGRES_DB: serve-opg
-        POSTGRES_USER: serve-opg
-        POSTGRES_PASSWORD: dcdb2018!
-        POSTGRES_API_DB_USER: serve-opg-api
-      # Set health checks to wait until postgres has started
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
+  # Label of the container job
+  container-job:
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_HOST: postgres
+          POSTGRES_DB: serve-opg
+          POSTGRES_USER: serve-opg
+          POSTGRES_PASSWORD: dcdb2018!
+          POSTGRES_API_DB_USER: serve-opg-api
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
   test-api:
     name: Test API
