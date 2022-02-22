@@ -11,11 +11,12 @@ import (
 )
 
 func Connect() *gorm.DB {
+	db_host := os.Getenv("POSTGRES_HOST")
 	db_user := os.Getenv("POSTGRES_USER")
 	db_pswd := os.Getenv("POSTGRES_PASSWORD")
 	db_name := os.Getenv("POSTGRES_DB")
 
-	dsn := fmt.Sprintf("host=localhost user=%s password=%s dbname=%s port=5432 sslmode=disable", db_user, db_pswd, db_name)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable", db_host, db_user, db_pswd, db_name)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
