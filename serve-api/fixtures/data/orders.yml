@@ -1,0 +1,19 @@
+# orders.yml
+# ID                      uint32 `gorm:"not null;type:bigint;autoIncrement"`
+# ClientID                uint32
+# SubType                 string `gorm:"size:50;"`
+# HasAssetsAboveThreshold string `gorm:"size:50;"`
+# Deputies        []Deputy `gorm:"many2many:ordertype_deputy;"`
+# Documents       []Document
+# AppointmentType string `gorm:"size:50;"`
+# CreatedAt       time.Time
+# MadeAt          time.Time `gorm:"not null;"`
+# IssuedAt        time.Time
+# ServedAt        time.Time
+# OrderNumber     string
+# Type            string `gorm:"not null;"`
+# PayloadServed string
+# ApiResponse   string
+
+- id: 1
+  client_id: 1

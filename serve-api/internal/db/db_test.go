@@ -88,8 +88,6 @@ func TestJoinTableMigration(t *testing.T) {
 }
 
 func TestOrderEntity(t *testing.T) {
-	setUpTest()
-
 	orderTypeTests := []struct {
 		id        int
 		orderType string
@@ -105,5 +103,4 @@ func TestOrderEntity(t *testing.T) {
 		order.SelectOrderByID(database, tt.id)
 		assert.Equal(t, tt.orderType, order.GetType())
 	}
-
 }

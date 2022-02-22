@@ -57,6 +57,8 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-
+      - name: load database fixture data
+        run: go run ./fixtures/main.go
       - name: resolve go dependencies
         run: go mod download
       - name: Create test result directory
