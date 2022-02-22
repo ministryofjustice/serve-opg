@@ -39,9 +39,9 @@ func main() {
 	}
 
 	fixtures, err = testfixtures.New(
-		testfixtures.Database(db),        // You database connection
-		testfixtures.Dialect("postgres"), // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
-		testfixtures.Directory("data/"),  // The directory containing the YAML files
+		testfixtures.Database(db),          // You database connection
+		testfixtures.Dialect("postgresql"), // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
+		testfixtures.Directory("data/"),    // The directory containing the YAML files
 	)
 
 	if err != nil {
