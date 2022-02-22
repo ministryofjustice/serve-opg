@@ -32,6 +32,7 @@ func removeDBColumns(e entity.Entity) {
 
 func TestMigrate(t *testing.T) {
 	setUpTest()
+
 	entityTests := []struct {
 		e               entity.Entity
 		migratedColumns []string

@@ -6,7 +6,7 @@ import (
 
 type Client struct {
 	gorm.Model
-	ID         uint32 `gorm:"not null;migration"`
+	ID         uint `gorm:"not null;migration"`
 	Orders     []Order
 	CaseNumber string `gorm:"size:8;not null;unique"`
 	ClientName string `gorm:"size:255;not null"`
