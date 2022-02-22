@@ -14,8 +14,14 @@ defaults:
     shell: bash
 
 jobs:
-  # Label of the container job
-  container-job:
+  test-api:
+    name: Test API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./serve-api
+    env:
+      TEST_RESULTS: /tmp/test_results
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
@@ -35,15 +41,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-  test-api:
-    name: Test API
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./serve-api
-    env:
-      TEST_RESULTS: /tmp/test_results
+          
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
