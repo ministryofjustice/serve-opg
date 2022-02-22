@@ -44,6 +44,7 @@ func main() {
 		testfixtures.Database(db),               // You database connection
 		testfixtures.Dialect("postgresql"),      // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
 		testfixtures.Directory("fixtures/data"), // The directory containing the YAML files
+		testfixtures.DangerousSkipTestDatabaseCheck(),
 	)
 
 	if err != nil {
@@ -55,6 +56,6 @@ func main() {
 
 func prepareTestDatabase() {
 	if err := fixtures.Load(); err != nil {
-		log.Fatal()
+		log.Fatal(err)
 	}
 }
