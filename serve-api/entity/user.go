@@ -9,7 +9,7 @@ import (
 
 type User struct {
 	gorm.Model
-	ID                       uint32 `gorm:"not null;"`
+	ID                       uint32 `gorm:"not null;migration"`
 	Email                    string `gorm:"size:255;not null;unique;"`
 	Password                 string `gorm:"size:255;not null;"`
 	ActivationTokenCreatedAt time.Time

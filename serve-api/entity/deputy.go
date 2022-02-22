@@ -8,7 +8,7 @@ import (
 
 type Deputy struct {
 	gorm.Model
-	ID                   uint32  `gorm:"not null;"`
+	ID                   uint32  `gorm:"not null;migration"`
 	DeputyType           string  `gorm:"size:255;not null;"`
 	Orders               []Order `gorm:"many2many:ordertype_deputy;"`
 	Forename             string  `gorm:"size:255;not null;"`
