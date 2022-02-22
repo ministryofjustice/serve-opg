@@ -15,7 +15,7 @@ const (
 // Client, Deputies, Documents need including
 type Order struct {
 	gorm.Model
-	ID                      uint32 `gorm:"not null;migration"`
+	ID                      uint32 `gorm:"not null;type:bigint;autoIncrement"`
 	ClientID                uint32
 	SubType                 string `gorm:"size:50;"`
 	HasAssetsAboveThreshold string `gorm:"size:50;"`
@@ -71,6 +71,6 @@ func (o *Order) GetType() string {
 	return o.Type
 }
 
-func (*Order) TableName() string {
+func (o *Order) TableName() string {
 	return "dc_order"
 }
