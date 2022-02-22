@@ -83,7 +83,7 @@ func TestJoinTableMigration(t *testing.T) {
 	rows, _ := database.Table("ordertype_deputy").Rows()
 	cols, _ := rows.Columns()
 	if !(len(cols) == 3) {
-		t.Errorf("Wrong number of columns in table. Expected: 2, got %d!", len(cols))
+		t.Errorf("Wrong number of columns in table. Expected: 3, got %d!", len(cols))
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 
 type Document struct {
 	gorm.Model
-	ID                     uint32 `gorm:"not null;migration"`
+	ID                     uint32 `gorm:"not null;type:bigint;autoIncrement"`
 	OrderID                uint32
 	Type                   string `gorm:"size:100;not null;"`
 	FileName               string `gorm:"size:255"`
