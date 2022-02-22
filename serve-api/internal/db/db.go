@@ -11,7 +11,7 @@ import (
 )
 
 func Connect() *gorm.DB {
-	db_user := os.Getenv("POSTGRES_API_DB_USER")
+	db_user := os.Getenv("POSTGRES_USER")
 	db_pswd := os.Getenv("POSTGRES_PASSWORD")
 	db_name := os.Getenv("POSTGRES_DB")
 

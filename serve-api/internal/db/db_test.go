@@ -12,7 +12,7 @@ import (
 var database *gorm.DB
 
 func setUpTest() {
-	os.Setenv("POSTGRES_API_DB_USER", "serve-opg-api")
+	os.Setenv("POSTGRES_USER", "serve-opg")
 	os.Setenv("POSTGRES_PASSWORD", "dcdb2018!")
 	os.Setenv("POSTGRES_DB", "serve-opg")
 
