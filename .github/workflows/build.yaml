@@ -34,7 +34,8 @@ jobs:
           POSTGRES_DB: serve-opg
           POSTGRES_USER: serve-opg
           POSTGRES_PASSWORD: dcdb2018!
-          POSTGRES_API_DB_USER: serve-opg-api
+        ports:
+          - 5432/tcp
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
