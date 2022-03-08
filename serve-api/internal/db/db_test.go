@@ -39,7 +39,7 @@ func setUpTest() {
 	}
 }
 
-func setUpFixtures() {
+func setUpSeedData() {
 	standardDB, _ := database.DB()
 	fixtures, _ = testfixtures.New(
 		testfixtures.Database(standardDB),  // You database connection
@@ -99,13 +99,11 @@ func TestMigrate(t *testing.T) {
 func TestJoinTableMigration(t *testing.T) {
 	setUpTest()
 
-	Migrate(database, &entity.Order{})
-
 	if !database.Migrator().HasTable("ordertype_deputy") {
 		t.Error("Failed to migrate join table: ordertype_deputy!")
 	}
 
-	expectedColumns := []string{"deputy_id", "order_type_id", "order_id"}
+	expectedColumns := []string{"deputy_id", "order_id"}
 
 	for _, col := range expectedColumns {
 		if !database.Migrator().HasColumn("ordertype_deputy", col) {
@@ -115,16 +113,14 @@ func TestJoinTableMigration(t *testing.T) {
 
 	rows, _ := database.Table("ordertype_deputy").Rows()
 	cols, _ := rows.Columns()
-	if !(len(cols) == 3) {
-		t.Errorf("Wrong number of columns in table. Expected: 3, got %d!", len(cols))
+	if !(len(cols) == 2) {
+		t.Errorf("Wrong number of columns in table. Expected: 2, got %d!", len(cols))
 	}
 }
 
 func TestOrderEntity(t *testing.T) {
 	setUpTest()
-	setUpFixtures()
-
-	Migrate(database, &entity.Order{})
+	setUpSeedData()
 
 	orderTypeTests := []struct {
 		id        int
