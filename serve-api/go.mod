@@ -9,6 +9,6 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/lib/pq v1.10.4
 	github.com/stretchr/testify v1.7.0
-	gorm.io/driver/postgres v1.2.2
-	gorm.io/gorm v1.22.2
+	gorm.io/driver/postgres v1.3.1
+	gorm.io/gorm v1.23.1
 )
