@@ -24,6 +24,22 @@ func setUpTest() {
 
 	database = Connect()
 
+	entites := []struct {
+		entity entity.Entity
+	}{
+		{&entity.Client{}},
+		{&entity.User{}},
+		{&entity.Deputy{}},
+		{&entity.Order{}},
+		{&entity.Document{}},
+	}
+
+	for _, tt := range entites {
+		Migrate(database, tt.entity)
+	}
+}
+
+func setUpFixtures() {
 	standardDB, _ := database.DB()
 	fixtures, _ = testfixtures.New(
 		testfixtures.Database(standardDB),  // You database connection
@@ -106,6 +122,7 @@ func TestJoinTableMigration(t *testing.T) {
 
 func TestOrderEntity(t *testing.T) {
 	setUpTest()
+	setUpFixtures()
 
 	Migrate(database, &entity.Order{})
 
