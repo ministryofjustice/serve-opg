@@ -1,15 +1,20 @@
 package db
 
 import (
+	"log"
 	"os"
 	"testing"
 
+	"github.com/go-testfixtures/testfixtures/v3"
 	"github.com/ministryofjustice/serve-opg/serve-api/entity"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
 
-var database *gorm.DB
+var (
+	database *gorm.DB
+	fixtures *testfixtures.Loader
+)
 
 func setUpTest() {
 	os.Setenv("POSTGRES_HOST", "localhost")
@@ -18,6 +23,18 @@ func setUpTest() {
 	os.Setenv("POSTGRES_DB", "serve-opg")
 
 	database = Connect()
+
+	standardDB, _ := database.DB()
+	fixtures, _ = testfixtures.New(
+		testfixtures.Database(standardDB),  // You database connection
+		testfixtures.Dialect("postgresql"), // Available: "postgresql", "timescaledb", "mysql", "mariadb", "sqlite" and "sqlserver"
+		testfixtures.Directory("data"),     // The directory containing the YAML files
+		testfixtures.DangerousSkipTestDatabaseCheck(),
+	)
+
+	if err := fixtures.Load(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func removeDBColumns(e entity.Entity) {
@@ -88,6 +105,10 @@ func TestJoinTableMigration(t *testing.T) {
 }
 
 func TestOrderEntity(t *testing.T) {
+	setUpTest()
+
+	Migrate(database, &entity.Order{})
+
 	orderTypeTests := []struct {
 		id        int
 		orderType string
@@ -95,8 +116,6 @@ func TestOrderEntity(t *testing.T) {
 		{id: 1, orderType: entity.OrderTypePF},
 		{id: 2, orderType: entity.OrderTypeHW},
 	}
-
-	Migrate(database, &entity.Order{})
 
 	for _, tt := range orderTypeTests {
 		order := &entity.Order{}

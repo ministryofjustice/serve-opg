@@ -15,7 +15,7 @@ const (
 // Client, Deputies, Documents need including
 type Order struct {
 	gorm.Model
-	ID                      uint32 `gorm:"not null;type:bigint;autoIncrement"`
+	ID                      int `gorm:"not null;type:bigint;autoIncrement"`
 	ClientID                uint32
 	SubType                 string `gorm:"size:50;"`
 	HasAssetsAboveThreshold string `gorm:"size:50;"`
