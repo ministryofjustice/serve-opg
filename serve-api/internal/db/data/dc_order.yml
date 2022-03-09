@@ -1,0 +1,47 @@
+# orders.yml
+# ID                      uint32 `gorm:"not null;type:bigint;autoIncrement"`
+# ClientID                uint32
+# SubType                 string `gorm:"size:50;"`
+# HasAssetsAboveThreshold string `gorm:"size:50;"`
+# Deputies        []Deputy `gorm:"many2many:ordertype_deputy;"`
+# Documents       []Document
+# AppointmentType string `gorm:"size:50;"`
+# CreatedAt       time.Time
+# MadeAt          time.Time `gorm:"not null;"`
+# IssuedAt        time.Time
+# ServedAt        time.Time
+# OrderNumber     string
+# Type            string `gorm:"not null;"`
+# PayloadServed string
+# ApiResponse   string
+
+- id: 1
+  client_id: 1
+  type: "PF"
+  made_at: "2022-01-01 11:00:00"
+  issued_at: "2022-02-22 09:00:00"
+  order_number: "2246223811"
+- id: 2
+  client_id: 1
+  type: "HW"
+  made_at: "2022-01-05 11:00:00"
+  issued_at: "2022-02-02 12:00:00"
+  order_number: "2079682560"
+- id: 3
+  client_id: 2
+  type: "PF"
+  made_at: "2022-01-10 11:00:00"
+  issued_at: "2022-02-10 14:00:00"
+  order_number: "1880081042"
+- id: 4
+  client_id: 3
+  type: "HW"
+  made_at: "2022-01-20 11:00:00"
+  issued_at: "2022-02-15 15:00:00"
+  order_number: "1794784605"
+- id: 5
+  client_id: 4
+  type: "HW"
+  made_at: "2022-01-21 11:00:00"
+  issued_at: "2022-02-21 19:00:00"
+  order_number: "1949456356"  

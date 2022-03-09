@@ -86,7 +86,7 @@ abstract class Order
      * @ORM\ManyToMany(targetEntity="App\Entity\Deputy", cascade={"persist"})
      * @ORM\JoinTable(name="ordertype_deputy",
      *   joinColumns={@ORM\JoinColumn(name="deputy_id", referencedColumnName="id", onDelete="CASCADE")},
-     *   inverseJoinColumns={@ORM\JoinColumn(name="order_type_id", referencedColumnName="id", onDelete="CASCADE")}
+     *   inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")}
      * )
      */
     private $deputies;
@@ -158,7 +158,7 @@ abstract class Order
     /**
      * @var string|null
      *
-     * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
+     * @ORM\Column(name="order_number", type="string", nullable=true)
      */
     private $orderNumber;
 
