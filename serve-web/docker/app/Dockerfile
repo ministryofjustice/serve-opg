@@ -1,4 +1,4 @@
-FROM php:7.4.27-fpm-alpine
+FROM php:7.4.28-fpm-alpine
 
 # Install postgresql drivers
 RUN apk add --no-cache postgresql-dev \
@@ -9,6 +9,9 @@ RUN apk add --no-cache \
     libzip-dev \
     zip \
 && docker-php-ext-install zip
+
+#force upgrade packages
+RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
