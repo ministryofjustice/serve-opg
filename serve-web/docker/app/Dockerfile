@@ -11,7 +11,7 @@ RUN apk add --no-cache \
 && docker-php-ext-install zip
 
 #force upgrade packages
-RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib
+RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib busybox
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
