@@ -22,6 +22,27 @@ jobs:
         working-directory: ./serve-api
     env:
       TEST_RESULTS: /tmp/test_results
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: serve-opg
+          POSTGRES_USER: serve-opg
+          POSTGRES_PASSWORD: dcdb2018!
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
@@ -97,6 +118,10 @@ jobs:
           docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
 
   build-and-push:
+    permissions:
+      actions: write
+      contents: write
+
     name: Build and Push Containers
     runs-on: ubuntu-latest
     needs: [test-api, test-web]
