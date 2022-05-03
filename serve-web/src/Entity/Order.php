@@ -158,7 +158,7 @@ abstract class Order
     /**
      * @var string|null
      *
-     * @ORM\Column(name="order_number", type="string", nullable=true)
+     * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
      */
     private $orderNumber;
 
