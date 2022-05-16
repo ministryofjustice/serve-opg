@@ -19,10 +19,6 @@ HELP_FUN = \
 help: ##@other Show this help.
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
-build-up-test: build-deps up-test ##@application Build dependencies and spin up the project in test mode, profiler and xdebug disabled. Purges database and and fixtures.
-	# Add sample users and cases (local env only).
-	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
-
 up-prod: ##@application Brings the app up in prod mode - requires deps to be built
 	docker-compose build app
 
@@ -60,6 +56,10 @@ behat-tests: up-test ##@testing Requires the app to be built and up before runni
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
+
+build-up-test: build-deps up-test ##@builds Build dependencies and spin up the project in test mode, profiler and xdebug disabled. Purges database and and fixtures.
+	# Add sample users and cases (local env only).
+	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 
 build-deps: ##@builds Runs through all steps required before the app can be brought up
 	# Create the s3 buckets, generate localstack data in /localstack-data
