@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	parsingcsv "github.com/ministryofjustice/serve-opg/serve-api/internal/parsing_csv"
+	"github.com/ministryofjustice/serve-opg/serve-api/internal/csv"
 )
 
 func main() {
-	parsingcsv.CreateNewCSV()
+	csv.CreateNewCSV()
 
 	//logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
