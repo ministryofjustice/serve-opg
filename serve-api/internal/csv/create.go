@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Order is a struct that represents an order
 type Order struct {
 	IssuedAt        time.Time
 	ServedAt        time.Time
@@ -15,6 +16,7 @@ type Order struct {
 	OrderType       string
 }
 
+// CreateNewCSV will create a new CSV file
 func CreateNewCSV() {
 	myOrder := Order{
 		time.Date(2020, time.November, 01, 00, 00, 00, 00, time.UTC),
@@ -50,11 +52,10 @@ func CreateNewCSV() {
 	}
 
 	f, err := os.Create("./orders.csv")
-	defer f.Close()
-
 	if err != nil {
 		log.Fatalln("failed to create file", err)
 	}
+	defer f.Close()
 
 	w := csv.NewWriter(f)
 	w.WriteAll(orders) // calls Flush internally
