@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Document defines the information a document holds
 type Document struct {
 	gorm.Model
 	ID                     uint32 `gorm:"not null;type:bigint;autoIncrement"`
@@ -14,6 +15,7 @@ type Document struct {
 	RemoteStorageReference string `gorm:"size:255"`
 }
 
+// CreateDocument will create a document in the database with the passed in values
 func CreateDocument(
 	db *gorm.DB,
 	orderId uint32,
@@ -31,11 +33,13 @@ func CreateDocument(
 	})
 }
 
+// SelectDocumentByID will select a document by their ID
 func (d *Document) SelectDocumentByID(db *gorm.DB, id int) *gorm.DB {
 	var document Document
 	return db.First(&document, id)
 }
 
+// TableName refers to the table name used in the database
 func (d *Document) TableName() string {
 	return "document"
 }
