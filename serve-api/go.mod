@@ -8,6 +8,7 @@ require (
 	github.com/go-testfixtures/testfixtures/v3 v3.6.1
 	github.com/gorilla/mux v1.8.0
 	github.com/lib/pq v1.10.4
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.7.0
 	gorm.io/driver/postgres v1.2.2
 	gorm.io/gorm v1.22.2
