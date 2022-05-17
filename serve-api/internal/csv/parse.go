@@ -2,6 +2,7 @@ package csv
 
 import (
 	"encoding/csv"
+	"errors"
 	"os"
 	"strconv"
 	"time"
@@ -17,36 +18,39 @@ type Case struct {
 	OrderNo    int
 }
 
-func Parse(filePath string) (*Case, error) {
+func Parse(filePath string) ([]*Case, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("failed to open file")
 	}
 	defer file.Close()
 
-	csvReader := csv.NewReader(file)
-
-	record, err := csvReader.Read()
+	records, err := csv.NewReader(file).ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("failed to read csv")
 	}
 
-	record, err = csvReader.Read()
-	if err != nil {
-		return nil, err
+	var importedCases []*Case
+
+	for i, record := range records {
+		if i == 0 {
+			continue
+		}
+
+		singleCase := Case{
+			CaseNumber: record[0],
+			Forename:   record[1],
+			Surname:    record[2],
+			OrderType:  parseStringAsInt(record[3]),
+			MadeDate:   parseStringAsDate(record[4]),
+			IssueDate:  parseStringAsDate(record[5]),
+			OrderNo:    parseStringAsInt(record[6]),
+		}
+
+		importedCases = append(importedCases, &singleCase)
 	}
 
-	importedCase := Case{
-		CaseNumber: record[0],
-		Forename:   record[1],
-		Surname:    record[2],
-		OrderType:  parseStringAsInt(record[3]),
-		MadeDate:   parseStringAsDate(record[4]),
-		IssueDate:  parseStringAsDate(record[5]),
-		OrderNo:    parseStringAsInt(record[6]),
-	}
-
-	return &importedCase, nil
+	return importedCases, nil
 }
 
 func parseStringAsInt(str string) int {
@@ -58,7 +62,7 @@ func parseStringAsInt(str string) int {
 }
 
 func parseStringAsDate(str string) time.Time {
-	stringLayout := "01-Jan-2022"
+	stringLayout := "2-Jan-2006"
 	date, err := time.Parse(stringLayout, str)
 
 	if err != nil {
