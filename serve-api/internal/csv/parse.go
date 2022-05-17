@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Case respresents a single case
 type Case struct {
 	CaseNumber string
 	Forename   string
@@ -18,6 +19,9 @@ type Case struct {
 	OrderNo    int
 }
 
+// Prase will prase an CSV file located in the filePath that is passed.
+// This will then return a list of Cases. If there is an error, then we return an empty list
+// of cases with an error
 func Parse(filePath string) ([]Case, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
