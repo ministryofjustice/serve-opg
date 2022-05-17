@@ -1,4 +1,4 @@
-package parsingcsv
+package csv
 
 import (
 	"encoding/csv"
