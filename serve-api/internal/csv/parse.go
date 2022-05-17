@@ -18,19 +18,19 @@ type Case struct {
 	OrderNo    int
 }
 
-func Parse(filePath string) ([]*Case, error) {
+func Parse(filePath string) ([]Case, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, errors.New("failed to open file")
+		return []Case{}, errors.New("failed to open file")
 	}
 	defer file.Close()
 
 	records, err := csv.NewReader(file).ReadAll()
 	if err != nil {
-		return nil, errors.New("failed to read csv")
+		return []Case{}, errors.New("failed to read csv")
 	}
 
-	var importedCases []*Case
+	var importedCases []Case
 
 	for i, record := range records {
 		if i == 0 {
@@ -47,7 +47,7 @@ func Parse(filePath string) ([]*Case, error) {
 			OrderNo:    parseStringAsInt(record[6]),
 		}
 
-		importedCases = append(importedCases, &singleCase)
+		importedCases = append(importedCases, singleCase)
 	}
 
 	return importedCases, nil
