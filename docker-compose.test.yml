@@ -5,7 +5,7 @@ services:
   app:
     build:
       args:
-        WITH_XDEBUG: 'false'
+        WITH_XDEBUG: 0
     environment:
       APP_ENV: 'test'
       DC_S3_ENDPOINT: 'http://localstack:4566'
