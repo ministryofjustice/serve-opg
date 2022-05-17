@@ -9,9 +9,12 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/ministryofjustice/serve-opg/serve-api/internal/csv"
 )
 
 func main() {
+	csv.CreateNewCSV()
+
 	//logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
