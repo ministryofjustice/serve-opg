@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Connect will create a connection to the database
+// and return the gorm.DB connection
 func Connect() *gorm.DB {
 	db_host := os.Getenv("POSTGRES_HOST")
 	db_user := os.Getenv("POSTGRES_USER")
@@ -26,6 +28,7 @@ func Connect() *gorm.DB {
 	return db
 }
 
+// Migrate will create the tables in the database
 func Migrate(db *gorm.DB, entity entity.Entity) {
 	db.AutoMigrate(&entity)
 }

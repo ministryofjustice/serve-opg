@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Deputy defines the information a deputy holds
 type Deputy struct {
 	gorm.Model
 	ID                   int     `gorm:"not null;type:bigint;autoIncrement"`
@@ -26,6 +27,7 @@ type Deputy struct {
 	AddressPostcode      string `gorm:"size:255;"`
 }
 
+// CreateDeputy will create a deputy in the database with the passed in values
 func CreateDeputy(
 	db *gorm.DB,
 	deputyType string,
@@ -61,10 +63,12 @@ func CreateDeputy(
 	})
 }
 
+// SelectDeputyByID will select a deputy by their ID
 func (d *Deputy) SelectDeputyByID(db *gorm.DB, id int) *gorm.DB {
 	return db.First(d, id)
 }
 
+// TableName refers to the table name used in the database
 func (d *Deputy) TableName() string {
 	return "deputy"
 }

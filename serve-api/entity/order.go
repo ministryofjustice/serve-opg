@@ -12,7 +12,7 @@ const (
 	OrderTypeBOTH string = "BOTH"
 )
 
-// Client, Deputies, Documents need including
+// Order defines the information a order holds
 type Order struct {
 	gorm.Model
 	ID                      int `gorm:"not null;type:bigint;autoIncrement"`
@@ -34,6 +34,7 @@ type Order struct {
 	ApiResponse   string
 }
 
+// CreateOrder will create a order in the database with the passed in values
 func CreateOrder(
 	db *gorm.DB,
 	subType string,
@@ -63,14 +64,17 @@ func CreateOrder(
 	})
 }
 
+// SelectOrderByID will select a order by their ID
 func (o *Order) SelectOrderByID(db *gorm.DB, id int) *gorm.DB {
 	return db.First(o, id)
 }
 
+// GetType will return the order type
 func (o *Order) GetType() string {
 	return o.Type
 }
 
+// TableName refers to the table name used in the database
 func (o *Order) TableName() string {
 	return "dc_order"
 }
