@@ -13,7 +13,7 @@ build-up-test: build-deps up-test ## Build dependencies and spin up the project 
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 
 up-prod: ## Brings the app up in prod mode - requires deps to be built
-	docker-compose build app
+	WITH_XDEBUG=0 docker-compose build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
@@ -23,7 +23,7 @@ up-prod: ## Brings the app up in prod mode - requires deps to be built
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
-	docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml build app
+	WITH_XDEBUG=1 docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
@@ -33,7 +33,7 @@ up-dev: ## Brings the app up in dev mode with profiler and xdebug enabled - requ
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 up-test: ## Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml build app
+	WITH_XDEBUG=0 docker-compose -f docker-compose.test.yml -f docker-compose.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
