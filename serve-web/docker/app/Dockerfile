@@ -4,7 +4,7 @@ ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
 RUN apk add --no-cache ${PHPIZE_DEPS}
 
-ARG WITH_XDEBUG=1
+ARG WITH_XDEBUG=0
 RUN if [[ $WITH_XDEBUG = 1 ]] ; then \
     pecl install xdebug-3.1.4  ;\
     docker-php-ext-enable xdebug ; \
