@@ -3,25 +3,22 @@
 namespace App\Controller;
 
 use App\Form\CsvUploadForm;
-use App\Service\CsvImporterService;
+use App\Service\SpreadsheetImporterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CsvController extends AbstractController
 {
-    /**
-     * @var CsvImporterService
-     */
-    private $csvImporterService;
+    private SpreadsheetImporterService $spreadsheetImporterService;
 
     /**
      * CsvController constructor.
-     * @param CsvImporterService $csvImporterService
+     * @param SpreadsheetImporterService $spreadsheetImporterService
      */
-    public function __construct(CsvImporterService $csvImporterService)
+    public function __construct(SpreadsheetImporterService $spreadsheetImporterService)
     {
-        $this->csvImporterService = $csvImporterService;
+        $this->spreadsheetImporterService = $spreadsheetImporterService;
     }
 
     /**
@@ -33,8 +30,8 @@ class CsvController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $fileName = $form->get('file')->getData();
-            $added = $this->csvImporterService->importFile($fileName);
+            $file = $request->files->get('csv_upload_form')['file'];
+            $added = $this->spreadsheetImporterService->importFile($file);
             $request->getSession()->getFlashBag()->add('notification', "Processed $added orders");
 
             return $this->redirectToRoute('case-list');
