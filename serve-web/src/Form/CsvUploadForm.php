@@ -14,7 +14,7 @@ class CsvUploadForm extends AbstractType
     {
         $builder
             ->add('file', FileType::class)
-            ->add('submit', SubmitType::class, ['label' => 'Upload CSV']);
+            ->add('submit', SubmitType::class, ['label' => 'Upload CSV or XLSX']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
