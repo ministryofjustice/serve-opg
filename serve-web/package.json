@@ -27,7 +27,7 @@
     "build": "encore production --progress",
     "dev-server": "encore dev-server",
     "build-dev": "encore dev",
-    "jest": "jest assets/js/__tests__",
+    "jest": "jest assets/js/__tests__ --verbose",
     "watch": "encore dev --watch",
     "clear-jest-cache": "jest --clearCache"
   },
@@ -44,6 +44,8 @@
     ]
   },
   "jest": {
+    "clearMocks": true,
+    "coverageDirectory": "coverage",
     "moduleFileExtensions": [
       "js"
     ],
@@ -52,6 +54,7 @@
       "src"
     ],
     "restoreMocks": true,
+    "testEnvironment": "jsdom",
     "testRegex": "\\.test\\.js$",
     "transform": {
       "^.+\\.js$": "babel-jest"
