@@ -54,7 +54,7 @@ class CsvImporterService
             'Case',
             'Forename',
             'Surname',
-            'Order Type',
+            'Ord Type',
             'Made Date',
             'Issue Date',
             'Order No'
@@ -87,7 +87,7 @@ class CsvImporterService
 
         $case = strtoupper($row['Case']);
         $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
-        $orderType = $row['Order Type'] == 2 ? OrderHw::class : OrderPf::class;
+        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);

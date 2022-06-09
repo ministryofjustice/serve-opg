@@ -181,7 +181,18 @@ class FeatureContext extends MinkContext implements Context
                 $columnValues[] = trim($foundColumnValue->getText());
             }
 
-            assert(in_array($expectedTableValue, $columnValues), "'$expectedTableValue' was not found under the column '$expectedTableHeader'");
+            $valueUnderExpectedHeader = in_array($expectedTableValue, $columnValues);
+
+            if (!$valueUnderExpectedHeader) {
+                throw new Exception(
+                    sprintf(
+                        '"%s" was not found under the column "%s". Found values %s',
+                        $expectedTableValue,
+                        $expectedTableHeader,
+                        implode(', ', $columnValues)
+                    )
+                );
+            }
         }
     }
 

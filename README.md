@@ -16,11 +16,11 @@ Software to download and install
 Launch the following commands from the project directory
 ```bash
 # Generate self-signed certificate for the local loadbalancer
-./generate_certs.sh
+./serve-web/generate_certs.sh
 
 # Add certificate to your local trust store to avoid browser warnings
 sudo security add-trusted-cert -d -r trustRoot \
--k /Library/Keychains/System.keychain certs/web.crt
+-k /Library/Keychains/System.keychain serve-web/certs/web.crt
 ```
 
 Then run either `make build-up-prod` or `make build-up-dev` to build and bring the app up in prod or dev mode. See the Makefile section below for further details on the make commands available.

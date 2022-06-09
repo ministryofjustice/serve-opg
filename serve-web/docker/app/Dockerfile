@@ -1,4 +1,20 @@
-FROM php:7.4.28-fpm-alpine
+FROM php:7.4.29-fpm-alpine
+
+ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
+
+RUN apk add --no-cache ${PHPIZE_DEPS}
+
+ARG WITH_XDEBUG=0
+RUN if [[ $WITH_XDEBUG = 1 ]] ; then \
+    pecl install xdebug-3.1.4  ;\
+    docker-php-ext-enable xdebug ; \
+    echo "xdebug.mode = develop,debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
+    echo "xdebug.discover_client_host = true" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
+    echo "xdebug.client_host = host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
+    echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
+    echo "xdebug.log = /tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
+    echo "xdebug.idekey = PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
+    fi ;
 
 # Install postgresql drivers
 RUN apk add --no-cache postgresql-dev \
@@ -11,7 +27,7 @@ RUN apk add --no-cache \
 && docker-php-ext-install zip
 
 #force upgrade packages
-RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib busybox
+RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib busybox curl gzip xz xz-libs libcurl
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"
@@ -37,14 +53,7 @@ RUN mkdir -p tmp/screenshots
 COPY . /var/www
 
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
-COPY docker/app/xdebug.sh xdebug.sh
 COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
-RUN chmod 777 xdebug.sh
-
-ARG WITH_XDEBUG
-ENV WITH_XDEBUG=${WITH_XDEBUG:-false}
-
-RUN ./xdebug.sh
 
 ENV TIMEOUT=20
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
