@@ -5,7 +5,7 @@ namespace tests\Common;
 use App\Common\BruteForceChecker;
 use PHPUnit\Framework\TestCase;
 
-class BruteForceCheckerTest extends TestCase
+class AttemptsStorageTest extends TestCase
 {
     private $sut;
 
