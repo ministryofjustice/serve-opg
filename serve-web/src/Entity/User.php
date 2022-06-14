@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
  * @ORM\Table(name="dc_user")
  * @ORM\HasLifecycleCallbacks
  */
-class User implements UserInterface, EquatableInterface, Serializable
+class User implements UserInterface, EquatableInterface
 {
     /**
      * @var string
@@ -327,23 +327,20 @@ class User implements UserInterface, EquatableInterface, Serializable
         $this->setCreatedAt(new DateTime());
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize([
-            $this->id,
-            $this->email,
-            $this->password,
-        ]);
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'password' => $this->password,
+        ];
     }
 
     /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
+    public function __unserialize(array $data): void
     {
-        [
-            $this->id,
-            $this->email,
-            $this->password,
-        ] = unserialize($serialized, ['allowed_classes' => false]);
+        $this->id = $data['id'];
+        $this->email = $data['email'];
+        $this->password = $data['password'];
     }
 }
