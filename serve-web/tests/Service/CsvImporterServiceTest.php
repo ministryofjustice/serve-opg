@@ -12,18 +12,21 @@ use App\Service\CsvImporterService;
 use App\Service\OrderService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 
 class CsvImporterServiceTest extends TestCase
 {
+    use ProphecyTrait;
+    
     /** @test */
     public function importFile()
     {
         $csvFilePath = __DIR__ . '/../TestData/cases.csv';
 
-        $clientService = self::prophesize(ClientService::class);
-        $orderService = self::prophesize(OrderService::class);
-        $em = self::prophesize(EntityManagerInterface::class);
+        $clientService = $this->prophesize(ClientService::class);
+        $orderService = $this->prophesize(OrderService::class);
+        $em = $this->prophesize(EntityManagerInterface::class);
 
         $row1Client = new Client(
             '93559316',

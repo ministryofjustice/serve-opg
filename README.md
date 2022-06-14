@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master)
 
-Symfony 4.4 & PHP 7.4
+Symfony 4.4 & PHP 8.0
 
 # Prerequisites
 Software to download and install
