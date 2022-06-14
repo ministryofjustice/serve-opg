@@ -17,7 +17,7 @@
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.1",
-        "doctrine/doctrine-migrations-bundle": "2.1.2",
+        "doctrine/doctrine-migrations-bundle": "2.2.3",
         "doctrine/inflector": "^2.0.0",
         "doctrine/orm": "^2.9.0",
         "friends-of-behat/symfony-extension": "^2.0",
