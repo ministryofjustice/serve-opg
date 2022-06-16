@@ -81,7 +81,10 @@ class OrderRepository extends EntityRepository
             ->setParameter('cn', strtoupper(trim($filters['q'])));
         }
 
-        if ($filters['startDate'] && $filters['endDate']) {
+        if (
+            array_key_exists('startDate', $filters) &&
+            array_key_exists('endDate', $filters)
+        ) {
             $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
                 ->setParameter('start', $filters['startDate'])
                 ->setParameter('end', $filters['endDate']);
