@@ -60,7 +60,7 @@ class OrderTestHelper
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');
 
             if ($setAsServed) {
-                $order->setServedAt(new DateTime($dateString));
+                $order->setServedAt((new DateTime())->setTime(0,0,0));
             }
 
             $orders[] = $order;

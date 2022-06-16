@@ -113,4 +113,36 @@ CSV;
 
         self::assertEquals(10000, $csvRows);
     }
+
+    public function testCsvOnlyReturnsCasesServedWithin4Weeks()
+    {
+        $em = self::getEntityManager();
+
+        $notServedOrders = OrderTestHelper::generateOrders(10, false);
+
+        $batchSize = 500;
+
+        $notServedOrders[0]->setServedAt((new DateTime())->modify('-2 weeks'));
+        $notServedOrders[1]->setServedAt((new DateTime())->modify('-3 weeks'));
+        $notServedOrders[2]->setServedAt((new DateTime())->modify('-4 weeks'));
+
+        foreach ($notServedOrders as $i => $order) {
+            $em->persist($order);
+
+            if (($i % $batchSize) === 0) {
+                $em->flush();
+                $em->clear(); // Detaches all objects from Doctrine!
+            }
+        }
+
+        $em->flush();
+        $em->clear();
+
+        $sut = new ReportService($em);
+        $csv = $sut->generateCsv();
+
+        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
+
+        self::assertEquals(3, $csvRows);
+    }
 }
