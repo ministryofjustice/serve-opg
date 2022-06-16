@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Entity\Order;
 use App\Repository\OrderRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -32,16 +33,21 @@ class ReportService
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
-    public function generateCsv()
+    /**
+     * Generates a CSV file of served orders for the past 4 weeks
+     * @return File
+     */
+    public function generateCsv(): File
     {
         $orders = $this->getOrders();
 
-        $headers = ['DateIssued','DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
+        $headers = ['DateIssued','DateMade', 'DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
         $ordersCsv = [];
 
         foreach ($orders as $order) {
             $ordersCsv[] = [
                 "DateIssued" => $order->getIssuedAt()->format('Y-m-d'),
+                "DateMade" => $order->getMadeAt()->format('Y-m-d'),
                 "DateServed" => $order->getServedAt()->format('Y-m-d'),
                 "CaseNumber" => $order->getClient()->getCaseNumber(),
                 "AppointmentType" => $order->getAppointmentType(),
@@ -49,7 +55,8 @@ class ReportService
             ];
         }
 
-        $file = fopen("/tmp/orders.csv","w");
+        $today = (new DateTime('now'))->format('Y-m-d');
+        $file = fopen("/tmp/orders-served-$today.csv","w");
 
         fputcsv($file, $headers);
 
@@ -59,18 +66,23 @@ class ReportService
 
         fclose($file);
 
-        return new File('/tmp/orders.csv');
+        return new File("/tmp/orders-served-$today.csv");
     }
 
     /**
-     *  Get orders that have been served into Sirius
+     *  Get orders that have been served into Sirius for the last 4 weeks
      *
-     * @return \App\Entity\Order[]
+     * @return Order[]
      */
     public function getOrders()
     {
+        $today = (new DateTime('now'))->format('Y-m-d');
+        $minus4Weeks = (new DateTime('now'))->modify('-4 weeks')->format('Y-m-d');
+
         $filters = [
-            'type' => 'served'
+            'type' => 'served',
+            'startDate' => $minus4Weeks,
+            'endDate' => $today
         ];
         return $this->orderRepo->getOrders($filters, 10000);
     }

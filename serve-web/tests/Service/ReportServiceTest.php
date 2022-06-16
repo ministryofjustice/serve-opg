@@ -17,10 +17,18 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 class ReportServiceTest extends ApiWebTestCase
 {
-
     public function testGenerateCsv()
     {
         $expectedCaseRef = 'COURTREFERENCE1';
+
+        $today = (new DateTime())->format('Y-m-d');
+        $minus4Weeks = (new DateTime())->modify('-4 weeks')->format('Y-m-d');
+
+        $filters = [
+            'type' => 'served',
+            'startDate' => $minus4Weeks,
+            'endDate' => $today
+        ];
 
         $client = new Client(
             $expectedCaseRef,
@@ -28,15 +36,25 @@ class ReportServiceTest extends ApiWebTestCase
             new DateTime()
         );
 
-        $expectedMadeAt = new DateTime();
+        $expectedMadeAt = (new DateTime('now'))->format('Y-m-d');
         $expectedIssuedAt = '2019-05-23';
         $expectedServedAt = '2019-05-24';
 
-        $orderPf = new OrderPf($client, $expectedMadeAt, new DateTime($expectedIssuedAt), '123');
+        $orderPf = new OrderPf(
+            $client,
+            new DateTime($expectedMadeAt),
+            new DateTime($expectedIssuedAt),
+            '123'
+        );
         $orderPf->setServedAt(new DateTime($expectedServedAt));
         $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
 
-        $orderHw = new OrderHw($client, $expectedMadeAt, new DateTime($expectedIssuedAt), '124');
+        $orderHw = new OrderHw(
+            $client,
+            new DateTime($expectedMadeAt),
+            new DateTime($expectedIssuedAt),
+            '124'
+        );
         $orderHw->setServedAt(new DateTime($expectedServedAt));
         $orderHw->setAppointmentType('SOLE');
 
@@ -44,7 +62,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         /** @var ObjectProphecy|OrderRepository $orderRepo */
         $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrders(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($orders);
+        $orderRepo->getOrders($filters, 10000)->shouldBeCalled()->willReturn($orders);
 
         /** @var ObjectProphecy|EntityManager $em */
         $em = $this->prophesize(EntityManager::class);
@@ -53,9 +71,9 @@ class ReportServiceTest extends ApiWebTestCase
         $sut = new ReportService($em->reveal());
 
         $expectedCsv = <<<CSV
-DateIssued,DateServed,CaseNumber,AppointmentType,OrderType
-$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
-$expectedIssuedAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
+DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
+$expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
+$expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
 
 CSV;
 
