@@ -80,6 +80,15 @@ class OrderRepository extends EntityRepository
             $qb->andWhere('UPPER(c.caseNumber) LIKE :cn')
             ->setParameter('cn', strtoupper(trim($filters['q'])));
         }
+
+        if (
+            array_key_exists('startDate', $filters) &&
+            array_key_exists('endDate', $filters)
+        ) {
+            $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
+                ->setParameter('start', $filters['startDate'])
+                ->setParameter('end', $filters['endDate']);
+        }
     }
 
     public function getOrdersBeforeGoLive() {
