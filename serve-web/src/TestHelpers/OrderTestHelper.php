@@ -60,7 +60,7 @@ class OrderTestHelper
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');
 
             if ($setAsServed) {
-                $order->setServedAt((new DateTime())->setTime(0,0,0));
+                $order->setServedAt((new DateTime())->modify('-1 week')->setTime(0,0,0));
             }
 
             $orders[] = $order;
@@ -70,9 +70,9 @@ class OrderTestHelper
     }
 
     /**
-     * @param array $orders, array or Order objects
+     * @param array<Order> $orders array or Order objects
      * @param string $datePropertyName , issuedAt|servedAt
-     * @return array []Order
+     * @return array<Order>
      * @throws Exception
      */
     protected static function sortOrdersByDateAscending(array $orders, string $datePropertyName): array
@@ -80,12 +80,12 @@ class OrderTestHelper
         switch ($datePropertyName) {
             case 'issuedAt':
                 usort($orders, function ($a, $b) {
-                    strtotime($a->getIssuedAt()->format('Y-m-d')) - strtotime($b->getIssuedAt()->format('Y-m-d'));
+                    return strtotime($a->getIssuedAt()->format('Y-m-d')) - strtotime($b->getIssuedAt()->format('Y-m-d'));
                 });
                 return $orders;
             case 'servedAt':
                 usort($orders, function ($a, $b) {
-                    strtotime($a->getServedAt()->format('Y-m-d')) - strtotime($b->getServedAt()->format('Y-m-d'));
+                    return strtotime($a->getServedAt()->format('Y-m-d')) - strtotime($b->getServedAt()->format('Y-m-d'));
                 });
                 return $orders;
             default:
@@ -94,8 +94,9 @@ class OrderTestHelper
     }
 
     /**
-     * @param []Order $orders
+     * @param array<Order> $orders
      * @return Order
+     * @throws Exception
      */
     public static function getOldestOrderByIssuedAt(array $orders): Order
     {
@@ -104,8 +105,9 @@ class OrderTestHelper
     }
 
     /**
-     * @param []Order $orders
+     * @param array<Order> $orders
      * @return Order
+     * @throws Exception
      */
     public static function getMostRecentOrderByIssuedAt(array $orders): Order
     {
@@ -114,8 +116,9 @@ class OrderTestHelper
     }
 
     /**
-     * @param []Order $orders
+     * @param array<Order> $orders
      * @return Order
+     * @throws Exception
      */
     public static function getOldestOrderByServedAt(array $orders): Order
     {
@@ -124,8 +127,9 @@ class OrderTestHelper
     }
 
     /**
-     * @param []Order $orders
+     * @param array<Order> $orders
      * @return Order
+     * @throws Exception
      */
     public static function getMostRecentOrderByServedAt(array $orders): Order
     {

@@ -41,6 +41,8 @@ class CaseControllerTest extends ApiWebTestCase
     {
         $em = $this->getEntityManager();
         $orders = OrderTestHelper::generateOrders(51, true);
+        $orders[0]->setServedAt((new \DateTime())->modify('-1 day'));
+        $orders[1]->setServedAt((new \DateTime())->modify('-4 weeks'));
         $oldestOrder = OrderTestHelper::getOldestOrderByServedAt($orders);
         $mostRecentOrder = OrderTestHelper::getMostRecentOrderByServedAt($orders);
 
@@ -58,7 +60,7 @@ class CaseControllerTest extends ApiWebTestCase
         $rows = $tableBody->filter('tr');
 
         self::assertEquals(50, $rows->count());
-        self::assertStringContainsString($mostRecentOrder->getIssuedAt()->format('j M Y'), $tableBody->html());
-        self::assertStringNotContainsString($oldestOrder->getIssuedAt()->format('j M Y') ,$tableBody->html());
+        self::assertStringContainsString($mostRecentOrder->getServedAt()->format('j M Y'), $tableBody->html());
+        self::assertStringNotContainsString($oldestOrder->getServedAt()->format('j M Y') ,$tableBody->html());
     }
 }
