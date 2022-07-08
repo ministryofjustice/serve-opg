@@ -14,4 +14,4 @@ services:
       dockerfile: docker/Dockerfile.dev
     volumes:
       - ./serve-api:/api
-    tty: true
+    command: air
