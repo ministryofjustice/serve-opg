@@ -24,6 +24,10 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
+	sm.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello you!"))
+	})
+
 	// setting up the http server
 	s := &http.Server{
 		Addr:         ":9000",

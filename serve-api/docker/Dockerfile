@@ -1,6 +1,6 @@
 FROM golang:1.18 as build-env
 
-WORKDIR /app
+WORKDIR /api
 
 COPY go.mod .
 COPY go.sum .

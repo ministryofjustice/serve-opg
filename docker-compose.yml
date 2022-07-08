@@ -1,6 +1,3 @@
----
-version: "3"
-
 services:
   aws:
     image: infrastructureascode/aws-cli
@@ -55,9 +52,6 @@ services:
       - ./serve-web/public:/var/www/public
 
   app:
-    build:
-      context: ./serve-web
-      dockerfile: docker/app/Dockerfile
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
     env_file:
       - .env
