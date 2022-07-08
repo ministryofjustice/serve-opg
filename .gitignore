@@ -49,3 +49,6 @@ yarn-error.log
 /behat.yml
 ###< friends-of-behat/symfony-extension ###
 .vscode/
+
+###> serve-api
+serve-api/tmp
