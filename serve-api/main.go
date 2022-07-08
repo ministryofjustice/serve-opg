@@ -13,10 +13,10 @@ import (
 )
 
 func main() {
-	//logger
+	// logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
-	//creating the serve mux
+	// creating the serve mux
 	sm := mux.NewRouter().PathPrefix("/serve-api").Subrouter()
 
 	sm.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
@@ -25,10 +25,10 @@ func main() {
 	})
 
 	sm.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello world!"))
+		w.Write([]byte("Hello you!"))
 	})
 
-	//setting up the http server
+	// setting up the http server
 	s := &http.Server{
 		Addr:         ":9000",
 		Handler:      sm,
