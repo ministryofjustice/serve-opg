@@ -12,11 +12,6 @@ defaults:
 
 jobs:
   build_and_push_containers:
-    permissions:
-      actions: write
-      contents: write
-
-    name: Build and Push Containers
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
