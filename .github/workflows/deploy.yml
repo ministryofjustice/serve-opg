@@ -6,15 +6,17 @@ on:
         description: 'The terraform workspace to target for environment actions'
         required: true
         type: string
-      url:
+      verify_url:
         description: 'The url to verify the deployment'
+        required: true
+        type: string
     outputs:
       terraform_workspace_name:
         description: "Name of Terraform workspace"
         value: ${{ jobs.terraform_environment_workflow.outputs.terraform_workspace_name }}     
 
 jobs:
-  terraform_workflow:
+  terraform_workflow_job:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

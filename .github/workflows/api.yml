@@ -1,0 +1,52 @@
+on:
+  workflow_call:
+
+jobs:
+  api_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./serve-api
+    env:
+      TEST_RESULTS: /tmp/test_results
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: serve-opg
+          POSTGRES_USER: serve-opg
+          POSTGRES_PASSWORD: dcdb2018!
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - uses: actions/setup-python@v2
+      - name: setup go-testsum
+        uses: autero1/action-gotestsum@v1.0.0
+        with:
+          gotestsum_version: 1.6.4
+      - name: resolve go cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+      - name: resolve go dependencies
+        run: go mod download
+      - name: Create test result directory
+        run: mkdir -p ${{ env.TEST_RESULTS }}
+      - name: run unit tests
+        run: gotestsum --junitfile unit-tests.xml
