@@ -195,7 +195,4 @@ jobs:
             docker push $ECR_REGISTRY/serve-opg/web:${{ steps.bump_version.outputs.tag }}
             docker push $ECR_REGISTRY/serve-opg/api:${{ steps.bump_version.outputs.tag }}
           fi
-
-      - name: Trigger infra deploy
-        run: |
-          curl --request POST --show-error --fail -H "Circle-Token: ${{ secrets.CIRCLE_API_KEY }}" --url "https://circleci.com/api/v2/project/gh/ministryofjustice/serve-opg-infrastructure/pipeline" --data '{"branch":"master"}'
+          
