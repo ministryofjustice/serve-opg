@@ -6,8 +6,8 @@ on:
         description: 'The terraform workspace to target for environment actions'
         required: true
         type: string
-      verify_url:
-        description: 'The url to verify the deployment'
+      version_tag:
+        description: 'Container version to deploy'
         required: true
         type: string
     outputs:
@@ -62,8 +62,9 @@ jobs:
       - name: Terraform Plan
         env:
           TF_WORKSPACE: ${{ inputs.workspace_name }}
-          # TODO: add other container versions
-          TF_VAR_version: ${{ inputs.web_version }}
+          TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_WEB_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_INFRA_VERSION: ${{ inputs.version_tag }}
         run: |
           terraform workspace show 
           terraform plan -input=false -parallelism=30
@@ -72,8 +73,9 @@ jobs:
       - name: Terraform Apply
         env:
           TF_WORKSPACE: ${{ inputs.workspace_name }}
-          # TODO: add other container versions
-          TF_VAR_version: ${{ inputs.web_version }}
+          TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_WEB_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_INFRA_VERSION: ${{ inputs.version_tag }}
         run: |
           terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
         working-directory: ./terraform

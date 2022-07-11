@@ -11,7 +11,7 @@ defaults:
     shell: bash
 
 jobs:
-  build-and-push:
+  build_and_push_containers:
     permissions:
       actions: write
       contents: write
