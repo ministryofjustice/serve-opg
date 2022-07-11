@@ -1,7 +1,7 @@
-name: "Pull Request Workflow"
+name: "Path to Live"
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
@@ -25,7 +25,7 @@ jobs:
   test_api:
     name: Test API
     uses: ./.github/workflows/api.yml
-  
+    
   test_web:
     name: Test Web App
     uses: ./.github/workflows/web.yml
@@ -33,7 +33,7 @@ jobs:
   create_tags:
     name: Create Version Tags
     uses: ./.github/workflows/tags.yml
-  
+    
   build_and_push_containers:
     name: Docker Build and Push
     uses: ./.github/workflows/containers.yml
@@ -42,15 +42,25 @@ jobs:
       tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
 
-  # TODO: run behat against dev
-
-  deploy_to_dev:
-    name: Deploy to Development
+  deploy_to_preprod:
+    name: Deploy to Preproduction
     needs: [build_and_push_containers,create_tags]
     uses: ./.github/workflows/deploy.yml
     with:
-      workspace_name: development
+      workspace_name: preproduction
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
 
-  # TODO: add outputs?
+  # TODO: Behat preprod
+
+  deploy_to_prod:
+    name: Deploy to Production
+    needs: [build_and_push_containers,create_tags, deploy_to_preprod]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      workspace_name: production
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+    secrets: inherit
+  
+  # TODO: Behat prod
+
