@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       workspace_name:
-        description: 'The terraform workspace to target for environment actions'
+        description: 'The terraform workspace to target'
         required: true
         type: string
       version_tag:
