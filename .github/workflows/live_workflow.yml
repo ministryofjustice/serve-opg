@@ -51,16 +51,34 @@ jobs:
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
 
-  # TODO: Behat preprod
+  behat_preprod:
+    name: Preproduction Behat
+    uses: ./.github/workflows/behat.yml
+    needs: [build_and_push_containers,create_tags,deploy_to_preprod]
+    with:
+      workspace_name: preproduction
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+      base_url: preproduction.serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-preprod
+      suite: --suite=main
 
   deploy_to_prod:
     name: Deploy to Production
-    needs: [build_and_push_containers,create_tags, deploy_to_preprod]
+    needs: [build_and_push_containers,create_tags,behat_preprod]
     uses: ./.github/workflows/deploy.yml
     with:
       workspace_name: production
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
   
-  # TODO: Behat prod
+  behat_prod:
+    name: Production Behat
+    uses: ./.github/workflows/behat.yml
+    needs: [build_and_push_containers,create_tags,deploy_to_prod]
+    with:
+      workspace_name: production
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+      base_url: serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-production
+      suite: --suite=main
 
