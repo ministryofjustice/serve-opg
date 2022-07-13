@@ -13,6 +13,10 @@ on:
         description: 'Base url to run Behat against'
         required: true
         type: string
+      sirius_api_bucket:
+        description: 'Sirius API bucket to use'
+        required: true
+        type: string
       suite:
         description: 'Test suite to run'
         required: true
@@ -67,6 +71,7 @@ on:
         - name: Run Behat
           env:
             BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://$BEHAT_URL"}}}'
+            SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
           run: |
             vendor/bin/behat --stop-on-failure -c behat.yml.dist << parameters.suite >>
           working-directory: ./serve-web
