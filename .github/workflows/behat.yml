@@ -30,7 +30,6 @@ jobs:
       APP_VERSION: ${{ inputs.version_tag }}
       WEB_VERSION: ${{ inputs.version_tag }}
       INFRA_VERSION: ${{ inputs.version_tag }}
-      BEHAT_URL: ${{ inputs.base_url}}
     steps:
       - uses: actions/checkout@v2
       - uses: unfor19/install-aws-cli-action@v1
