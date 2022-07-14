@@ -78,3 +78,8 @@ jobs:
         run: |
           terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
         working-directory: ./terraform
+
+      - name: Output Config
+        run: |
+          echo ::set-output name=cluster_config::$(cat cluster_config.json)
+        working-directory: ./terraform
