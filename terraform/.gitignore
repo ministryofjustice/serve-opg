@@ -1,0 +1,10 @@
+# Compiled files
+*.backup
+.terraform
+terraform.tfstate
+terraform.tfstate.d
+Gemfile.lock
+test_results
+versions.tfvars
+.idea
+*.iml
