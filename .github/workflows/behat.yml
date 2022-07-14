@@ -34,6 +34,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: unfor19/install-aws-cli-action@v1
+      - name: Install PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
       - name: Set up Python 3.8.1
         uses: actions/setup-python@v2
         with:
@@ -53,7 +57,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_ACTIONS }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ACTIONS }}
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::705467933182:role/serve-actions-ci
+          role-to-assume: arn:aws:iam::705467933182:role/serve-opg-ci
           role-duration-seconds: 3600
           role-session-name: GitHubActions
       
