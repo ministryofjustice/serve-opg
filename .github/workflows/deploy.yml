@@ -11,9 +11,9 @@ on:
         required: true
         type: string
     outputs:
-      terraform_workspace_name:
-        description: "Name of Terraform workspace"
-        value: ${{ jobs.terraform_environment_workflow.outputs.terraform_workspace_name }}     
+      cluster_config:
+        description: 'JSON string of cluster configuration'
+        value: ${{ jobs.terraform_workflow_job.outputs.cluster_config_json }}    
 
 jobs:
   terraform_workflow_job:

@@ -42,6 +42,15 @@ jobs:
       tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
 
+  deploy_to_dev:
+    name: Deploy to Development
+    needs: [build_and_push_containers,create_tags,behat_dev]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      workspace_name: development
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+    secrets: inherit
+  
   behat_dev:
     name: Development Behat
     uses: ./.github/workflows/behat.yml
@@ -52,14 +61,5 @@ jobs:
       base_url: development.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
-    secrets: inherit
-
-  deploy_to_dev:
-    name: Deploy to Development
-    needs: [build_and_push_containers,create_tags,behat_dev]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      workspace_name: development
-      version_tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
     
