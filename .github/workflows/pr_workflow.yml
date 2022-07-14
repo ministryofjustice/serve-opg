@@ -44,7 +44,7 @@ jobs:
 
   deploy_to_dev:
     name: Deploy to Development
-    needs: [build_and_push_containers,create_tags,behat_dev]
+    needs: [build_and_push_containers,create_tags]
     uses: ./.github/workflows/deploy.yml
     with:
       workspace_name: development
@@ -54,7 +54,7 @@ jobs:
   behat_dev:
     name: Development Behat
     uses: ./.github/workflows/behat.yml
-    needs: [build_and_push_containers,create_tags]
+    needs: [build_and_push_containers,create_tags,deploy_to_dev]
     with:
       workspace_name: development
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
