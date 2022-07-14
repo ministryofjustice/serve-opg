@@ -51,10 +51,18 @@ jobs:
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
     secrets: inherit
   
+  wait_for_tasks:
+    name: Simulate Check Script
+    needs: [build_and_push_containers,create_tags,deploy_to_dev]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          sleep 300s
+  
   behat_dev:
     name: Development Behat
     uses: ./.github/workflows/behat.yml
-    needs: [build_and_push_containers,create_tags,deploy_to_dev]
+    needs: [build_and_push_containers,create_tags,deploy_to_dev,wait_for_tasks]
     with:
       workspace_name: development
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
