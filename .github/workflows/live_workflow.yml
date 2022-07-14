@@ -61,6 +61,7 @@ jobs:
       base_url: preproduction.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-preprod
       suite: --suite=main
+    secrets: inherit
 
   deploy_to_prod:
     name: Deploy to Production
@@ -81,4 +82,5 @@ jobs:
       base_url: serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-production
       suite: --suite=main
+    secrets: inherit
 
