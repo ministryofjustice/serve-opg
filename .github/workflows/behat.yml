@@ -1,0 +1,110 @@
+on:
+  workflow_call:
+    inputs:
+      workspace_name:
+        description: 'The terraform workspace to target'
+        required: true
+        type: string
+      version_tag:
+        description: 'Version tag for docker images'
+        required: true
+        type: string
+      base_url:
+        description: 'Base url to run Behat against'
+        required: true
+        type: string
+      sirius_api_bucket:
+        description: 'Sirius API bucket to use'
+        required: true
+        type: string
+      suite:
+        description: 'Test suite to run'
+        required: true
+        type: string
+      cluster_config:
+        description: 'JSON string of cluster config'
+        required: true
+        type: string
+
+jobs:
+  run_behat_tests:
+    runs-on: ubuntu-latest
+    env:
+      TF_WORKSPACE: ${{ inputs.workspace_name }}
+      TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+      TF_VAR_WEB_VERSION: ${{ inputs.version_tag }}
+      TF_VAR_INFRA_VERSION: ${{ inputs.version_tag }}
+      BEHAT_URL: ${{ inputs.base_url}}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: unfor19/install-aws-cli-action@v1
+      - name: Install PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Set up Python 3.8.1
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install Python packages
+        run: |
+          pip3 install pipenv poetry boto3
+      - name: Composer Install
+        run: |
+          composer install --no-interaction
+        working-directory: ./serve-web
+
+      - name: Create Failure Folder
+        run: |
+          mkdir -p /tmp/behat
+      
+      - name: Save Cluster Config File
+        run: |
+          echo ${{ inputs.cluster_config }} > cluster_config.json
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::705467933182:role/serve-opg-ci
+          role-duration-seconds: 3600
+          role-session-name: GitHubActions
+      
+      - name: Get Behat password
+        run: |
+          echo 'BEHAT_PASSWORD='$(aws secretsmanager get-secret-value \
+          --secret-id behat_password \
+          --region eu-west-1 | jq -r '.SecretString' 2>/dev/null) >> $GITHUB_ENV
+      
+      - name: Hide Password
+        run: |
+           echo "::add-mask::$BEHAT_PASSWORD"
+      
+      - name: Allow CI ingress
+        run: |
+          echo $TF_WORKSPACE
+          python scripts/ci_ingress.py cluster_config.json --add
+
+      - name: Run Behat
+        env:
+          BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://$BEHAT_URL"}}}'
+          SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
+        run: |
+          vendor/bin/behat --stop-on-failure -c behat.yml.dist << parameters.suite >>
+        working-directory: ./serve-web
+      
+      - name: Archive Test Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: Behat Outputs
+          path: /tmp/behat
+
+      - name: Remove CI ingress
+        run: |
+          echo $TF_WORKSPACE
+          python scripts/ci_ingress.py terraform/cluster_config.json
+
+
+        
