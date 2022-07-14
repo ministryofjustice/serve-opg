@@ -30,14 +30,13 @@ jobs:
       APP_VERSION: ${{ inputs.version_tag }}
       WEB_VERSION: ${{ inputs.version_tag }}
       INFRA_VERSION: ${{ inputs.version_tag }}
-      BEHAT_URL: ${{ inputs.base_url}}
     steps:
       - uses: actions/checkout@v2
       - uses: unfor19/install-aws-cli-action@v1
       - name: Install PHP 7.4
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '7.4.26'
       - name: Set up Python 3.8.1
         uses: actions/setup-python@v2
         with:
@@ -69,9 +68,6 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GitHubActions
       
-      - name: Hide Password
-        run: |
-           echo "::add-mask::$BEHAT_PASSWORD"
       - name: Get Behat password
         run: |
           BEHAT_PASSWORD=$(aws secretsmanager get-secret-value \
