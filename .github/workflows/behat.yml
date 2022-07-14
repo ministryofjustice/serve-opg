@@ -21,10 +21,6 @@ on:
         description: 'Test suite to run'
         required: true
         type: string
-      cluster_config:
-        description: 'JSON string of cluster config'
-        required: false
-        type: string
 
 jobs:
   run_behat_tests:
@@ -57,6 +53,11 @@ jobs:
       - name: Create Failure Folder
         run: |
           mkdir -p /tmp/behat
+      
+      - name: Retrieve Cluster Config File
+        uses: actions/download-artifact@v3
+        with:
+          name: cluster_config
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -68,24 +69,26 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GitHubActions
       
+      - name: Hide Password
+        run: |
+           echo "::add-mask::$BEHAT_PASSWORD"
       - name: Get Behat password
         run: |
           echo 'BEHAT_PASSWORD='$(aws secretsmanager get-secret-value \
           --secret-id behat_password \
           --region eu-west-1 | jq -r '.SecretString' 2>/dev/null) >> $GITHUB_ENV
-          echo "::add-mask::$BEHAT_PASSWORD"
-      
+    
       - name: Allow CI ingress
         run: |
           echo $TF_WORKSPACE
-          python scripts/ci_ingress.py terraform/cluster_config.json --add
+          python scripts/ci_ingress.py cluster_config.json --add
 
       - name: Run Behat
         env:
           BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://$BEHAT_URL"}}}'
           SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
         run: |
-          vendor/bin/behat --stop-on-failure -c behat.yml.dist << parameters.suite >>
+          vendor/bin/behat --stop-on-failure -c behat.yml.dist ${{ inputs.suite }}
         working-directory: ./serve-web
       
       - name: Archive Test Output
@@ -97,7 +100,7 @@ jobs:
       - name: Remove CI ingress
         run: |
           echo $TF_WORKSPACE
-          python scripts/ci_ingress.py terraform/cluster_config.json
+          python scripts/ci_ingress.py cluster_config.json
 
 
         
