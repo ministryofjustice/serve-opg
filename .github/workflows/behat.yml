@@ -34,6 +34,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: unfor19/install-aws-cli-action@v1
+      - name: Install PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
       - name: Set up Python 3.8.1
         uses: actions/setup-python@v2
         with:
