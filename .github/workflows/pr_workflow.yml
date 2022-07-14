@@ -52,6 +52,7 @@ jobs:
       base_url: development.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
+    secrets: inherit
 
   deploy_to_dev:
     name: Deploy to Development
