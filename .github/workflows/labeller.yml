@@ -1,0 +1,20 @@
+repo:
+  - any: ["./*"]
+
+pipeline:
+  - any: [".github/workflows/*"]
+
+api:
+  - any: ["serve-api/**/*"]
+
+web:
+  - any: ["serve-web/**/*"]
+
+documentation:
+  - any: ["docs/**/*"]
+
+infrastructure:
+  - any: ["terraform/**/*"]
+
+scripts:
+  - any: ["scripts/**/*"]
