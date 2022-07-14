@@ -1,0 +1,90 @@
+
+on:
+  workflow_call:
+    inputs:
+      workspace_name:
+        description: 'The terraform workspace to target'
+        required: true
+        type: string
+      version_tag:
+        description: 'Container version to deploy'
+        required: true
+        type: string
+    outputs:
+      cluster_config:
+        description: 'JSON string of cluster configuration'
+        value: ${{ jobs.terraform_workflow_job.outputs.cluster_config_json }}    
+
+jobs:
+  terraform_workflow_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Extract branch name
+        run: |
+          if [ "${{ github.head_ref }}" == "" ]; then
+            echo BRANCH_NAME=main >> $GITHUB_ENV
+          else
+            echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
+          fi
+        id: extract_branch
+      - uses: unfor19/install-aws-cli-action@v1
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.3
+          terraform_wrapper: false
+      - name: Configure AWS Credentials For Terraform
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-duration-seconds: 3600
+          role-session-name: GithubActions
+      - uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
+
+      - name: Lint Terraform
+        id: tf_lint
+        run: terraform fmt -check -recursive
+        working-directory: ./terraform
+        continue-on-error: true
+
+      - name: Terraform Init
+        run: |
+          terraform init -input=false
+        working-directory: ./terraform
+
+      - name: Terraform Plan
+        env:
+          TF_WORKSPACE: ${{ inputs.workspace_name }}
+          TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_WEB_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_INFRA_VERSION: ${{ inputs.version_tag }}
+        run: |
+          terraform workspace show 
+          terraform plan -input=false -parallelism=30
+        working-directory: ./terraform
+      
+      - name: Terraform Apply
+        env:
+          TF_WORKSPACE: ${{ inputs.workspace_name }}
+          TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_WEB_VERSION: ${{ inputs.version_tag }}
+          TF_VAR_INFRA_VERSION: ${{ inputs.version_tag }}
+        run: |
+          terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
+        working-directory: ./terraform
+
+      - name: debug
+        run: |
+          cat cluster_config.json
+        working-directory: ./terraform
+
+      - name: Output Config
+        run: |
+          echo ::set-output name=cluster_config::$(cat cluster_config.json)
+        working-directory: ./terraform
