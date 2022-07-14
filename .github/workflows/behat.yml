@@ -23,7 +23,7 @@ on:
         type: string
       cluster_config:
         description: 'JSON string of cluster config'
-        required: false
+        required: true
         type: string
 
 jobs:
@@ -57,6 +57,10 @@ jobs:
       - name: Create Failure Folder
         run: |
           mkdir -p /tmp/behat
+      
+      - name: Save Cluster Config File
+        run: |
+          echo ${{ inputs.cluster_config }} > cluster_config.json
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -68,17 +72,19 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GitHubActions
       
+      - name: Hide Password
+        run: |
+           echo "::add-mask::$BEHAT_PASSWORD"
       - name: Get Behat password
         run: |
           echo 'BEHAT_PASSWORD='$(aws secretsmanager get-secret-value \
           --secret-id behat_password \
           --region eu-west-1 | jq -r '.SecretString' 2>/dev/null) >> $GITHUB_ENV
-          echo "::add-mask::$BEHAT_PASSWORD"
-      
+    
       - name: Allow CI ingress
         run: |
           echo $TF_WORKSPACE
-          python scripts/ci_ingress.py terraform/cluster_config.json --add
+          python scripts/ci_ingress.py cluster_config.json --add
 
       - name: Run Behat
         env:
@@ -97,7 +103,7 @@ jobs:
       - name: Remove CI ingress
         run: |
           echo $TF_WORKSPACE
-          python scripts/ci_ingress.py terraform/cluster_config.json
+          python scripts/ci_ingress.py cluster_config.json
 
 
         
