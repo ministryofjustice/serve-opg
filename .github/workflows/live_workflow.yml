@@ -1,0 +1,86 @@
+name: "Path to Live"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  security-events: write
+  pull-requests: read
+  actions: none
+  checks: none
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  statuses: none
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test_api:
+    name: Test API
+    uses: ./.github/workflows/api.yml
+    
+  test_web:
+    name: Test Web App
+    uses: ./.github/workflows/web.yml
+
+  create_tags:
+    name: Create Version Tags
+    uses: ./.github/workflows/tags.yml
+    
+  build_and_push_containers:
+    name: Docker Build and Push
+    uses: ./.github/workflows/containers.yml
+    needs: [test_api,test_web,create_tags]
+    with:
+      tag: ${{ needs.create_tags.outputs.version_tag }}
+    secrets: inherit
+
+  deploy_to_preprod:
+    name: Deploy to Preproduction
+    needs: [build_and_push_containers,create_tags]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      workspace_name: preproduction
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+    secrets: inherit
+
+  behat_preprod:
+    name: Preproduction Behat
+    uses: ./.github/workflows/behat.yml
+    needs: [build_and_push_containers,create_tags,deploy_to_preprod]
+    with:
+      workspace_name: preproduction
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+      base_url: preproduction.serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-preprod
+      suite: --suite=main
+    secrets: inherit
+
+  deploy_to_prod:
+    name: Deploy to Production
+    needs: [build_and_push_containers,create_tags,behat_preprod]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      workspace_name: production
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+    secrets: inherit
+  
+  behat_prod:
+    name: Production Behat
+    uses: ./.github/workflows/behat.yml
+    needs: [build_and_push_containers,create_tags,deploy_to_prod]
+    with:
+      workspace_name: production
+      version_tag: ${{ needs.create_tags.outputs.version_tag }}
+      base_url: serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-production
+      suite: --suite=main
+    secrets: inherit
+
