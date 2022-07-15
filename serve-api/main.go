@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/ministryofjustice/serve-opg/serve-api/internal/authentication"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +18,7 @@ func main() {
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
 	// creating the serve mux
-	sm := mux.NewRouter().PathPrefix("/serve-api").Subrouter()
+	sm := mux.NewRouter().PathPrefix("/api").Subrouter()
 
 	sm.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Running the health check handler")
@@ -27,6 +28,8 @@ func main() {
 	sm.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello you!"))
 	})
+
+	authentication.Auth(sm)
 
 	// setting up the http server
 	s := &http.Server{

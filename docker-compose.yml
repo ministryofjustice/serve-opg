@@ -93,7 +93,7 @@ services:
   localstack:
     image: localstack/localstack:0.12.6
     environment:
-      - SERVICES=s3,dynamodb
+      - SERVICES=s3,dynamodb,ssm
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
     ports:

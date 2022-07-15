@@ -89,7 +89,7 @@ build-deps: ##@builds Runs through all steps required before the app can be brou
 	docker-compose run --rm waitforit -address=http://localstack:4566 -debug -timeout=30
 	docker-compose run --rm aws --endpoint-url=http://localstack:4566 s3 mb s3://sirius-test-bucket
 	docker-compose run --rm aws --endpoint-url=http://localstack:4566 s3 mb s3://test-bucket
-
+	docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4566 ssm put-parameter --name "/default/flag/go-auth" --value "1" --type String --overwrite
 	# Create dynamodb tables (using - before command allows errors. Required as the table could already exist)
 	@-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4566 dynamodb create-table --cli-input-json file://attempts_table.json
 	@-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4566 dynamodb create-table --cli-input-json file://sessions_table.json

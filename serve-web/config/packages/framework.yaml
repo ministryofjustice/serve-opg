@@ -1,3 +1,6 @@
+imports:
+    - { resource: ../parameters.yml }
+
 framework:
     translator:      { fallback: "en" }
     secret:          '%env(APP_SECRET)%'

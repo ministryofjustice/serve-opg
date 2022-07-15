@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\ParameterStoreService;
 use App\Service\Security\LoginAttempts\UserProvider;
+use GuzzleHttp\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,11 +13,16 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     private UserProvider $userProvider;
+    private ClientInterface $httpClient;
+    private ParameterStoreService $parameterStoreService;
 
-    public function __construct(UserProvider $userProvider)
+    public function __construct(UserProvider $userProvider, ClientInterface $httpClient, ParameterStoreService $parameterStoreService)
     {
         $this->userProvider = $userProvider;
+        $this->httpClient = $httpClient;
+        $this->parameterStoreService = $parameterStoreService;
     }
+
     /**
      * @Route("/login", name="app_login")
      */
@@ -24,6 +31,14 @@ class SecurityController extends AbstractController
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }
+
+        $goAuth = $this->parameterStoreService->getFeatureFlag(ParameterStoreService::FLAG_GO_AUTH);
+
+        if ($goAuth) {
+            $response = $this->httpClient->request('GET', "http://api:9000/api/auth");
+            var_dump($response->getBody()->getContents());
+            var_dump($goAuth);
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();

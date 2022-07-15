@@ -227,3 +227,16 @@ services:
     App\Controller\SecurityController:
         arguments:
             $userProvider: '@App\Service\Security\LoginAttempts\UserProvider'
+            $httpClient: '@guzzleClient'
+
+    Aws\Ssm\SsmClient:
+        arguments: ['%ssm_client_params%']
+
+    App\Service\ParameterStoreService:
+        arguments:
+          [
+              '@Aws\Ssm\SsmClient',
+              "%env(PARAMETER_PREFIX)%",
+              "%env(FEATURE_FLAG_PREFIX)%",
+          ]
+
