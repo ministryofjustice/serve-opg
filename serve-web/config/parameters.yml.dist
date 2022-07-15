@@ -1,0 +1,11 @@
+# This file is a "template" of what your parameters.yml file should look like
+
+parameters:
+    ssm_client_params:
+        version: latest
+        region: eu-west-1
+        endpoint: http://localstack:4566
+        validate: false
+        credentials:
+            key: FAKE_ID
+            secret: FAKE_KEY
