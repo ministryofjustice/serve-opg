@@ -90,7 +90,7 @@ jobs:
           sleep 300s
 
   behat_prod:
-    name: Production Behat
+    name: Production Smoke Tests
     uses: ./.github/workflows/behat.yml
     needs: [build_and_push_containers,create_tags,deploy_to_prod]
     with:
@@ -98,7 +98,7 @@ jobs:
       version_tag: ${{ needs.create_tags.outputs.version_tag }}
       base_url: serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-production
-      suite: --suite=main
+      suite: --tags @smoke
       cluster_config: ${{ needs.deploy_to_prod.outputs.cluster_config }}
     secrets: inherit
 
