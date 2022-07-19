@@ -4,42 +4,42 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
-    behat_password: '%env(BEHAT_PASSWORD)%'
+    locale: "en"
+    behat_password: "%env(BEHAT_PASSWORD)%"
     fallback_notify_key: "mock-0b6deb72-13ec-45f5-b598-88c7be007000-0b6deb72-13ec-45f5-b598-88c7be007000"
 
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
-            $projectDir: '%kernel.project_dir%'
+            $projectDir: "%kernel.project_dir%"
             $yamlFixtureLocation: "%kernel.project_dir%/src/DataFixtures/"
-            string $behatPassword: '%env(BEHAT_PASSWORD)%'
+            string $behatPassword: "%env(BEHAT_PASSWORD)%"
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        resource: "../src/*"
+        exclude: "../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}"
 
     App\Behat\:
-        resource: '../src/Behat/*'
+        resource: "../src/Behat/*"
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
-        resource: '../src/Controller'
-        tags: ['controller.service_arguments']
+        resource: "../src/Controller"
+        tags: ["controller.service_arguments"]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
     logstash_formatter:
         class: Monolog\Formatter\LogstashFormatter
-        arguments: [ "serve-opg.frontend", null, null, "", 1 ]
+        arguments: ["serve-opg.frontend", null, null, "", 1]
 
     line_formatter:
         class: Monolog\Formatter\LineFormatter
@@ -84,7 +84,7 @@ services:
         class: Alphagov\Notifications\Client
         arguments:
             $config:
-                apiKey: '%env(default:fallback_notify_key:NOTIFICATION_API_KEY)%'
+                apiKey: "%env(default:fallback_notify_key:NOTIFICATION_API_KEY)%"
                 httpClient: "@notificationHttpClient"
 
     # Notifications mock client for behat (local URL)
@@ -104,7 +104,7 @@ services:
     App\Service\SiriusClient:
         class: App\Service\SiriusClient
         arguments:
-          $args: { base_uri: "%env(DC_SIRIUS_URL)%" }
+            $args: { base_uri: "%env(DC_SIRIUS_URL)%" }
 
     # twig extensions
     App\Twig\AssetsExtension:
@@ -121,13 +121,16 @@ services:
     # Adds 'help' var to form component
     App\Form\Extension\FormTypeExtension:
         tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+            - {
+                  name: form.type_extension,
+                  extended_type: Symfony\Component\Form\Extension\Core\Type\FormType,
+              }
 
     # Dynamo Db (session) config
     Aws\DynamoDb\DynamoDbClient:
         arguments:
-            - region: 'eu-west-1'
-              version: 'latest'
+            - region: "eu-west-1"
+              version: "latest"
               validate: true
               endpoint: "%env(DYNAMODB_ENDPOINT)%"
               debug: false
@@ -137,7 +140,7 @@ services:
     App\Common\BruteForceChecker: ~
 
     App\Service\S3Client:
-        arguments: [ "%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%" ]
+        arguments: ["%env(DC_S3_REGION)%", "%env(DC_S3_ENDPOINT)%"]
 
     # document storage and checking
     Aws\S3\S3ClientInterface: "@App\\Service\\S3Client"
@@ -176,15 +179,23 @@ services:
                 # 50 failed attempts in the last 30 mins => lock for 24h
                 - [50, 1800, 86400]
         tags:
-            - { name: kernel.event_listener, event: 'security.authentication.failure', method: 'onAuthenticationFailure' }
-            - { name: kernel.event_listener, event: 'security.authentication.success', method: 'onAuthenticationSuccess' }
+            - {
+                  name: kernel.event_listener,
+                  event: "security.authentication.failure",
+                  method: "onAuthenticationFailure",
+              }
+            - {
+                  name: kernel.event_listener,
+                  event: "security.authentication.success",
+                  method: "onAuthenticationSuccess",
+              }
 
     dynamoDb.connection.session:
         class: App\Common\SessionConnectionCreatingTable
         arguments:
             $config:
-                table_name: 'sessions'
-                hash_key: 'id'
+                table_name: "sessions"
+                hash_key: "id"
                 max_lock_wait_time: 10
                 min_lock_retry_microtime: 500
                 max_lock_retry_microtime: 5000
@@ -198,8 +209,8 @@ services:
         class: App\Common\SessionConnectionCreatingTable
         arguments:
             $config:
-                table_name: 'attempts'
-                hash_key: 'id'
+                table_name: "attempts"
+                hash_key: "id"
                 max_lock_wait_time: 10
                 min_lock_retry_microtime: 500
                 max_lock_retry_microtime: 5000
@@ -227,3 +238,8 @@ services:
     App\Controller\SecurityController:
         arguments:
             $userProvider: '@App\Service\Security\LoginAttempts\UserProvider'
+
+    # Uncomment when we want to turn the controller on
+    # App\Controller\ApiController:
+    #     arguments:
+    #         $apiEndpoint: "%env(API_ENDPOINT)%"

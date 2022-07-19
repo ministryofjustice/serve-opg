@@ -10,17 +10,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ApiController extends AbstractController
 {
     private ClientInterface $httpClient;
-    private ParameterStoreService $parameterStoreService;
 
-    public function __construct(ClientInterface $httpClient, ParameterStoreService $parameterStoreService)
+    public function __construct(ClientInterface $httpClient, $apiEndpoint)
     {
         $this->httpClient = $httpClient;
-        $this->parameterStoreService = $parameterStoreService;
+        $this->apiEndpoint = $apiEndpoint;
     }
 
-    public function request(string $type, mixed $data): mixed
+    public function request(string $type, mixed $data, string $url): mixed
     {
-        $url = $this->parameterStoreService->getFeatureFlag(ParameterStoreService::FLAG_GO_API_URL);
+        $url = $this->apiEndpoint .'/'. $url;
 
         $response = $this->httpClient->request($type, $url, [
             'json' => $data,
