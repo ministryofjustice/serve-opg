@@ -17,7 +17,7 @@ class ApiController extends AbstractController
         $this->apiEndpoint = $apiEndpoint;
     }
 
-    public function request(string $type, mixed $data, string $url): mixed
+    public function request(string $type, $data, string $url)
     {
         $url = $this->apiEndpoint .'/'. $url;
 
