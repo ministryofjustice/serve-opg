@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Stats;
 
-
 use App\Repository\OrderRepository;
 use App\Service\Stats\Model\OrderMadePeriodStat;
 use App\Service\Stats\Model\Stats;
