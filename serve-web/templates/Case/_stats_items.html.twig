@@ -2,7 +2,9 @@
     {% for item in items %}
         <div class="app-stat-item">
             <div class="govuk-caption-xl govuk-!-margin-bottom-2 govuk-!-font-weight-bold">
-                <a href="#" class="govuk-link">{{ item.numberOfOrders }}</a>
+                <a href="{{ path('case-list', { q: filters.q, madeFrom: item.from | date('Y-m-d'), madeTo: item.to | date('Y-m-d') }) }}" class="govuk-link">
+                    {{ item.numberOfOrders }}
+                </a>
             </div>
             {% if item.from == item.to and stats.status == 'served' %}
                 <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">Served</p>
