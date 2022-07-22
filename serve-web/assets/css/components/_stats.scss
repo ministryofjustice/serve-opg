@@ -1,0 +1,10 @@
+.app-stat-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.app-stat-item {
+  margin-right: 2rem;
+}
