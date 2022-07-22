@@ -23,12 +23,6 @@
       text-align: left;
       font-size: 2vw;
     }
-
-    h2.app-subtitle:after {
-      content: "";
-      display: inline-block;
-      width: 100%;
-    }
   }
 
   &--subtitle-left {
@@ -49,12 +43,6 @@
       order: 0;
       text-align: right;
       font-size: 2vw;
-    }
-
-    h2.app-subtitle:after {
-      content: "";
-      display: inline-block;
-      width: 100%;
     }
   }
 }
