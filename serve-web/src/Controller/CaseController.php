@@ -51,6 +51,14 @@ class CaseController extends AbstractController
             'q' => $request->get('q', ''),
         ];
 
+        if ($request->query->has('madeFrom')) {
+            $filters += ['madeFrom' => $request->query->get('madeFrom')];
+        }
+
+        if ($request->query->has('madeTo')) {
+            $filters += ['madeTo' => $request->query->get('madeTo')];
+        }
+
         $assembler = new Assembler($this->orderRepo);
         $toDoStats = $assembler->assembleOrderMadePeriodStats(Stats::STAT_STATUS_TO_DO);
         $servedStats = $assembler->assembleOrderMadePeriodStats(Stats::STAT_STATUS_SERVED);

@@ -92,6 +92,15 @@ class OrderRepository extends EntityRepository
                 ->setParameter('start', $filters['startDate'])
                 ->setParameter('end', $filters['endDate']);
         }
+
+        if (
+            array_key_exists('madeFrom', $filters) &&
+            array_key_exists('madeTo', $filters)
+        ) {
+            $qb->andWhere('o.madeAt >= :start AND o.madeAt <= :end')
+                ->setParameter('start', $filters['madeFrom'])
+                ->setParameter('end', $filters['madeTo']);
+        }
     }
 
     public function getOrdersBeforeGoLive()
