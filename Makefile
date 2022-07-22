@@ -112,6 +112,6 @@ reset-db-and-fixtures: ##@application Reset database and the fixture data for th
 reset-fixtures: ##@application Reset the fixture data for the app
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
 
-cache-clear:
+cache-clear: ##@application Clears the Symfony cache. Required with certain app config and template changes
 	docker-compose run --rm app php bin/console cache:clear
 
