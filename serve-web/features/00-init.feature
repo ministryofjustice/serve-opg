@@ -1,5 +1,9 @@
 Feature: prechecks
 
+    Scenario: Reset database
+        When I go to "/behat/reset-database"
+        Then the response status code should be 200
+
     Scenario: Reset behat users
         When I go to "/behat/reset-behat-test-users"
         Then the response status code should be 200

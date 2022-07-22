@@ -7,7 +7,7 @@
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
-    "@symfony/webpack-encore": "1.5.0",
+    "@symfony/webpack-encore": "^1.6.1",
     "babel-jest": "^26.6.3",
     "core-js": "^3.0.0",
     "del": "^3.0.0",
@@ -15,9 +15,9 @@
     "fetch-mock": "^7.3.3",
     "file-loader": "^6.0.0",
     "govuk-frontend": "^3.2.0",
-    "jest": "^26.6.3",
+    "jest": "^27.4",
     "jquery": "^3.5.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "sass": "^1.35.2",
     "sass-loader": "12.1.0",
     "tar": ">=6.1.9",
@@ -27,7 +27,7 @@
     "build": "encore production --progress",
     "dev-server": "encore dev-server",
     "build-dev": "encore dev",
-    "jest": "jest assets/js/__tests__",
+    "jest": "jest assets/js/__tests__ --verbose",
     "watch": "encore dev --watch",
     "clear-jest-cache": "jest --clearCache"
   },
@@ -44,6 +44,8 @@
     ]
   },
   "jest": {
+    "clearMocks": true,
+    "coverageDirectory": "coverage",
     "moduleFileExtensions": [
       "js"
     ],
@@ -52,6 +54,7 @@
       "src"
     ],
     "restoreMocks": true,
+    "testEnvironment": "jsdom",
     "testRegex": "\\.test\\.js$",
     "transform": {
       "^.+\\.js$": "babel-jest"

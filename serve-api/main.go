@@ -6,16 +6,17 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	//logger
+	// logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
-	//creating the serve mux
+	// creating the serve mux
 	sm := mux.NewRouter().PathPrefix("/serve-api").Subrouter()
 
 	sm.HandleFunc("/health-check", func(w http.ResponseWriter, r *http.Request) {
@@ -24,10 +25,10 @@ func main() {
 	})
 
 	sm.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello world!"))
+		w.Write([]byte("Hello you!"))
 	})
 
-	//setting up the http server
+	// setting up the http server
 	s := &http.Server{
 		Addr:         ":9000",
 		Handler:      sm,
@@ -46,11 +47,15 @@ func main() {
 		l.Println("Up and running!")
 	}()
 
-	//catching signal to gracefully shutdown
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, os.Kill)
+	// catching signal to gracefully shutdown
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	sig := <-c
 	l.Println("Recieve terminate, gracefully shutting down", sig)
-	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
+
+	// shutting down the server
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
 	s.Shutdown(tc)
 }

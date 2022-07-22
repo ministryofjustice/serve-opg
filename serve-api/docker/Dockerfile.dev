@@ -1,0 +1,23 @@
+FROM golang:1.18-alpine
+
+# Working directory
+WORKDIR /api
+
+COPY go.mod .
+COPY go.sum .
+
+RUN apk update && apk --update --no-cache add \ 
+    git \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
+RUN apk --no-cache add tzdata
+RUN chmod +x /usr/local/bin/
+
+# Go envs
+RUN unset GOPATH
+ENV GOOS=linux CGO_ENABLED=0
+
+RUN go mod download && go mod verify
+
+# Live reload for Go
+RUN go install github.com/cosmtrek/air@latest

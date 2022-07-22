@@ -8,10 +8,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
+// Session is a wrapper around the aws session
 type Session struct {
 	AWSSession *session.Session
 }
 
+// NewSession will create a new AWS session with our environments
+// AWS region and credentials
 func NewSession() (*Session, error) {
 	region := os.Getenv("AWS_REGION")
 

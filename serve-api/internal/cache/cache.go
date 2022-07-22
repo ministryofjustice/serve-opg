@@ -8,6 +8,8 @@ import (
 	"github.com/ministryofjustice/serve-opg/serve-api/internal/session"
 )
 
+// SecretCache stores the environment we are on
+// and a cache client for AWS Secrets Manager secrets
 type SecretsCache struct {
 	env   string
 	cache AwsSecretsCache
@@ -24,12 +26,16 @@ func applyAwsConfig(c *secretcache.Cache) {
 	c.Client = secretsmanager.New(sess.AWSSession)
 }
 
+// New constructs a new SecretsCache with the environment we are on
+// and a cache client for AWS Secrets Manager secrets
 func New() *SecretsCache {
 	env := os.Getenv("ENVIRONMENT")
 	cache, _ := secretcache.New(applyAwsConfig)
 	return &SecretsCache{env, cache}
 }
 
+// GetSecretString gets the secret string value from the cache for given secret id and a default version stage.
+// Returns the secret string and an error if operation failed.
 func (c *SecretsCache) GetSecretString(key string) (string, error) {
 	return c.cache.GetSecretString(c.env + "/" + key)
 }

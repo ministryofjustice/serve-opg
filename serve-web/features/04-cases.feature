@@ -10,6 +10,18 @@ Feature: cases
     And I attach the file "behat-cases.csv" to "csv_upload_form_file"
     And I click on "submit"
     Then the form should be valid
+    And I should see the "order-93559987-PF" region
+    And I should see the "order-93559987-HW" region
+    And I should see the "order-93559986-PF" region
+    And I should see the "order-93559986-HW" region
+    Then the response status code should be 200
+
+  Scenario: upload XLSX
+    Given I log in as "behat@digital.justice.gov.uk" with correct password
+    When I go to "/upload-csv"
+    And I attach the file "behat-cases.xlsx" to "csv_upload_form_file"
+    And I click on "submit"
+    Then the form should be valid
     And I should see the "order-93559316-PF" region
     And I should see the "order-93559316-HW" region
     And I should see the "order-93559317-PF" region

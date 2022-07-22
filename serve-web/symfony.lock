@@ -372,6 +372,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "shuchkin/simplexlsx": {
+        "version": "1.0.16"
+    },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
         "recipe": {
