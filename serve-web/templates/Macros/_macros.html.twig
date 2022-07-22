@@ -1,6 +1,3 @@
-
-
-
 {% macro errorSummary(form) %}
     {% set errors = form.vars.errors.form.getErrors(true) %}
     {% if errors | length %}
@@ -53,4 +50,15 @@
         </div>
     </div>
 </div>
+{% endmacro %}
+
+{% macro titleWithSideSubtitle(mainTitle, subtitle, subtitleLocation) %}
+    {% if ( subtitleLocation != 'right' ) or ( subtitleLocation != 'left' ) %}
+        {% set subtitleLocation = 'right' %}
+    {% endif %}
+
+    <div class="app-title app-title--subtitle-{{ subtitleLocation }}">
+        <h2 class="govuk-heading-l app-main-title">{{ mainTitle }}</h2>
+        <h2 class="govuk-heading-m app-subtitle">{{ subtitle }}</h2>
+    </div>
 {% endmacro %}
