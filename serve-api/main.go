@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/ministryofjustice/serve-opg/serve-api/controllers"
+	"github.com/ministryofjustice/serve-opg/serve-api/internal/db"
+	"github.com/ministryofjustice/serve-opg/serve-api/repositories"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +19,11 @@ func main() {
 	// logger
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
+	database := db.Connect()
+	orderRepo := repositories.NewOrderRepo(database)
+
+	h := controllers.NewBaseHandler(orderRepo)
+
 	// creating the serve mux
 	sm := mux.NewRouter().PathPrefix("/serve-api").Subrouter()
 
@@ -27,6 +35,8 @@ func main() {
 	sm.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello you!"))
 	})
+
+	sm.HandleFunc("/report/download", h.CreateNewCSV)
 
 	// setting up the http server
 	s := &http.Server{
