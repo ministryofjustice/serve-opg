@@ -99,6 +99,3 @@ jobs:
         run: |
           echo $TF_WORKSPACE
           python scripts/ci_ingress.py cluster_config.json
-
-
-        

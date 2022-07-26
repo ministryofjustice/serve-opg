@@ -9,13 +9,10 @@ jobs:
         working-directory: ./serve-api
     env:
       TEST_RESULTS: /tmp/test_results
-    # Service containers to run with `container-job`
     services:
-      # Label used to access the service container
       postgres:
-        # Docker Hub image
         image: postgres
-        # Provide the password for postgres
+        # Not real passwords
         env:
           POSTGRES_HOST: localhost
           POSTGRES_DB: serve-opg
@@ -23,7 +20,6 @@ jobs:
           POSTGRES_PASSWORD: dcdb2018!
         ports:
           - 5432:5432
-        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
