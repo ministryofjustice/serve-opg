@@ -1,0 +1,27 @@
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = '--format RspecJunitFormatter --out test_results/rspec.xml'
+end
+
+task default: :spec
+
+desc 'Get Latest Docker Image Version'
+task :get_latest_image do
+  sh %( ./scripts/get_latest_image.rb > versions.tfvars.json )
+end
+
+desc 'Check deployed versions'
+task :check_deployment do
+  sh %( ./scripts/check-deployment.rb )
+end
+
+desc 'Notify successful deployment'
+task :deployment_success do
+  sh %( ./scripts/notify-deployment.rb success)
+end
+
+desc 'Notify failed deployment'
+task :deployment_failure do
+  sh %( ./scripts/notify-deployment.rb )
+end
