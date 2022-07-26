@@ -41,7 +41,7 @@ data "aws_secretsmanager_secret_version" "sirius_api_email" {
 }
 
 data "aws_secretsmanager_secret" "public_api_password" {
-  name = "sirius_public_api_password"
+  name = data.aws_secretsmanager_secret_version.sirius_api_email.secret_string
 }
 
 data "aws_secretsmanager_secret" "notification_api_key" {
@@ -120,6 +120,7 @@ data "aws_iam_policy_document" "task_role" {
 
     resources = [
       data.aws_secretsmanager_secret.public_api_password.arn,
+      data.aws_secretsmanager_secret.sirius_api_email.arn,
       data.aws_secretsmanager_secret.notification_api_key.arn,
       data.aws_secretsmanager_secret.os_places_api_key.arn,
     ]
@@ -245,6 +246,10 @@ EOF
       "valueFrom": "${data.aws_secretsmanager_secret.os_places_api_key.arn}"
     },
     {
+      "name": "SIRIUS_PUBLIC_API_EMAIL",
+      "valueFrom": "${data.aws_secretsmanager_secret.sirius_api_email.arn}"
+    },
+    {
       "name": "SIRIUS_PUBLIC_API_PASSWORD",
       "valueFrom": "${data.aws_secretsmanager_secret.public_api_password.arn}"
     },
@@ -264,10 +269,6 @@ EOF
   	  "name": "DC_GTM",
       "value": "${local.dc_gtm}"
   	},
-  	{
-      "name": "DC_SYMFONY_SECRET",
-      "value": "dc2018!"
-    },
     {
       "name": "DC_DB_HOST",
       "value": "${aws_rds_cluster.serve_opg.endpoint}"
@@ -319,10 +320,6 @@ EOF
     {
       "name": "SIRIUS_S3_BUCKET_NAME",
       "value": "${local.sirius_bucket_name}"
-    },
-    {
-      "name": "SIRIUS_PUBLIC_API_EMAIL",
-      "valueFrom": "${data.aws_secretsmanager_secret.sirius_api_email.arn}"
     },
     {
       "name":"SIRIUS_KMS_KEY_ARN",
