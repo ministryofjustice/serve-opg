@@ -31,8 +31,17 @@ data "aws_iam_policy_document" "task_role_assume_policy" {
   }
 }
 
+
+data "aws_secretsmanager_secret" "sirius_api_email" {
+  name = "sirius_api_email_${terraform.workspace}"
+}
+
+data "aws_secretsmanager_secret_version" "sirius_api_email" {
+  secret_id = data.aws_secretsmanager_secret.sirius_api_email.id
+}
+
 data "aws_secretsmanager_secret" "public_api_password" {
-  name = local.sirius_api_email
+  name = data.aws_secretsmanager_secret_version.sirius_api_email.secret_string
 }
 
 data "aws_secretsmanager_secret" "notification_api_key" {
@@ -313,7 +322,7 @@ EOF
     },
     {
       "name": "SIRIUS_PUBLIC_API_EMAIL",
-      "value": "${local.sirius_api_email}"
+      "valueFrom": "${data.aws_secretsmanager_secret.sirius_api_email.arn}"
     },
     {
       "name":"SIRIUS_KMS_KEY_ARN",

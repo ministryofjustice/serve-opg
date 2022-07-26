@@ -18,10 +18,6 @@ variable "sirius_bucket" {
   type = map(string)
 }
 
-variable "sirius_api_email" {
-  type = map(string)
-}
-
 variable "is_production" {
   type = map(string)
 }
@@ -65,7 +61,6 @@ locals {
   behat_controller_enabled               = var.behat_controller[terraform.workspace]
   sirius_api_url                         = var.sirius_api[terraform.workspace]
   sirius_bucket_name                     = var.sirius_bucket[terraform.workspace]
-  sirius_api_email                       = var.sirius_api_email[terraform.workspace]
   dc_gtm                                 = var.dc_gtm[terraform.workspace]
   capitalized_environment                = "${upper(substr(terraform.workspace, 0, 1))}${substr(terraform.workspace, 1, -1)}"
   sirius_key_alias                       = var.sirius_key_alias[terraform.workspace]
