@@ -91,6 +91,7 @@ jobs:
       
       - name: Archive Test Output
         uses: actions/upload-artifact@v3
+        if: ${{ always() }}
         with:
           name: Behat Outputs
           path: /tmp/behat
