@@ -13,3 +13,9 @@ resource "aws_secretsmanager_secret" "behat_password" {
   description = "Behat password for non local envs"
   tags        = local.default_tags
 }
+
+resource "aws_secretsmanager_secret" "sirius_api_email" {
+  name        = "sirius_api_email_${terraform.workspace}"
+  description = "Sirius API email for ${terraform.workspace}"
+  tags        = local.default_tags
+}
