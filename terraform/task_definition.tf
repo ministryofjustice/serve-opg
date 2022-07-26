@@ -41,7 +41,7 @@ data "aws_secretsmanager_secret_version" "sirius_api_email" {
 }
 
 data "aws_secretsmanager_secret" "public_api_password" {
-  name = "sirius_public_api_password"
+  name = data.aws_secretsmanager_secret_version.sirius_api_email.secret_string
 }
 
 data "aws_secretsmanager_secret" "notification_api_key" {
@@ -120,6 +120,7 @@ data "aws_iam_policy_document" "task_role" {
 
     resources = [
       data.aws_secretsmanager_secret.public_api_password.arn,
+      data.aws_secretsmanager_secret.sirius_api_email.arn,
       data.aws_secretsmanager_secret.notification_api_key.arn,
       data.aws_secretsmanager_secret.os_places_api_key.arn,
     ]
