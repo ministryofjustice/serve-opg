@@ -68,7 +68,6 @@ func TestCreateCSVReportOfServedOrders(t *testing.T) {
 
 	h := NewBaseHandler(
 		repositories.NewOrderRepo(database),
-		repositories.NewClientRepo(database),
 	)
 	h.CreateNewCSV(w, r)
 	resp := w.Result()
