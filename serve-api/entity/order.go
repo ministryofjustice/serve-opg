@@ -66,7 +66,7 @@ func CreateOrder(
 }
 
 type OrderRepository interface {
-	GetOrdersServed(dateLimit ...time.Time) ([]Order, error)
+	GetServedOrders(dateLimit ...time.Time) ([]Order, error)
 	SelectOrderByID(id int) (*Order, error)
 	TableName() string
 }

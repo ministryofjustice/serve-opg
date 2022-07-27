@@ -16,7 +16,9 @@ type BaseHandler struct {
 }
 
 // NewBaseHandler returns a new BaseHandler
-func NewBaseHandler(orderRepo entity.OrderRepository) *BaseHandler {
+func NewBaseHandler(
+	orderRepo entity.OrderRepository,
+) *BaseHandler {
 	return &BaseHandler{
 		orderRepo: orderRepo,
 	}
@@ -25,7 +27,7 @@ func NewBaseHandler(orderRepo entity.OrderRepository) *BaseHandler {
 // CreateNewCSV will create a new CSV file
 func (h *BaseHandler) CreateNewCSV(w http.ResponseWriter, r *http.Request) {
 	minus4Weeks := time.Now().AddDate(0, 0, -28).Truncate(24 * time.Hour)
-	orders, err := h.orderRepo.GetOrdersServed(minus4Weeks)
+	orders, err := h.orderRepo.GetServedOrders(minus4Weeks)
 	if err != nil {
 		panic(err)
 	}

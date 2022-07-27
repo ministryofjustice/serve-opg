@@ -20,9 +20,10 @@ func main() {
 	l := log.New(os.Stdout, "serve-api ", log.LstdFlags)
 
 	database := db.Connect()
-	orderRepo := repositories.NewOrderRepo(database)
 
-	h := controllers.NewBaseHandler(orderRepo)
+	h := controllers.NewBaseHandler(
+		repositories.NewOrderRepo(database),
+	)
 
 	// creating the serve mux
 	sm := mux.NewRouter().PathPrefix("/serve-api").Subrouter()
@@ -36,7 +37,7 @@ func main() {
 		w.Write([]byte("Hello you!"))
 	})
 
-	sm.HandleFunc("/report/download", h.CreateNewCSV)
+	sm.HandleFunc("/csv-report", h.CreateNewCSV)
 
 	// setting up the http server
 	s := &http.Server{

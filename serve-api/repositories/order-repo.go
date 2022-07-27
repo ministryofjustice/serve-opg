@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// OrderRepo implements entity.OrderRepository
 type OrderRepo struct {
 	db *gorm.DB
 }
@@ -17,8 +16,8 @@ func NewOrderRepo(db *gorm.DB) *OrderRepo {
 	}
 }
 
-// GetOrdersServed will get all orders from the DB
-func (r *OrderRepo) GetOrdersServed(dateLimit ...time.Time) ([]entity.Order, error) {
+// GetServedOrders will get all orders from the DB
+func (r *OrderRepo) GetServedOrders(dateLimit ...time.Time) ([]entity.Order, error) {
 	var orders []entity.Order
 	if len(dateLimit) > 0 {
 		if err := r.db.Table(r.TableName()).Where("served_at >= ? AND served_at IS NOT NULL", dateLimit).Preload("Client").Find(&orders).Error; err != nil {
