@@ -61,7 +61,6 @@ jobs:
       base_url: preproduction.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-preprod
       suite: --suite=main
-      cluster_config: ${{ needs.deploy_to_preprod.outputs.cluster_config }}
     secrets: inherit
 
   deploy_to_prod:
@@ -83,6 +82,5 @@ jobs:
       base_url: serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-production
       suite: --tags @smoke
-      cluster_config: ${{ needs.deploy_to_prod.outputs.cluster_config }}
     secrets: inherit
 
