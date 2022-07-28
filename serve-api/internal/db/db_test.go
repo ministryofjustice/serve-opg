@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/ministryofjustice/serve-opg/serve-api/repositories"
 	"log"
 	"os"
 	"testing"
@@ -122,6 +123,8 @@ func TestOrderEntity(t *testing.T) {
 	setUpTest()
 	setUpSeedData()
 
+	or := repositories.NewOrderRepo(database)
+
 	orderTypeTests := []struct {
 		id        int
 		orderType string
@@ -131,8 +134,8 @@ func TestOrderEntity(t *testing.T) {
 	}
 
 	for _, tt := range orderTypeTests {
-		order := &entity.Order{}
-		order.SelectOrderByID(database, tt.id)
-		assert.Equal(t, tt.orderType, order.GetType())
+		result, err := or.SelectOrderByID(tt.id)
+		assert.NoError(t, err)
+		assert.Equal(t, tt.orderType, result.Type)
 	}
 }
