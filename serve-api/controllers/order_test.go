@@ -18,12 +18,6 @@ type MockOrderRepository struct {
 	mock.Mock
 }
 
-var h = BaseHandler{
-	orderRepo: mockOrderService,
-}
-
-var mockOrderService = new(MockOrderRepository)
-
 // SelectOrderByID is mock of OrderRepository SelectOrderByID
 func (m *MockOrderRepository) SelectOrderByID(id int) (*entity.Order, error) {
 	args := m.Called(id)
@@ -70,11 +64,15 @@ func TestSelectOrderByID(t *testing.T) {
 		Type:        "HW",
 	}
 
+	mockOrderService := new(MockOrderRepository)
 	mockOrderService.On("SelectOrderByID", 4).Return(order, nil)
 
 	r, err := http.NewRequest(http.MethodGet, "/serve-api/orders?id=4", nil)
 	w := httptest.NewRecorder()
 
+	h := BaseHandler{
+		orderRepo: mockOrderService,
+	}
 	h.GetOrder(w, r)
 
 	orderString := fmt.Sprintf("%+v", &order)
@@ -121,11 +119,15 @@ func TestDownloadCSVReportOfServedOrders(t *testing.T) {
 		},
 	}
 
+	mockOrderService := new(MockOrderRepository)
 	mockOrderService.On("GetServedOrders").Return(orders, nil)
 
 	r, err := http.NewRequest(http.MethodGet, "/csv-report", nil)
 	w := httptest.NewRecorder()
 
+	h := BaseHandler{
+		orderRepo: mockOrderService,
+	}
 	h.DownloadReport(w, r)
 
 	expectedCsvRecords := [][]string{
@@ -152,11 +154,16 @@ func TestDownloadCSVReportOfServedOrders(t *testing.T) {
 }
 
 func TestDownloadCSVReportError(t *testing.T) {
+	mockOrderService := new(MockOrderRepository)
 	mockOrderService.On("GetServedOrders").
 		Return(nil, fmt.Errorf("an error occured generating CSV"))
 
 	r, _ := http.NewRequest(http.MethodGet, "/csv-report", nil)
 	w := httptest.NewRecorder()
+
+	h := BaseHandler{
+		orderRepo: mockOrderService,
+	}
 	h.DownloadReport(w, r)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
