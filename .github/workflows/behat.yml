@@ -76,13 +76,15 @@ jobs:
           echo "::add-mask::$BEHAT_PASSWORD"
           echo BEHAT_PASSWORD=$BEHAT_PASSWORD >> $GITHUB_ENV
     
-      - name: Unset AWS Credentials
-        run: |
-          echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
-          echo "AWS_DEFAULT_REGION=" >> $GITHUB_ENV
-          echo "AWS_REGION=" >> $GITHUB_ENV
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::311462405659:role/serve-opg-ci
+          role-duration-seconds: 3600
+          role-session-name: ActionsIngress
 
       - name: Allow CI ingress
         run: |
