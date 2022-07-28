@@ -37,7 +37,8 @@ func main() {
 		w.Write([]byte("Hello you!"))
 	})
 
-	sm.HandleFunc("/csv-report", h.CreateNewCSV)
+	sm.HandleFunc("/orders/download-report", h.DownloadReport)
+	sm.HandleFunc("/orders/get", h.GetOrder)
 
 	// setting up the http server
 	s := &http.Server{
