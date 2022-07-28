@@ -1,6 +1,6 @@
 # Serve OPG
 
-[![CircleCI](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master.svg?style=svg&circle-token=79410497f5cde03ffb512d50e427dea8a272ff0b)](https://circleci.com/gh/ministryofjustice/serve-opg/tree/master)
+![Path to Live](https://github.com/ministryofjustice/serve-opg/actions/workflows/live_workflow.yml/badge.svg)
 
 Symfony 4.4 & PHP 7.4
 
