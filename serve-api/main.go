@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/ministryofjustice/serve-opg/serve-api/controllers"
+	"github.com/ministryofjustice/serve-opg/serve-api/handlers"
 	"github.com/ministryofjustice/serve-opg/serve-api/internal/db"
 	"github.com/ministryofjustice/serve-opg/serve-api/repositories"
 	"log"
@@ -21,7 +21,7 @@ func main() {
 
 	database := db.Connect()
 
-	h := controllers.NewBaseHandler(
+	h := handlers.NewBaseHandler(
 		repositories.NewOrderRepo(database),
 	)
 

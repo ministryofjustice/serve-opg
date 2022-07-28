@@ -1,27 +1,14 @@
-package controllers
+package handlers
 
 import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
-	"github.com/ministryofjustice/serve-opg/serve-api/entity"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 )
-
-type BaseHandler struct {
-	orderRepo entity.OrderRepository
-}
-
-func NewBaseHandler(
-	orderRepo entity.OrderRepository,
-) *BaseHandler {
-	return &BaseHandler{
-		orderRepo: orderRepo,
-	}
-}
 
 func (h *BaseHandler) GetOrder(w http.ResponseWriter, r *http.Request) {
 	param := r.URL.Query().Get("id")
