@@ -18,6 +18,12 @@ type MockOrderRepository struct {
 	mock.Mock
 }
 
+var h = BaseHandler{
+	orderRepo: mockOrderService,
+}
+
+var mockOrderService = new(MockOrderRepository)
+
 // SelectOrderByID is mock of OrderRepository SelectOrderByID
 func (m *MockOrderRepository) SelectOrderByID(id int) (*entity.Order, error) {
 	args := m.Called(id)
@@ -64,93 +70,94 @@ func TestSelectOrderByID(t *testing.T) {
 		Type:        "HW",
 	}
 
-	mockOrderService := new(MockOrderRepository)
 	mockOrderService.On("SelectOrderByID", 4).Return(order, nil)
 
 	r, err := http.NewRequest(http.MethodGet, "/serve-api/orders?id=4", nil)
 	w := httptest.NewRecorder()
 
-	h := BaseHandler{
-		orderRepo: mockOrderService,
-	}
-
 	h.GetOrder(w, r)
-	fmt.Println(w.Body.String())
 
-	expectedString := fmt.Sprintf("%+v", &order)
+	orderString := fmt.Sprintf("%+v", &order)
 
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, expectedString, w.Body.String())
+	assert.Equal(t, orderString, w.Body.String())
 }
 
 func TestDownloadCSVReportOfServedOrders(t *testing.T) {
-	clients := []entity.Client{
-		{
-			ID:         3,
-			CaseNumber: "445588991122",
-		},
-		{
-			ID:         7,
-			CaseNumber: "999922266366",
-		},
-	}
-
-	testDate := time.Date(2022, 06, 24, 0, 0, 0, 0, time.UTC)
-
-	orders := []entity.Order{
-		{
-			ID:              2,
-			ClientID:        3,
-			MadeAt:          testDate,
-			IssuedAt:        testDate,
-			ServedAt:        testDate,
-			Type:            "HW",
-			AppointmentType: "SOLE",
-			Client:          clients[0],
-		},
-		{
-			ID:              6,
-			ClientID:        7,
-			MadeAt:          testDate,
-			IssuedAt:        testDate,
-			ServedAt:        testDate,
-			Type:            "PF",
-			AppointmentType: "JOINT",
-			Client:          clients[1],
-		},
-	}
-
-	mockOrderService := new(MockOrderRepository)
-	mockOrderService.On("GetServedOrders").Return(orders, nil)
-
 	r, err := http.NewRequest(http.MethodGet, "/csv-report", nil)
 	w := httptest.NewRecorder()
 
-	h := BaseHandler{
-		orderRepo: mockOrderService,
-	}
+	t.Run("Success", func(t *testing.T) {
+		clients := []entity.Client{
+			{
+				ID:         3,
+				CaseNumber: "445588991122",
+			},
+			{
+				ID:         7,
+				CaseNumber: "999922266366",
+			},
+		}
 
-	h.DownloadReport(w, r)
+		testDate := time.Date(2022, 06, 24, 0, 0, 0, 0, time.UTC)
 
-	expectedCsvRecords := [][]string{
-		{"DateIssued", "DateMade", "DateServed", "CaseNumber", "AppointmentType", "OrderType"},
-		{"24-Jun-2022", "24-Jun-2022", "24-Jun-2022", "445588991122", "SOLE", "HW"},
-		{"24-Jun-2022", "24-Jun-2022", "24-Jun-2022", "999922266366", "JOINT", "PF"},
-	}
+		orders := []entity.Order{
+			{
+				ID:              2,
+				ClientID:        3,
+				MadeAt:          testDate,
+				IssuedAt:        testDate,
+				ServedAt:        testDate,
+				Type:            "HW",
+				AppointmentType: "SOLE",
+				Client:          clients[0],
+			},
+			{
+				ID:              6,
+				ClientID:        7,
+				MadeAt:          testDate,
+				IssuedAt:        testDate,
+				ServedAt:        testDate,
+				Type:            "PF",
+				AppointmentType: "JOINT",
+				Client:          clients[1],
+			},
+		}
 
-	b := &bytes.Buffer{}
-	csvW := csv.NewWriter(b)
-	csvW.WriteAll(expectedCsvRecords)
+		mockOrderService.On("GetServedOrders").Return(orders, nil)
 
-	fileName := fmt.Sprintf("orders-served-%s.csv", time.Now().Format("2006-01-02"))
+		h.DownloadReport(w, r)
 
-	expectedCsvString := "DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType\n" +
-		"24-Jun-2022,24-Jun-2022,24-Jun-2022,445588991122,SOLE,HW\n" +
-		"24-Jun-2022,24-Jun-2022,24-Jun-2022,999922266366,JOINT,PF\n"
+		expectedCsvRecords := [][]string{
+			{"DateIssued", "DateMade", "DateServed", "CaseNumber", "AppointmentType", "OrderType"},
+			{"24-Jun-2022", "24-Jun-2022", "24-Jun-2022", "445588991122", "SOLE", "HW"},
+			{"24-Jun-2022", "24-Jun-2022", "24-Jun-2022", "999922266366", "JOINT", "PF"},
+		}
 
-	assert.NoError(t, err)
-	assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
-	assert.Equal(t, fmt.Sprintf("attachment; filename=%s", fileName), w.Header().Get("Content-Disposition"))
-	assert.Equal(t, expectedCsvString, w.Body.String())
+		b := &bytes.Buffer{}
+		csvW := csv.NewWriter(b)
+		csvW.WriteAll(expectedCsvRecords)
+
+		fileName := fmt.Sprintf("orders-served-%s.csv", time.Now().Format("2006-01-02"))
+
+		expectedCsvString := "DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType\n" +
+			"24-Jun-2022,24-Jun-2022,24-Jun-2022,445588991122,SOLE,HW\n" +
+			"24-Jun-2022,24-Jun-2022,24-Jun-2022,999922266366,JOINT,PF\n"
+
+		assert.NoError(t, err)
+		assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
+		assert.Equal(t, fmt.Sprintf("attachment; filename=%s", fileName), w.Header().Get("Content-Disposition"))
+		assert.Equal(t, expectedCsvString, w.Body.String())
+	})
+
+	t.Run("Fail", func(t *testing.T) {
+		mockOrderService.On("GetServedOrders").
+			Return(nil, fmt.Errorf("an error occured generating CSV"))
+
+		h.DownloadReport(w, r)
+
+		assert.Equal(t, http.StatusInternalServerError, w.Code)
+		mockOrderService.AssertExpectations(t)
+	})
 }
