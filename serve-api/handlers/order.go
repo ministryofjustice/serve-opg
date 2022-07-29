@@ -31,7 +31,8 @@ func (h *BaseHandler) DownloadReport(w http.ResponseWriter, r *http.Request) {
 	orders, err := h.orderRepo.GetServedOrders(minus4Weeks)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "Invalid request body error:%s", err.Error())
+		w.Write([]byte(err.Error()))
+		return
 	}
 
 	ordersCSV := [][]string{

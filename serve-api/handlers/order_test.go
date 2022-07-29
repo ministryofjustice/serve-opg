@@ -13,7 +13,6 @@ import (
 	"time"
 )
 
-// MockOrderRepository is a mock type for model.UserRepository
 type MockOrderRepository struct {
 	mock.Mock
 }
@@ -59,7 +58,7 @@ func (m *MockOrderRepository) TableName() string {
 
 func TestSelectOrderByID(t *testing.T) {
 	order := entity.Order{
-		ID:          2,
+		ID:          4,
 		OrderNumber: "345621789",
 		Type:        "HW",
 	}

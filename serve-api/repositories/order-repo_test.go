@@ -223,4 +223,12 @@ func TestShouldGetServedOrders(t *testing.T) {
 		}
 	})
 
+	t.Run("Fail - too many date limits passed", func(t *testing.T) {
+		repo := NewOrderRepo(gormDB)
+		_, err := repo.GetServedOrders(minus4Weeks, over4Weeks)
+
+		assert.Error(t, err)
+		assert.Equal(t, "GetServedOrders allows only 1 date limit to be passed, received 2", err.Error())
+	})
+
 }
