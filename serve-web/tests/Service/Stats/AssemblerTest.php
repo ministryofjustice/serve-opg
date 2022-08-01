@@ -38,7 +38,7 @@ class AssemblerTest extends TestCase
         $repo->getOrdersCountByMadeDatePeriods($from3, $to3, $orderStatus)->shouldBeCalled()->willReturn(100);
 
         $sut = new Assembler($repo->reveal());
-        $actualResult = $sut->assembleOrderMadePeriodStats($orderStatus, $now);
+        $actualResult = $sut->assembleOrderStats($orderStatus, $now);
 
         $expectedResult = (new Stats())
             ->addOrderMadePeriodStat(
@@ -85,7 +85,7 @@ class AssemblerTest extends TestCase
         $repo->getOrdersCountByMadeDatePeriods($now, $now, $orderStatus)->shouldBeCalled()->willReturn(5);
 
         $sut = new Assembler($repo->reveal());
-        $actualResult = $sut->assembleOrderMadePeriodStats($orderStatus, $now);
+        $actualResult = $sut->assembleOrderStats($orderStatus, $now);
 
         $expectedResult = (new Stats($orderStatus))
             ->addOrderMadePeriodStat(

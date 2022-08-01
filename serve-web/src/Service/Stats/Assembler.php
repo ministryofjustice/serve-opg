@@ -18,7 +18,7 @@ class Assembler
         $this->orderRepository = $orderRepository;
     }
 
-    public function assembleOrderMadePeriodStats(string $orderStatus, ?DateTime $now = null)
+    public function assembleOrderStats(string $orderStatus, ?DateTime $now = null)
     {
         $stats = new Stats($orderStatus);
         $now = $now ?: new DateTime('today');

@@ -59,9 +59,17 @@ class CaseController extends AbstractController
             $filters += ['madeTo' => $request->query->get('madeTo')];
         }
 
+        if ($request->query->has('startDate')) {
+            $filters += ['startDate' => $request->query->get('startDate')];
+        }
+
+        if ($request->query->has('endDate')) {
+            $filters += ['endDate' => $request->query->get('endDate')];
+        }
+
         $assembler = new Assembler($this->orderRepo);
-        $toDoStats = $assembler->assembleOrderMadePeriodStats(Stats::STAT_STATUS_TO_DO);
-        $servedStats = $assembler->assembleOrderMadePeriodStats(Stats::STAT_STATUS_SERVED);
+        $toDoStats = $assembler->assembleOrderStats(Stats::STAT_STATUS_TO_DO);
+        $servedStats = $assembler->assembleOrderStats(Stats::STAT_STATUS_SERVED);
 
         return $this->render('Case/index.html.twig', [
             'orders' => $this->orderRepo->getOrders($filters, $limit),
