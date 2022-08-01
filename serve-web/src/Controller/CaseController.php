@@ -51,22 +51,36 @@ class CaseController extends AbstractController
             'q' => $request->get('q', ''),
         ];
 
-        if ($request->query->has('madeFrom')) {
-            $filters += ['madeFrom' => $request->query->get('madeFrom')];
+        if ($request->get('type') === 'pending') {
+            if ($request->query->has('madeFrom')) {
+                $filters += ['madeFrom' => $request->query->get('madeFrom')];
+            }
+
+            if ($request->query->has('madeTo')) {
+                $filters += ['madeTo' => $request->query->get('madeTo')];
+            }
+
+            if (!$request->query->has('madeFrom') || !$request->query->has('madeTo')) {
+                $filters += ['madeFrom' => (new DateTime())->format("Y-m-d")." 00:00:00"];
+                $filters += ['madeTo' => (new DateTime())->format("Y-m-d")." 23:59:59"];
+            }
         }
 
-        if ($request->query->has('madeTo')) {
-            $filters += ['madeTo' => $request->query->get('madeTo')];
-        }
+        if ($request->get('type') === 'served') {
+            if ($request->query->has('startDate')) {
+                $filters += ['startDate' => $request->query->get('startDate')];
+            }
 
-        if ($request->query->has('startDate')) {
-            $filters += ['startDate' => $request->query->get('startDate')];
-        }
+            if ($request->query->has('endDate')) {
+                $filters += ['endDate' => $request->query->get('endDate')];
+            }
 
-        if ($request->query->has('endDate')) {
-            $filters += ['endDate' => $request->query->get('endDate')];
+            if (!$request->query->has('startDate') || !$request->query->has('endDate')) {
+                $filters += ['startDate' => (new DateTime())->format("Y-m-d")." 00:00:00"];
+                $filters += ['endDate' => (new DateTime())->format("Y-m-d")." 23:59:59"];
+            }
         }
-
+        
         $assembler = new Assembler($this->orderRepo);
         $toDoStats = $assembler->assembleOrderStats(Stats::STAT_STATUS_TO_DO);
         $servedStats = $assembler->assembleOrderStats(Stats::STAT_STATUS_SERVED);
