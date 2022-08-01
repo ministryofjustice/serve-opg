@@ -1,0 +1,29 @@
+<div class="app-stat-items">
+    {% for item in items %}
+        <div class="app-stat-item">
+            <div class="govuk-caption-xl govuk-!-margin-bottom-2 govuk-!-font-weight-bold">
+                {% if stats.status == 'served' %}
+                    <a href="{{ path('case-list', { q: filters.q, type: filters.type, startDate: item.from | date('Y-m-d'), endDate: item.to | date('Y-m-d') }) }}" class="govuk-link">
+                        {{ item.numberOfOrders }}
+                    </a>
+                {% else %}
+                    <a href="{{ path('case-list', { q: filters.q, type: filters.type, madeFrom: item.from | date('Y-m-d'), madeTo: item.to | date('Y-m-d') }) }}" class="govuk-link">
+                        {{ item.numberOfOrders }}
+                    </a>
+                {% endif %}
+            </div>
+            {% if item.from == item.to and stats.status == 'served' %}
+                <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">Served</p>
+                <p class="govuk-body-s govuk-!-font-weight-bold">
+                    today
+                </p>
+            {% else %}
+                <p class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-font-weight-bold">{{ item.from | date('j M Y')}} <span class="govuk-!-font-weight-regular">to</span></p>
+                <p class="govuk-body-s govuk-!-font-weight-bold">
+                    {{ item.to | date('j M Y')}}
+                </p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
