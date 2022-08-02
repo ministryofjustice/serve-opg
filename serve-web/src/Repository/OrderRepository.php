@@ -2,8 +2,11 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Service\Stats\Model\Stats;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use InvalidArgumentException;
 
 class OrderRepository extends EntityRepository
 {
@@ -71,9 +74,9 @@ class OrderRepository extends EntityRepository
     private function applyFilters(QueryBuilder $qb, array $filters)
     {
         if ($filters['type'] == 'pending') {
-            $qb->where('o.servedAt IS NULL');
+            $qb->andWhere('o.servedAt IS NULL');
         } elseif ($filters['type'] == 'served') {
-            $qb->where('o.servedAt IS NOT NULL');
+            $qb->andWhere('o.servedAt IS NOT NULL');
         }
 
         if ($filters['q'] ?? false) {
@@ -89,10 +92,19 @@ class OrderRepository extends EntityRepository
                 ->setParameter('start', $filters['startDate'])
                 ->setParameter('end', $filters['endDate']);
         }
+
+        if (
+            array_key_exists('madeFrom', $filters) &&
+            array_key_exists('madeTo', $filters)
+        ) {
+            $qb->andWhere('o.madeAt >= :start AND o.madeAt <= :end')
+                ->setParameter('start', $filters['madeFrom'])
+                ->setParameter('end', $filters['madeTo']);
+        }
     }
 
-    public function getOrdersBeforeGoLive() {
-
+    public function getOrdersBeforeGoLive()
+    {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder("o")
             ->select("o")
@@ -100,5 +112,35 @@ class OrderRepository extends EntityRepository
             ->andWhere("o.servedAt IS NULL");
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param DateTime $from
+     * @param DateTime $to
+     * @return int|mixed|string
+     * @throws \Exception
+     */
+    public function getOrdersCountByMadeDatePeriods(DateTime $from, DateTime $to, string $orderStatus)
+    {
+        $from = new DateTime($from->format("Y-m-d")." 00:00:00");
+        $to   = new DateTime($to->format("Y-m-d")." 23:59:59");
+
+        $qb = $this->_em->getRepository(Order::class)->createQueryBuilder("o")
+            ->select('COUNT(o)');
+
+        if ($orderStatus === Stats::STAT_STATUS_TO_DO) {
+            $qb->andWhere('o.madeAt BETWEEN :from AND :to');
+        } elseif ($orderStatus === Stats::STAT_STATUS_SERVED) {
+            $qb->andWhere('o.servedAt BETWEEN :from AND :to');
+        } else {
+            throw new InvalidArgumentException('Order status must be "pending" or "served"');
+        }
+
+        $qb->setParameter('from', $from )
+            ->setParameter('to', $to);
+
+        $this->applyFilters($qb, ['type' => $orderStatus]);
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

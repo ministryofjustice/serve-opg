@@ -59,7 +59,7 @@ up-test: ##@application Brings the app up in test mode with profiler and xdebug 
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
 	# Build app
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 phpunit-tests: up-test ##@testing Requires the app to be built and up before running
@@ -68,7 +68,7 @@ phpunit-tests: up-test ##@testing Requires the app to be built and up before run
 behat-tests: up-test ##@testing Requires the app to be built and up before running
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm behat --suite=local
 
 build-up-prod: build-deps up-prod ##@builds Build dependencies and spin up the project in prod mode. Purges database and loads fixtures.
 	# Add sample users and cases (local env only).
@@ -103,5 +103,15 @@ build-deps: ##@builds Runs through all steps required before the app can be brou
 	# Compile static assets
 	docker-compose run --rm yarn build-dev
 
-reset-fixtures: ##@application Reset the fixture data for the app 
+reset-db-and-fixtures: ##@application Reset database and the fixture data for the app
+	docker-compose run --rm app php bin/console doctrine:database:drop --force
+	docker-compose run --rm app php bin/console doctrine:database:create
+	docker-compose run --rm app php bin/console doctrine:migrations:migrate -n
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+
+reset-fixtures: ##@application Reset the fixture data for the app
+	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+
+cache-clear: ##@application Clears the Symfony cache. Required with certain app config and template changes
+	docker-compose run --rm app php bin/console cache:clear
+

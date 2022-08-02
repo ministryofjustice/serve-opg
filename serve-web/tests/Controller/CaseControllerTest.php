@@ -41,14 +41,15 @@ class CaseControllerTest extends ApiWebTestCase
     {
         $em = $this->getEntityManager();
         $orders = OrderTestHelper::generateOrders(51, true);
-        $orders[0]->setServedAt((new \DateTime())->modify('-1 day'));
+
+        foreach ($orders as $order) {
+            $order->setServedAt(new \DateTime());
+            $em->persist($order);
+        }
+
         $orders[1]->setServedAt((new \DateTime())->modify('-4 weeks'));
         $oldestOrder = OrderTestHelper::getOldestOrderByServedAt($orders);
         $mostRecentOrder = OrderTestHelper::getMostRecentOrderByServedAt($orders);
-
-        foreach ($orders as $order) {
-            $em->persist($order);
-        }
 
         $em->flush();
 
