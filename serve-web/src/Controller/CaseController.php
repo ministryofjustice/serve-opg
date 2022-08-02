@@ -80,7 +80,7 @@ class CaseController extends AbstractController
                 $filters += ['endDate' => (new DateTime())->format("Y-m-d")." 23:59:59"];
             }
         }
-        
+
         $assembler = new Assembler($this->orderRepo);
         $toDoStats = $assembler->assembleOrderStats(Stats::STAT_STATUS_TO_DO);
         $servedStats = $assembler->assembleOrderStats(Stats::STAT_STATUS_SERVED);
