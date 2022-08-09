@@ -12,11 +12,12 @@ const (
 	OrderTypeBOTH string = "BOTH"
 )
 
-// Order defines the information a order holds
+// Order defines the information an order holds
 type Order struct {
 	gorm.Model
 	ID                      int `gorm:"not null;type:bigint;autoIncrement"`
 	ClientID                uint32
+	Client                  Client
 	SubType                 string `gorm:"size:50;"`
 	HasAssetsAboveThreshold string `gorm:"size:50;"`
 	// Need to rename order_type_id column in ordertype_deputy table to order_id. Manual migration to rename
@@ -34,7 +35,7 @@ type Order struct {
 	ApiResponse   string
 }
 
-// CreateOrder will create a order in the database with the passed in values
+// CreateOrder will create an order in the database with the passed in values
 func CreateOrder(
 	db *gorm.DB,
 	subType string,
@@ -64,14 +65,10 @@ func CreateOrder(
 	})
 }
 
-// SelectOrderByID will select a order by their ID
-func (o *Order) SelectOrderByID(db *gorm.DB, id int) *gorm.DB {
-	return db.First(o, id)
-}
-
-// GetType will return the order type
-func (o *Order) GetType() string {
-	return o.Type
+type OrderRepository interface {
+	GetServedOrders(dateLimit ...time.Time) ([]Order, error)
+	SelectOrderByID(id int) (*Order, error)
+	TableName() string
 }
 
 // TableName refers to the table name used in the database
