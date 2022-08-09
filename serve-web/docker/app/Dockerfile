@@ -1,4 +1,4 @@
-FROM php:7.4.29-fpm-alpine
+FROM php:8.0.12-fpm-alpine3.14
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
@@ -22,9 +22,9 @@ RUN apk add --no-cache postgresql-dev \
 
 # Install zip for php
 RUN apk add --no-cache \
-    libzip-dev \
-    zip \
-&& docker-php-ext-install zip
+  libzip-dev \
+  zip \
+  && docker-php-ext-install zip
 
 #force upgrade packages
 RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib busybox curl gzip xz xz-libs libcurl
