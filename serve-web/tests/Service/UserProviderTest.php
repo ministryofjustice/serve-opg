@@ -15,9 +15,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class UserProviderTest extends MockeryTestCase
 {
+    use ProphecyTrait;
+    
     public function setUp(): void
     {
         $this->userRepo = m::mock(EntityRepository::class);
@@ -39,7 +42,7 @@ class UserProviderTest extends MockeryTestCase
         $token = m::mock(TokenInterface::class)->shouldReceive('getCredentials')->andReturn(['email' => $this->userName, 'password' => 'fakepass'])->getMock();
 
 
-        $failureEvent = self::prophesize(AuthenticationFailureEvent::class);
+        $failureEvent = $this->prophesize(AuthenticationFailureEvent::class);
         $failureEvent->getAuthenticationToken()->willReturn($token);
         $this->authenticationFailureEvent = $failureEvent->reveal();
 
