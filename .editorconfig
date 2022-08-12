@@ -16,3 +16,4 @@ indent_size = 4
 # YML
 [**.yml]
 quote_type = single
+indent_size = 4
