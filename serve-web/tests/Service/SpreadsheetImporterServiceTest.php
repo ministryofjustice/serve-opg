@@ -15,9 +15,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class SpreadsheetImporterServiceTest extends KernelTestCase
 {
+    use ProphecyTrait;
     private string $projectDir;
 
     public function setUp(): void
@@ -32,10 +34,10 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $filePath = sprintf('%s/%s', $this->projectDir, $csvFilePath);
         $uploadedFile = new UploadedFile($filePath, 'cases.csv', 'text/csv');
 
-        $clientService = self::prophesize(ClientService::class);
-        $orderService = self::prophesize(OrderService::class);
-        $em = self::prophesize(EntityManagerInterface::class);
-        $logger = self::prophesize(LoggerInterface::class);
+        $clientService = $this->prophesize(ClientService::class);
+        $orderService = $this->prophesize(OrderService::class);
+        $em = $this->prophesize(EntityManagerInterface::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $row1Client = new Client(
             '93559316',
@@ -89,10 +91,10 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         );
 
-        $clientService = self::prophesize(ClientService::class);
-        $orderService = self::prophesize(OrderService::class);
-        $em = self::prophesize(EntityManagerInterface::class);
-        $logger = self::prophesize(LoggerInterface::class);
+        $clientService = $this->prophesize(ClientService::class);
+        $orderService = $this->prophesize(OrderService::class);
+        $em = $this->prophesize(EntityManagerInterface::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $row1Client = new Client(
             '93559428',
