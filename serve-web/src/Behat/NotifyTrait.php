@@ -19,8 +19,7 @@ trait NotifyTrait
      */
     private function getNotifyMockSentMails()
     {
-        $ret =  json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
-        return $ret;
+        return json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
     }
 
     /**
