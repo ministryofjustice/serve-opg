@@ -7,13 +7,16 @@ if (!file_exists(dirname(__DIR__).'/vendor/symfony/phpunit-bridge/bin/simple-php
 }
 
 if (false === getenv('SYMFONY_PHPUNIT_VERSION')) {
-    putenv('SYMFONY_PHPUNIT_VERSION=8.5.8');
+    putenv('SYMFONY_PHPUNIT_VERSION=9.5.21');
 }
 if (false === getenv('SYMFONY_PHPUNIT_REMOVE')) {
     putenv('SYMFONY_PHPUNIT_REMOVE=');
 }
 if (false === getenv('SYMFONY_PHPUNIT_DIR')) {
     putenv('SYMFONY_PHPUNIT_DIR='.__DIR__.'/.phpunit');
+}
+if (false === getenv('SYMFONY_DEPRECATIONS_HELPER')) {
+    putenv('SYMFONY_DEPRECATIONS_HELPER=disabled');
 }
 
 require dirname(__DIR__).'/vendor/symfony/phpunit-bridge/bin/simple-phpunit';

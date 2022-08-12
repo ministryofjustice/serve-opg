@@ -20,9 +20,12 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class SiriusServiceTest extends MockeryTestCase
 {
+    use ProphecyTrait;
+    
     /**
      * @var SiriusService
      */

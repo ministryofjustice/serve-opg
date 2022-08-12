@@ -13,9 +13,11 @@ use App\TestHelpers\OrderTestHelper;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
+use Prophecy\PhpUnit\ProphecyTrait;
 class OrderServiceTest extends WebTestCase
 {
+    use ProphecyTrait;
+    
     /**
      * @var EntityManager|ObjectProphecy
      */

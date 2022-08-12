@@ -478,7 +478,7 @@ class UserControllerTest extends ApiWebTestCase
 
         $client->request(Request::METHOD_GET, "/users/${addedUserId}/view", [], [], ['HTTP_REFERER' => '/users']);
 
-        self::assertRegExp(
+        $this->assertMatchesRegularExpression(
             '^This user has not activated their account. To resend an activation email click <a href="\/users\/[0-9]*\/resend-activation">here<\/a>\..*^',
             $this->getService('session')->getFlashBag()->get('warn')[0]
         );
