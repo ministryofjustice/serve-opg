@@ -2,7 +2,7 @@
 
 ![Path to Live](https://github.com/ministryofjustice/serve-opg/actions/workflows/live_workflow.yml/badge.svg)
 
-Symfony 4.4 & PHP 7.4
+Symfony 4.4 & PHP 8.0
 
 # Prerequisites
 Software to download and install
