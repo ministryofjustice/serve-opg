@@ -31,8 +31,11 @@ class DynamoDbAttemptsStorage implements AttemptsStorageInterface
     public function getAttempts($userId)
     {
         $data = $this->connection->read($userId)['data'] ?? null;
+        if (null === $data) {
+            return [];
+        }
 
-        return json_decode($data, true) ?? [];
+        return json_decode($data, true);
     }
 
     public function resetAttempts($userId)

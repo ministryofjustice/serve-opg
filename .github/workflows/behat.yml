@@ -2,23 +2,23 @@ on:
   workflow_call:
     inputs:
       workspace_name:
-        description: 'The terraform workspace to target'
+        description: "The terraform workspace to target"
         required: true
         type: string
       version_tag:
-        description: 'Version tag for docker images'
+        description: "Version tag for docker images"
         required: true
         type: string
       base_url:
-        description: 'Base url to run Behat against'
+        description: "Base url to run Behat against"
         required: true
         type: string
       sirius_api_bucket:
-        description: 'Sirius API bucket to use'
+        description: "Sirius API bucket to use"
         required: true
         type: string
       suite:
-        description: 'Test suite to run'
+        description: "Test suite to run"
         required: true
         type: string
 
@@ -33,14 +33,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: unfor19/install-aws-cli-action@v1
-      - name: Install PHP 7.4
+      - name: Install PHP 8.0
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4.26'
+          php-version: "8.0.22"
       - name: Set up Python 3.8.1
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
       - name: Install Python packages
         run: |
           pip3 install pipenv poetry boto3
@@ -52,7 +52,7 @@ jobs:
       - name: Create Failure Folder
         run: |
           mkdir -p /tmp/behat
-      
+
       - name: Retrieve Cluster Config File
         uses: actions/download-artifact@v3
         with:
@@ -67,7 +67,7 @@ jobs:
           role-to-assume: arn:aws:iam::705467933182:role/serve-opg-ci
           role-duration-seconds: 3600
           role-session-name: BehatPasswordActions
-      
+
       - name: Get Behat password
         run: |
           BEHAT_PASSWORD=$(aws secretsmanager get-secret-value \
@@ -99,7 +99,7 @@ jobs:
         run: |
           vendor/bin/behat --stop-on-failure -c behat.yml.dist ${{ inputs.suite }}
         working-directory: ./serve-web
-      
+
       - name: Archive Test Output
         uses: actions/upload-artifact@v3
         if: ${{ always() }}
