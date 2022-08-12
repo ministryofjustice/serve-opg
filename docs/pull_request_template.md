@@ -9,7 +9,7 @@
 
 ## Issues Resolved
 
-DDPB-XXXX [List any existing issues this PR resolves]
+SER-XXX [List any existing issues this PR resolves]
 
 ## Merge check List
 

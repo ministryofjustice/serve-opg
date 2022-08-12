@@ -14,9 +14,11 @@ use DateTime;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-
+use Prophecy\PhpUnit\ProphecyTrait;
 class ReportServiceTest extends ApiWebTestCase
 {
+    use ProphecyTrait;
+    
     public function testGenerateCsv()
     {
         $expectedCaseRef = 'COURTREFERENCE1';

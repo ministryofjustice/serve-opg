@@ -7,12 +7,14 @@ use App\EventListener\SuccessfulAuthenticationListener;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ObjectProphecy;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class SuccessfulAuthenticationListenerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGetSubscribedEvents()
     {
         self::assertEquals(
@@ -27,7 +29,7 @@ class SuccessfulAuthenticationListenerTest extends TestCase
         $expectedUserModel->setLastLoginAt(new DateTime());
 
         /** @var EntityManager|ObjectProphecy $entityManager */
-        $entityManager = self::prophesize(EntityManager::class);
+        $entityManager = $this->prophesize(EntityManager::class);
         $entityManager->persist($expectedUserModel)->shouldBeCalled();
         $entityManager->flush()->shouldBeCalled();
 
