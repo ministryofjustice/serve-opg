@@ -109,6 +109,7 @@ class SiriusService
 
             if ($apiResponse->getStatusCode() == 200) {
                 // generate JSON payload of order
+                $this->logger->info('Logged into sirius correctly');
                 $payload = $this->generateOrderPayload($order);
 
                 if ($payload) {
@@ -135,7 +136,6 @@ class SiriusService
                 }
             }
 
-            $this->logout();
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
@@ -154,6 +154,15 @@ class SiriusService
 
             throw $e;
         }
+        try {
+            $this->logout();
+        } catch (RequestException $e) {
+            if ($e->getCode() != 401) {
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
+                throw $e;
+            }
+        }
+
     }
 
     /**

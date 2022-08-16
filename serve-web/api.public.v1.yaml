@@ -41,7 +41,7 @@ paths:
       added locally as it's essential functionality
     post:
       responses:
-        "200":
+        "401":
           headers:
             X-XSRF-TOKEN:
               schema:

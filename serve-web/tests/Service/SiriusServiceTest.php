@@ -153,7 +153,7 @@ class SiriusServiceTest extends MockeryTestCase
 
         $this->mockHttpClient->post('api/public/v1/orders', $expectedPost)->shouldBeCalled()->willReturn(new Response());
 
-        $this->mockHttpClient->post('auth/logout')->shouldBeCalled()->willReturn(new Response());
+        $this->mockHttpClient->post('auth/logout')->shouldBeCalled()->willReturn(new Response(401));
         $this->mockHttpClient->getConfig('base_uri')->shouldBeCalled()->willReturn('FAKE-SIRIUS-URL');
 
         $this->sut = new SiriusService(
