@@ -187,7 +187,7 @@ class SiriusService
             ', with params => ' . json_encode($params));
 
         return $this->httpClient->post(
-            'auth/login',
+            'old-login',
             $params
         );
     }

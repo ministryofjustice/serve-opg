@@ -21,7 +21,7 @@ paths:
               schema:
                 type: string
           description: CSRF token that is required for subsequent requests to Sirius
-  /auth/login:
+  /old-login:
     post:
       description: >
         **NOTE** this endpoint is not guaranteed in the upstream contract, but

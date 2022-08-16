@@ -25,7 +25,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 class SiriusServiceTest extends MockeryTestCase
 {
     use ProphecyTrait;
-    
+
     /**
      * @var SiriusService
      */
@@ -139,7 +139,7 @@ class SiriusServiceTest extends MockeryTestCase
             'documents' => $expectedDocuments,
         ];
 
-        $this->mockHttpClient->post('auth/login', Argument::any())->shouldBeCalled()->willReturn(
+        $this->mockHttpClient->post('old-login', Argument::any())->shouldBeCalled()->willReturn(
             new Response(200, ['X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA=='])
         );
 
