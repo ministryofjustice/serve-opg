@@ -135,7 +135,6 @@ class SiriusService
                 }
             }
 
-            $this->logout();
         } catch (RequestException $e) {
             $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
             $order->setPayloadServed($payload);
@@ -154,6 +153,15 @@ class SiriusService
 
             throw $e;
         }
+        try {
+            $this->logout();
+        } catch (RequestException $e) {
+            if ($e->getCode() != 401) {
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
+                throw $e;
+            }
+        }
+
     }
 
     /**
