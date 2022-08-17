@@ -101,7 +101,7 @@ class FeatureContext extends MinkContext implements Context
         $this->fillField('password', '');
         $this->pressButton('login_submit');
     }
-    
+
     /**
      * @Then /^the order should be (?P<shouldBe>(servable|unservable))$/
      */

@@ -1,8 +1,11 @@
 version: '3'
 services:
-  app:
-    environment:
-      APP_ENV: 'dev'
-      APP_DEBUG: 'true'
-    env_file:
-      - .env.local
+    app:
+        build:
+            args:
+                WITH_XDEBUG: 'false'
+        environment:
+            APP_ENV: 'dev'
+            APP_DEBUG: 'true'
+        env_file:
+            - .env.local
