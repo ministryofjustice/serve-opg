@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 class CsvImporterServiceTest extends TestCase
 {
     use ProphecyTrait;
-    
+
     /** @test */
     public function importFile()
     {

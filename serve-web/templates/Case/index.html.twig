@@ -19,22 +19,35 @@
         </form>
     </div>
 
-    <div class="govuk-tabs">
+    <div class="govuk-tabs" data-module="govuk-tabs">
         <h2 class="govuk-tabs__title">
             Contents
         </h2>
+
         <ul class="govuk-tabs__list">
             <li class="govuk-tabs__list-item {{ filters.type == 'pending' ? 'govuk-tabs__list-item--selected' }}" role="presentation">
                 <a class="govuk-tabs__tab behat-link-pending-tab" href="{{ path('case-list', {'type': 'pending', 'q': filters.q}) }}" {% if filters.type == 'pending' %}aria-selected="true"{% endif %}>
-                    To do ({{ counts.pending }})
+                    To do
                 </a>
             </li>
             <li class="govuk-tabs__list-item {{ filters.type == 'served' ? 'govuk-tabs__list-item--selected' }}" role="presentation">
                 <a class="govuk-tabs__tab behat-link- behat-link-served-tab" href="{{ path('case-list', {'type': 'served', 'q': filters.q}) }}" {% if filters.type == 'served' %}aria-selected="true"{% endif %}>
-                    Served ({{ counts.served }})
+                    Served
                 </a>
             </li>
         </ul>
+
+        <div class="govuk-tabs__panel" id="to-do">
+            {% include 'Case/_stats_panel.html.twig' with { stats: toDoStats } %}
+        </div>
+
+        <div class="govuk-tabs__panel" id="served">
+            {% include 'Case/_stats_panel.html.twig' with { stats: servedStats } %}
+        </div>
+
+
+
+
 
         <section class="govuk-tabs__panel">
 
@@ -52,7 +65,7 @@
                                 <th class="govuk-table__header" scope="col">Order issued</th>
                                 <th class="govuk-table__header" scope="col">Status</th>
                             {% else %}
-                                <th class="govuk-table__header" scope="col">Order served</th>
+                                <th class="govuk-table__header" scope="col">Date served</th>
                                 <th class="govuk-table__header" scope="col">Documents</th>
                             {% endif %}
                         </tr>
@@ -63,9 +76,7 @@
                             <tr class="govuk-table__row behat-region-order-{{ client.caseNumber }}-{{ order.type }}" >
                                 <td class="govuk-table__cell">
                                     {% if order.servedAt %}
-                                        <a href="{{ path('served-order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}-served">
-                                            {{ client.caseNumber }}
-                                        </a>
+                                         {{ client.caseNumber }}
                                     {% else %}
                                         <a href="{{ path('order-summary', {'orderId': order.id}) }}" id="order-{{ client.caseNumber }}-{{ order.type }}">
                                             {{ client.caseNumber }}
@@ -96,13 +107,13 @@
                                 {% else %}
 
                                     <td class="govuk-table__cell">
-                                        {{ order.servedAt | date('j M Y') }}
+                                        {{ order.servedAt | date('d/m/Y') }}
                                     </td>
 
                                     <td class="govuk-table__cell">
                                         <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
                                             <summary class="govuk-details__summary">
-                                                <span class="govuk-details__summary-text">{{ order.documents | length }} attached documents</span>
+                                                <span class="govuk-details__summary-text">{{ order.documents | length }} documents</span>
                                             </summary>
                                             <div class="govuk-details__text">
                                                 {% for d in order.documents %}

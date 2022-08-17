@@ -1,0 +1,27 @@
+{% import 'Macros/_macros.html.twig' as macro %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
+            {{ macro.titleWithSideSubtitle(stats.totalOrdersCount, stats.description) }}
+        </div>
+{#Filter was deemed not needed for now - can uncomment if design needs change#}
+{#        <div class="govuk-grid-column-one-half">#}
+{#            <div class="govuk-form-group push--right">#}
+{#                <label class="govuk-label" for="sort">#}
+{#                    {{ stats.filter.label }}#}
+{#                </label>#}
+{#                <select class="govuk-select push--right" id="sort" name="sort">#}
+{#                    {% for selectOption in stats.filter.options %}#}
+{#                        {{ selectOption.value }}#}
+{#                        <option value="{{ selectOption.value }}">{{ selectOption.description }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </div>#}
+{#        </div>#}
+    </div>
+
+    <div class="govuk-grid-column-full govuk-!-padding-top-2">
+        {% include 'Case/_stats_items.html.twig' with { items: stats.orderMadePeriodStats, stats: stats } %}
+    </div>
+</div>
