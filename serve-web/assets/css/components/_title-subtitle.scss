@@ -1,0 +1,52 @@
+.app-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  height: 8vh;
+
+  &--subtitle-right {
+    h2.app-main-title {
+      order: 0;
+      text-align: justify;
+      font-size: 4.3vw;
+    }
+
+    h2.app-main-title:after {
+      content: "";
+      display: inline-block;
+      width: 100%;
+    }
+
+    h2.app-subtitle {
+      margin-left: 0.2rem;
+      order: 1;
+      text-align: left;
+      font-size: 2vw;
+    }
+  }
+
+  &--subtitle-left {
+    h2.app-main-title {
+      text-align: justify;
+      font-size: 4.3vw;
+      order: 1
+    }
+
+    h2.app-main-title:after {
+      content: "";
+      display: inline-block;
+      width: 100%;
+    }
+
+    h2.app-subtitle {
+      margin-right: 0.2rem;
+      order: 0;
+      text-align: right;
+      font-size: 2vw;
+    }
+  }
+}
+
+h2.app-subtitle {
+  @extend .govuk-grid-column-one-half;
+}

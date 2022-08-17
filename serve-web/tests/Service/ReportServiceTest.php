@@ -18,7 +18,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 class ReportServiceTest extends ApiWebTestCase
 {
     use ProphecyTrait;
-    
+
     public function testGenerateCsv()
     {
         $expectedCaseRef = 'COURTREFERENCE1';
