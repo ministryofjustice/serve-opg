@@ -59,7 +59,7 @@ up-test: ##@application Brings the app up in test mode with profiler and xdebug 
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
 	# Build app
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 phpunit-tests: up-test ##@testing Requires the app to be built and up before running
@@ -68,7 +68,7 @@ phpunit-tests: up-test ##@testing Requires the app to be built and up before run
 behat-tests: up-test ##@testing Requires the app to be built and up before running
 	# Add sample users and cases (local env only).
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm behat --suite=local
 
 build-up-prod: build-deps up-prod ##@builds Build dependencies and spin up the project in prod mode. Purges database and loads fixtures.
 	# Add sample users and cases (local env only).
