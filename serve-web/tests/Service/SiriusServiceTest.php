@@ -147,7 +147,8 @@ class SiriusServiceTest extends MockeryTestCase
             'json' => $expectedPayload,
             'cookies' => new CookieJar(),
             'headers' => [
-                'X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA=='
+                'X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA==',
+                'OPG-Bypass-Membrane' => '1',
             ]
         ];
 

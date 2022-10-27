@@ -235,7 +235,10 @@ class SiriusService
             [
                 'json' => $payload,
                 'cookies' => $this->cookieJar,
-                'headers' => ['X-XSRF-TOKEN' => $csrfToken]
+                'headers' => [
+                    'X-XSRF-TOKEN' => $csrfToken,
+                    'OPG-Bypass-Membrane' => '1',
+                ],
             ]
         );
     }
