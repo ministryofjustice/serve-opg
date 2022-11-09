@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "response_time_24h" {
   extended_statistic  = "p95"
   metric_name         = "TargetResponseTime"
   comparison_operator = "GreaterThanThreshold"
-  threshold           = 3
+  threshold           = 5
   period              = 86400
   datapoints_to_alarm = 1
   evaluation_periods  = 1
