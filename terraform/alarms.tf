@@ -22,7 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "response_time" {
   alarm_name          = "ResponseTime"
   statistic           = "Average"
   metric_name         = "TargetResponseTime"
-  comparison_operator = "GreaterThanEqualToThreshold"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
   threshold           = 5
   period              = 600
   datapoints_to_alarm = 3
