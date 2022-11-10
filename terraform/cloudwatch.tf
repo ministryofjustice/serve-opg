@@ -130,7 +130,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "title": "Response Time",
                   "annotations": {
                       "alarms": [
-                          "${aws_cloudwatch_metric_alarm.response_time_24h.arn}"
+                          "${aws_cloudwatch_metric_alarm.response_time.arn}"
                       ]
                   },
                   "view": "singleValue",
@@ -139,7 +139,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           }
       ]
   }
-  
+
 EOF
 
 }

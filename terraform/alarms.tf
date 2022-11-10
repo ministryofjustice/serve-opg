@@ -18,15 +18,15 @@ resource "aws_cloudwatch_metric_alarm" "alb_errors_24h" {
   treat_missing_data = "notBreaching"
 }
 
-resource "aws_cloudwatch_metric_alarm" "response_time_24h" {
+resource "aws_cloudwatch_metric_alarm" "response_time" {
   alarm_name          = "ResponseTime"
-  extended_statistic  = "p95"
+  statistic           = "Average"
   metric_name         = "TargetResponseTime"
-  comparison_operator = "GreaterThanThreshold"
-  threshold           = 3
-  period              = 86400
-  datapoints_to_alarm = 1
-  evaluation_periods  = 1
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  threshold           = 5
+  period              = 600
+  datapoints_to_alarm = 3
+  evaluation_periods  = 3
   namespace           = "AWS/ApplicationELB"
   alarm_actions       = [aws_sns_topic.alert.arn]
 
