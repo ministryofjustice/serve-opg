@@ -31,14 +31,14 @@ jobs:
       WEB_VERSION: ${{ inputs.version_tag }}
       INFRA_VERSION: ${{ inputs.version_tag }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: unfor19/install-aws-cli-action@v1
       - name: Install PHP 8.0
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.0.22"
       - name: Set up Python 3.8.1
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.x"
       - name: Install Python packages
@@ -59,7 +59,7 @@ jobs:
           name: cluster_config
 
       - name: Configure AWS Credentials for Behat Password
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
