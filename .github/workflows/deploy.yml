@@ -13,13 +13,13 @@ on:
     outputs:
       cluster_config:
         description: 'JSON string of cluster configuration'
-        value: ${{ jobs.terraform_workflow_job.outputs.cluster_config_json }}    
+        value: ${{ jobs.terraform_workflow_job.outputs.cluster_config_json }}
 
 jobs:
   terraform_workflow_job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: '0'
       - name: Extract branch name
@@ -65,10 +65,10 @@ jobs:
           TF_VAR_WEB_VERSION: ${{ inputs.version_tag }}
           TF_VAR_INFRA_VERSION: ${{ inputs.version_tag }}
         run: |
-          terraform workspace show 
+          terraform workspace show
           terraform plan -input=false -parallelism=30
         working-directory: ./terraform
-      
+
       - name: Terraform Apply
         env:
           TF_WORKSPACE: ${{ inputs.workspace_name }}
