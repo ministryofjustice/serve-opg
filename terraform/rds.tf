@@ -2,7 +2,7 @@ resource "aws_rds_cluster" "serve_opg" {
   master_password              = data.aws_secretsmanager_secret_version.database_password.secret_string
   master_username              = "serveopgadmin"
   engine                       = "aurora-postgresql"
-  engine_version               = "10"
+  engine_version               = local.postgres_engine_version
   skip_final_snapshot          = false
   final_snapshot_identifier    = "serve-opg-${terraform.workspace}"
   database_name                = "serve_opg"
@@ -13,9 +13,9 @@ resource "aws_rds_cluster" "serve_opg" {
   tags                         = local.default_tags
   preferred_backup_window      = "05:15-05:45"
   preferred_maintenance_window = "mon:05:50-mon:06:20"
+  allow_major_version_upgrade  = true
 
   lifecycle {
-    ignore_changes  = [engine_version]
     prevent_destroy = true
   }
 }
@@ -26,6 +26,7 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
   cluster_identifier           = aws_rds_cluster.serve_opg.id
   instance_class               = "db.r4.large"
   engine                       = aws_rds_cluster.serve_opg.engine
+  engine_version               = aws_rds_cluster.serve_opg.engine_version
   performance_insights_enabled = true
   monitoring_role_arn          = aws_iam_role.enhanced_monitoring.arn
   monitoring_interval          = 60
