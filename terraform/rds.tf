@@ -13,6 +13,7 @@ resource "aws_rds_cluster" "serve_opg" {
   tags                         = local.default_tags
   preferred_backup_window      = "05:15-05:45"
   preferred_maintenance_window = "mon:05:50-mon:06:20"
+  allow_major_version_upgrade  = true
 
   lifecycle {
     prevent_destroy = true
