@@ -2,7 +2,7 @@ resource "aws_rds_cluster" "serve_opg" {
   master_password              = data.aws_secretsmanager_secret_version.database_password.secret_string
   master_username              = "serveopgadmin"
   engine                       = "aurora-postgresql"
-  engine_version               = "10"
+  engine_version               = local.postgres_engine_version
   skip_final_snapshot          = false
   final_snapshot_identifier    = "serve-opg-${terraform.workspace}"
   database_name                = "serve_opg"
