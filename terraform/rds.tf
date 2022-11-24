@@ -26,7 +26,6 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
   cluster_identifier           = aws_rds_cluster.serve_opg.id
   instance_class               = terraform.workspace == "production" ? "db.r4.large" : "db.r5.large"
   engine                       = aws_rds_cluster.serve_opg.engine
-  engine_version               = aws_rds_cluster.serve_opg.engine_version
   performance_insights_enabled = true
   monitoring_role_arn          = aws_iam_role.enhanced_monitoring.arn
   monitoring_interval          = 60
