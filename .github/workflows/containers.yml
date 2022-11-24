@@ -29,7 +29,7 @@ jobs:
             # Vendor php dependencies
             docker-compose run --rm app composer install --no-interaction
             # install js dependencies
-            docker-compose run --rm yarn install
+            docker-compose run --rm yarn install --frozen-lockfile
             # Generate static assets
             docker-compose run --rm yarn build
             # Build app
