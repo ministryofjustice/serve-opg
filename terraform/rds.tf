@@ -3,17 +3,18 @@ resource "aws_rds_cluster" "serve_opg" {
   master_username              = "serveopgadmin"
   engine                       = "aurora-postgresql"
   engine_version               = local.postgres_engine_version
-  skip_final_snapshot          = false
+  skip_final_snapshot          = local.rds_deletion_protection ? false : true
   final_snapshot_identifier    = "serve-opg-${terraform.workspace}"
   database_name                = "serve_opg"
   db_subnet_group_name         = aws_db_subnet_group.database.name
   vpc_security_group_ids       = [aws_security_group.database.id]
   backup_retention_period      = 7
-  deletion_protection          = true
+  deletion_protection          = local.rds_deletion_protection
   tags                         = local.default_tags
+  allow_major_version_upgrade  = true
+  apply_immediately            = local.rds_deletion_protection ? false : true
   preferred_backup_window      = "05:15-05:45"
   preferred_maintenance_window = "mon:05:50-mon:06:20"
-  allow_major_version_upgrade  = true
 
   lifecycle {
     prevent_destroy = true
@@ -26,10 +27,10 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
   cluster_identifier           = aws_rds_cluster.serve_opg.id
   instance_class               = terraform.workspace == "production" ? "db.r4.large" : "db.r5.large"
   engine                       = aws_rds_cluster.serve_opg.engine
+  engine_version               = aws_rds_cluster.serve_opg.engine_version
   performance_insights_enabled = true
   monitoring_role_arn          = aws_iam_role.enhanced_monitoring.arn
   monitoring_interval          = 60
-  apply_immediately            = true
   tags                         = local.default_tags
 
   lifecycle {
