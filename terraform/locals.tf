@@ -50,6 +50,14 @@ variable "ip_whitelist" {
   type = map(string)
 }
 
+variable "deletion_protection" {
+  type = map(string)
+}
+
+variable "postgres_version" {
+  type = map(string)
+}
+
 module "allow_list" {
   source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
 }
@@ -69,8 +77,9 @@ locals {
   sirius_role                            = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${terraform.workspace}" : var.SIRIUS_ROLE
   associate_alb_with_waf_web_acl_enabled = var.waf_enabled[terraform.workspace]
   default_allow_list                     = var.ip_whitelist[terraform.workspace] ? module.allow_list.moj_sites : tolist(["0.0.0.0/0"])
-
-  fixtures_enabled = var.fixtures_enabled[terraform.workspace]
+  postgres_engine_version                = var.postgres_version[terraform.workspace]
+  rds_deletion_protection                = var.deletion_protection[terraform.workspace]
+  fixtures_enabled                       = var.fixtures_enabled[terraform.workspace]
 
   default_tags = {
     business-unit          = "OPG"
