@@ -25,7 +25,7 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
   count                        = 2
   identifier_prefix            = "serve-opg-"
   cluster_identifier           = aws_rds_cluster.serve_opg.id
-  instance_class               = terraform.workspace == "production" ? "db.r4.large" : "db.r5.large"
+  instance_class               = "db.r5.large"
   engine                       = aws_rds_cluster.serve_opg.engine
   engine_version               = aws_rds_cluster.serve_opg.engine_version
   performance_insights_enabled = true
