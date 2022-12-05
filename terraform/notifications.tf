@@ -45,7 +45,7 @@ module "notify_slack_us-east-1" {
   cloudwatch_log_group_retention_in_days = 14
 
   slack_webhook_url = data.aws_secretsmanager_secret_version.slack_url.secret_string
-  slack_channel     = terraform.workspace == "production" ? "#opg-digideps-team" : "#opg-digideps-devs"
+  slack_channel     = "#serve-opg"
   slack_username    = "aws"
   slack_emoji       = ":warning:"
 
