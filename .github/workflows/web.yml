@@ -5,11 +5,11 @@ jobs:
   test_web:
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
-        - name: Set up Python 3.8.1
-          uses: actions/setup-python@v2
+        - uses: actions/checkout@v3
+        - name: Set up Python 3.10.9
+          uses: actions/setup-python@v4
           with:
-            python-version: 3.8.1
+            python-version: 3.10.9
         - name: Build Dependencies
           run: |
             # Create the s3 buckets
