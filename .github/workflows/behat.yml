@@ -37,7 +37,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.0.22"
-      - name: Set up Python 3.8.1
+      - name: Set up Python 3.8.2
         uses: actions/setup-python@v2
         with:
           python-version: "3.x"
