@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "alb_errors_24h" {
-  alarm_name          = "5xxErrorsALB"
+  alarm_name          = "5xxErrorsALB.${terraform.workspace}"
   statistic           = "Sum"
   metric_name         = "HTTPCode_ELB_5XX_Count"
   comparison_operator = "GreaterThanThreshold"
@@ -19,7 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_errors_24h" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "response_time" {
-  alarm_name          = "ResponseTime"
+  alarm_name          = "ResponseTime.${terraform.workspace}"
   statistic           = "Average"
   metric_name         = "TargetResponseTime"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "response_time" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "errors_24h" {
-  alarm_name          = "5xxErrors"
+  alarm_name          = "5xxErrors.${terraform.workspace}"
   statistic           = "Sum"
   metric_name         = "HTTPCode_Target_5XX_Count"
   comparison_operator = "GreaterThanThreshold"
@@ -58,7 +58,7 @@ resource "aws_cloudwatch_metric_alarm" "errors_24h" {
 
 resource "aws_cloudwatch_metric_alarm" "availability_24h" {
   provider            = aws.us-east-1
-  alarm_name          = "availability"
+  alarm_name          = "availability.${terraform.workspace}"
   statistic           = "Minimum"
   metric_name         = "HealthCheckStatus"
   comparison_operator = "LessThanThreshold"

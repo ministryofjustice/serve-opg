@@ -44,6 +44,19 @@ jobs:
       - name: Install Python packages
         run: |
           pip3 install pipenv poetry boto3
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+        working-directory: ./serve-web
+      - name: Cache PHP Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
       - name: Composer Install
         run: |
           composer install --no-interaction

@@ -2,7 +2,7 @@ on:
   workflow_call:
 
 jobs:
-  test-web:
+  test_web:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
