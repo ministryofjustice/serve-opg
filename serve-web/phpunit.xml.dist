@@ -7,6 +7,8 @@
          colors="true"
          bootstrap="config/bootstrap.php"
          convertWarningsToExceptions="false"
+         convertDeprecationsToExceptions="false"
+         
 >
     <php>
         <ini name="error_reporting" value="-1" />
