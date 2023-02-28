@@ -26,7 +26,7 @@ resource "aws_s3_bucket_versioning" "bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
-  bucket = aws_s3_bucket.bucket.bucket
+  bucket = aws_s3_bucket.bucket.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -73,7 +73,7 @@ resource "aws_s3_bucket_versioning" "logs" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
-  bucket = aws_s3_bucket.logs.bucket
+  bucket = aws_s3_bucket.logs.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -83,7 +83,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
 }
 
 resource "aws_s3_bucket_public_access_block" "logs" {
-  bucket = aws_s3_bucket.logs.bucket
+  bucket = aws_s3_bucket.logs.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -153,7 +153,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_access_logs" {
 }
 
 resource "aws_s3_bucket_public_access_block" "s3_access_logs" {
-  bucket = aws_s3_bucket.logs.bucket
+  bucket = aws_s3_bucket.logs.id
 
   block_public_acls       = true
   block_public_policy     = true
