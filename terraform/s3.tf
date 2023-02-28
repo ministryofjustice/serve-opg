@@ -1,19 +1,6 @@
 resource "aws_s3_bucket" "bucket" {
   bucket = local.bucket_name
-  acl    = "private"
   tags   = local.default_tags
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
-
-  versioning {
-    enabled = true
-  }
 
   logging {
     target_bucket = aws_s3_bucket.s3_access_logs.id
@@ -22,6 +9,29 @@ resource "aws_s3_bucket" "bucket" {
 
   lifecycle {
     prevent_destroy = true
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
   }
 }
 
@@ -36,21 +46,8 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
 
 resource "aws_s3_bucket" "logs" {
   bucket = "logs.${local.bucket_name}"
-  acl    = "private"
   policy = data.aws_iam_policy_document.logs.json
   tags   = local.default_tags
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
-
-  versioning {
-    enabled = true
-  }
 
   logging {
     target_bucket = aws_s3_bucket.s3_access_logs.id
@@ -62,8 +59,31 @@ resource "aws_s3_bucket" "logs" {
   }
 }
 
+resource "aws_s3_bucket_acl" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "logs" {
+  bucket = aws_s3_bucket.logs.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
+  bucket = aws_s3_bucket.logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "logs" {
-  bucket = aws_s3_bucket.logs.bucket
+  bucket = aws_s3_bucket.logs.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -89,38 +109,51 @@ data "aws_iam_policy_document" "logs" {
 
 resource "aws_s3_bucket" "s3_access_logs" {
   bucket = "s3-logging.${local.bucket_name}"
+}
+
+resource "aws_s3_bucket_acl" "s3_access_logs" {
+  bucket = aws_s3_bucket.s3_access_logs.id
   acl    = "log-delivery-write"
+}
 
-  versioning {
-    enabled = true
+resource "aws_s3_bucket_versioning" "s3_access_logs" {
+  bucket = aws_s3_bucket.s3_access_logs.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
+}
 
-  lifecycle_rule {
+resource "aws_s3_bucket_lifecycle_configuration" "s3_access_logs" {
+  bucket = aws_s3_bucket.s3_access_logs.id
+
+  rule {
+    id     = "ExpireObjectsAfter180Days"
+    status = "Enabled"
+
     transition {
       days          = 30
       storage_class = "GLACIER"
     }
 
     noncurrent_version_transition {
-      days          = 30
+      noncurrent_days          = 30
       storage_class = "GLACIER"
     }
 
     noncurrent_version_expiration {
-      days = 180
+      noncurrent_days = 180
     }
 
     expiration {
       days                         = 180
       expired_object_delete_marker = true
     }
-
-    enabled = true
   }
 }
 
 resource "aws_s3_bucket_public_access_block" "s3_access_logs" {
-  bucket = aws_s3_bucket.logs.bucket
+  bucket = aws_s3_bucket.logs.id
 
   block_public_acls       = true
   block_public_policy     = true
