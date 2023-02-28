@@ -12,12 +12,12 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "bucket_acl" {
+resource "aws_s3_bucket_acl" "bucket" {
   bucket = aws_s3_bucket.bucket.id
   acl    = "private"
 }
 
-resource "aws_s3_bucket_versioning" "bucket_versioning" {
+resource "aws_s3_bucket_versioning" "bucket" {
   bucket = aws_s3_bucket.bucket.id
 
   versioning_configuration {
@@ -25,7 +25,7 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption_configuration" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
   bucket = aws_s3_bucket.bucket.bucket
 
   rule {
@@ -59,12 +59,12 @@ resource "aws_s3_bucket" "logs" {
   }
 }
 
-resource "aws_s3_bucket_acl" "logs_acl" {
+resource "aws_s3_bucket_acl" "logs" {
   bucket = aws_s3_bucket.logs.id
   acl    = "private"
 }
 
-resource "aws_s3_bucket_versioning" "logs_versioning" {
+resource "aws_s3_bucket_versioning" "logs" {
   bucket = aws_s3_bucket.logs.id
 
   versioning_configuration {
@@ -72,7 +72,7 @@ resource "aws_s3_bucket_versioning" "logs_versioning" {
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "logs_encryption_configuration" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
   bucket = aws_s3_bucket.logs.bucket
 
   rule {
@@ -111,12 +111,12 @@ resource "aws_s3_bucket" "s3_access_logs" {
   bucket = "s3-logging.${local.bucket_name}"
 }
 
-resource "aws_s3_bucket_acl" "s3_access_logs_acl" {
+resource "aws_s3_bucket_acl" "s3_access_logs" {
   bucket = aws_s3_bucket.s3_access_logs.id
   acl    = "log-delivery-write"
 }
 
-resource "aws_s3_bucket_versioning" "s3_access_logs_versioning" {
+resource "aws_s3_bucket_versioning" "s3_access_logs" {
   bucket = aws_s3_bucket.s3_access_logs.id
 
   versioning_configuration {
@@ -124,7 +124,7 @@ resource "aws_s3_bucket_versioning" "s3_access_logs_versioning" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "s3_access_logs_lifecycle" {
+resource "aws_s3_bucket_lifecycle_configuration" "s3_access_logs" {
   bucket = aws_s3_bucket.s3_access_logs.id
 
   rule {
