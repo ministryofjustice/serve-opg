@@ -54,6 +54,8 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Init
+        env:
+          TF_WORKSPACE: ${{ inputs.workspace_name }}
         run: |
           terraform init -input=false
         working-directory: ./terraform
