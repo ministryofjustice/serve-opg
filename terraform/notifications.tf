@@ -42,6 +42,8 @@ module "notify_slack_us-east-1" {
 
   lambda_function_name = "notify-slack"
 
+  iam_role_name_prefix = "us-east-1"
+
   cloudwatch_log_group_retention_in_days = 14
 
   slack_webhook_url = data.aws_secretsmanager_secret_version.slack_url.secret_string
