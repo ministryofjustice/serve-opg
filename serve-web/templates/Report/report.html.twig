@@ -4,14 +4,29 @@
 
 {% block pageTitle %}
     {#<span class="govuk-caption-l">{{ order.client.caseNumber }} {{ order.client.clientName }}</span>#}
-    <h1 class="govuk-heading-l">Served Order Reports</h1>
+    <h1 class="govuk-heading-l">Reports</h1>
 {% endblock %}
 
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Served Order Reports (4 Weeks)</h2>
             <a class="govuk-button" href="{{ path('download-report') }}">Download csv</a>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">All Orders to be Served</h2>
+            <a class="govuk-button" href="{{ path('download-orders-not-served') }}">Download csv</a>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">All Served Orders</h2>
+            <a class="govuk-button" href="{{ path('download-served-orders') }}">Download csv</a>
         </div>
     </div>
 {% endblock %}
