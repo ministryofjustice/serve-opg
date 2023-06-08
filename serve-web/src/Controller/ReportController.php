@@ -45,6 +45,26 @@ class ReportController extends AbstractController
     }
 
     /**
+     * @Route("/download-orders-not-served", name="download-orders-not-served")
+     */
+    public function downloadOrdersNotServed() {
+
+        $csv = $this->reportService->generateOrdersNotServedCsv();
+
+        return $this->file($csv);
+    }
+
+    /**
+     * @Route("/download-served-orders", name="download-served-orders")
+     */
+    public function downloadServedOrders() {
+
+        $csv = $this->reportService->generateAllServedOrdersCsv();
+
+        return $this->file($csv);
+    }
+
+    /**
      * @Route("/cases", name="cases")
      */
     public function casesAction() {
