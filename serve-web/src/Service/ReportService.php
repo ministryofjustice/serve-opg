@@ -149,7 +149,7 @@ class ReportService
      */
     public function getOrders(string $type, DateTime $startDate, int $maxResults)
     {
-        $today = (new DateTime('now'))->modify('+1 days')->format('Y-m-d');
+        $today = (new DateTime('now'))->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
 
         $filters = [
