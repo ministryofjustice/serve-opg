@@ -49,7 +49,7 @@ class OrderRepository extends EntityRepository
                         )
                     ELSE
                         cast_as_integer(
-                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))    
+                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))
                         )
                     END
                 ) AS HIDDEN custom_ordering
@@ -85,9 +85,16 @@ class OrderRepository extends EntityRepository
             array_key_exists('startDate', $filters) &&
             array_key_exists('endDate', $filters)
         ) {
-            $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
-                ->setParameter('start', $filters['startDate'])
-                ->setParameter('end', $filters['endDate']);
+            if ($filters['type'] == 'served') {
+                $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
+                    ->setParameter('start', $filters['startDate'])
+                    ->setParameter('end', $filters['endDate']);
+            }
+            else {
+                $qb->andWhere('o.madeAt >= :start AND o.madeAt <= :end')
+                    ->setParameter('start', $filters['startDate'])
+                    ->setParameter('end', $filters['endDate']);
+            }
         }
     }
 

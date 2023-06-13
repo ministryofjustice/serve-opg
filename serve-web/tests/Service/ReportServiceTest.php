@@ -18,7 +18,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 class ReportServiceTest extends ApiWebTestCase
 {
     use ProphecyTrait;
-    
+
     public function testGenerateCsv()
     {
         $expectedCaseRef = 'COURTREFERENCE1';
@@ -146,5 +146,72 @@ CSV;
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
         self::assertEquals(3, $csvRows);
+    }
+
+    public function testReportsReturnsAllServedOrders()
+    {
+        $em = self::getEntityManager();
+
+        $notServedOrders = OrderTestHelper::generateOrders(10, false);
+
+        $batchSize = 500;
+
+        $notServedOrders[0]->setServedAt((new DateTime())->modify('-2 weeks'));
+        $notServedOrders[1]->setServedAt((new DateTime())->modify('-3 weeks'));
+        $notServedOrders[2]->setServedAt((new DateTime())->modify('-4 weeks'));
+        $notServedOrders[3]->setServedAt((new DateTime())->modify('-10 weeks'));
+        $notServedOrders[4]->setServedAt((new DateTime())->modify('-1 years'));
+        $notServedOrders[5]->setServedAt((new DateTime())->modify('-4 years'));
+
+        foreach ($notServedOrders as $i => $order) {
+            $em->persist($order);
+
+            if (($i % $batchSize) === 0) {
+                $em->flush();
+                $em->clear(); // Detaches all objects from Doctrine!
+            }
+        }
+
+        $em->flush();
+        $em->clear();
+
+        $sut = new ReportService($em);
+        $csv = $sut->generateAllServedOrdersCsv();
+
+        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
+
+        self::assertEquals(10, $csvRows);
+    }
+
+    public function testReportsReturnsAllOrdersNotServed()
+    {
+        $em = self::getEntityManager();
+
+        $notServedOrders = OrderTestHelper::generateOrders(10, false);
+
+        $batchSize = 500;
+
+        $notServedOrders[0]->setServedAt();
+        $notServedOrders[1]->setServedAt();
+        $notServedOrders[2]->setServedAt();
+
+        foreach ($notServedOrders as $i => $order) {
+            $em->persist($order);
+
+            if (($i % $batchSize) === 0) {
+                $em->flush();
+                $em->clear(); // Detaches all objects from Doctrine!
+            }
+        }
+
+        $em->flush();
+        $em->clear();
+
+        $sut = new ReportService($em);
+        $csv = $sut->generateOrdersNotServedCsv();
+
+        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
+
+        self::assertEquals(7, $csvRows);
     }
 }
