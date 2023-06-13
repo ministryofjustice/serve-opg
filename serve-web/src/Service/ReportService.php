@@ -40,7 +40,10 @@ class ReportService
      */
     public function generateCsv(): File
     {
-        $orders = $this->getOrders('served', (new DateTime('now'))->modify('-4 weeks'), 10000);
+        $endDate = new DateTime('now');
+        $startDate = $endDate->modify('-4 weeks');
+
+        $orders = $this->getOrders('served', $startDate, $endDate,10000);
 
         $headers = ['DateIssued','DateMade', 'DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
         $ordersCsv = [];
@@ -76,7 +79,10 @@ class ReportService
      */
     public function generateOrdersNotServedCsv(): File
     {
-        $orders = $this->getOrders('pending', $date = new DateTime("2001-01-01 00:00:00"), 1000000);
+        $startDate = new DateTime("2001-01-01 00:00:00");
+        $endDate = (new DateTime('now'))->modify('+1 days');
+
+        $orders = $this->getOrders('pending', $startDate, $endDate, 1000000);
 
         $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderMadeDate', 'OrderIssueDate', 'Status' ];
         $ordersCsv = [];
@@ -113,7 +119,10 @@ class ReportService
      */
     public function generateAllServedOrdersCsv(): File
     {
-        $orders = $this->getOrders('served', $date = new DateTime("2001-01-01 00:00:00"), 1000000);
+        $startDate = new DateTime("2001-01-01 00:00:00");
+        $endDate = (new DateTime('now'))->modify('+1 days');
+
+        $orders = $this->getOrders('served', $startDate, $endDate, 1000000);
 
         $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderServedDate'];
         $ordersCsv = [];
@@ -147,15 +156,15 @@ class ReportService
      *
      * @return Order[]
      */
-    public function getOrders(string $type, DateTime $startDate, int $maxResults)
+    public function getOrders(string $type, DateTime $startDate, DateTime $endDate, int $maxResults)
     {
-        $today = (new DateTime('now'))->format('Y-m-d');
+        $formattedEndDate = $endDate->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
 
         $filters = [
             'type' => $type,
             'startDate' => $formattedStartDate,
-            'endDate' => $today
+            'endDate' => $formattedEndDate
         ];
         return $this->orderRepo->getOrders($filters, $maxResults);
     }
