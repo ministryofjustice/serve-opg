@@ -1,18 +1,30 @@
 admin1:
-    email: alex.saunders@digital.justice.gov.uk
+    email: nicola.mcmillan@digital.justice.gov.uk
     roles: ['ROLE_ADMIN']
 admin2:
-    email: greg.tyler@digital.justice.gov.uk
-    roles: ['ROLE_ADMIN']
-admin4:
-    email: alex.eves@digital.justice.gov.uk
-    roles: ['ROLE_ADMIN']
-admin5:
-    email: paul.mcqueen@digital.justice.gov.uk
-    roles: ['ROLE_ADMIN']
-admin6:
-    email: elizabeth.feenan@digital.justice.gov.uk
-    roles: ['ROLE_ADMIN']
-admin7:
     email: stacey.cook@digital.justice.gov.uk
     roles: ['ROLE_ADMIN']
+admin3:
+    email: peter.scottreid@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin4:
+    email: gugandeep.chani@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin5:
+    email: mia.gordon@digital.justice.gov.uk
+    roles: [ 'ROLE_ADMIN' ]
+admin6:
+    email: chris.rafferty@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin7:
+    email: tom.gulliver@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin8:
+    email: aidan.johnson@digital.justice.gov.uk
+    roles: ['ROLE_ADMIN']
+admin9:
+    email: james.warren@digital.justice.gov.uk
+    roles: [ 'ROLE_ADMIN' ]
+
+
+
