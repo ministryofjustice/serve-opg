@@ -152,7 +152,7 @@ CSV;
     {
         $em = self::getEntityManager();
 
-        $notServedOrders = OrderTestHelper::generateOrders(10, false);
+        $notServedOrders = OrderTestHelper::generateOrders(10, true);
 
         $batchSize = 500;
 
@@ -191,9 +191,9 @@ CSV;
 
         $batchSize = 500;
 
-        $notServedOrders[0]->setServedAt();
-        $notServedOrders[1]->setServedAt();
-        $notServedOrders[2]->setServedAt();
+        $notServedOrders[0]->setServedAt((new DateTime())->modify('-2 weeks'));
+        $notServedOrders[1]->setServedAt((new DateTime())->modify('-3 weeks'));
+        $notServedOrders[2]->setServedAt((new DateTime())->modify('-4 weeks'));
 
         foreach ($notServedOrders as $i => $order) {
             $em->persist($order);

@@ -41,9 +41,9 @@ class ReportService
     public function generateCsv(): File
     {
         $endDate = new DateTime('now');
-        $startDate = $endDate->modify('-4 weeks');
+        $startDate = (new DateTime('now'))->modify('-4 weeks');
 
-        $orders = $this->getOrders('served', $startDate, $endDate,10000);
+        $orders = $this->getOrders('served', $startDate, $endDate, 10000);
 
         $headers = ['DateIssued','DateMade', 'DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
         $ordersCsv = [];
