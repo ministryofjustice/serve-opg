@@ -81,6 +81,10 @@ locals {
   rds_deletion_protection                = var.deletion_protection[terraform.workspace]
   fixtures_enabled                       = var.fixtures_enabled[terraform.workspace]
 
+  cloud9_users = [
+    "gugandeep.chani"
+  ]
+
   default_tags = {
     business-unit          = "OPG"
     application            = "Serve OPG"
