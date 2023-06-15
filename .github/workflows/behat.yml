@@ -43,7 +43,7 @@ jobs:
           python-version: "3.10.9"
       - name: Install Python packages
         run: |
-          pip3 install pipenv poetry boto3
+          pip3 install -r scripts/ci_ingress/requirements.txt
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -103,7 +103,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo $TF_WORKSPACE
-          python scripts/ci_ingress.py cluster_config.json --add
+          python scripts/ci_ingress/ci_ingress.py cluster_config.json --add
 
       - name: Run Behat
         env:
@@ -126,4 +126,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo $TF_WORKSPACE
-          python scripts/ci_ingress.py cluster_config.json
+          python scripts/ci_ingress/ci_ingress.py cluster_config.json
