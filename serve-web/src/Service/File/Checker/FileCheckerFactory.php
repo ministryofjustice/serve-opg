@@ -82,7 +82,7 @@ class FileCheckerFactory
     public function factory(UploadedFile $uploadedFile)
     {
         if ($uploadedFile->isExecutable() ||
-            preg_match('/([^\.])+(.exe|.bin|.bat|.js|.zip|.php)/i', $uploadedFile->getClientOriginalName())) {
+            preg_match('/([^\.])+(\.exe|\.bin|\.bat|\.js|\.zip|\.php)/i', $uploadedFile->getClientOriginalName())) {
             throw new InvalidFileTypeException( );
         }
         $mimeType = $uploadedFile->getMimeType();
