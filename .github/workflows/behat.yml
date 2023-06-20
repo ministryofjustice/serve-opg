@@ -32,7 +32,7 @@ jobs:
       INFRA_VERSION: ${{ inputs.version_tag }}
     steps:
       - uses: actions/checkout@v3
-      - uses: unfor19/install-aws-cli-action@v1
+      - uses: unfor19/install-aws-cli-action@v1.0.6
       - name: Install PHP 8.0
         uses: shivammathur/setup-php@v2
         with:
@@ -48,7 +48,7 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
         working-directory: ./serve-web
       - name: Cache PHP Dependencies
         uses: actions/cache@v3
@@ -72,7 +72,7 @@ jobs:
           name: cluster_config
 
       - name: Configure AWS Credentials for Behat Password
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
