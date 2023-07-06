@@ -94,3 +94,10 @@ resource "aws_security_group_rule" "database_tcp_out" {
   type                     = "egress"
 }
 
+resource "aws_security_group_rule" "database_cloud9_in" {
+  protocol = "tcp"
+  port     = 5432
+  security_group_id        = aws_security_group.database.id
+  source_security_group_id = aws_security_group.ecs_service.id
+  type                     = "ingress"
+}
