@@ -4,18 +4,31 @@ namespace App\Tests\Controller;
 
 use App\Phpunit\Helpers\AbstractControllerTestCase;
 
-class ManageControllerTest extends AbstractControllerTestCase
+class HealthControllerTest extends AbstractControllerTestCase
 {
-    public function testPingdom()
-    {
-        $this->client->request('GET', '/manage/availability/pingdom');
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    public function testServiceHealth()
+    {
+        $ret = $this->assertJsonRequest('GET', '/health-check/service', [
+            'assertResponseCode' => 200,
+        ])['data'];
+
+        $this->assertEquals(1, $ret['healthy'], print_r($ret, true));
+        $this->assertEquals('', $ret['errors']);
     }
 
-    public function testElb()
+    public function testContainerHealth()
     {
-        $this->client->request('GET', '/manage/elb');
+        $ret = $this->assertJsonRequest('GET', '/health-check', [
+                'assertResponseCode' => 200,
+            ])['data'];
+
+        $this->assertEquals('ok', $ret);
+    }
+
+    public function testPingdom()
+    {
+        $this->client->request('GET', '/health-check/pingdom');
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
