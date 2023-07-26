@@ -45,9 +45,9 @@ class HealthController extends AbstractController
     }
 
     /**
-     * @Route("", name="health-check", methods={"GET})
+     * @Route("", name="health-check", methods={"GET"})
      *
-     * @Template("")
+     * @Template("Health/health-check.html.twig")
      */
     public function containerHealthAction()
     {
@@ -56,7 +56,6 @@ class HealthController extends AbstractController
 
     /**
      * @Route("/service", methods={"GET"})
-     * @Template
      */
     public function serviceHealthAction(
         ApiAvailability $apiAvailability
@@ -90,7 +89,7 @@ class HealthController extends AbstractController
 
         list($healthy, $services, $errors) = $this->servicesHealth($services);
 
-        $response = $this->render('@App/Health/availability.html.twig', [
+        $response = $this->render('Health/availability.html.twig', [
             'services' => $services,
             'errors' => $errors,
             'environment' => $this->appEnv,
@@ -115,7 +114,7 @@ class HealthController extends AbstractController
         ];
         list($healthy, $services, $errors, $time) = $this->servicesHealth($services);
 
-        $response = $this->render('@App/Health/pingdom.xml.twig', [
+        $response = $this->render('Health/pingdom.xml.twig', [
             'status' => $healthy ? 'OK' : 'ERRORS: ',
             'time' => $time * 1000,
         ]);
