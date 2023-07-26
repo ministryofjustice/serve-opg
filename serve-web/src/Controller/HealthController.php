@@ -5,11 +5,12 @@ namespace App\Controller;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use App\Service\Availability\ApiAvailability;
+use App\Service\Availability\DatabaseAvailability;
 use App\Service\Availability\SiriusApiAvailability;
 use App\Service\Availability\NotifyAvailability;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Psr\Log\LoggerInterface;
 
 /**
  * @Route("/health-check")
@@ -37,10 +38,14 @@ class HealthController extends AbstractController
      * @param string $appEnv
      * @param string %symfonyDebug
      */
-    public function __construct(EntityManager $em, string $appEnv, string $symfonyDebug)
-    {
+    public function __construct(
+        EntityManager $em,
+        private LoggerInterface $logger,
+        string $appEnv,
+        string $symfonyDebug
+        ) {
+
         $this->em = $em;
-        $this->appEnv = $appEnv;
     }
 
     /**
@@ -57,21 +62,24 @@ class HealthController extends AbstractController
      * @Route("/service", methods={"GET"})
      */
     public function serviceHealthAction(
-        ApiAvailability $apiAvailability
-        ): ?Response {
-            $services = [$apiAvailability];
-            list($healthy, $services, $errors) = $this->servicesHealth($services);
+        DatabaseAvailability $dbAvailability
+    ): ?Response {
+        $services = [
+            $dbAvailability
+        ];
 
-            $response = $this->render('Health/availability.html.twig', [
-                'services' => $services,
-                'errors' => $errors,
-                'environment' => $this->appEnv,
-                'debug' => $this->symfonyDebug,
-            ]);
+        list($healthy, $services, $errors) = $this->servicesHealth($services);
 
-            $response->setStatusCode($healthy ? 200 : 500);
+        $response = $this->render('Health/availability.html.twig', [
+            'services' => $services,
+            'errors' => $errors,
+            'environment' => $this->appEnv,
+            'debug' => $this->symfonyDebug,
+        ]);
 
-            return $response;
+        $response->setStatusCode($healthy ? 200 : 500);
+
+        return $response;
         }
 
     /**
@@ -98,40 +106,6 @@ class HealthController extends AbstractController
         $response->setStatusCode($healthy ? 200 : 500);
 
         return $response;
-    }
-
-    /**
-     * @Route("/pingdom", methods={"GET"})
-     */
-    public function healthCheckXmlAction(
-        ApiAvailability $apiAvailability,
-        NotifyAvailability $notifyAvailability
-    ): ?Response {
-        $services = [
-            $apiAvailability,
-            $notifyAvailability
-        ];
-        list($healthy, $services, $errors, $time) = $this->servicesHealth($services);
-
-        $response = $this->render('Health/pingdom.xml.twig', [
-            'status' => $healthy ? 'OK' : 'ERRORS: ',
-            'time' => $time * 1000,
-        ]);
-        $response->setStatusCode($healthy ? 200 : 500);
-        $response->headers->set('Content-Type', 'text/xml');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/elb", name="manage-elb", methods={"GET"})
-     * @Template()
-     */
-    public function elbAction()
-    {
-        return $this->render('Health/elb.html.twig', [
-            'status' => 'OK'
-        ]);
     }
 
     /**
@@ -182,6 +156,7 @@ class HealthController extends AbstractController
         return [$healthy, $services, $errors, microtime(true) - $start];
     }
 
+
     /**
      * @Route("/version", methods={"GET"})
      * @Template
@@ -194,4 +169,3 @@ class HealthController extends AbstractController
             'infrastructure' => getenv("INFRA_VERSION")
         ]);
     }
-}
