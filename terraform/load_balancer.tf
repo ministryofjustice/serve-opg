@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "frontend" {
   tags                 = local.default_tags
 
   health_check {
-    path     = "/manage/elb"
+    path     = "/health-check"
     interval = 10
   }
 
