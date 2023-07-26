@@ -223,9 +223,10 @@ services:
     App\Service\Security\LoginAttempts\AttemptsStorageInterface:
         alias: App\Service\Security\LoginAttempts\DynamoDbAttemptsStorage
 
-    App\Controller\ManageController:
+    App\Controller\HealthController:
         arguments:
             $appEnv: "%env(APP_ENV)%"
+            $symfonyDebug: "%kernel.debug%"
 
     App\Service\DocumentService:
         arguments:
