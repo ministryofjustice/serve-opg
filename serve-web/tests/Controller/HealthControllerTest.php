@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Phpunit\Helpers\AbstractControllerTestCase;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 
 class HealthControllerTest extends AbstractControllerTestCase
 {

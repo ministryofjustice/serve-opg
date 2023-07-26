@@ -2,7 +2,7 @@
 Feature: prechecks
 
     Scenario: check app status
-        Given I go to "/health-check/availability"
+        Given I go to "/health-check/service"
         Then the response status code should be 200
 
     Scenario: check deployed versions
