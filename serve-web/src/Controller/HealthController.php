@@ -40,7 +40,6 @@ class HealthController extends AbstractController
     public function __construct(EntityManager $em, string $appEnv, string $symfonyDebug)
     {
         $this->em = $em;
-        $this->siriusService = $siriusService;
         $this->appEnv = $appEnv;
     }
 
