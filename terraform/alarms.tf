@@ -58,7 +58,7 @@ resource "aws_cloudwatch_metric_alarm" "availability-front" {
   period              = 60
   evaluation_periods  = 3
   namespace           = "AWS/Route53"
-  alarm_actions       = [aws_sns_topic.alert.arn]
+  alarm_actions       = [aws_sns_topic.alert_us_east.arn]
   tags                = local.default_tags
 
   dimensions = {
@@ -88,7 +88,7 @@ resource "aws_cloudwatch_metric_alarm" "availability-service" {
   period              = 60
   evaluation_periods  = 3
   namespace           = "AWS/Route53"
-  alarm_actions       = [aws_sns_topic.alert.arn]
+  alarm_actions       = [aws_sns_topic.alert_us_east.arn]
   tags                = local.default_tags
 
   dimensions = {
@@ -118,7 +118,7 @@ resource "aws_cloudwatch_metric_alarm" "availability-dependencies" {
   period              = 60
   evaluation_periods  = 5
   namespace           = "AWS/Route53"
-  alarm_actions       = [aws_sns_topic.alert.arn]
+  alarm_actions       = [aws_sns_topic.alert_us_east.arn]
   tags                = local.default_tags
 
   dimensions = {
