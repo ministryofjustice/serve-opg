@@ -11,10 +11,11 @@ abstract class AbstractControllerTestCase extends WebTestCase
     /**
      * @var Client
      */
-    protected $frameworkBundleClient;
+    protected static $frameworkBundleClient;
 
     public function setUp(): void
     {
-        $this->client = static::createClient(['environment' => 'test', 'debug' => true]);
+        self::$frameworkBundleClient = static::createClient(['environment' => 'test', 'debug' => true]);
     }
+
 }
