@@ -36,6 +36,96 @@ resource "aws_cloudwatch_metric_alarm" "response_time" {
   }
 }
 
+resource "aws_route53_health_check" "availability-front" {
+  fqdn              = aws_route53_record.serve.fqdn
+  resource_path     = "/health-check"
+  port              = 443
+  type              = "HTTPS"
+  failure_threshold = 1
+  request_interval  = 30
+  measure_latency   = true
+  tags              = merge(local.default_tags, { Name = "availability-front" }, )
+}
+
+resource "aws_cloudwatch_metric_alarm" "availability-front" {
+  provider            = aws.us-east-1
+  alarm_name          = "${terraform.workspace}-availability-front"
+  statistic           = "Minimum"
+  metric_name         = "HealthCheckStatus"
+  comparison_operator = "LessThanThreshold"
+  datapoints_to_alarm = 3
+  threshold           = 1
+  period              = 60
+  evaluation_periods  = 3
+  namespace           = "AWS/Route53"
+  alarm_actions       = [aws_sns_topic.alert.arn]
+  tags                = local.default_tags
+
+  dimensions = {
+    HealthCheckId = aws_route53_health_check.availability-front.id
+  }
+}
+
+resource "aws_route53_health_check" "availability-service" {
+  fqdn              = aws_route53_record.serve.fqdn
+  resource_path     = "/health-check/service"
+  port              = 443
+  type              = "HTTPS"
+  failure_threshold = 1
+  request_interval  = 30
+  measure_latency   = true
+  tags              = merge(local.default_tags, { Name = "availability-service" }, )
+}
+
+resource "aws_cloudwatch_metric_alarm" "availability-service" {
+  provider            = aws.us-east-1
+  alarm_name          = "${terraform.workspace}-availability-service"
+  statistic           = "Minimum"
+  metric_name         = "HealthCheckStatus"
+  comparison_operator = "LessThanThreshold"
+  datapoints_to_alarm = 3
+  threshold           = 1
+  period              = 60
+  evaluation_periods  = 3
+  namespace           = "AWS/Route53"
+  alarm_actions       = [aws_sns_topic.alert.arn]
+  tags                = local.default_tags
+
+  dimensions = {
+    HealthCheckId = aws_route53_health_check.availability-service.id
+  }
+}
+
+resource "aws_route53_health_check" "availability-dependencies" {
+  fqdn              = aws_route53_record.serve.fqdn
+  resource_path     = "/health-check/dependencies"
+  port              = 443
+  type              = "HTTPS"
+  failure_threshold = 1
+  request_interval  = 30
+  measure_latency   = true
+  tags              = merge(local.default_tags, { Name = "availability-dependencies" }, )
+}
+
+resource "aws_cloudwatch_metric_alarm" "availability-dependencies" {
+  provider            = aws.us-east-1
+  alarm_name          = "${terraform.workspace}-availability-dependencies"
+  statistic           = "Minimum"
+  metric_name         = "HealthCheckStatus"
+  comparison_operator = "LessThanThreshold"
+  datapoints_to_alarm = 5
+  threshold           = 1
+  period              = 60
+  evaluation_periods  = 5
+  namespace           = "AWS/Route53"
+  alarm_actions       = [aws_sns_topic.alert.arn]
+  tags                = local.default_tags
+
+  dimensions = {
+    HealthCheckId = aws_route53_health_check.availability-dependencies.id
+  }
+}
+
 resource "aws_cloudwatch_metric_alarm" "errors_24h" {
   alarm_name          = "5xxErrors.${terraform.workspace}"
   statistic           = "Sum"
