@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "alb_errors_24h" {
-  alarm_name          = "5xxErrorsALB.${terraform.workspace}"
+  alarm_name          = "${terraform.workspace}-5xx-errors-alb"
   statistic           = "Sum"
   metric_name         = "HTTPCode_ELB_5XX_Count"
   comparison_operator = "GreaterThanThreshold"
@@ -19,7 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_errors_24h" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "response_time" {
-  alarm_name          = "ResponseTime.${terraform.workspace}"
+  alarm_name          = "${terraform.workspace}-response-time"
   statistic           = "Average"
   metric_name         = "TargetResponseTime"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -36,8 +36,98 @@ resource "aws_cloudwatch_metric_alarm" "response_time" {
   }
 }
 
+resource "aws_route53_health_check" "availability-front" {
+  fqdn              = aws_route53_record.serve.fqdn
+  resource_path     = "/health-check"
+  port              = 443
+  type              = "HTTPS"
+  failure_threshold = 1
+  request_interval  = 30
+  measure_latency   = true
+  tags              = merge(local.default_tags, { Name = "availability-front" }, )
+}
+
+resource "aws_cloudwatch_metric_alarm" "availability-front" {
+  provider            = aws.us-east-1
+  alarm_name          = "${terraform.workspace}-availability-front"
+  statistic           = "Minimum"
+  metric_name         = "HealthCheckStatus"
+  comparison_operator = "LessThanThreshold"
+  datapoints_to_alarm = 3
+  threshold           = 1
+  period              = 60
+  evaluation_periods  = 3
+  namespace           = "AWS/Route53"
+  alarm_actions       = [aws_sns_topic.alert.arn]
+  tags                = local.default_tags
+
+  dimensions = {
+    HealthCheckId = aws_route53_health_check.availability-front.id
+  }
+}
+
+resource "aws_route53_health_check" "availability-service" {
+  fqdn              = aws_route53_record.serve.fqdn
+  resource_path     = "/health-check/service"
+  port              = 443
+  type              = "HTTPS"
+  failure_threshold = 1
+  request_interval  = 30
+  measure_latency   = true
+  tags              = merge(local.default_tags, { Name = "availability-service" }, )
+}
+
+resource "aws_cloudwatch_metric_alarm" "availability-service" {
+  provider            = aws.us-east-1
+  alarm_name          = "${terraform.workspace}-availability-service"
+  statistic           = "Minimum"
+  metric_name         = "HealthCheckStatus"
+  comparison_operator = "LessThanThreshold"
+  datapoints_to_alarm = 3
+  threshold           = 1
+  period              = 60
+  evaluation_periods  = 3
+  namespace           = "AWS/Route53"
+  alarm_actions       = [aws_sns_topic.alert.arn]
+  tags                = local.default_tags
+
+  dimensions = {
+    HealthCheckId = aws_route53_health_check.availability-service.id
+  }
+}
+
+resource "aws_route53_health_check" "availability-dependencies" {
+  fqdn              = aws_route53_record.serve.fqdn
+  resource_path     = "/health-check/dependencies"
+  port              = 443
+  type              = "HTTPS"
+  failure_threshold = 1
+  request_interval  = 30
+  measure_latency   = true
+  tags              = merge(local.default_tags, { Name = "availability-dependencies" }, )
+}
+
+resource "aws_cloudwatch_metric_alarm" "availability-dependencies" {
+  provider            = aws.us-east-1
+  alarm_name          = "${terraform.workspace}-availability-dependencies"
+  statistic           = "Minimum"
+  metric_name         = "HealthCheckStatus"
+  comparison_operator = "LessThanThreshold"
+  datapoints_to_alarm = 5
+  threshold           = 1
+  period              = 60
+  evaluation_periods  = 5
+  namespace           = "AWS/Route53"
+  alarm_actions       = [aws_sns_topic.alert.arn]
+  tags                = local.default_tags
+
+  dimensions = {
+    HealthCheckId = aws_route53_health_check.availability-dependencies.id
+  }
+}
+
 resource "aws_cloudwatch_metric_alarm" "errors_24h" {
-  alarm_name          = "5xxErrors.${terraform.workspace}"
+  alarm_name          = "${terraform.workspace}-5xx-errors"
   statistic           = "Sum"
   metric_name         = "HTTPCode_Target_5XX_Count"
   comparison_operator = "GreaterThanThreshold"
@@ -58,7 +148,7 @@ resource "aws_cloudwatch_metric_alarm" "errors_24h" {
 
 resource "aws_cloudwatch_metric_alarm" "availability_24h" {
   provider            = aws.us-east-1
-  alarm_name          = "availability.${terraform.workspace}"
+  alarm_name          = "${terraform.workspace}-availability-24"
   statistic           = "Minimum"
   metric_name         = "HealthCheckStatus"
   comparison_operator = "LessThanThreshold"
@@ -75,12 +165,12 @@ resource "aws_cloudwatch_metric_alarm" "availability_24h" {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "sirius_login_errors" {
-  name           = "ServeSiriusLoginErrors.${terraform.workspace}"
+  name           = "${terraform.workspace}-serve-sirius-login-errors"
   pattern        = "\"ERROR\" \"publicapi\" \"Request ->\""
   log_group_name = aws_cloudwatch_log_group.frontend.name
 
   metric_transformation {
-    name          = "ServeSiriusLoginErrors.${terraform.workspace}"
+    name          = "${terraform.workspace}-serve-sirius-login-errors"
     namespace     = "Server/Error"
     value         = "1"
     default_value = "0"
@@ -88,7 +178,7 @@ resource "aws_cloudwatch_log_metric_filter" "sirius_login_errors" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "sirius_login_errors" {
-  alarm_name          = "ServeSiriusLoginErrors.${terraform.workspace}"
+  alarm_name          = "${terraform.workspace}-serve-sirius-login-errors"
   statistic           = "Sum"
   metric_name         = aws_cloudwatch_log_metric_filter.sirius_login_errors.metric_transformation[0].name
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -102,12 +192,12 @@ resource "aws_cloudwatch_metric_alarm" "sirius_login_errors" {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "sirius_unavailable_errors" {
-  name           = "ServeSiriusUnavailableErrors.${terraform.workspace}"
+  name           = "${terraform.workspace}-serve-sirius-unavailable-errors"
   pattern        = "\"NotFoundHttpException\" \"No route found for\" \"/api/passphrase\""
   log_group_name = aws_cloudwatch_log_group.frontend.name
 
   metric_transformation {
-    name          = "ServeSiriusUnavailableErrors.${terraform.workspace}"
+    name          = "${terraform.workspace}-serve-sirius-unavailable-errors"
     namespace     = "Server/Error"
     value         = "1"
     default_value = "0"
@@ -115,7 +205,7 @@ resource "aws_cloudwatch_log_metric_filter" "sirius_unavailable_errors" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "sirius_unavailable_errors" {
-  alarm_name          = "ServeSiriusUnavailableErrors.${terraform.workspace}"
+  alarm_name          = "${terraform.workspace}-serve-sirius-unavailable-errors"
   statistic           = "Sum"
   metric_name         = aws_cloudwatch_log_metric_filter.sirius_unavailable_errors.metric_transformation[0].name
   comparison_operator = "GreaterThanOrEqualToThreshold"
