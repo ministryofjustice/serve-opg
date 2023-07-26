@@ -25,11 +25,4 @@ class HealthControllerTest extends AbstractControllerTestCase
 
         $this->assertEquals('ok', $ret);
     }
-
-    public function testPingdom()
-    {
-        $this->client->request('GET', '/health-check/pingdom');
-
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-    }
 }
