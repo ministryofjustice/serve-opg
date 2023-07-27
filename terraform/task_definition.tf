@@ -190,15 +190,6 @@ locals {
       "protocol": "tcp"
     }],
     "volumesFrom": [],
-    "healthCheck": {
-      "command": [
-        "CMD-SHELL",
-        "curl -f -k https://localhost:443/health-check || exit 1"
-      ],
-      "interval": 30,
-      "timeout": 10,
-      "retries": 3
-    },
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -239,7 +230,7 @@ EOF
     "healthCheck": {
       "command": [
         "CMD-SHELL",
-        "curl -f -k https://localhost:443/health-check || exit 1"
+        "curl -f -k https://localhost:9000/health-check || exit 1"
       ],
       "interval": 30,
       "timeout": 10,
