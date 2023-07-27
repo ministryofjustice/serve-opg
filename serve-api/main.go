@@ -2,15 +2,17 @@ package main
 
 import (
 	"context"
-	"github.com/ministryofjustice/serve-opg/serve-api/handlers"
-	"github.com/ministryofjustice/serve-opg/serve-api/internal/db"
-	"github.com/ministryofjustice/serve-opg/serve-api/repositories"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/ministryofjustice/serve-opg/serve-api/handlers"
+	"github.com/ministryofjustice/serve-opg/serve-api/internal/db"
+	"github.com/ministryofjustice/serve-opg/serve-api/repositories"
 
 	"github.com/gorilla/mux"
 )
@@ -33,8 +35,17 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	sm.HandleFunc("/hello-world", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello you!"))
+	sm.HandleFunc("/health-check/service", func(w http.ResponseWriter, r *http.Request) {
+		dbHealthy, dbError := handlers.DbStatusCheck(database)
+
+		response := handlers.HealthResponse{Healthy: dbHealthy, Errors: dbError}
+
+		jsonResponse, _ := json.Marshal(response)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse)
+
 	})
 
 	sm.HandleFunc("/orders/download-report", h.DownloadReport)
