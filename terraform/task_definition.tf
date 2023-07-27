@@ -227,6 +227,15 @@ EOF
       "hostPort": 9000,
       "protocol": "tcp"
   	}],
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -f -k https://localhost:9000/health-check || exit 1"
+      ],
+      "interval": 30,
+      "timeout": 10,
+      "retries": 3
+    },
   	"volumesFrom": [],
   	"logConfiguration": {
       "logDriver": "awslogs",
