@@ -50,7 +50,6 @@ class HealthController extends AbstractController
 
     /**
      * @Route("", name="health-check", methods={"GET"})
-     *
      * @Template("Health/health-check.html.twig")
      */
     public function containerHealthAction()

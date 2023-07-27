@@ -193,7 +193,7 @@ locals {
     "healthCheck": {
       "command": [
         "CMD-SHELL",
-        "curl -f http://localhost:80 || exit 1"
+        "curl -f http://localhost:80/health-check || exit 1"
       ],
       "interval": 30,
       "timeout": 10,
@@ -238,8 +238,8 @@ EOF
   	}],
     "healthCheck": {
       "command": [
-        "CMD-SHELL",
-        "curl -f http://localhost:9000/health-check || exit 1"
+        "CMD",
+        "/usr/local/bin/health-check.sh"
       ],
       "interval": 30,
       "timeout": 10,
