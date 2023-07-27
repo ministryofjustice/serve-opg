@@ -190,6 +190,15 @@ locals {
       "protocol": "tcp"
     }],
     "volumesFrom": [],
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -f http://localhost:80/health-check || exit 1"
+      ],
+      "interval": 30,
+      "timeout": 10,
+      "retries": 3
+    },
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -227,6 +236,15 @@ EOF
       "hostPort": 9000,
       "protocol": "tcp"
   	}],
+    "healthCheck": {
+      "command": [
+        "CMD",
+        "/usr/local/bin/health-check.sh"
+      ],
+      "interval": 30,
+      "timeout": 10,
+      "retries": 3
+    },
   	"volumesFrom": [],
   	"logConfiguration": {
       "logDriver": "awslogs",
