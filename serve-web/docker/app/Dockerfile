@@ -26,6 +26,8 @@ RUN apk add --no-cache \
   zip \
   && docker-php-ext-install zip
 
+RUN apk add --no-cache fcgi
+
 #force upgrade packages
 RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib busybox curl gzip xz xz-libs libcurl
 
@@ -54,8 +56,9 @@ COPY . /var/www
 
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
 
-ENV TIMEOUT=20
+ENV TIMEOUT=30
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
   && php bin/console doctrine:migrations:migrate --no-interaction \
   && chown -R www-data var \
