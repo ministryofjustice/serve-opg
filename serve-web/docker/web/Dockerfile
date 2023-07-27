@@ -16,7 +16,7 @@ WORKDIR /var/www
 COPY public/build public/build
 COPY docker/web/etc /etc
 
-ENV TIMEOUT=20
+ENV TIMEOUT=30
 CMD confd -onetime -backend env \
   && waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=$TIMEOUT \
   && nginx -g "daemon off;"
