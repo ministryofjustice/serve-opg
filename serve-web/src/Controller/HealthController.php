@@ -46,6 +46,7 @@ class HealthController extends AbstractController
         ) {
 
         $this->em = $em;
+        $this->appEnv = $appEnv;
     }
 
     /**

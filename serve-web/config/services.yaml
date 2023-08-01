@@ -228,6 +228,10 @@ services:
             $appEnv: "%env(APP_ENV)%"
             $symfonyDebug: "%kernel.debug%"
 
+    App\Service\Availability\NotifyAvailability:
+        arguments:
+            $notifyClient: "@alphagov.notifications.client.real"
+
     App\Service\DocumentService:
         arguments:
             $appEnv: "%env(APP_ENV)%"
