@@ -13,3 +13,7 @@ services:
     App\Service\MailSender:
         arguments:
             $notifyClient: "@App\\Service\\NotifyClientMock"
+
+    App\Service\Availability\NotifyAvailability:
+        arguments:
+            $notifyClient: "@App\\Service\\NotifyClientMock"
