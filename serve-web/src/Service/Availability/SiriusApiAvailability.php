@@ -10,15 +10,16 @@ class SiriusApiAvailability extends ServiceAvailabilityAbstract
 
     public function __construct(SiriusService $siriusService)
     {
-        $this->sirius = $siriusService;
+        $this->siriusService = $siriusService;
     }
 
     public function ping()
     {
         try {
-           $siriusStatus = $this->sirus->ping();
+           $siriusStatus = $this->siriusService->ping();
            $this->isHealthy = $siriusStatus;
         } catch (\Throwable $e) {
+            $this->isHealthy = false;
             $this->customMessage = $e->getMessage();
         }
     }
