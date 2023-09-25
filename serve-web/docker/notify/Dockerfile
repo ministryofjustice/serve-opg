@@ -1,4 +1,4 @@
-FROM php:8.0.22-fpm-alpine
+FROM php:8.2.10-fpm-alpine
 
 ENV APP_DIR /var/www/app
 RUN mkdir -p $APP_DIR
