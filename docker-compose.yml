@@ -126,7 +126,7 @@ services:
     entrypoint: [ "yarn" ]
 
   behat:
-    image: php:8.0.22-fpm-alpine
+    image: php:8.2.11-fpm-alpine
     volumes:
       - ./serve-web:/var/www
       - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
