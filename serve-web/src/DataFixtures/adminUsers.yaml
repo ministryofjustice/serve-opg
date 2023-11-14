@@ -25,6 +25,9 @@ admin8:
 admin9:
     email: james.warren@digital.justice.gov.uk
     roles: [ 'ROLE_ADMIN' ]
+admin10:
+    email: jack.goodby@digital.justice.gov.uk
+    roles: [ 'ROLE_ADMIN' ]
 
 
 
