@@ -3,7 +3,7 @@ security:
         app_user_provider:
             id: App\Service\Security\LoginAttempts\UserProvider
 
-    encoders:
+    password_hashers:
         App\Entity\User:
             algorithm: auto
             cost: 12

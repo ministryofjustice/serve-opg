@@ -12,7 +12,7 @@ class UserTestHelper extends ApiWebTestCase
     static public function createUser(string $email, string $password)
     {
         $userModel = new User($email);
-        $encodedPassword = ApiWebTestCase::getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
+        $encodedPassword = ApiWebTestCase::getService('security.user_password_hasher')->hashPassword($userModel, $password);
         $userModel->setPassword($encodedPassword);
         return $userModel;
     }
