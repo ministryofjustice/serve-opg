@@ -289,19 +289,19 @@ EOF
   	},
     {
       "name": "DC_DB_HOST",
-      "value": "${aws_rds_cluster.serve_opg.endpoint}"
+      "value": "${aws_rds_cluster.cluster_serverless.endpoint}"
     },
     {
       "name": "DC_DB_PORT",
-      "value": "${aws_rds_cluster.serve_opg.port}"
+      "value": "${aws_rds_cluster.cluster_serverless.port}"
     },
     {
       "name": "DC_DB_NAME",
-      "value": "${aws_rds_cluster.serve_opg.database_name}"
+      "value": "${aws_rds_cluster.cluster_serverless.database_name}"
     },
     {
       "name": "DC_DB_USER",
-      "value": "${aws_rds_cluster.serve_opg.master_username}"
+      "value": "${aws_rds_cluster.cluster_serverless.master_username}"
     },
     {
       "name": "TIMEOUT",
@@ -360,4 +360,3 @@ EOF
 EOF
 
 }
-
