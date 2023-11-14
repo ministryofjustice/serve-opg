@@ -28,6 +28,8 @@ localstack-data
 /features/screenshots/*
 /tests/artifacts/behat/*
 /tests/artifacts/phpunit/*
+/terraform/cluster_config.json
+/terraform/builds/*
 
 /s3/
 /web/
