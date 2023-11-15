@@ -3,7 +3,7 @@ resource "aws_rds_cluster" "serve_opg" {
   master_username              = "serveopgadmin"
   engine                       = "aurora-postgresql"
   engine_version               = local.postgres_engine_version
-  skip_final_snapshot          = local.rds_deletion_protection ? false : true
+  skip_final_snapshot          = true
   final_snapshot_identifier    = "serve-opg-${terraform.workspace}"
   database_name                = "serve_opg"
   db_subnet_group_name         = aws_db_subnet_group.database.name
@@ -12,7 +12,7 @@ resource "aws_rds_cluster" "serve_opg" {
   deletion_protection          = local.rds_deletion_protection
   tags                         = local.default_tags
   allow_major_version_upgrade  = true
-  apply_immediately            = local.rds_deletion_protection ? false : true
+  apply_immediately            = true
   preferred_backup_window      = "05:15-05:45"
   preferred_maintenance_window = "mon:05:50-mon:06:20"
 
@@ -211,4 +211,3 @@ resource "aws_security_group_rule" "database_tcp_out" {
   source_security_group_id = aws_security_group.ecs_service.id
   type                     = "egress"
 }
-
