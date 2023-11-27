@@ -119,8 +119,8 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_town.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.address_town.notBlank')]
     private $addressTown;
 
     /**
@@ -134,8 +134,8 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_postcode.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.address_postcode.notBlank')]
     private $addressPostcode;
 
     /**

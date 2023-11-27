@@ -36,7 +36,7 @@ class AssetsExtension extends AbstractExtension
         $this->assetsVersion = $assetsVersion;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('assetUrl', function ($originalUrl) {

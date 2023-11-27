@@ -55,7 +55,7 @@ class OrderTestHelper
 
         for ($i = 99900000; $i < $lastOrderNumber; $i++) {
             $days = $lastOrderNumber - $i;
-            $dateString = $issuedAt->add(new DateInterval("P${days}D"))->format('Y-m-d');
+            $dateString = $issuedAt->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
 
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');
 

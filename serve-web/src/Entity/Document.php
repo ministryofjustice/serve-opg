@@ -49,8 +49,14 @@ class Document
     private $type;
 
     /**
-    * @var UploadedFile
-    */
+     * @var UploadedFile
+     * @Assert\File(
+     *     maxSize="20M",
+     *     mimeTypes={"application/pdf", "application/x-pdf", "image/png", "image/jpeg", "image/tiff", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+     *     mimeTypesMessage="document.file.errors.mimeTypesMessage",
+     *     maxSizeMessage="document.file.errors.maxSizeMessage"
+     * )
+     */
     private $file;
 
     /**
@@ -266,24 +272,6 @@ class Document
     public static function getPermittedMimeTypes()
     {
         return self::permittedMimeTypes;
-    }
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata->addPropertyConstraint('file', new Assert\File(array(
-            'maxSize' => self::MAX_UPLOAD_FILE_SIZE,
-            'mimeTypes' => [
-                'application/pdf',
-                'application/x-pdf',
-                'image/png',
-                'image/jpeg',
-                'image/tiff',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            ],
-            'mimeTypesMessage' => 'document.file.errors.mimeTypesMessage',
-            'maxSizeMessage' => 'document.file.errors.maxSizeMessage'
-        )));
     }
 
     /**

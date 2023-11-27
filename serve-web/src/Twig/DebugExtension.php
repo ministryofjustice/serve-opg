@@ -13,7 +13,7 @@ use Twig\TwigFilter;
  */
 class DebugExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('debug', function ($e) {

@@ -6,13 +6,14 @@ use Serializable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="dc_user")
  * @ORM\HasLifecycleCallbacks
  */
-class User implements UserInterface, EquatableInterface
+class User implements UserInterface, EquatableInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @var string
@@ -139,7 +140,7 @@ class User implements UserInterface, EquatableInterface
         $this->email = $email;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return array_unique(array_merge(['ROLE_USER'], $this->roles));
     }
@@ -162,22 +163,27 @@ class User implements UserInterface, EquatableInterface
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return '';
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->email;
     }
 
-    public function isEqualTo(UserInterface $user)
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
             return false;

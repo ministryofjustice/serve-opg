@@ -16,12 +16,12 @@ class CastAsInteger extends FunctionNode
 {
     public $stringPrimary;
 
-    public function getSql(SqlWalker $sqlWalker)
+    public function getSql(SqlWalker $sqlWalker): string
     {
         return 'CAST(' . $this->stringPrimary->dispatch($sqlWalker) . ' AS integer)';
     }
 
-    public function parse(Parser $parser)
+    public function parse(Parser $parser): void
     {
         $parser->match(Lexer::T_IDENTIFIER);
         $parser->match(Lexer::T_OPEN_PARENTHESIS);

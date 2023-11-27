@@ -13,6 +13,7 @@ use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,19 +40,27 @@ class OrderController extends AbstractController
     private $documentService;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * OrderController constructor.
      * @param EntityManager $em
      * @param OrderService $orderService
      * @param DocumentService $documentService
+     * @param LoggerInterface $logger
      */
     public function __construct(
         EntityManager $em,
         OrderService $orderService,
-        DocumentService $documentService
+        DocumentService $documentService,
+        LoggerInterface $logger
     ) {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
+        $this->logger = $logger;
     }
 
     /**
@@ -88,7 +97,7 @@ class OrderController extends AbstractController
                         try {
                             $this->documentService->deleteDocumentById($document->getId());
                         } catch (\Exception $e) {
-                            $this->get('logger')->error($e->getMessage());
+                            $this->logger->error($e->getMessage());
                             $this->addFlash('error', 'Non applicable document could not be removed from order.');
                         }
                     }

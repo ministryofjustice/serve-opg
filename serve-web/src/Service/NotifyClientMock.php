@@ -16,7 +16,7 @@ class NotifyClientMock extends Client
         return true;
     }
 
-    public function sendEmail($emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL)
+    public function sendEmail($emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL): bool
     {
         if (self::$failNext) {
             throw new ApiException('Error sending email', 1, ['errors' => []], new Response());
