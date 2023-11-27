@@ -12,9 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
 
-/**
- * @Route("/health-check")
- */
+#[Route(path: '/health-check')]
 class HealthController extends AbstractController
 {
     /**
@@ -50,18 +48,16 @@ class HealthController extends AbstractController
     }
 
     /**
-     * @Route("", name="health-check", methods={"GET"})
      * @Template("Health/health-check.html.twig")
      */
-    public function containerHealthAction()
+    #[Route(path: '', name: 'health-check', methods: ['GET'])]
+    public function containerHealth()
     {
         return ['status' => 'OK'];
     }
 
-    /**
-     * @Route("/service", methods={"GET"})
-     */
-    public function serviceHealthAction(
+    #[Route(path: '/service', methods: ['GET'])]
+    public function serviceHealth(
         DatabaseAvailability $dbAvailability
     ): ?Response {
         $services = [
@@ -82,10 +78,8 @@ class HealthController extends AbstractController
         return $response;
         }
 
-    /**
-     * @Route("/dependencies", methods={"GET"})
-     */
-    public function dependencyHealthAction(
+    #[Route(path: '/dependencies', methods: ['GET'])]
+    public function dependencyHealth(
         NotifyAvailability $notifyAvailability,
         SiriusApiAvailability $siriusAvailability
     ): ?Response {
@@ -108,9 +102,7 @@ class HealthController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/app-env", name="app-env", methods={"GET"})
-     */
+    #[Route(path: '/app-env', name: 'app-env', methods: ['GET'])]
     public function appEnv()
     {
         return new Response($this->appEnv);
@@ -158,10 +150,10 @@ class HealthController extends AbstractController
 
 
     /**
-     * @Route("/version", methods={"GET"})
      * @Template
      */
-    public function versionAction()
+    #[Route(path: '/version', methods: ['GET'])]
+    public function version()
     {
         return $this->json([
             'application' => getenv("APP_VERSION"),

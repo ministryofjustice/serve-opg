@@ -60,16 +60,16 @@ class Deputy
      * @var \DateTime
      *
      * @ORM\Column(name="dob", type="date", nullable=true)
-     * @Assert\NotBlank(message="deputy.dateOfBirth.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.dateOfBirth.notBlank')]
     private $dateOfBirth;
 
     /**
      * @var string
      *
      * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.emailAddress.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.emailAddress.notBlank')]
     private $emailAddress;
 
     /**
@@ -97,8 +97,8 @@ class Deputy
      * @var string
      *
      * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_line_1.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.address_line_1.notBlank')]
     private $addressLine1;
 
     /**

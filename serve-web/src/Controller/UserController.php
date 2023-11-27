@@ -52,10 +52,8 @@ class UserController extends AbstractController
         $this->encoder = $encoder;
     }
 
-    /**
-     * @Route("/login", name="login")
-     */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up)
+    #[Route(path: '/login', name: 'login')]
+    public function login(AuthenticationUtils $authenticationUtils, UserProvider $up)
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -68,9 +66,7 @@ class UserController extends AbstractController
         ));
     }
 
-    /**
-     * @Route("/user/password-reset/request", name="password-reset-request")
-     */
+    #[Route(path: '/user/password-reset/request', name: 'password-reset-request')]
     public function passwordResetRequest(Request $request)
     {
         $form = $this->createForm(PasswordResetForm::class);
@@ -95,9 +91,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/user/password-reset/change/{token}", name="password-change")
-     */
+    #[Route(path: '/user/password-reset/change/{token}', name: 'password-change')]
     public function passwordChange(Request $request, $token)
     {
         $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
@@ -130,9 +124,7 @@ class UserController extends AbstractController
     }
 
 
-    /**
-     * @Route("/user/password-reset/sent", name="password-reset-sent")
-     */
+    #[Route(path: '/user/password-reset/sent', name: 'password-reset-sent')]
     public function passwordResetSent(Request $request)
     {
         return $this->render('User/password-reset-sent.html.twig', [
@@ -140,9 +132,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/users", name="view-users", methods={"GET"})
-     */
+    #[Route(path: '/users', name: 'view-users', methods: ['GET'])]
     public function viewUsers()
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -152,12 +142,12 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/view", name="view-user", methods={"GET", "POST"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse|Response
      */
-    public function viewUser(Request $request, int $id)
+    #[Route(path: '/users/{id}/view', name: 'view-user', methods: ['GET', 'POST'])]
+    public function viewUser(int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -184,11 +174,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/edit", name="edit-user", methods={"GET", "POST"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/users/{id}/edit', name: 'edit-user', methods: ['GET', 'POST'])]
     public function editUser(Request $request, int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -218,11 +208,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/add", name="add-user", methods={"GET", "POST"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/users/add', name: 'add-user', methods: ['GET', 'POST'])]
     public function addUser(Request $request)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -251,11 +241,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/confirmation", name="add-user-confirmation", methods={"GET"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/users/{id}/confirmation', name: 'add-user-confirmation', methods: ['GET'])]
     public function addUserConfirmation(int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -273,12 +263,12 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/resend-activation", name="resend-activation-user", methods={"GET"})
      * @param Request $request
      * @param int $id
      * @return Response
      */
-    public function resendActivationUser(Request $request, int $id)
+    #[Route(path: '/users/{id}/resend-activation', name: 'resend-activation-user', methods: ['GET'])]
+    public function resendActivationUser(int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -299,11 +289,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/delete", name="delete-user", methods={"GET"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse
      */
+    #[Route(path: '/users/{id}/delete', name: 'delete-user', methods: ['GET'])]
     public function deleteUser(Request $request, int $id)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');

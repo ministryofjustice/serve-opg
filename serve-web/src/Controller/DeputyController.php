@@ -44,9 +44,7 @@ class DeputyController extends AbstractController
         $this->orderService = $orderService;
     }
 
-    /**
-     * @Route("/order/{orderId}/deputy/add", name="deputy-add")
-     */
+    #[Route(path: '/order/{orderId}/deputy/add', name: 'deputy-add')]
     public function add(Request $request, $orderId)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -80,10 +78,8 @@ class DeputyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/deputy/add/deputy-type", name="deputy-type")
-     */
-    public function chooseDeputyType(Request $request, $orderId)
+    #[Route(path: '/order/{orderId}/deputy/add/deputy-type', name: 'deputy-type')]
+    public function chooseDeputyType($orderId)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -93,13 +89,12 @@ class DeputyController extends AbstractController
     }
 
     /**
-     * @Route("/case/order/{orderId}/deputy/edit/{deputyId}", name="deputy-edit")
      * @param Request $request
      * @param $orderId
      * @param $deputyId
-     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
+    #[Route(path: '/case/order/{orderId}/deputy/edit/{deputyId}', name: 'deputy-edit')]
     public function edit(Request $request, $orderId, $deputyId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
@@ -129,13 +124,12 @@ class DeputyController extends AbstractController
     }
 
     /**
-     * @Route("/case/order/{orderId}/deputy/delete/{deputyId}", name="deputy-delete")
      * @param Request $request
      * @param $orderId
      * @param $deputyId
-     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
+    #[Route(path: '/case/order/{orderId}/deputy/delete/{deputyId}', name: 'deputy-delete')]
     public function delete(Request $request, $orderId, $deputyId)
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);

@@ -10,18 +10,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
-    /**
-     * @Route("/", name="homepage")
-     */
-    public function indexAction()
+    #[Route(path: '/', name: 'homepage')]
+    public function index()
     {
         return $this->redirectToRoute('case-list');
     }
 
-    /**
-     * @Route("/design", name="design")
-     */
-    public function designAction()
+    #[Route(path: '/design', name: 'design')]
+    public function design()
     {
         // design stuff
         return $this->render('Index/design.html.twig', [
@@ -30,10 +26,9 @@ class IndexController extends AbstractController
 
     /**
      * keep session alive. Called from session timeout dialog.
-     *
-     * @Route("session-keep-alive", name="session-keep-alive", methods={"GET"})
      */
-    public function sessionKeepAliveAction(Request $request)
+    #[Route(path: 'session-keep-alive', name: 'session-keep-alive', methods: ['GET'])]
+    public function sessionKeepAlive(Request $request)
     {
         $request->getSession()->set('refreshedAt', time());
 

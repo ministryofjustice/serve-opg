@@ -10,9 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/case")
- */
+#[Route(path: '/case')]
 class CaseController extends AbstractController
 {
     /**
@@ -35,10 +33,8 @@ class CaseController extends AbstractController
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
-    /**
-     * @Route("", name="case-list")
-     */
-    public function indexAction(Request $request)
+    #[Route(path: '', name: 'case-list')]
+    public function index(Request $request)
     {
         $limit = 50;
 

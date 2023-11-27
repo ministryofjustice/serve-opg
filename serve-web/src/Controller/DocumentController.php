@@ -160,10 +160,8 @@ class DocumentController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{docType}", methods={"POST"})
-     */
-    public function postAction(Request $request, $orderId, $docType)
+    #[Route(path: '/order/{orderId}/document/{docType}', methods: ['POST'])]
+    public function post(Request $request, $orderId, $docType)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -190,10 +188,8 @@ class DocumentController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
-     */
-    public function addAction(Request $request, $orderId, $docType)
+    #[Route(path: '/order/{orderId}/document/{docType}/add', name: 'document-add')]
+    public function add(Request $request, $orderId, $docType)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -227,10 +223,8 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{id}/remove", name="document-remove")
-     */
-    public function removeAction(Request $request, $orderId, $id)
+    #[Route(path: '/order/{orderId}/document/{id}/remove', name: 'document-remove')]
+    public function remove($orderId, $id)
     {
         if ($this->removeDocument($id) === self::FAIL) {
             $this->addFlash('error', 'Document could not be removed.');
@@ -239,10 +233,8 @@ class DocumentController extends AbstractController
         return $this->redirectToRoute('order-summary', ['orderId' => $orderId, '_fragment' => 'documents']);
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{id}", methods={"DELETE"})
-     */
-    public function deleteAction(Request $request, $orderId, $id)
+    #[Route(path: '/order/{orderId}/document/{id}', methods: ['DELETE'])]
+    public function delete($orderId, $id)
     {
         try {
             $documentRemoved = $this->removeDocument($id);

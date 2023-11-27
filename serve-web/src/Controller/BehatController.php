@@ -23,9 +23,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @Route("/behat")
- */
+#[Route(path: '/behat')]
 class BehatController extends AbstractController
 {
     const BEHAT_USERS = [
@@ -96,13 +94,10 @@ class BehatController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/behat-user-upsert")
-     */
-    public function userUpsert(Request $request)
+    #[Route(path: '/behat-user-upsert')]
+    public function userUpsert()
     {
         $this->securityChecks();
-
         foreach (self::BEHAT_USERS as $userDetails) {
             $email = $userDetails['email'];
             $isAdmin = $userDetails['admin'];
@@ -128,14 +123,11 @@ class BehatController extends AbstractController
 
             $this->em->flush();
         }
-
         return new Response($ret);
     }
 
-    /**
-     * @Route("/reset-behat-test-users")
-     */
-    public function resetBehatTestUsersAction(EntityManagerInterface $entityManager)
+    #[Route(path: '/reset-behat-test-users')]
+    public function resetBehatTestUsers(EntityManagerInterface $entityManager)
     {
         $this->securityChecks();
 
@@ -151,15 +143,11 @@ class BehatController extends AbstractController
         return new Response('Test users reset');
     }
 
-    /**
-     * @Route("/reset-behat-orders")
-     */
-    public function resetBehatOrdersAction(Request $request)
+    #[Route(path: '/reset-behat-orders')]
+    public function resetBehatOrders()
     {
         $this->securityChecks();
-
         $ret = [];
-
         // empty orders for behat clients
         $behatCases = [self::BEHAT_CASE_NUMBER, self::BEHAT_INTERIM_CASE_NUMBER];
         $clients = $this->em->getRepository(Client::class)->findBy(['caseNumber' => $behatCases]);
@@ -176,10 +164,8 @@ class BehatController extends AbstractController
         return new Response(implode("\n", array_filter($ret)));
     }
 
-    /**
-     * @Route("/reset-brute-force-attempts-logger")
-     */
-    public function resetBruteForceAction(Request $request)
+    #[Route(path: '/reset-brute-force-attempts-logger')]
+    public function resetBruteForce()
     {
         $this->securityChecks();
 
@@ -190,10 +176,8 @@ class BehatController extends AbstractController
         return new Response("attempts reset done");
     }
 
-    /**
-     * @Route("/document-list/{orderIdentifier}")
-     */
-    public function orderDocumentsList(Request $request, $orderIdentifier)
+    #[Route(path: '/document-list/{orderIdentifier}')]
+    public function orderDocumentsList($orderIdentifier)
     {
         $this->securityChecks();
 
@@ -223,9 +207,7 @@ class BehatController extends AbstractController
         return $this->em->getRepository($repo)->findOneBy(['client' => $client->getId()]);
     }
 
-    /**
-     * @Route("/reset-database")
-     */
+    #[Route(path: '/reset-database')]
     public function resetDatabase(KernelInterface $kernel)
     {
         $this->securityChecks();

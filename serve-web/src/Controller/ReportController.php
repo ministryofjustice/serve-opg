@@ -8,9 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/report")
- */
+#[Route(path: '/report')]
 class ReportController extends AbstractController
 {
     /**
@@ -27,26 +25,20 @@ class ReportController extends AbstractController
         $this->reportService = $reportService;
     }
 
-    /**
-     * @Route("", name="report")
-     */
-    public function reportAction() {
+    #[Route(path: '', name: 'report')]
+    public function report() {
         return $this->render('Report/report.html.twig');
     }
 
-    /**
-     * @Route("/download", name="download-report")
-     */
-    public function downloadReportAction() {
+    #[Route(path: '/download', name: 'download-report')]
+    public function downloadReport() {
 
         $csv = $this->reportService->generateCsv();
 
         return $this->file($csv);
     }
 
-    /**
-     * @Route("/download-orders-not-served", name="download-orders-not-served")
-     */
+    #[Route(path: '/download-orders-not-served', name: 'download-orders-not-served')]
     public function downloadOrdersNotServed() {
 
         $csv = $this->reportService->generateOrdersNotServedCsv();
@@ -54,9 +46,7 @@ class ReportController extends AbstractController
         return $this->file($csv);
     }
 
-    /**
-     * @Route("/download-served-orders", name="download-served-orders")
-     */
+    #[Route(path: '/download-served-orders', name: 'download-served-orders')]
     public function downloadServedOrders() {
 
         $csv = $this->reportService->generateAllServedOrdersCsv();
@@ -64,17 +54,13 @@ class ReportController extends AbstractController
         return $this->file($csv);
     }
 
-    /**
-     * @Route("/cases", name="cases")
-     */
-    public function casesAction() {
+    #[Route(path: '/cases', name: 'cases')]
+    public function cases() {
         return $this->render('Report/case-report.html.twig');
     }
 
-    /**
-     * @Route("/download-cases", name="download-report-cases")
-     */
-    public function downloadCasesReportAction() {
+    #[Route(path: '/download-cases', name: 'download-report-cases')]
+    public function downloadCasesReport() {
 
         $this->reportService->getCasesBeforeGoLive();
 
