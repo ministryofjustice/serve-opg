@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use App\Service\Availability\DatabaseAvailability;
 use App\Service\Availability\SiriusApiAvailability;
 use App\Service\Availability\NotifyAvailability;
@@ -47,13 +46,12 @@ class HealthController extends AbstractController
         $this->appEnv = $appEnv;
     }
 
-    /**
-     * @Template("Health/health-check.html.twig")
-     */
     #[Route(path: '', name: 'health-check', methods: ['GET'])]
     public function containerHealth()
     {
-        return ['status' => 'OK'];
+        return $this->render('Health/health-check.html.twig', [
+            'status' => 'OK'
+        ]);
     }
 
     #[Route(path: '/service', methods: ['GET'])]
@@ -148,10 +146,6 @@ class HealthController extends AbstractController
         return [$healthy, $services, $errors, microtime(true) - $start];
     }
 
-
-    /**
-     * @Template
-     */
     #[Route(path: '/version', methods: ['GET'])]
     public function version()
     {
