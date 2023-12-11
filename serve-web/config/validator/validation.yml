@@ -48,8 +48,9 @@ App\Entity\Deputy:
                 message: "Please enter the deputy's surname"
                 groups: [order-deputy]
         dateOfBirth:
-            - Type: Date
-            - Date:
+            - Type: \DateTimeInterface
+            - NotBlank:
+                message: "Please enter the deputy's date of birth"
                 groups: [order-deputy]
         emailAddress:
             - Type: string

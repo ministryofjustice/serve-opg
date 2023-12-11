@@ -57,7 +57,7 @@ class Deputy
     private $surname;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      *
      * @ORM\Column(name="dob", type="date", nullable=true)
      */
@@ -258,7 +258,7 @@ class Deputy
     }
 
     /**
-     * @return \DateTime $dateOfBirth
+     * @return \DateTimeInterface $dateOfBirth
      */
     public function getDateOfBirth()
     {
@@ -266,7 +266,7 @@ class Deputy
     }
 
     /**
-     * @param \DateTime $dateOfBirth
+     * @param \DateTimeInterface $dateOfBirth
      * @return $this
      */
     public function setDateOfBirth($dateOfBirth)
