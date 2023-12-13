@@ -6,14 +6,13 @@ use Serializable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="dc_user")
  * @ORM\HasLifecycleCallbacks
  */
-class User implements UserInterface, EquatableInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, EquatableInterface
 {
     /**
      * @var string
@@ -174,11 +173,6 @@ class User implements UserInterface, EquatableInterface, PasswordAuthenticatedUs
     }
 
     public function getUsername(): string
-    {
-        return $this->email;
-    }
-
-    public function getUserIdentifier(): string
     {
         return $this->email;
     }
