@@ -24,7 +24,7 @@ class DeputyTest extends TestCase
         $deputy->setAddressTown('');
         $deputy->setAddressPostcode('');
 
-        $validator = Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
+        $validator = Validation::createValidatorBuilder()->enableAnnotationMapping(true)->addDefaultDoctrineAnnotationReader()->getValidator();
         $errors = $validator->validate($deputy);
 
         $this->assertEquals(5, count($errors));
