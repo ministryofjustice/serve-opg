@@ -32,6 +32,6 @@ doctrine:
             string_functions:
                 cast_as_integer: App\Common\Query\CastAsInteger
                 str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
-                to_date: DoctrineExtensions\Query\Postgresql\DateFormat
+                to_sortable_date: App\Common\Query\ToSortableDate
             numeric_functions:
             datetime_functions:

@@ -4,6 +4,7 @@ namespace App\Repository;
 use App\Entity\Order;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use DoctrineExtensions\Query\Postgresql\StrToDate;
 
 class OrderRepository extends EntityRepository
 {
@@ -45,11 +46,11 @@ class OrderRepository extends EntityRepository
                 (
                     CASE WHEN (o.servedAt IS NULL) THEN
                         cast_as_integer(
-                            to_date(o.issuedAt, 'YYYYMMDD')
+                            to_sortable_date(o.issuedAt)
                         )
                     ELSE
                         cast_as_integer(
-                            CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))
+                            CONCAT('-', to_sortable_date(o.servedAt))
                         )
                     END
                 ) AS HIDDEN custom_ordering
