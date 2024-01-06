@@ -113,7 +113,7 @@ class Client
     /**
      * @param Order $order
      */
-    public function addOrder(Order $order)
+    public function addOrder(Order $order): void
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);

@@ -360,7 +360,7 @@ abstract class Order
     /**
      * @param ArrayCollection $deputies
      */
-    public function setDeputies($deputies)
+    public function setDeputies($deputies): void
     {
         $this->deputies = $deputies;
     }
@@ -368,7 +368,7 @@ abstract class Order
     /**
      * @param Deputy $deputy
      */
-    public function addDeputy(Deputy $deputy)
+    public function addDeputy(Deputy $deputy): void
     {
         if (!$this->deputies->contains($deputy)) {
             $this->deputies->add($deputy);

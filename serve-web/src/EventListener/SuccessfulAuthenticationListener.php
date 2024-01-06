@@ -40,7 +40,7 @@ class SuccessfulAuthenticationListener implements EventSubscriberInterface
         return ['security.authentication.success' => 'updateLastLoginAt'];
     }
 
-    public function updateLastLoginAt(AuthenticationEvent $event)
+    public function updateLastLoginAt(AuthenticationEvent $event): void
     {
         /** @var User $user */
         $user = $event->getAuthenticationToken()->getUser();

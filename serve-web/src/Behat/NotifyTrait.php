@@ -25,7 +25,7 @@ trait NotifyTrait
     /**
      * @Given I reset the email log
      */
-    public function iResetTheEmailLog()
+    public function iResetTheEmailLog(): void
     {
         $stream = stream_context_create(['http' => ['method' => 'DELETE']]);
         file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
@@ -40,7 +40,7 @@ trait NotifyTrait
     /**
      * @Then there should be no email sent to :to
      */
-    public function assertNoEmailShouldHaveBeenSent($to)
+    public function assertNoEmailShouldHaveBeenSent($to): void
     {
         $messages = $this->getNotifyMockSentMails();
         foreach($messages as $message) {
@@ -54,7 +54,7 @@ trait NotifyTrait
     /**
      * @When I click on the link in the email sent to :to
      */
-    public function IclickOnLinkInEmaiSentTo($to)
+    public function IclickOnLinkInEmaiSentTo($to): void
     {
         $messages = $this->getNotifyMockSentMails();
         foreach($messages as $message) {

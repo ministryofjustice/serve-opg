@@ -13,7 +13,7 @@ class DatabaseAvailability extends ServiceAvailabilityAbstract
         $this->em = $em;
     }
 
-    public function ping()
+    public function ping(): void
     {
         try {
             $this->em->getConnection()->query('select * from information_schema.tables LIMIT 1')->fetchAll();

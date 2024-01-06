@@ -178,7 +178,7 @@ class ClamAVChecker implements FileCheckerInterface
      * @param UploadedFile|null $file
      * @param array|null        $response
      */
-    private function log($level, $message, UploadedFile $file = null, array $response = null)
+    private function log($level, $message, UploadedFile $file = null, array $response = null): void
     {
         $extra = ['service' => 'clam_av_checker'];
 

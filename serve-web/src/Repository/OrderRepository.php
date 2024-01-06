@@ -68,7 +68,7 @@ class OrderRepository extends EntityRepository
      * @param QueryBuilder $qb
      * @param array $filters
      */
-    private function applyFilters(QueryBuilder $qb, array $filters)
+    private function applyFilters(QueryBuilder $qb, array $filters): void
     {
         if ($filters['type'] == 'pending') {
             $qb->where('o.servedAt IS NULL');

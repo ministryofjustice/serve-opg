@@ -67,7 +67,7 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
         return parent::delete($id);
     }
 
-    public function deleteExpired()
+    public function deleteExpired(): void
     {
         parent::deleteExpired();
     }

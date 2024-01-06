@@ -88,7 +88,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @param int $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -112,7 +112,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @param string
      */
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
@@ -127,7 +127,7 @@ class User implements UserInterface, EquatableInterface
         return in_array('ROLE_ADMIN', $this->roles);
     }
 
-    public function setRoles(array $roles)
+    public function setRoles(array $roles): void
     {
         $this->roles = $roles;
     }
@@ -135,7 +135,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @param string $password
      */
-    public function setPassword($password)
+    public function setPassword($password): void
     {
         $this->password = $password;
     }
@@ -168,7 +168,7 @@ class User implements UserInterface, EquatableInterface
         return true;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.
     }
@@ -192,7 +192,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @param string|null $activationToken
      */
-    public function setActivationToken($activationToken)
+    public function setActivationToken($activationToken): void
     {
         $this->activationToken = $activationToken;
         $this->activationTokenCreatedAt = new DateTime();
@@ -300,7 +300,7 @@ class User implements UserInterface, EquatableInterface
     /**
      * @ORM\PrePersist
      */
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
         $this->setCreatedAt(new DateTime());
     }

@@ -169,7 +169,7 @@ class S3Storage implements StorageInterface
             'concurrency' => 5,
             'preserve_iterator_keys' => true,
             // Invoke this function before executing each command
-            'before' => function (CommandInterface $cmd, $iterKey) use ($logger) {
+            'before' => function (CommandInterface $cmd, $iterKey) use ($logger): void {
                 $logger->debug("About to send {$iterKey}: " . print_r($cmd->toArray(), true));
             },
             // Invoke this function for each successful transfer
@@ -177,7 +177,7 @@ class S3Storage implements StorageInterface
                 ResultInterface $result,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            ) use ($logger, $documentsIterator) {
+            ) use ($logger, $documentsIterator): void {
 
                 // update current document being processed with new location
                 $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
@@ -188,7 +188,7 @@ class S3Storage implements StorageInterface
                 AwsException $reason,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            ) use ($logger) {
+            ) use ($logger): void {
                 $logger->error("Failed to send {$iterKey}: {$reason}\n");
             },
         ]);
@@ -199,7 +199,7 @@ class S3Storage implements StorageInterface
         // Force the pool to complete synchronously
         $promise->wait();
 
-        $promise->then(function () use ($logger) {
+        $promise->then(function () use ($logger): void {
             $logger->info("Transfer complete");
         });
 
@@ -213,7 +213,7 @@ class S3Storage implements StorageInterface
      * @param $newTagset
      * @throws \Exception
      */
-    public function appendTagset($key, $newTagset)
+    public function appendTagset($key, $newTagset): void
     {
         $this->log('info', "Appending Purge tag for $key to S3");
         if (empty($key)) {
@@ -255,7 +255,7 @@ class S3Storage implements StorageInterface
      * @param $level
      * @param $message
      */
-    private function log($level, $message)
+    private function log($level, $message): void
     {
         //echo $message."\n"; //enable for debugging reasons. Tail the log with log-level=info otherwise
 

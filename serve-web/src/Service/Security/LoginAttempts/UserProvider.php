@@ -114,7 +114,7 @@ class UserProvider implements UserProviderInterface
      *
      * @param AuthenticationFailureEvent $event
      */
-    public function onAuthenticationFailure(AuthenticationFailureEvent $event)
+    public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {
         if (empty($this->rules)) {
             return;
@@ -131,7 +131,7 @@ class UserProvider implements UserProviderInterface
      *
      * @param AuthenticationEvent $e
      */
-    public function onAuthenticationSuccess(AuthenticationEvent $e)
+    public function onAuthenticationSuccess(AuthenticationEvent $e): void
     {
         if (empty($this->rules)) {
             return;
@@ -143,7 +143,7 @@ class UserProvider implements UserProviderInterface
         }
     }
 
-    public function resetUsernameAttempts($userId)
+    public function resetUsernameAttempts($userId): void
     {
         $this->storage->resetAttempts($userId);
 

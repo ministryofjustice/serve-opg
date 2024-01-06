@@ -16,7 +16,7 @@ class DebugExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('debug', function ($e) {
+            new TwigFilter('debug', function ($e): void {
 
                 Debug::dump($e);
             }),

@@ -40,7 +40,7 @@ class FixtureTestHelper
         return Yaml::parse(file_get_contents($this->yamlFixtureLocation . $yamlFileName));
     }
 
-    public function loadUserFixture(string $yamlFileName)
+    public function loadUserFixture(string $yamlFileName): void
     {
         $users = $this->parseYamlFixture($yamlFileName);
 
@@ -54,7 +54,7 @@ class FixtureTestHelper
         $this->em->flush();
     }
 
-    public function loadCaseFixture(string $yamlFileName)
+    public function loadCaseFixture(string $yamlFileName): void
     {
         $cases = $this->parseYamlFixture($yamlFileName);
 

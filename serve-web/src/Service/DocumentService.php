@@ -65,7 +65,7 @@ class DocumentService
         $this->appEnv = $appEnv;
     }
 
-    public function deleteDocumentById($id)
+    public function deleteDocumentById($id): void
     {
         /** @var Document $document */
         $document = $this->em->getRepository(Document::class)->find($id);
