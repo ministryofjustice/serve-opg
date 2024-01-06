@@ -121,14 +121,14 @@ abstract class Order
      *
      * @ORM\Column(name="payload_served", type="json_array", nullable=true)
      */
-    private $payloadServed;
+    private ?array $payloadServed;
 
     /**
      * API response as a string
      *
      * @ORM\Column(name="api_response", type="json_array", nullable=true)
      */
-    private $apiResponse;
+    private ?array $apiResponse;
 
     /**
      * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)

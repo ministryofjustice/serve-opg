@@ -109,7 +109,7 @@ class SiriusService
                     $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
                     if ($apiResponse instanceof Psr7\Response) {
-                        $order->setApiResponse(Psr7\str($apiResponse));
+                        $order->setApiResponse((array)Psr7\str($apiResponse));
                     }
 
                     if ($apiResponse->getStatusCode() !== 200) {
@@ -124,7 +124,7 @@ class SiriusService
 
             if ($e->hasResponse()) {
                 $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
-                $order->setApiResponse(Psr7\str($e->getResponse()));
+                $order->setApiResponse((array)Psr7\str($e->getResponse()));
             }
             throw $e;
         } catch (\Exception $e) {
