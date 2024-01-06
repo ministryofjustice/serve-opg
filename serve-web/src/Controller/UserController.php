@@ -24,20 +24,11 @@ use Twig\Environment;
 
 class UserController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var MailSender
-     */
-    private $mailerSender;
+    private MailSender $mailerSender;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
     /**
      * UserController constructor.

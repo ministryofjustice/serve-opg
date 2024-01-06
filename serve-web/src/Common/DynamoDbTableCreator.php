@@ -9,25 +9,16 @@ use Aws\DynamoDb\DynamoDbClient;
  */
 class DynamoDbTableCreator
 {
-    /**
-     * @var DynamoDbClient
-     */
-    private $client;
+    private DynamoDbClient $client;
 
-    /**
-     * @var string
-     */
-    private $tableName;
+    private string $tableName;
 
-    /**
-     * @var string
-     */
-    private $keyAttrName;
+    private string $keyAttrName;
 
     /**
      * @var boolean array cache to avoid querying dynamo in the same script lifespan
      */
-    private static $tableCreated = null;
+    private static ?bool $tableCreated = null;
 
     /**
      * DynamoDbTableCreator constructor.

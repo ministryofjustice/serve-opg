@@ -10,10 +10,7 @@ use Doctrine\ORM\EntityManager;
 
 class DeputyService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     /**
      * OrderService constructor.

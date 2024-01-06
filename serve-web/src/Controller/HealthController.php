@@ -17,20 +17,11 @@ use Psr\Log\LoggerInterface;
  */
 class HealthController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var string
-     */
-    private $appEnv;
+    private string $appEnv;
 
-    /**
-     * @var string
-     */
-    private $symfonyDebug;
+    private string $symfonyDebug = '';
 
     /**
      * HealthController constructor.

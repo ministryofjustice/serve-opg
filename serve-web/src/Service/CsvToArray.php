@@ -13,10 +13,7 @@ class CsvToArray
      */
     private $handle;
 
-    /**
-     * @var array
-     */
-    private $expectedColumns = [];
+    private array $expectedColumns = [];
 
     /**
      * @var bool

@@ -6,10 +6,7 @@ use App\Common\SessionConnectionCreatingTable;
 
 class DynamoDbAttemptsStorage implements AttemptsStorageInterface
 {
-    /**
-     * @var SessionConnectionCreatingTable
-     */
-    private $connection;
+    private SessionConnectionCreatingTable $connection;
 
     /**
      * DynamoDbAttemptsStorage constructor.

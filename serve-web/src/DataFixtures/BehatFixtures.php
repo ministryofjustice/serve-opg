@@ -10,19 +10,13 @@ use Doctrine\Persistence\ObjectManager;
 
 class BehatFixtures extends Fixture implements FixtureGroupInterface
 {
-    /**
-     * @var bool
-     */
-    private $fixturesEnabled;
+    private bool $fixturesEnabled;
 
-    /**
-     * @var FixtureTestHelper
-     */
-    private $fixtureHelper;
+    private FixtureTestHelper $fixtureHelper;
 
     /**
      * DefaultFixtures constructor.
-     * @param string $fixturesEnabled
+     * @param bool $fixturesEnabled
      * @param FixtureTestHelper $fixtureHelper
      */
     public function __construct($fixturesEnabled, FixtureTestHelper $fixtureHelper)

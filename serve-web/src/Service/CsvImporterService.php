@@ -10,20 +10,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CsvImporterService
 {
-    private static $orderTypeMap = [
+    private static array $orderTypeMap = [
         'hw' => OrderHw::class,
         'pf' => OrderPf::class,
     ];
 
-    /**
-     * @var ClientService
-     */
-    private $clientService;
+    private ClientService $clientService;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
     private EntityManagerInterface $em;
 
     /**

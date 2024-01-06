@@ -11,15 +11,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
 {
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
+    private StorageInterface $storage;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * FileUploader constructor.

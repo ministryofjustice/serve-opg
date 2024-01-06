@@ -6,6 +6,7 @@ use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
@@ -50,97 +51,73 @@ abstract class Order
     abstract public function isOrderValid();
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
-     * @var Client
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="orders", cascade={"persist"})
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $client;
+    private Client $client;
 
     /**
-     * @var string|null see SUBTYPE_* values
-     *
      * @ORM\Column(name="sub_type", type="string", length=50, nullable=true)
      */
-    private $subType;
+    private ?string $subType = null;
 
     /**
-     * @var string|null yes/no/na/null
-     *
      * @ORM\Column(name="has_assets_above_threshold", type="string", length=50, nullable=true)
      */
-    private $hasAssetsAboveThreshold;
+    private ?string $hasAssetsAboveThreshold = null;
 
     /**
-     * @var ArrayCollection of Deputy[]
-     *
      * @ORM\ManyToMany(targetEntity="App\Entity\Deputy", cascade={"persist"})
      * @ORM\JoinTable(name="ordertype_deputy",
      *   joinColumns={@ORM\JoinColumn(name="deputy_id", referencedColumnName="id", onDelete="CASCADE")},
      *   inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")}
      * )
      */
-    private $deputies;
+    private Collection $deputies;
 
     /**
-     * @var ArrayCollection of Document[]
-     *
      * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="order", cascade={"persist"})
      */
-    private $documents;
+    private Collection $documents;
 
     /**
-     * @var string|null see APPOINTMENT_TYPE_* values
-     *
      * @ORM\Column(name="appointment_type", type="string", length=50, nullable=true)
      */
-    private $appointmentType;
+    private ?string $appointmentType = null;
 
     /**
      * Date order was created in DC database
      *
-     * @var DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    private DateTime $createdAt;
 
     /**
      * Date order was first made outside DC
      *
-     * @var DateTime
-     *
      * @ORM\Column(name="made_at", type="datetime", options={"default":"2017-01-01 00:00:00"})
      */
-    private $madeAt;
+    private DateTime $madeAt;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="issued_at", type="datetime", nullable=true)
      */
-    private $issuedAt;
+    private DateTime $issuedAt;
 
     /**
-     * @var DateTime|null
-     *
      * @ORM\Column(name="served_at", type="datetime", nullable=true)
      */
-    private $servedAt;
+    private ?DateTime $servedAt = null;
 
     /**
      * JSON string served to the API
-     *
-     * @var string
      *
      * @ORM\Column(name="payload_served", type="json_array", nullable=true)
      */
@@ -149,18 +126,14 @@ abstract class Order
     /**
      * API response as a string
      *
-     * @var string
-     *
      * @ORM\Column(name="api_response", type="json_array", nullable=true)
      */
     private $apiResponse;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
      */
-    private $orderNumber;
+    private ?string $orderNumber = null;
 
     /**
      * Order constructor.

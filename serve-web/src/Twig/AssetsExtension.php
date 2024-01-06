@@ -15,15 +15,9 @@ use Twig\TwigFilter;
  */
 class AssetsExtension extends AbstractExtension
 {
-    /**
-     * @var string
-     */
-    private $basePath;
+    private string $basePath;
 
-    /**
-     * @var string|null
-     */
-    private $assetsVersion;
+    private ?string $assetsVersion = null;
 
     /**
      * AssetsExtension constructor.

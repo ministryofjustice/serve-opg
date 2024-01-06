@@ -16,20 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DeputyController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var DeputyService
-     */
-    private $deputyService;
+    private DeputyService $deputyService;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
 
     /**
      * DeputyController constructor.

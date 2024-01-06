@@ -20,83 +20,61 @@ class User implements UserInterface, EquatableInterface
     const TOKEN_EXPIRY = '48 hours ago';
 
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      */
-    private $email;
+    private ?string $email;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="password", type="string", length=255)
      */
-    private $password;
+    private string $password;
 
     /**
-     * @var DateTime|null
-     *
      * @ORM\Column(name="activation_token_created_at", type="datetime", nullable=true)
      */
-    private $activationTokenCreatedAt;
+    private ?DateTime $activationTokenCreatedAt = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="activation_token", type="string", length=40, nullable=true)
      */
-    private $activationToken;
+    private ?string $activationToken = null;
 
     /**
-     * @var DateTime|null
-     *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
-    private $createdAt;
+    private ?DateTime $createdAt = null;
 
     /**
-     * @var DateTime|null
-     *
      * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
      */
-    private $lastLoginAt;
+    private ?DateTime $lastLoginAt = null;
 
     /**
-     * @var array
-     *
      * @ORM\Column(name="roles", type="array")
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="first_name", type="string", length=100, nullable=true)
      */
-    private $firstName;
+    private ?string $firstName = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="last_name", type="string", length=100, nullable=true)
      */
-    private $lastName;
+    private ?string $lastName = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
      */
-    private $phoneNumber;
+    private ?string $phoneNumber = null;
 
     /**
      * User constructor.

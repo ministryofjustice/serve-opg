@@ -38,30 +38,15 @@ class BehatController extends AbstractController
     const BEHAT_CASE_NUMBER = '93559316';
     const BEHAT_INTERIM_CASE_NUMBER = '93559317';
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var ClientService
-     */
-    private $clientService;
+    private ClientService $clientService;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
-    /**
-     * @var UserProvider
-     */
-    private $userProvider;
+    private UserProvider $userProvider;
 
     /**
      * @string behatPassword

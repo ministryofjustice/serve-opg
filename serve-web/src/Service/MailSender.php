@@ -23,15 +23,9 @@ class MailSender
      */
     private $lastEmailId = null;
 
-    /**
-     * @var Client
-     */
-    private $notifyClient;
+    private Client $notifyClient;
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
 
     /**
      * MailSender constructor.

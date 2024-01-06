@@ -17,35 +17,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileCheckerFactory
 {
-    /**
-     * @var Pdf
-     */
-    protected $pdf;
+    protected Pdf $pdf;
 
-    /**
-     * @var Png
-     */
-    protected $png;
+    protected Png $png;
 
-    /**
-     * @var Jpg
-     */
-    protected $jpg;
+    protected Jpg $jpg;
 
-    /**
-     * @var Tif
-     */
-    protected $tif;
+    protected Tif $tif;
 
-    /**
-     * @var Doc
-     */
-    protected $doc;
+    protected Doc $doc;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * FileCheckerFactory constructor.
