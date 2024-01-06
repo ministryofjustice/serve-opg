@@ -9,10 +9,7 @@ use Alphagov\Notifications\Exception\NotifyException;
 
 class NotifyAvailability extends ServiceAvailabilityAbstract
 {
-    /**
-     * @var NotifyClient
-     */
-    private $notifyClient;
+    private NotifyClient $notifyClient;
 
     public function __construct(NotifyClient $notifyClient)
     {

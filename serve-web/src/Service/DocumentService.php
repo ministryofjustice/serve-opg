@@ -23,40 +23,19 @@ class DocumentService
     const FAIL = 0;
     const ERROR = 2;
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
+    private StorageInterface $storage;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var FileCheckerFactory
-     */
-    private $fileCheckerFactory;
+    private FileCheckerFactory $fileCheckerFactory;
 
-    /**
-     * @var FileUploader
-     */
-    private $fileUploader;
+    private FileUploader $fileUploader;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /**
-     * @var string
-     */
-    private $appEnv;
+    private string $appEnv;
 
     /**
      * DocumentService constructor.

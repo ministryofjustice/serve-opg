@@ -10,10 +10,7 @@ use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class SuccessfulAuthenticationListener implements EventSubscriberInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

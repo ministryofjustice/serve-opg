@@ -20,20 +20,11 @@ REGEX;
     const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
     const BOND_REGEX = '/sum of (.*) in/';
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var SiriusService
-     */
-    private $siriusService;
+    private SiriusService $siriusService;
 
-    /**
-     * @var DocumentReaderService
-     */
-    private $documentReader;
+    private DocumentReaderService $documentReader;
 
     /**
      * OrderService constructor.

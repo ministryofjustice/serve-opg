@@ -23,40 +23,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DocumentController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
 
-    /**
-     * @var DocumentService
-     */
-    private $documentService;
+    private DocumentService $documentService;
 
-    /**
-     * @var FileUploader
-     */
-    private $fileUploader;
+    private FileUploader $fileUploader;
 
-    /**
-     * @var FileCheckerFactory
-     */
-    private $fileCheckerFactory;
+    private FileCheckerFactory $fileCheckerFactory;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
     const SUCCESS = 1;
     const FAIL = 0;

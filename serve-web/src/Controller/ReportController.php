@@ -13,10 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ReportController extends AbstractController
 {
-    /**
-     * @var ReportService
-     */
-    private $reportService;
+    private ReportService $reportService;
 
     /**
      *

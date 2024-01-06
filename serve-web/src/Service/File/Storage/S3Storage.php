@@ -23,8 +23,6 @@ use Psr\Log\LoggerInterface;
 class S3Storage implements StorageInterface
 {
     /**
-     * @var S3Client
-     *
      * https://github.com/aws/aws-sdk-php
      * http://docs.aws.amazon.com/aws-sdk-php/v2/api/class-Aws.S3.S3Client.html
      *
@@ -33,22 +31,13 @@ class S3Storage implements StorageInterface
      * https://github.com/jubos/fake-s3
      * https://github.com/jubos/fake-s3/wiki/Supported-Clients
      */
-    private $s3Client;
+    private S3ClientInterface $s3Client;
 
-    /**
-     * @var string
-     */
-    private $localBucketName;
+    private string $localBucketName;
 
-    /**
-     * @var string
-     */
-    private $remoteBucketName;
+    private string $remoteBucketName;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * S3Storage constructor.
@@ -173,7 +162,7 @@ class S3Storage implements StorageInterface
 
         // Create the generator using the collection iterator
         $commands = $commandGenerator($documentsIterator, $this->getRemoteBucketName());
-        
+
         // Create a pool and provide an optional array of configuration
         $pool = new CommandPool($s3Client, $commands, [
             // Only send 5 files at a time (this is set to 25 by default)

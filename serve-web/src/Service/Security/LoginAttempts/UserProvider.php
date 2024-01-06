@@ -18,20 +18,11 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var AttemptsStorageInterface
-     */
-    private $storage;
+    private AttemptsStorageInterface $storage;
 
-    /**
-     * @var BruteForceChecker
-     */
-    private $bruteForceChecker;
+    private BruteForceChecker $bruteForceChecker;
 
     /**
      * @var array

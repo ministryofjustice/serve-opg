@@ -11,10 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostcodeController extends AbstractController
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * PostcodeController constructor.

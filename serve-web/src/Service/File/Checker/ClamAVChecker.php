@@ -15,15 +15,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ClamAVChecker implements FileCheckerInterface
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * @var array

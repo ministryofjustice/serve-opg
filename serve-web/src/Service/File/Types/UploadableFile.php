@@ -9,17 +9,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploadableFile implements UploadableFileInterface
 {
-    protected $scannerEndpoint = 'UNDEFINED';
+    protected string $scannerEndpoint = 'UNDEFINED';
 
     /**
      * @var FileCheckerInterface[]
      */
     protected $fileCheckers;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @var UploadedFile $file

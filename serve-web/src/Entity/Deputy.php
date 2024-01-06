@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,126 +23,90 @@ class Deputy
     const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
+
+    private Order $order;
 
     /**
-     * @var Order
-     */
-    private $order;
-
-    /**
-     * @var string|null see DEPUTY_TYPE_* values
-     *
      * @ORM\Column(name="deputy_type", type="string", length=255)
      */
-    private $deputyType;
+    private ?string $deputyType;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="forename", type="string", length=255)
      */
-    private $forename;
+    private string $forename;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="surname", type="string", length=255)
      */
-    private $surname;
+    private string $surname;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="dob", type="date", nullable=true)
      * @Assert\NotBlank(message="deputy.dateOfBirth.notBlank")
      */
-    private $dateOfBirth;
+    private ?DateTime $dateOfBirth;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank(message="deputy.emailAddress.notBlank")
      */
-    private $emailAddress;
+    private ?string $emailAddress;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="daytime_contact_number", type="string", length=255, nullable=true)
      */
-    private $daytimeContactNumber;
+    private ?string $daytimeContactNumber;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="evening_contact_number", type="string", length=255, nullable=true)
      */
-    private $eveningContactNumber;
+    private ?string $eveningContactNumber;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="mobile_contact_number", type="string", length=255, nullable=true)
      */
-    private $mobileContactNumber;
+    private ?string $mobileContactNumber;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
      * @Assert\NotBlank(message="deputy.address_line_1.notBlank")
      */
-    private $addressLine1;
+    private ?string $addressLine1;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="address_line_2", type="string", length=255, nullable=true)
      */
-    private $addressLine2;
+    private ?string $addressLine2;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="address_line_3", type="string", length=255, nullable=true)
      */
-    private $addressLine3;
+    private ?string $addressLine3;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
      * @Assert\NotBlank(message="deputy.address_town.notBlank")
      */
-    private $addressTown;
+    private ?string $addressTown;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="address_county", type="string", length=255, nullable=true)
      */
-    private $addressCounty;
+    private ?string $addressCounty;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
      * @Assert\NotBlank(message="deputy.address_postcode.notBlank")
      */
-    private $addressPostcode;
+    private ?string $addressPostcode;
 
-    /**
-     * @var string
-     */
-    private $addressCountry;
+    private ?string $addressCountry;
 
     /**
      * Deputy constructor.
@@ -258,7 +223,7 @@ class Deputy
     }
 
     /**
-     * @return \DateTime $dateOfBirth
+     * @return DateTime $dateOfBirth
      */
     public function getDateOfBirth()
     {
@@ -266,7 +231,7 @@ class Deputy
     }
 
     /**
-     * @param \DateTime $dateOfBirth
+     * @param DateTime $dateOfBirth
      * @return $this
      */
     public function setDateOfBirth($dateOfBirth)

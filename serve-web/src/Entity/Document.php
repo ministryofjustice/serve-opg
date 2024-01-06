@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,59 +26,41 @@ class Document
     const MAX_UPLOAD_FILE_SIZE = '20M';
 
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var Order|null
-     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="documents", cascade={"persist"})
      * @ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $order;
+    private ?Order $order = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="type", type="string", length=100)
      */
-    private $type;
+    private ?string $type = null;
+
+    private ?UploadedFile $file = null;
 
     /**
-    * @var UploadedFile
-    */
-    private $file;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="filename", type="string", length=255, nullable=true)
      */
-    private $fileName;
+    private ?string $fileName = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="storagereference", type="string", length=255)
      */
-    private $storageReference;
+    private string $storageReference;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="remotestoragereference", type="string", length=255, nullable=true)
      */
-    private $remoteStorageReference;
+    private ?string $remoteStorageReference;
 
-    /**
-     * @var \DateTime
-     */
-    private $createdAt;
+    private DateTime $createdAt;
 
     /**
      * Document constructor.
@@ -248,7 +231,7 @@ class Document
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -256,7 +239,7 @@ class Document
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      */
     public function setCreatedAt($createdAt)
     {

@@ -26,39 +26,21 @@ class SiriusService
     const HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS = 'HIGH';
     const HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS = 'LOW';
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var SiriusClient
-     */
-    private $httpClient;
+    private ClientInterface $httpClient;
 
-    /**
-     * @var StorageInterface
-     */
-    private $S3Storage;
+    private StorageInterface $S3Storage;
 
-    /**
-     * @var CookieJarInterface
-     */
-    private $cookieJar;
+    private ?CookieJarInterface $cookieJar = null;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var SecretsManagerClient
-     */
-    private $secretsManagerClient;
+    private SecretsManagerClient $secretsManagerClient;
 
-    private $siriusApiEmail;
+    private ?string $siriusApiEmail;
 
-    private $siriusApiPassword;
+    private ?string $siriusApiPassword;
 
     /**
      * SiriusService constructor.

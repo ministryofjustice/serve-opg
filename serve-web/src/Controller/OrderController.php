@@ -23,20 +23,11 @@ use Throwable;
 
 class OrderController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
 
-    /**
-     * @var DocumentService
-     */
-    private $documentService;
+    private DocumentService $documentService;
 
     /**
      * OrderController constructor.

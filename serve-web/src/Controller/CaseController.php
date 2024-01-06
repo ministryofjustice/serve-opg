@@ -15,15 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CaseController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var OrderRepository
-     */
-    private $orderRepo;
+    private OrderRepository $orderRepo;
 
     /**
      * UserController constructor.

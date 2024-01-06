@@ -16,20 +16,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class FixtureTestHelper
 {
-    /**
-     * @var string
-     */
-    private $yamlFixtureLocation;
+    private string $yamlFixtureLocation;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     /**
      * @var string

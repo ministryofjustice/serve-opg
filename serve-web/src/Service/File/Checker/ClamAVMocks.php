@@ -12,10 +12,8 @@ class ClamAVMocks
 {
     /**
      * `tests/behat/fixtures` has files along with response
-     *
-     * @var array
      */
-    private static $fileHashToResponse = [
+    private static array $fileHashToResponse = [
         'fa7d7e650b2cec68f302b31ba28235d8' => [  // good.pdf
             'celery_task_state'    => 'SUCCESS',
             'file_scanner_code'    => null,

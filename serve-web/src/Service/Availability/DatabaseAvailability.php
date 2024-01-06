@@ -6,13 +6,12 @@ use Doctrine\ORM\EntityManager;
 
 class DatabaseAvailability extends ServiceAvailabilityAbstract
 {
-    private $em;
+    private EntityManager $em;
 
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
-
 
     public function ping()
     {

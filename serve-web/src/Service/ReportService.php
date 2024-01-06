@@ -8,20 +8,15 @@ use App\Repository\OrderRepository;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Component\HttpFoundation\File\File;
 
 class ReportService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var OrderRepository
-     */
-    private $orderRepo;
+    private EntityRepository $orderRepo;
 
 
     /**

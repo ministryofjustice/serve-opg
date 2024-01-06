@@ -7,10 +7,7 @@ use Doctrine\ORM\EntityManager;
 
 class ClientService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
     /**
      * OrderService constructor.

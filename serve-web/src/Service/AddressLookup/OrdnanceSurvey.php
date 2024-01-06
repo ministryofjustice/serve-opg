@@ -9,16 +9,9 @@ use GuzzleHttp\ClientInterface;
 
 class OrdnanceSurvey
 {
+    private ClientInterface $httpClient;
 
-    /**
-     * @var Client
-     */
-    private $httpClient;
-
-    /**
-     * @var
-     */
-    private $apiKey;
+    private ?string $apiKey;
 
     /**
      * OrdnanceSurvey constructor.

@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,49 +16,39 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 class Client
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="case_number", type="string", length=8, unique=true)
      */
-    private $caseNumber;
+    private string $caseNumber;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="client_name", type="string", length=255)
      */
-    private $clientName;
+    private string $clientName;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    private DateTime $createdAt;
 
     /**
-     * @var Collection of Order[]
-     *
      * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="client", cascade={"persist"})
      */
-    private $orders;
+    private Collection $orders;
 
     /**
      * Client constructor.
      * @param string $caseNumber
      * @param string $clientName
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      */
-    public function __construct(string $caseNumber, string $clientName, \DateTime $createdAt)
+    public function __construct(string $caseNumber, string $clientName, DateTime $createdAt)
     {
         $this->caseNumber = $caseNumber;
         $this->clientName = $clientName;
@@ -90,9 +81,9 @@ class Client
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
