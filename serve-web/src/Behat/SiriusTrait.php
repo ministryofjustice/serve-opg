@@ -10,7 +10,7 @@ trait SiriusTrait
     /**
      * @Then the documents for order :orderIdentifier should be transferred
      */
-    public function theDocumentsForOrderShouldBeTransferred($orderIdentifier)
+    public function theDocumentsForOrderShouldBeTransferred($orderIdentifier): void
     {
         $documentsList = explode("|", $this->getDocumentsList($orderIdentifier));
 

@@ -69,7 +69,7 @@ class SiriusService
         $this->siriusApiPassword = $siriusApiPassword;
     }
 
-    public function serveOrder(Order $order)
+    public function serveOrder(Order $order): void
     {
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 

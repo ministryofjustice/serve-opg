@@ -33,7 +33,7 @@ class DynamoDbTableCreator
         $this->keyAttrName = $keyAttrName;
     }
 
-    public function createHashTableIfNotExisting()
+    public function createHashTableIfNotExisting(): void
     {
         // enable the following to delete the table, for testing purposes only
         //$this->client->deleteTable(['TableName' => $tableName]);

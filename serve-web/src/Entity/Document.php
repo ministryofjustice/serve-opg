@@ -77,7 +77,7 @@ class Document
     /**
      * @param ExecutionContextInterface $context
      */
-    public function isValidForOrder(ExecutionContextInterface $context)
+    public function isValidForOrder(ExecutionContextInterface $context): void
     {
         if (!($this->getFile() instanceof UploadedFile)) {
             return;
@@ -209,7 +209,7 @@ class Document
     /**
      * @param string $remoteStorageReference
      */
-    public function setRemoteStorageReference($remoteStorageReference)
+    public function setRemoteStorageReference($remoteStorageReference): void
     {
         $this->remoteStorageReference = $remoteStorageReference;
     }
@@ -225,7 +225,7 @@ class Document
     /**
      * @param UploadedFile $file
      */
-    public function setFile($file)
+    public function setFile($file): void
     {
         $this->file = $file;
     }
@@ -241,7 +241,7 @@ class Document
     /**
      * @param DateTime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -251,7 +251,7 @@ class Document
         return self::permittedMimeTypes;
     }
 
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('file', new Assert\File(array(
             'maxSize' => self::MAX_UPLOAD_FILE_SIZE,

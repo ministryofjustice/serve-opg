@@ -95,7 +95,7 @@ class UploadableFile implements UploadableFileInterface
      *
      * @throws \Exception
      */
-    public function checkFile()
+    public function checkFile(): void
     {
         $this->callFileCheckers();
     }
@@ -105,7 +105,7 @@ class UploadableFile implements UploadableFileInterface
      *
      * @throws \Exception
      */
-    public function callFileCheckers()
+    public function callFileCheckers(): void
     {
         foreach ($this->getFileCheckers() as $fc) {
             // send file

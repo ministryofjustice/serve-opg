@@ -9,7 +9,7 @@ trait DebugTrait
     /**
      * @Then /^debug$/
      */
-    public function debug($feature = null, $line = null)
+    public function debug($feature = null, $line = null): void
     {
         $filename = $feature . time() . '.html';
 
@@ -23,7 +23,7 @@ trait DebugTrait
     /**
      * @Then I save the page as :name
      */
-    public function iSaveThePageAs($name)
+    public function iSaveThePageAs($name): void
     {
         $filename = $this->behatDebugDir . '/screenshot-' . $name . '.html';
 
@@ -38,7 +38,7 @@ trait DebugTrait
      *
      * @AfterStep
      */
-    public function debugOnException(\Behat\Behat\Hook\Scope\AfterStepScope $scope)
+    public function debugOnException(\Behat\Behat\Hook\Scope\AfterStepScope $scope): void
     {
         if (($result = $scope->getTestResult())
             && $result instanceof \Behat\Behat\Tester\Result\ExecutedStepResult
@@ -54,7 +54,7 @@ trait DebugTrait
      * @Then die :code
      * @Then exit :code
      */
-    public function interrupt($code)
+    public function interrupt($code): void
     {
         die($code);
     }

@@ -74,7 +74,7 @@ class BehatController extends AbstractController
     /**
      * throw a AccessDeniedException if DC_BEHAT_CONTROLLER_ENABLED is empty or false
      */
-    private function securityChecks()
+    private function securityChecks(): void
     {
         if (!getenv('DC_BEHAT_CONTROLLER_ENABLED')) {
             throw new AccessDeniedException('Not accessible on this environment');

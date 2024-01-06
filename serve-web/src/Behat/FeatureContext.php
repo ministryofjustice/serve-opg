@@ -37,7 +37,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
      */
-    public function theHeaderContains($name, $value)
+    public function theHeaderContains($name, $value): void
     {
         $this->assertSession()->responseHeaderContains($name, $value);
     }
@@ -45,7 +45,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then the current versions should be shown
      */
-    public function theCurrentVersionsAreShown()
+    public function theCurrentVersionsAreShown(): void
     {
         $this->assertResponseContains(json_encode([
             'application' => getenv("APP_VERSION"),
@@ -58,7 +58,7 @@ class FeatureContext extends MinkContext implements Context
      * @Given I log in as :user with correct password
      * @param $user
      */
-    public function iLogInAsCorrect($user)
+    public function iLogInAsCorrect($user): void
     {
         $this->visit("/login");
         $this->fillField('email', $user);
@@ -70,7 +70,7 @@ class FeatureContext extends MinkContext implements Context
      * @Given I log in as :user with wrong password
      * @param $user
      */
-    public function iLogInAsWrong($user)
+    public function iLogInAsWrong($user): void
     {
         $this->visit("/login");
         $this->fillField('inputEmail', $user);
@@ -82,7 +82,7 @@ class FeatureContext extends MinkContext implements Context
      * @Given I log in as :user with new password
      * @param $user
      */
-    public function iLogInAsNew($user)
+    public function iLogInAsNew($user): void
     {
         $this->visit("/login");
         $this->fillField('email', $user);
@@ -94,7 +94,7 @@ class FeatureContext extends MinkContext implements Context
      * @Given I log in as :user with no password
      * @param $user
      */
-    public function iLogInAsNone($user)
+    public function iLogInAsNone($user): void
     {
         $this->visit("/login");
         $this->fillField('email', $user);
@@ -105,7 +105,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then /^the order should be (?P<shouldBe>(servable|unservable))$/
      */
-    public function theOrderIsOrNotServable($shouldBe)
+    public function theOrderIsOrNotServable($shouldBe): void
     {
         $this->assertResponseStatus(200);
 
@@ -121,7 +121,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then :service status should be :status
      */
-    public function statusShouldBe($service, $status)
+    public function statusShouldBe($service, $status): void
     {
         $this->assertResponseContains("\"$service\":$status");
     }
@@ -129,7 +129,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then :service status should not be :status
      */
-    public function statusShouldNotBe($service, $status)
+    public function statusShouldNotBe($service, $status): void
     {
         $this->assertResponseNotContains("\"$service\":$status");
         $this->assertResponseNotContains("\"$service\":\"$status\"");
@@ -138,7 +138,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then auto complete should be disabled
      */
-    public function autoCompleteDisabled()
+    public function autoCompleteDisabled(): void
     {
         $page = $this->getSession()->getPage()->find('css', '#login')->getAttribute('autocomplete');
         $this->assertResponseContains('off');
@@ -147,7 +147,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @When /^I fill in new password details$/
      */
-    public function iFillInNewPasswordDetails()
+    public function iFillInNewPasswordDetails(): void
     {
         $this->fillField('password_change_form_password_first', $this->behatPasswordNew);
         $this->fillField('password_change_form_password_second', $this->behatPasswordNew);
@@ -157,13 +157,13 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then :orderType order :caseNumber should have the following values under column headers:
      */
-    public function orderShouldHaveValuesUnderHeaders(TableNode $table, string $orderType, string $caseNumber)
+    public function orderShouldHaveValuesUnderHeaders(TableNode $table, string $orderType, string $caseNumber): void
     {
         $this->assertValuesAreInCorrectColumns($table);
         $this->assertOrderDetailsDisplayed($table, $orderType, $caseNumber);
     }
 
-    private function assertValuesAreInCorrectColumns(TableNode $table)
+    private function assertValuesAreInCorrectColumns(TableNode $table): void
     {
         foreach ($table->getRowsHash() as $expectedTableHeader => $expectedTableValue) {
             $foundColumnValues = $this->getSession()->getPage()->findAll(
@@ -196,7 +196,7 @@ class FeatureContext extends MinkContext implements Context
         }
     }
 
-    private function assertOrderDetailsDisplayed(TableNode $table, string $orderType, string $caseNumber)
+    private function assertOrderDetailsDisplayed(TableNode $table, string $orderType, string $caseNumber): void
     {
         $foundRows = $this->getSession()->getPage()->findAll('xpath', "//a[contains(.,'$caseNumber')]/../..");
 

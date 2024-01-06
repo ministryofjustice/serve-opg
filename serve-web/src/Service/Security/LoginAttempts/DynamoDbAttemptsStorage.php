@@ -17,7 +17,7 @@ class DynamoDbAttemptsStorage implements AttemptsStorageInterface
         $this->connection = $connection;
     }
 
-    public function storeAttempt($userId, $timestamp)
+    public function storeAttempt($userId, $timestamp): void
     {
         $data = $this->getAttempts($userId);
         $data[] = $timestamp;

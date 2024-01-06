@@ -36,7 +36,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
         return ['behatTests'];
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         if ($this->fixturesEnabled) {
             $this->fixtureHelper->loadUserFixture('adminUsers.yaml');

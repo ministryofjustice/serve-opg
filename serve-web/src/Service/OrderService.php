@@ -48,7 +48,7 @@ REGEX;
         return $this->siriusService->ping();
     }
 
-    public function serve(Order $order)
+    public function serve(Order $order): void
     {
         if (!$order->readyToServe()) {
             throw new \RuntimeException("Order not ready to be served");
@@ -123,7 +123,7 @@ REGEX;
     /**
      * @param Order $order
      */
-    public function emptyOrder(Order $order)
+    public function emptyOrder(Order $order): void
     {
         $orderId = $order->getId();
         $this->em->clear();
@@ -218,7 +218,7 @@ REGEX;
      * @param Order $order
      * @throws NoMatchesFoundException
      */
-    private function extractAppointmentTypeAndSubtype(string $text, Order $order)
+    private function extractAppointmentTypeAndSubtype(string $text, Order $order): void
     {
         preg_match(self::APPOINTMENT_TYPE_SUB_TYPE_REGEX, $text, $matches);
 
@@ -259,7 +259,7 @@ REGEX;
      * @param string $text
      * @param Order $order
      */
-    private function extractBondType(string $text, Order $order)
+    private function extractBondType(string $text, Order $order): void
     {
         preg_match(self::BOND_REGEX, $text, $matches);
 
