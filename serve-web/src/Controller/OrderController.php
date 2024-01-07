@@ -30,12 +30,6 @@ class OrderController extends AbstractController
 
     private DocumentService $documentService;
 
-    /**
-     * OrderController constructor.
-     * @param EntityManager $em
-     * @param OrderService $orderService
-     * @param DocumentService $documentService
-     */
     public function __construct(
         EntityManager $em,
         OrderService $orderService,
@@ -52,7 +46,7 @@ class OrderController extends AbstractController
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function editAction(Request $request, $orderId): RedirectResponse|Response
+    public function editAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -121,7 +115,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/order/{orderId}/declaration", name="order-declaration")
      */
-    public function declarationAction(Request $request, $orderId): RedirectResponse|Response
+    public function declarationAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -167,7 +161,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/order/{orderId}/upload", name="upload-order")
      */
-    public function uploadOrder(string $orderId): Response
+    public function uploadOrder(int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -233,7 +227,7 @@ MESSAGE;
     /**
      * @Route("/order/{orderId}/confirm-order-details", name="confirm-order-details", methods={"GET", "POST"})
      */
-    public function confirmOrderDetails(Request $request, $orderId): RedirectResponse|Response
+    public function confirmOrderDetails(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -268,7 +262,7 @@ MESSAGE;
     /**
      * @Route("/order/{orderId}/summary-served", name="served-order-summary", methods={"GET"})
      */
-    public function servedOrderSummary(Request $request, string $orderId): RedirectResponse|Response
+    public function servedOrderSummary(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 

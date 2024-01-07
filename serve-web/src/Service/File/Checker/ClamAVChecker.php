@@ -19,29 +19,16 @@ class ClamAVChecker implements FileCheckerInterface
 
     private LoggerInterface $logger;
 
-    /**
-     * @var array
-     */
-    private $options;
+    private array $options;
 
-    /**
-     * ClamAVChecker constructor.
-     * @param ClientInterface $client
-     * @param LoggerInterface $logger
-     * @param array           $options
-     */
     public function __construct(ClientInterface $client, LoggerInterface $logger)
     {
-        /** @var GuzzleHttp\Client client */
         $this->client = $client;
         $this->logger = $logger;
     }
 
     /**
-     *
      * Checks file for viruses using ClamAv
-     *
-     * @param UploadableFileInterface $file
      *
      * @throws RuntimeException in case the result is not PASS
      */
@@ -83,11 +70,8 @@ class ClamAVChecker implements FileCheckerInterface
 
     /**
      * POSTS the file body to file scanner, and continually polls until result is returned.
-     *
-     * @param  UploadableFileInterface $uploadedFile
-     * @return array
      */
-    private function getScanResults(UploadableFileInterface $file)
+    private function getScanResults(UploadableFileInterface $file): array
     {
         // avoid contacting ClamAV for files with already-known asnwer
         if ($cachedResponse = ClamAVMocks::getCachedResponse($file)) {
@@ -129,12 +113,8 @@ class ClamAVChecker implements FileCheckerInterface
 
     /**
      * Send file to File Scanner
-     *
-     * @param UploadableFileInterface $file
-     *
-     * @return array
      */
-    private function makeScannerRequest(UploadableFileInterface $file)
+    private function makeScannerRequest(UploadableFileInterface $file): array
     {
         $fullFilePath = $file->getUploadedFile()->getPathName();
 
@@ -157,11 +137,8 @@ class ClamAVChecker implements FileCheckerInterface
 
     /**
      * Query status of file scan using location returned by AV scanner
-     * @param string $location
-     *
-     * @return array
      */
-    private function makeStatusRequest($location)
+    private function makeStatusRequest(string $location): array
     {
         $this->log(Logger::DEBUG, 'Quering scan status for location: ' . $location);
 
@@ -173,13 +150,7 @@ class ClamAVChecker implements FileCheckerInterface
         return $result;
     }
 
-    /**
-     * @param $level
-     * @param $message
-     * @param UploadedFile|null $file
-     * @param array|null        $response
-     */
-    private function log($level, $message, UploadedFile $file = null, array $response = null): void
+    private function log(int $level, string $message, ?UploadedFile $file = null, ?array $response = null): void
     {
         $extra = ['service' => 'clam_av_checker'];
 

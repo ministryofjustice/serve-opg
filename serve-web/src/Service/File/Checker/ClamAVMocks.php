@@ -67,11 +67,8 @@ class ClamAVMocks
 
     /**
      * Returns cache response if there is one. Null otherwise
-     *
-     * @param  UploadableFileInterface $file
-     * @return mixed
      */
-    public static function getCachedResponse(UploadableFileInterface $file)
+    public static function getCachedResponse(UploadableFileInterface $file): mixed
     {
         $uploadedFileHash = hash_file('md5', $file->getUploadedFile()->getPathName());
         if (isset(self::$fileHashToResponse[$uploadedFileHash])) {

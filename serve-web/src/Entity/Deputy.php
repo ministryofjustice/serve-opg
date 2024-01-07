@@ -108,9 +108,6 @@ class Deputy
 
     private ?string $addressCountry;
 
-    /**
-     * Deputy constructor.
-     */
     public function __construct(Order $order)
     {
         $this->order = $order;
@@ -121,12 +118,7 @@ class Deputy
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     *
-     * @return Deputy
-     */
-    public function setId($id): static
+    public function setId(?int $id): static
     {
         $this->id = $id;
 
@@ -149,12 +141,7 @@ class Deputy
         return $this->deputyType;
     }
 
-    /**
-     * @param null|string $deputyType
-     *
-     * @return Deputy
-     */
-    public function setDeputyType($deputyType): static
+    public function setDeputyType(?string $deputyType): static
     {
         $this->deputyType = $deputyType;
         return $this;
@@ -165,12 +152,7 @@ class Deputy
         return $this->forename;
     }
 
-    /**
-     * @param string $forename
-     *
-     * @return Deputy
-     */
-    public function setForename($forename): static
+    public function setForename(string $forename): static
     {
         $this->forename = $forename;
         return $this;
@@ -181,12 +163,7 @@ class Deputy
         return $this->surname;
     }
 
-    /**
-     * @param string $surname
-     *
-     * @return Deputy
-     */
-    public function setSurname($surname): static
+    public function setSurname(string $surname): static
     {
         $this->surname = $surname;
         return $this;
@@ -202,11 +179,7 @@ class Deputy
         return $this->dateOfBirth;
     }
 
-    /**
-     * @param DateTime $dateOfBirth
-     * @return $this
-     */
-    public function setDateOfBirth($dateOfBirth): static
+    public function setDateOfBirth(?DateTime $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
 
@@ -218,210 +191,122 @@ class Deputy
         return $this->emailAddress;
     }
 
-    /**
-     * @param string $emailAddress
-     *
-     * @return Deputy
-     */
-    public function setEmailAddress($emailAddress): static
+    public function setEmailAddress(?string $emailAddress): static
     {
         $this->emailAddress = $emailAddress;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDaytimeContactNumber(): ?string
     {
         return $this->daytimeContactNumber;
     }
 
-    /**
-     * @param string $daytimeContactNumber
-     *
-     * @return Deputy
-     */
-    public function setDaytimeContactNumber($daytimeContactNumber): static
+    public function setDaytimeContactNumber(?string $daytimeContactNumber): static
     {
         $this->daytimeContactNumber = $daytimeContactNumber;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEveningContactNumber(): ?string
     {
         return $this->eveningContactNumber;
     }
 
-    /**
-     * @param string $eveningContactNumber
-     *
-     * @return Deputy
-     */
-    public function setEveningContactNumber($eveningContactNumber): static
+    public function setEveningContactNumber(?string $eveningContactNumber): static
     {
         $this->eveningContactNumber = $eveningContactNumber;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMobileContactNumber(): ?string
     {
         return $this->mobileContactNumber;
     }
 
-    /**
-     * @param string $mobileContactNumber
-     *
-     * @return Deputy
-     */
-    public function setMobileContactNumber($mobileContactNumber): static
+    public function setMobileContactNumber(?string $mobileContactNumber): static
     {
         $this->mobileContactNumber = $mobileContactNumber;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressLine1(): ?string
     {
         return $this->addressLine1;
     }
 
-    /**
-     * @param string $addressLine1
-     *
-     * @return Deputy
-     */
-    public function setAddressLine1($addressLine1): static
+    public function setAddressLine1(?string $addressLine1): static
     {
         $this->addressLine1 = $addressLine1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressLine2(): ?string
     {
         return $this->addressLine2;
     }
 
-    /**
-     * @param string $addressLine2
-     *
-     * @return Deputy
-     */
-    public function setAddressLine2($addressLine2): static
+    public function setAddressLine2(?string $addressLine2): static
     {
         $this->addressLine2 = $addressLine2;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressLine3(): ?string
     {
         return $this->addressLine3;
     }
 
-    /**
-     * @param string $addressLine3
-     *
-     * @return Deputy
-     */
-    public function setAddressLine3($addressLine3): static
+    public function setAddressLine3(?string $addressLine3): static
     {
         $this->addressLine3 = $addressLine3;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressTown(): ?string
     {
         return $this->addressTown;
     }
 
-    /**
-     * @param string $addressTown
-     *
-     * @return Deputy
-     */
-    public function setAddressTown($addressTown): static
+    public function setAddressTown(?string $addressTown): static
     {
         $this->addressTown = $addressTown;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressCounty(): ?string
     {
         return $this->addressCounty;
     }
 
-    /**
-     * @param string $addressCounty
-     *
-     * @return Deputy
-     */
-    public function setAddressCounty($addressCounty): static
+    public function setAddressCounty(?string $addressCounty): static
     {
         $this->addressCounty = $addressCounty;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressPostcode(): ?string
     {
         return $this->addressPostcode;
     }
 
-    /**
-     * @param string $addressPostcode
-     *
-     * @return Deputy
-     */
-    public function setAddressPostcode($addressPostcode): static
+    public function setAddressPostcode(?string $addressPostcode): static
     {
         $this->addressPostcode = $addressPostcode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressCountry(): ?string
     {
         return $this->addressCountry;
     }
 
-    /**
-     * @param string $addressCountry
-     *
-     * @return Deputy
-     */
-    public function setAddressCountry($addressCountry): static
+    public function setAddressCountry(?string $addressCountry): static
     {
         $this->addressCountry = $addressCountry;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddressFormatted(): string
     {
         return implode(', ', array_filter([

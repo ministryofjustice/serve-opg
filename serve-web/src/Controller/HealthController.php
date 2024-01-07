@@ -24,12 +24,6 @@ class HealthController extends AbstractController
 
     private string $symfonyDebug = '';
 
-    /**
-     * HealthController constructor.
-     * @param EntityManager $em
-     * @param string $appEnv
-     * @param string %symfonyDebug
-     */
     public function __construct(
         EntityManager $em,
         private LoggerInterface $logger,
@@ -53,9 +47,8 @@ class HealthController extends AbstractController
     /**
      * @Route("/service", methods={"GET"})
      */
-    public function serviceHealthAction(
-        DatabaseAvailability $dbAvailability
-    ): ?Response {
+    public function serviceHealthAction(DatabaseAvailability $dbAvailability): ?Response
+    {
         $services = [
             $dbAvailability
         ];
@@ -123,11 +116,9 @@ class HealthController extends AbstractController
     }
 
     /**
-     * @param mixed $services
-     *
      * @return array [true if healthy, services array, string with errors, time in secs]
      */
-    private function servicesHealth($services): array
+    private function servicesHealth(mixed $services): array
     {
         $start = microtime(true);
 

@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +66,7 @@ class DocumentController extends AbstractController
         $this->translator = $translator;
     }
 
-    private function processDocument(Order $order, Document $document, $file, $requestId): array {
+    private function processDocument(Order $order, Document $document, UploadedFile $file, $requestId): array {
 
         $response = array(
             'response' => self::FAIL,
@@ -167,7 +168,7 @@ class DocumentController extends AbstractController
     /**
      * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
      */
-    public function addAction(Request $request, $orderId, $docType): RedirectResponse|Response
+    public function addAction(Request $request, int $orderId, string $docType): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -216,7 +217,7 @@ class DocumentController extends AbstractController
     /**
      * @Route("/order/{orderId}/document/{id}", methods={"DELETE"})
      */
-    public function deleteAction(Request $request, $orderId, $id): JsonResponse
+    public function deleteAction(Request $request, int $orderId, $id): JsonResponse
     {
         try {
             $documentRemoved = $this->removeDocument($id);

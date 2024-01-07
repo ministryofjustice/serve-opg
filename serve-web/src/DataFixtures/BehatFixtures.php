@@ -14,12 +14,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
 
     private FixtureTestHelper $fixtureHelper;
 
-    /**
-     * DefaultFixtures constructor.
-     * @param bool $fixturesEnabled
-     * @param FixtureTestHelper $fixtureHelper
-     */
-    public function __construct($fixturesEnabled, FixtureTestHelper $fixtureHelper)
+    public function __construct(bool $fixturesEnabled, FixtureTestHelper $fixtureHelper)
     {
         $this->fixturesEnabled = $fixturesEnabled;
         $this->fixtureHelper = $fixtureHelper;

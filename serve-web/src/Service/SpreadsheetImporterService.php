@@ -17,13 +17,6 @@ class SpreadsheetImporterService
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
 
-    /**
-     * SpreadsheetImporterService constructor.
-     * @param ClientService $clientService
-     * @param OrderService $orderService
-     * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         ClientService $clientService,
         OrderService $orderService,
@@ -37,7 +30,7 @@ class SpreadsheetImporterService
     }
 
     /**
-     * @param UploadedFile $file file with keys:
+     * file with keys:
      * Case : 8 digits. might end with a T
      * Forename
      * Surname

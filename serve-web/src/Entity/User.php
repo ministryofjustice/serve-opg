@@ -76,9 +76,6 @@ class User implements UserInterface, EquatableInterface
      */
     private ?string $phoneNumber = null;
 
-    /**
-     * User constructor.
-     */
     public function __construct(string $email)
     {
         $this->email = $email;

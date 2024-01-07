@@ -57,8 +57,8 @@ class SiriusService
         StorageInterface $S3storage,
         LoggerInterface $logger,
         SecretsManagerClient $secretsManagerClient,
-        $siriusApiEmail,
-        $siriusApiPassword
+        ?string $siriusApiEmail,
+        ?string $siriusApiPassword
     ) {
         $this->em = $em;
         $this->httpClient = $httpClient;
@@ -305,7 +305,7 @@ class SiriusService
             "type" => $deputy->getDeputyType(),
             "firstName" => $deputy->getForename(),
             "lastName" => $deputy->getSurname(),
-            "dob" => (!empty($deputy->getDateOfBirth()) ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
+            "dob" => ($deputy->getDateOfBirth() instanceof \DateTime ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
             "email" => $deputy->getEmailAddress(),
             "daytimeNumber" => $deputy->getDaytimeContactNumber(),
             "eveningNumber" => $deputy->getEveningContactNumber(),

@@ -13,7 +13,7 @@ class SiriusClient extends GuzzleHttpClient
      * SiriusClient constructor.
      * @param $args array of arguments
      */
-    public function __construct($args)
+    public function __construct(array $args)
     {
         parent::__construct($args);
     }

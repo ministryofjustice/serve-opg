@@ -41,12 +41,8 @@ class S3Storage implements StorageInterface
 
     /**
      * S3Storage constructor.
-     * @param S3ClientInterface $s3Client
-     * @param $localBucketName
-     * @param $remoteBucketName
-     * @param LoggerInterface $logger
      */
-    public function __construct(S3ClientInterface $s3Client, $localBucketName, $remoteBucketName, LoggerInterface $logger)
+    public function __construct(S3ClientInterface $s3Client, string $localBucketName, string $remoteBucketName, LoggerInterface $logger)
     {
         $this->s3Client = $s3Client;
         $this->localBucketName = $localBucketName;
@@ -70,13 +66,9 @@ class S3Storage implements StorageInterface
      * header('Content-Disposition: attachment; filename="' . $_GET['filename'] .'"');
      * readfile(<this method>);
      *
-     * @param $key
-     *
      * @throws FileNotFoundException is the file is not found
-     *
-     * @return string file content
      */
-    public function retrieve($key)
+    public function retrieve(?string $key): string
     {
         try {
             $result = $this->s3Client->getObject([
@@ -93,14 +85,9 @@ class S3Storage implements StorageInterface
         }
     }
 
-    /**
-     * @param  string      $key
-     * @return Result
-     */
-    public function delete($key): Result
+    public function delete(string $key): Result
     {
         /** If no access to remove, we'll need to reimplment tagging **/
-
         //$this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
 
         return $this->s3Client->deleteObject([
@@ -109,12 +96,7 @@ class S3Storage implements StorageInterface
         ]);
     }
 
-    /**
-     * @param $key
-     * @param $body
-     * @return Result
-     */
-    public function store($key, $body)
+    public function store(string $key, string $body): result
     {
         return $this->s3Client->putObject([
             'Bucket'   => $this->localBucketName,
@@ -127,7 +109,6 @@ class S3Storage implements StorageInterface
 
     /**
      * Move S3 Objects To new bucket
-     * @param Collection $documents
      */
     public function moveDocuments(Collection $documents): Collection
     {
@@ -202,11 +183,9 @@ class S3Storage implements StorageInterface
     /**
      * Appends new tagset to S3 Object
      *
-     * @param $key
-     * @param $newTagset
      * @throws \Exception
      */
-    public function appendTagset($key, $newTagset): void
+    public function appendTagset(?string $key, array $newTagset): void
     {
         $this->log('info', "Appending Purge tag for $key to S3");
         if (empty($key)) {
@@ -242,13 +221,7 @@ class S3Storage implements StorageInterface
         $this->log('info', "Tagset Updated for $key ");
     }
 
-    /**
-     * Log message using the internal logger
-     *
-     * @param $level
-     * @param $message
-     */
-    private function log($level, $message): void
+    private function log(string $level, string $message): void
     {
         //echo $message."\n"; //enable for debugging reasons. Tail the log with log-level=info otherwise
 

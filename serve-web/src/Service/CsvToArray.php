@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use RuntimeException;
+
 class CsvToArray
 {
     const DELIMITER = ',';
@@ -9,21 +11,15 @@ class CsvToArray
     const ESCAPE = '\\';
 
     /**
-     * @var resource
+     * @var resource|false
      */
     private $handle;
 
     private array $expectedColumns = [];
 
-    /**
-     * @var bool
-     */
-    private $normaliseNewLines;
+    private bool $normaliseNewLines;
 
-    /**
-     * @var array
-     */
-    private $firstRow = [];
+    private array|false $firstRow = [];
 
     private function getRow(): array|false
     {
@@ -31,35 +27,28 @@ class CsvToArray
     }
 
     /**
-     * @param string $file              path to file
-     * @param array  $expectedColumns   e.g. ['Case','Surname', 'Deputy No' ...]
-     * @param bool   $normaliseNewLines
-     *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
-    public function __construct($file, array $expectedColumns, $normaliseNewLines)
+    public function __construct(string $filePath, array $expectedColumns, bool $normaliseNewLines)
     {
         $this->expectedColumns = $expectedColumns;
         $this->normaliseNewLines = $normaliseNewLines;
 
-        if (!file_exists($file)) {
-            throw new \RuntimeException("file $file not found");
+        if (!file_exists($filePath)) {
+            throw new RuntimeException("file $filePath not found");
         }
 
         // if line endings need to be normalised, the stream is replaced with a string stream with the content replaced
         if ($this->normaliseNewLines) {
-            $content = str_replace(["\r\n", "\r"], ["\n", "\n"], file_get_contents($file));
+            $content = str_replace(["\r\n", "\r"], ["\n", "\n"], file_get_contents($filePath));
             $this->handle = fopen('data://text/plain,' . $content, 'r');
         } else {
             ini_set('auto_detect_line_endings', true);
-            $this->handle = fopen($file, 'r');
+            $this->handle = fopen($filePath, 'r');
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getFirstRow()
+    public function getFirstRow(): array|false
     {
         if (empty($this->firstRow)) {
             $this->firstRow = $this->getRow();
@@ -75,11 +64,11 @@ class CsvToArray
         // parse header
         $header = $this->getFirstRow();
         if (!$header) {
-            throw new \RuntimeException('Empty or corrupted file, cannot parse CSV header');
+            throw new RuntimeException('Empty or corrupted file, cannot parse CSV header');
         }
         $missingColumns = array_diff($this->expectedColumns, $header);
         if ($missingColumns) {
-            throw new \RuntimeException('Invalid file. Cannot find expected header columns ' . implode(', ', $missingColumns));
+            throw new RuntimeException('Invalid file. Cannot find expected header columns ' . implode(', ', $missingColumns));
         }
 
         // read rows
@@ -91,7 +80,7 @@ class CsvToArray
                 $index = array_search($expectedColumn, $header);
                 if ($index !== false) {
                     if (!array_key_exists($index, $row)) {
-                        throw new \RuntimeException("Can't find $expectedColumn column in line $rowNumber");
+                        throw new RuntimeException("Can't find $expectedColumn column in line $rowNumber");
                     }
                     $rowArray[$expectedColumn] = $row[$index];
                 }

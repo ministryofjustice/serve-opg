@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ class CaseController extends AbstractController
 {
     private EntityManager $em;
 
-    private OrderRepository $orderRepo;
+    private ObjectRepository $orderRepo;
 
     /**
      * UserController constructor.

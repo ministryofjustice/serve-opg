@@ -31,8 +31,6 @@ class AbstractFileChecker
 
     /**
      * Has the file got a valid extension
-     *
-     * @param UploadableFileInterface $file
      */
     protected static function hasValidFileExtension(UploadableFileInterface $file): bool
     {

@@ -13,10 +13,6 @@ class PostcodeController extends AbstractController
 {
     private LoggerInterface $logger;
 
-    /**
-     * PostcodeController constructor.
-     * @param LoggerInterface $logger
-     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;

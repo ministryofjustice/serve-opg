@@ -42,9 +42,6 @@ class Client
      */
     private Collection $orders;
 
-    /**
-     * Client constructor.
-     */
     public function __construct(string $caseNumber, string $clientName, DateTime $createdAt)
     {
         $this->caseNumber = $caseNumber;

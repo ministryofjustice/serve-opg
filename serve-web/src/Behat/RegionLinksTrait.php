@@ -90,7 +90,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see :text in :section section
      */
-    public function iShouldSeeInSection($text, $section): void
+    public function iShouldSeeInSection(string $text, string $section): void
     {
         $this->assertSession()->elementTextContains('css', '#' . $section . '-section', $text);
     }
@@ -98,7 +98,7 @@ trait RegionLinksTrait
     /**
      * @Then I should not see :text in the :section section
      */
-    public function iShouldNotSeeInTheSection($text, $section): void
+    public function iShouldNotSeeInTheSection(string $text, string $section): void
     {
         $this->assertResponseStatus(200);
 
@@ -108,7 +108,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see :text in :container
      */
-    public function iShouldSeeInTheContainer($text, $container): void
+    public function iShouldSeeInTheContainer(string $text, string $container): void
     {
         $this->assertSession()->elementTextContains('css', '#' . $container . ', .' . $container, $text);
     }
@@ -116,7 +116,7 @@ trait RegionLinksTrait
     /**
      * @Then the :selector element should be empty
      */
-    public function theElementShouldBeEmpty($selector): void
+    public function theElementShouldBeEmpty(string $selector): void
     {
         $this->assertSession()->elementExists('css', '#' . $selector);
         if (!empty($this->getSession()->getPage()->find('css', '#' . $selector)->getText())) {
@@ -127,14 +127,14 @@ trait RegionLinksTrait
     /**
      * @Then I should not see :text in the :region region
      */
-    public function iShouldNotSeeInTheRegion($text, $region): void
+    public function iShouldNotSeeInTheRegion(string $text, $region): void
     {
         $this->assertResponseStatus(200);
 
         $this->assertSession()->elementTextNotContains('css', self::behatElementToCssSelector($region, 'region'), $text);
     }
 
-    public static function behatElementToCssSelector($element, $type): string
+    public static function behatElementToCssSelector(string $element, string $type): string
     {
         return '.behat-' . $type . '-' . preg_replace('/\s+/', '-', $element);
     }
@@ -226,7 +226,7 @@ trait RegionLinksTrait
         $linksElementsFound[0]->click();
     }
 
-    private function findRegion($region)
+    private function findRegion(string $region)
     {
         // find region
         $regionSelector = '#' . $region . ', ' . self::behatElementToCssSelector($region, 'region');

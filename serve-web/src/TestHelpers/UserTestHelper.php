@@ -17,7 +17,7 @@ class UserTestHelper extends ApiWebTestCase
         return $userModel;
     }
 
-    static public function createAdminUser(string $email, string $password)
+    static public function createAdminUser(string $email, string $password): User
     {
         $userModel = self::createUser($email, $password);
         $userModel->setRoles(['ROLE_ADMIN']);

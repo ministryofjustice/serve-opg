@@ -14,9 +14,6 @@ class CsvController extends AbstractController
 {
     private SpreadsheetImporterService $spreadsheetImporterService;
 
-    /**
-     * CsvController constructor.
-     */
     public function __construct(SpreadsheetImporterService $spreadsheetImporterService)
     {
         $this->spreadsheetImporterService = $spreadsheetImporterService;

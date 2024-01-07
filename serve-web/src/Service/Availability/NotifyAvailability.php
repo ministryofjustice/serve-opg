@@ -32,7 +32,7 @@ class NotifyAvailability extends ServiceAvailabilityAbstract
         return 'Notify';
     }
 
-    public function pingNotify()
+    public function pingNotify(): ?array
     {
         return $this->notifyClient->listTemplates();
     }

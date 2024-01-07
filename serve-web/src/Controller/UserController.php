@@ -28,9 +28,6 @@ class UserController extends AbstractController
 
     private UserPasswordEncoderInterface $encoder;
 
-    /**
-     * UserController constructor.
-     */
     public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
@@ -83,10 +80,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/user/password-reset/change/{token}", name="password-change")
-     *
-     * @param mixed $token
      */
-    public function passwordChange(Request $request, $token): RedirectResponse|Response
+    public function passwordChange(Request $request, mixed $token): RedirectResponse|Response
     {
         $userRepo = $this->em->getRepository(User::class); // @var $userRepo UserRepository
         $user = $userRepo->findOneBy(['activationToken' => $token]); // @var $user User
@@ -250,8 +245,6 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/resend-activation", name="resend-activation-user", methods={"GET"})
-     *
-     * @return Response
      */
     public function resendActivationUser(Request $request, int $id): RedirectResponse
     {
