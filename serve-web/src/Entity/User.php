@@ -78,51 +78,38 @@ class User implements UserInterface, EquatableInterface
 
     /**
      * User constructor.
-     * @param string $email
      */
     public function __construct(string $email)
     {
         $this->email = $email;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string
-     */
-    public function setEmail($email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return array_unique(array_merge(['ROLE_USER'], $this->roles));
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return in_array('ROLE_ADMIN', $this->roles);
     }
@@ -132,30 +119,27 @@ class User implements UserInterface, EquatableInterface
         $this->roles = $roles;
     }
 
-    /**
-     * @param string $password
-     */
-    public function setPassword($password): void
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function getSalt()
+    public function getSalt(): string
     {
         return '';
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->email;
     }
 
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
             return false;
@@ -173,125 +157,81 @@ class User implements UserInterface, EquatableInterface
         // TODO: Implement eraseCredentials() method.
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getActivationTokenCreatedAt()
+    public function getActivationTokenCreatedAt(): ?DateTime
     {
         return $this->activationTokenCreatedAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getActivationToken()
+    public function getActivationToken(): ?string
     {
         return $this->activationToken;
     }
 
-    /**
-     * @param string|null $activationToken
-     */
-    public function setActivationToken($activationToken): void
+    public function setActivationToken(?string $activationToken): void
     {
         $this->activationToken = $activationToken;
         $this->activationTokenCreatedAt = new DateTime();
     }
 
     /**
-     * Return true if the token is present and create after the TOKEN_EXPIRY value of the constant
-     *
-     * @return bool
+     * Return true if the token is present and create after the TOKEN_EXPIRY value of the constant.
      */
-    public function isTokenValid()
+    public function isTokenValid(): bool
     {
         return $this->getActivationTokenCreatedAt()
             && $this->getActivationTokenCreatedAt() >= new DateTime(self::TOKEN_EXPIRY);
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLastLoginAt(): ?DateTime
     {
         return $this->lastLoginAt;
     }
 
-    /**
-     * @param DateTime|null $lastLoginAt
-     */
     public function setLastLoginAt(?DateTime $lastLoginAt): void
     {
         $this->lastLoginAt = $lastLoginAt;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param DateTime|null $createdAt
-     */
     public function setCreatedAt(?DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param string $firstName
-     */
     public function setFirstName(string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * @param string $lastName
-     */
     public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
     }
 
-    /**
-     * @return string
-     */
     public function getFullName(): string
     {
         return trim($this->firstName . ' ' . $this->lastName) ?: $this->email;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    /**
-     * @param string $phoneNumber
-     */
     public function setPhoneNumber(string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;

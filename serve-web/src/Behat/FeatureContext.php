@@ -19,13 +19,7 @@ class FeatureContext extends MinkContext implements Context
     use SiriusTrait;
     use NotifyTrait;
 
-    /**
-     * @var string
-     */
     private string $behatPasswordNew;
-    /**
-     * @var string
-     */
     private string $behatPassword;
 
     public function __construct()

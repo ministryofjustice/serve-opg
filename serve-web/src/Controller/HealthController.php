@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use App\Service\Availability\DatabaseAvailability;
 use App\Service\Availability\SiriusApiAvailability;
 use App\Service\Availability\NotifyAvailability;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
@@ -44,7 +45,7 @@ class HealthController extends AbstractController
      * @Route("", name="health-check", methods={"GET"})
      * @Template("Health/health-check.html.twig")
      */
-    public function containerHealthAction()
+    public function containerHealthAction(): array
     {
         return ['status' => 'OK'];
     }
@@ -102,15 +103,31 @@ class HealthController extends AbstractController
     /**
      * @Route("/app-env", name="app-env", methods={"GET"})
      */
-    public function appEnv()
+    public function appEnv(): Response
     {
         return new Response($this->appEnv);
     }
 
     /**
+     * @Route("/version", methods={"GET"})
+     *
+     * @Template
+     */
+    public function versionAction(): JsonResponse
+    {
+        return $this->json([
+            'application' => getenv('APP_VERSION'),
+            'web' => getenv('WEB_VERSION'),
+            'infrastructure' => getenv('INFRA_VERSION'),
+        ]);
+    }
+
+    /**
+     * @param mixed $services
+     *
      * @return array [true if healthy, services array, string with errors, time in secs]
      */
-    private function servicesHealth($services)
+    private function servicesHealth($services): array
     {
         $start = microtime(true);
 
@@ -145,19 +162,5 @@ class HealthController extends AbstractController
         }
 
         return [$healthy, $services, $errors, microtime(true) - $start];
-    }
-
-
-    /**
-     * @Route("/version", methods={"GET"})
-     * @Template
-     */
-    public function versionAction()
-    {
-        return $this->json([
-            'application' => getenv("APP_VERSION"),
-            'web' => getenv("WEB_VERSION"),
-            'infrastructure' => getenv("INFRA_VERSION")
-        ]);
     }
 }

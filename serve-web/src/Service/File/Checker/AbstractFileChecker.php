@@ -17,11 +17,8 @@ class AbstractFileChecker
     /**
      * Any other checks that are not found by the virus scan go here.
      * Checks file extension.
-     *
-     * @param UploadableFileInterface $file
-     * @return UploadableFileInterface
      */
-    public function checkFile(UploadableFileInterface $file)
+    public function checkFile(UploadableFileInterface $file): UploadableFileInterface
     {
         if (!self::hasValidFileExtension($file)) {
             $extension = strtolower($file->getUploadedFile()->getClientOriginalExtension());
@@ -36,10 +33,8 @@ class AbstractFileChecker
      * Has the file got a valid extension
      *
      * @param UploadableFileInterface $file
-     *
-     * @return bool
      */
-    protected static function hasValidFileExtension(UploadableFileInterface $file)
+    protected static function hasValidFileExtension(UploadableFileInterface $file): bool
     {
         $extension = strtolower($file->getUploadedFile()->getClientOriginalExtension());
 
@@ -54,10 +49,8 @@ class AbstractFileChecker
      * List of accepted file extensions
      *
      * @todo generate list from config / env variables
-     *
-     * @return array
      */
-    public static function getAcceptedExtensions()
+    public static function getAcceptedExtensions(): array
     {
         return ['pdf', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'doc', 'docx'];
     }

@@ -41,43 +41,44 @@ class ClamAVChecker implements FileCheckerInterface
      *
      * Checks file for viruses using ClamAv
      *
-     * @param UploadableFileInterface $uploadedFile
+     * @param UploadableFileInterface $file
      *
      * @throws RuntimeException in case the result is not PASS
-     *
-     * @return bool
      */
-    public function checkFile(UploadableFileInterface $file)
+    public function checkFile(UploadableFileInterface $file): UploadableFileInterface
     {
-        return true;
-        // POST body to clamAV
-        $response = $this->getScanResults($file);
-
-        $file->setScanResult($response);
-
-        $isResultPass = strtoupper(trim($response['file_scanner_result'])) === 'PASS';
-
-        // log results
-        $level = $isResultPass ? Logger::INFO : Logger::ERROR;
-        $this->log($level, 'File scan result', $file->getUploadedFile(), $response);
-
-        if ($file instanceof Pdf && !$isResultPass) { // @shaun STILL NEEDED ? wouldn't this case go in the next "switch"
-            throw new RiskyFileException('PDF file scan failed');
-        }
-
-        if ($isResultPass) {
-            return true;
-        }
-
-        switch (strtoupper(trim($response['file_scanner_code']))) {
-            case 'AV_FAIL':
-                throw new VirusFoundException();
-            case 'PDF_INVALID_FILE':
-            case 'PDF_BAD_KEYWORD':
-                throw new RiskyFileException();
-        }
-
-        throw new RuntimeException('Files scanner FAIL. Unrecognised code. Full response: ' . print_r($response));
+        return $file;
+        /**** TO DO 2024 *****/
+        /**** This looks to be work in progress 2018 *****/
+        /**** Made the return type correct and commented out pending work *****/
+//        // POST body to clamAV
+//        $response = $this->getScanResults($file);
+//
+//        $file->setScanResult($response);
+//
+//        $isResultPass = strtoupper(trim($response['file_scanner_result'])) === 'PASS';
+//
+//        // log results
+//        $level = $isResultPass ? Logger::INFO : Logger::ERROR;
+//        $this->log($level, 'File scan result', $file->getUploadedFile(), $response);
+//
+//        if ($file instanceof Pdf && !$isResultPass) { // @shaun STILL NEEDED ? wouldn't this case go in the next "switch"
+//            throw new RiskyFileException('PDF file scan failed');
+//        }
+//
+//        if ($isResultPass) {
+//            return $file;
+//        }
+//
+//        switch (strtoupper(trim($response['file_scanner_code']))) {
+//            case 'AV_FAIL':
+//                throw new VirusFoundException();
+//            case 'PDF_INVALID_FILE':
+//            case 'PDF_BAD_KEYWORD':
+//                throw new RiskyFileException();
+//        }
+//
+//        throw new RuntimeException('Files scanner FAIL. Unrecognised code. Full response: ' . print_r($response));
     }
 
     /**

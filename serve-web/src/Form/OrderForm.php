@@ -62,7 +62,7 @@ class OrderForm extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => Order::class,
             'show_assets_question' => true,
-            'validation_groups' => function (FormInterface $form) {
+            'validation_groups' => function (FormInterface $form): array {
                 /* @var $data Order */
                 $order = $form->getData();
 

@@ -17,7 +17,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -43,13 +45,6 @@ class DocumentController extends AbstractController
 
     /**
      * DocumentController constructor.
-     * @param EntityManager $em
-     * @param OrderService $orderService
-     * @param DocumentService $documentService
-     * @param FileUploader $fileUploader
-     * @param FileCheckerFactory $fileCheckerFactory
-     * @param LoggerInterface $logger
-     * @param TranslatorInterface $translator
      */
     public function __construct(
         EntityManager $em,
@@ -70,7 +65,7 @@ class DocumentController extends AbstractController
         $this->translator = $translator;
     }
 
-    private function processDocument(Order $order, Document $document, $file, $requestId) {
+    private function processDocument(Order $order, Document $document, $file, $requestId): array {
 
         $response = array(
             'response' => self::FAIL,
@@ -124,7 +119,7 @@ class DocumentController extends AbstractController
         return $response;
     }
 
-    private function removeDocument($id) {
+    private function removeDocument($id): int {
 
         $response = self::FAIL;
 
@@ -142,7 +137,7 @@ class DocumentController extends AbstractController
     /**
      * @Route("/order/{orderId}/document/{docType}", methods={"POST"})
      */
-    public function postAction(Request $request, $orderId, $docType)
+    public function postAction(Request $request, int $orderId, string $docType)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -172,7 +167,7 @@ class DocumentController extends AbstractController
     /**
      * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
      */
-    public function addAction(Request $request, $orderId, $docType)
+    public function addAction(Request $request, $orderId, $docType): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -209,7 +204,7 @@ class DocumentController extends AbstractController
     /**
      * @Route("/order/{orderId}/document/{id}/remove", name="document-remove")
      */
-    public function removeAction(Request $request, $orderId, $id)
+    public function removeAction(Request $request, $orderId, $id): RedirectResponse
     {
         if ($this->removeDocument($id) === self::FAIL) {
             $this->addFlash('error', 'Document could not be removed.');
@@ -221,7 +216,7 @@ class DocumentController extends AbstractController
     /**
      * @Route("/order/{orderId}/document/{id}", methods={"DELETE"})
      */
-    public function deleteAction(Request $request, $orderId, $id)
+    public function deleteAction(Request $request, $orderId, $id): JsonResponse
     {
         try {
             $documentRemoved = $this->removeDocument($id);

@@ -106,83 +106,57 @@ class Document
 //        }
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     * @return Document
-     */
     public function setId(?int $id): Document
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return Order|null
-     */
     public function getOrder(): ?Order
     {
         return $this->order;
     }
 
-    /**
-     * @param Order|null $order
-     * @return Document
-     */
     public function setOrder(?Order $order): Document
     {
         $this->order = $order;
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * @param null|string $type
-     * @return Document
-     */
     public function setType(?string $type): Document
     {
         $this->type = $type;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFileName()
+    public function getFileName(): ?string
     {
         return $this->fileName;
     }
 
     /**
-     * @param  string   $fileName
+     * @param string $fileName
+     *
      * @return Document
      */
-    public function setFileName($fileName)
+    public function setFileName($fileName): static
     {
         $this->fileName = $fileName;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStorageReference()
+    public function getStorageReference(): string
     {
         return $this->storageReference;
     }
@@ -191,17 +165,14 @@ class Document
      * @param  string   $storageReference
      * @return Document
      */
-    public function setStorageReference($storageReference)
+    public function setStorageReference($storageReference): static
     {
         $this->storageReference = $storageReference;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getRemoteStorageReference()
+    public function getRemoteStorageReference(): ?string
     {
         return $this->remoteStorageReference;
     }
@@ -214,10 +185,7 @@ class Document
         $this->remoteStorageReference = $remoteStorageReference;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
@@ -230,10 +198,7 @@ class Document
         $this->file = $file;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
@@ -269,10 +234,7 @@ class Document
         )));
     }
 
-    /**
-     * @return bool
-     */
-    public function isWordDocument()
+    public function isWordDocument(): bool
     {
         $wordMimeTypes = ['application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
         return in_array($this->getMimeType(), $wordMimeTypes);

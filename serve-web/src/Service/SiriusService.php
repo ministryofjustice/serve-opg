@@ -225,7 +225,7 @@ class SiriusService
     /**
      * Logout from Sirius API
      */
-    private function logout()
+    private function logout(): Psr7\Response
     {
         return $this->httpClient->post(
             'auth/logout'
@@ -236,9 +236,8 @@ class SiriusService
      * Generates JSON payload for Sirius API call
      *
      * @param Order $order
-     * @return array
      */
-    private function generateOrderPayload(Order $order)
+    private function generateOrderPayload(Order $order): array
     {
         $dataArray = $this->generateOrderDetails($order);
         $dataArray['client'] = $this->generateClientDetails($order->getClient());
@@ -252,9 +251,8 @@ class SiriusService
      * Generates Order details for Sirius API call
      *
      * @param Order $order
-     * @return array
      */
-    private function generateOrderDetails(Order $order)
+    private function generateOrderDetails(Order $order): array
     {
         return array_filter([
             "courtReference" => $order->getClient()->getCaseNumber(),
@@ -271,9 +269,8 @@ class SiriusService
      * Generates client details as array in preparation for Sirius API call
      *
      * @param Client $client
-     * @return array
      */
-    private function generateClientDetails(Client $client)
+    private function generateClientDetails(Client $client): array
     {
         return array_filter([
             "firstName" => self::extractFirstname($client->getClientName()),
@@ -285,9 +282,8 @@ class SiriusService
      * Generates an array of deputy arrays for API call to Sirius
      *
      * @param ArrayCollection $deputies
-     * @return array
      */
-    private function generateDeputiesDetails(Collection $deputies)
+    private function generateDeputiesDetails(Collection $deputies): array
     {
         $deputyArray = [];
         /** @var Deputy $deputy */
@@ -302,9 +298,8 @@ class SiriusService
      * Generates data array for a single deputy
      *
      * @param Deputy $deputy
-     * @return array
      */
-    private function generateDeputyArray(Deputy $deputy)
+    private function generateDeputyArray(Deputy $deputy): array
     {
         return array_filter([
             "type" => $deputy->getDeputyType(),
@@ -328,9 +323,8 @@ class SiriusService
      * Extract first name from a full name string
      *
      * @param string $fullName
-     * @return mixed
      */
-    protected static function extractFirstname($fullName)
+    protected static function extractFirstname($fullName): string
     {
         $name = explode(' ', $fullName, 2);
         return implode(' ', array_slice($name, 0, -1));
@@ -341,9 +335,8 @@ class SiriusService
      * Extract first name from a full name string
      *
      * @param string $fullName
-     * @return mixed
      */
-    protected static function extractLastname($fullName)
+    protected static function extractLastname($fullName): string
     {
         $name = explode(' ', $fullName, 2);
         return implode(' ', array_slice($name, 1));
@@ -353,10 +346,8 @@ class SiriusService
      * Generates an array of document arrays for API call to Sirius
      *
      * @param ArrayCollection $documents
-     *
-     * @return array
      */
-    private function generateDocumentDetails(Collection $documents)
+    private function generateDocumentDetails(Collection $documents): array
     {
         $docsArray = [];
         /** @var Document $doc */
@@ -371,10 +362,8 @@ class SiriusService
      * Generates data array for a single document
      *
      * @param Document $document
-     *
-     * @return array
      */
-    private function generateDocumentArray(Document $document)
+    private function generateDocumentArray(Document $document): array
     {
         return [
             "type" => $document->getType(),
@@ -384,10 +373,8 @@ class SiriusService
 
     /**
      * Generates a court reference accepted by the Sirius API
-     *
-     * @return string
      */
-    public static function generateCourtReference()
+    public static function generateCourtReference(): string
     {
         $constants = [3, 4, 7, 5, 8, 2, 4];
 
@@ -408,7 +395,7 @@ class SiriusService
         return $ref . $checkbit;
     }
 
-    private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold)
+    private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): ?string
     {
         if ($hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_NA || $hasAssetsAboveThreshold === null) {
             return $hasAssetsAboveThreshold;

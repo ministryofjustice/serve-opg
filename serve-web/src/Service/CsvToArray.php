@@ -25,6 +25,11 @@ class CsvToArray
      */
     private $firstRow = [];
 
+    private function getRow(): array|false
+    {
+        return fgetcsv($this->handle, 2000, self::DELIMITER, self::ENCLOSURE, self::ESCAPE);
+    }
+
     /**
      * @param string $file              path to file
      * @param array  $expectedColumns   e.g. ['Case','Surname', 'Deputy No' ...]
@@ -52,14 +57,6 @@ class CsvToArray
     }
 
     /**
-     * @return array or false when EOF
-     */
-    private function getRow()
-    {
-        return fgetcsv($this->handle, 2000, self::DELIMITER, self::ENCLOSURE, self::ESCAPE);
-    }
-
-    /**
      * @return array
      */
     public function getFirstRow()
@@ -71,12 +68,7 @@ class CsvToArray
         return $this->firstRow;
     }
 
-    /**
-     * Returns.
-     *
-     * @return array
-     */
-    public function getData()
+    public function getData(): array
     {
         $ret = [];
 

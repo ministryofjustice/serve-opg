@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Form;
 
@@ -64,7 +66,7 @@ class ConfirmOrderDetailsForm  extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => Order::class,
-                'validation_groups' => function (FormInterface $form) {
+                'validation_groups' => function (FormInterface $form): array {
                     /* @var $data Order */
                     $order = $form->getData();
 

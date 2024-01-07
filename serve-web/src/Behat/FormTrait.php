@@ -30,7 +30,7 @@ trait FormTrait
     /**
      * @return array of IDs of input/select/textarea elements inside a  .form-group.form-group-error CSS class
      */
-    private function getElementsIdsWithValidationErrors()
+    private function getElementsIdsWithValidationErrors(): array
     {
         $ret = [];
 

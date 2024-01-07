@@ -84,7 +84,7 @@ class BehatController extends AbstractController
     /**
      * @Route("/behat-user-upsert")
      */
-    public function userUpsert(Request $request)
+    public function userUpsert(Request $request): Response
     {
         $this->securityChecks();
 
@@ -120,7 +120,7 @@ class BehatController extends AbstractController
     /**
      * @Route("/reset-behat-test-users")
      */
-    public function resetBehatTestUsersAction(EntityManagerInterface $entityManager)
+    public function resetBehatTestUsersAction(EntityManagerInterface $entityManager): Response
     {
         $this->securityChecks();
 
@@ -139,7 +139,7 @@ class BehatController extends AbstractController
     /**
      * @Route("/reset-behat-orders")
      */
-    public function resetBehatOrdersAction(Request $request)
+    public function resetBehatOrdersAction(Request $request): Response
     {
         $this->securityChecks();
 
@@ -164,7 +164,7 @@ class BehatController extends AbstractController
     /**
      * @Route("/reset-brute-force-attempts-logger")
      */
-    public function resetBruteForceAction(Request $request)
+    public function resetBruteForceAction(Request $request): Response
     {
         $this->securityChecks();
 
@@ -177,8 +177,10 @@ class BehatController extends AbstractController
 
     /**
      * @Route("/document-list/{orderIdentifier}")
+     *
+     * @param mixed $orderIdentifier
      */
-    public function orderDocumentsList(Request $request, $orderIdentifier)
+    public function orderDocumentsList(Request $request, $orderIdentifier): Response
     {
         $this->securityChecks();
 
@@ -211,7 +213,7 @@ class BehatController extends AbstractController
     /**
      * @Route("/reset-database")
      */
-    public function resetDatabase(KernelInterface $kernel)
+    public function resetDatabase(KernelInterface $kernel): Response
     {
         $this->securityChecks();
 

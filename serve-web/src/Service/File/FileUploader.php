@@ -32,9 +32,8 @@ class FileUploader
      * @param Order $order
      * @param Document $document
      * @param UploadedFile $uploadedFile
-     * @return Document
      */
-    public function uploadFile(Order $order, Document $document, UploadedFile $uploadedFile)
+    public function uploadFile(Order $order, Document $document, UploadedFile $uploadedFile): Document
     {
         // @to-do move call to storage reference outside fileUploader - to decouple.
         $storageReference = $this->generateStorageReference($uploadedFile, $order);

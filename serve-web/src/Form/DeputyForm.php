@@ -111,7 +111,7 @@ class DeputyForm extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => Deputy::class,
             'translation_domain' => 'forms',
-            'validation_groups' => function (FormInterface $form) {
+            'validation_groups' => function (FormInterface $form): array {
 
                 /* @var $data \App\Entity\Deputy */
                 $data = $form->getData();

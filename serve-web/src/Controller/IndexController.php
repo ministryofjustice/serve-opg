@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,7 +14,7 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction()
+    public function indexAction(): RedirectResponse
     {
         return $this->redirectToRoute('case-list');
     }
@@ -21,7 +22,7 @@ class IndexController extends AbstractController
     /**
      * @Route("/design", name="design")
      */
-    public function designAction()
+    public function designAction(): Response
     {
         // design stuff
         return $this->render('Index/design.html.twig', [
@@ -33,7 +34,7 @@ class IndexController extends AbstractController
      *
      * @Route("session-keep-alive", name="session-keep-alive", methods={"GET"})
      */
-    public function sessionKeepAliveAction(Request $request)
+    public function sessionKeepAliveAction(Request $request): Response
     {
         $request->getSession()->set('refreshedAt', time());
 

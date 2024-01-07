@@ -8,9 +8,7 @@ use Doctrine\ORM\Query\SqlWalker;
 
 /**
  * Class Cast
- * Function to allow CAST to be called within query builder
- *
- * @package App\Repository\Query
+ * Function to allow CAST to be called within query builder.
  */
 class CastAsInteger extends FunctionNode
 {

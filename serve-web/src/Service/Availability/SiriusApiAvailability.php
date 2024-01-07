@@ -24,7 +24,7 @@ class SiriusApiAvailability extends ServiceAvailabilityAbstract
         }
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Sirius';
     }

@@ -2,26 +2,8 @@
 
 namespace App\Behat;
 
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-
 trait NotifyTrait
 {
-    /**
-     * @return string
-     */
-    private function getNotifyMockBaseUrl()
-    {
-        return getenv('DC_NOTIFY_MOCK_ENDPOINT');
-    }
-
-    /**
-     * @return array
-     */
-    private function getNotifyMockSentMails()
-    {
-        return json_decode(file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data'), 1);
-    }
-
     /**
      * @Given I reset the email log
      */
@@ -40,7 +22,7 @@ trait NotifyTrait
     /**
      * @Then there should be no email sent to :to
      */
-    public function assertNoEmailShouldHaveBeenSent($to): void
+    public function assertNoEmailShouldHaveBeenSent(string $to): void
     {
         $messages = $this->getNotifyMockSentMails();
         foreach($messages as $message) {
@@ -54,7 +36,7 @@ trait NotifyTrait
     /**
      * @When I click on the link in the email sent to :to
      */
-    public function IclickOnLinkInEmaiSentTo($to): void
+    public function IclickOnLinkInEmaiSentTo(string $to): void
     {
         $messages = $this->getNotifyMockSentMails();
         foreach($messages as $message) {
@@ -67,5 +49,13 @@ trait NotifyTrait
         throw new \RuntimeException("No email sent to $to. Messages: ".print_r($messages, true));
     }
 
+    private function getNotifyMockBaseUrl(): false|string
+    {
+        return getenv('DC_NOTIFY_MOCK_ENDPOINT');
+    }
 
+    private function getNotifyMockSentMails(): array
+    {
+        return json_decode(file_get_contents($this->getNotifyMockBaseUrl().'/mock-data'), 1);
+    }
 }

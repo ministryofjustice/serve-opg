@@ -113,7 +113,7 @@ class DocumentService
         Document $document,
         UploadedFile $file,
         string $requestId
-    ) {
+    ): array {
         $response = array(
             'response' => self::FAIL,
             'message' => '',

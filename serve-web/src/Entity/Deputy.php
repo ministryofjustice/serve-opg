@@ -110,17 +110,13 @@ class Deputy
 
     /**
      * Deputy constructor.
-     * @param Order $order
      */
     public function __construct(Order $order)
     {
         $this->order = $order;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -130,37 +126,25 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setId($id)
+    public function setId($id): static
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return Order
-     */
-    public function getOrder()
+    public function getOrder(): Order
     {
         return $this->order;
     }
 
-    /**
-     * @param Order $order
-     *
-     * @return Deputy
-     */
-    public function setOrder(Order $order)
+    public function setOrder(Order $order): static
     {
         $this->order = $order;
         return $this;
     }
 
-
-    /**
-     * @return null|string
-     */
-    public function getDeputyType()
+    public function getDeputyType(): ?string
     {
         return $this->deputyType;
     }
@@ -170,16 +154,13 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setDeputyType($deputyType)
+    public function setDeputyType($deputyType): static
     {
         $this->deputyType = $deputyType;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getForename()
+    public function getForename(): string
     {
         return $this->forename;
     }
@@ -189,16 +170,13 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setForename($forename)
+    public function setForename($forename): static
     {
         $this->forename = $forename;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSurname()
+    public function getSurname(): string
     {
         return $this->surname;
     }
@@ -208,24 +186,18 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setSurname($surname)
+    public function setSurname($surname): static
     {
         $this->surname = $surname;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFullname()
+    public function getFullname(): string
     {
         return $this->forename . ' ' . $this->surname;
     }
 
-    /**
-     * @return DateTime $dateOfBirth
-     */
-    public function getDateOfBirth()
+    public function getDateOfBirth(): ?DateTime
     {
         return $this->dateOfBirth;
     }
@@ -234,17 +206,14 @@ class Deputy
      * @param DateTime $dateOfBirth
      * @return $this
      */
-    public function setDateOfBirth($dateOfBirth)
+    public function setDateOfBirth($dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAddress()
+    public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
@@ -254,7 +223,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress($emailAddress): static
     {
         $this->emailAddress = $emailAddress;
         return $this;
@@ -263,7 +232,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getDaytimeContactNumber()
+    public function getDaytimeContactNumber(): ?string
     {
         return $this->daytimeContactNumber;
     }
@@ -273,7 +242,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setDaytimeContactNumber($daytimeContactNumber)
+    public function setDaytimeContactNumber($daytimeContactNumber): static
     {
         $this->daytimeContactNumber = $daytimeContactNumber;
         return $this;
@@ -282,7 +251,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getEveningContactNumber()
+    public function getEveningContactNumber(): ?string
     {
         return $this->eveningContactNumber;
     }
@@ -292,7 +261,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setEveningContactNumber($eveningContactNumber)
+    public function setEveningContactNumber($eveningContactNumber): static
     {
         $this->eveningContactNumber = $eveningContactNumber;
         return $this;
@@ -301,7 +270,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getMobileContactNumber()
+    public function getMobileContactNumber(): ?string
     {
         return $this->mobileContactNumber;
     }
@@ -311,7 +280,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setMobileContactNumber($mobileContactNumber)
+    public function setMobileContactNumber($mobileContactNumber): static
     {
         $this->mobileContactNumber = $mobileContactNumber;
         return $this;
@@ -320,7 +289,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressLine1()
+    public function getAddressLine1(): ?string
     {
         return $this->addressLine1;
     }
@@ -330,7 +299,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressLine1($addressLine1)
+    public function setAddressLine1($addressLine1): static
     {
         $this->addressLine1 = $addressLine1;
         return $this;
@@ -339,7 +308,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressLine2()
+    public function getAddressLine2(): ?string
     {
         return $this->addressLine2;
     }
@@ -349,7 +318,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressLine2($addressLine2)
+    public function setAddressLine2($addressLine2): static
     {
         $this->addressLine2 = $addressLine2;
         return $this;
@@ -358,7 +327,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressLine3()
+    public function getAddressLine3(): ?string
     {
         return $this->addressLine3;
     }
@@ -368,7 +337,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressLine3($addressLine3)
+    public function setAddressLine3($addressLine3): static
     {
         $this->addressLine3 = $addressLine3;
         return $this;
@@ -377,7 +346,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressTown()
+    public function getAddressTown(): ?string
     {
         return $this->addressTown;
     }
@@ -387,7 +356,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressTown($addressTown)
+    public function setAddressTown($addressTown): static
     {
         $this->addressTown = $addressTown;
         return $this;
@@ -396,7 +365,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressCounty()
+    public function getAddressCounty(): ?string
     {
         return $this->addressCounty;
     }
@@ -406,7 +375,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressCounty($addressCounty)
+    public function setAddressCounty($addressCounty): static
     {
         $this->addressCounty = $addressCounty;
         return $this;
@@ -415,7 +384,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressPostcode()
+    public function getAddressPostcode(): ?string
     {
         return $this->addressPostcode;
     }
@@ -425,7 +394,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressPostcode($addressPostcode)
+    public function setAddressPostcode($addressPostcode): static
     {
         $this->addressPostcode = $addressPostcode;
         return $this;
@@ -434,7 +403,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressCountry()
+    public function getAddressCountry(): ?string
     {
         return $this->addressCountry;
     }
@@ -444,7 +413,7 @@ class Deputy
      *
      * @return Deputy
      */
-    public function setAddressCountry($addressCountry)
+    public function setAddressCountry($addressCountry): static
     {
         $this->addressCountry = $addressCountry;
         return $this;
@@ -453,7 +422,7 @@ class Deputy
     /**
      * @return string
      */
-    public function getAddressFormatted()
+    public function getAddressFormatted(): string
     {
         return implode(', ', array_filter([
             $this->getAddressLine1(),

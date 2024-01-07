@@ -16,6 +16,6 @@ class Pdf extends UploadableFile
         LoggerInterface $logger
     ) {
         parent::__construct($logger);
-        $this->fileCheckers = [$virusChecker, $fileChecker];
+        $this->setFileCheckers([$virusChecker, $fileChecker]);
     }
 }
