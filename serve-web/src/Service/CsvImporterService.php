@@ -39,10 +39,8 @@ class CsvImporterService
      * Surname
      * Order Type: integer. 2 means HW order
      * IssuedAt e.g. 15-Aug-2018 or any format accepted by DateTime
-     *
-     * @return integer added columns
      */
-    public function importFile(string $filePath)
+    public function importFile(string $filePath): int
     {
         $csvToArray = new CsvToArray($filePath, [
             'Case',

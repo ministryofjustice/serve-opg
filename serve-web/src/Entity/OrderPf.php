@@ -12,12 +12,12 @@ class OrderPf extends Order
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return Order::TYPE_PF;
     }
 
-    public function getAcceptedDocumentTypes()
+    public function getAcceptedDocumentTypes(): array
     {
         $requiredDocs = [
             Document::TYPE_COURT_ORDER => true
@@ -36,7 +36,7 @@ class OrderPf extends Order
         return $requiredDocs;
     }
 
-    public function isOrderValid()
+    public function isOrderValid(): bool
     {
         return !empty($this->getSubType()) &&
             !empty($this->getAppointmentType()) &&

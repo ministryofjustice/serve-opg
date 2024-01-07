@@ -2,13 +2,12 @@
 
 namespace App\Behat;
 
-use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Element\NodeElement;
-
 trait SiriusTrait
 {
     /**
      * @Then the documents for order :orderIdentifier should be transferred
+     *
+     * @param null|string $orderIdentifier
      */
     public function theDocumentsForOrderShouldBeTransferred($orderIdentifier): void
     {
@@ -24,14 +23,11 @@ trait SiriusTrait
     }
 
     /**
-     * @param bool $throwExceptionIfNotFound
-     * @param int  $index                    = last (default), 1=second last
-     *
-     * @return array|null
+     * @param null|string $orderIdentifier
      */
-    private function getDocumentsList($orderIdentifier)
+    private function getDocumentsList($orderIdentifier): ?string
     {
-        $this->visit('/behat/document-list/' . $orderIdentifier);
+        $this->visit('/behat/document-list/'.$orderIdentifier);
 
         return $this->getSession()->getPage()->getContent();
     }

@@ -22,9 +22,6 @@ class FixtureTestHelper
 
     private EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
     private string $behatPassword;
 
     public function __construct(string $yamlFixtureLocation, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em,  string $behatPassword)

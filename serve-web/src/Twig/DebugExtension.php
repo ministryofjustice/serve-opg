@@ -23,7 +23,7 @@ class DebugExtension extends AbstractExtension
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'debug_extension';
     }

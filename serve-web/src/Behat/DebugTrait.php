@@ -2,34 +2,42 @@
 
 namespace App\Behat;
 
+use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\Behat\Tester\Result\ExecutedStepResult;
+
 trait DebugTrait
 {
     private $behatDebugDir = '/tmp/behat/';
 
     /**
      * @Then /^debug$/
+     *
+     * @param null|mixed $feature
+     * @param null|mixed $line
      */
     public function debug($feature = null, $line = null): void
     {
-        $filename = $feature . time() . '.html';
+        $filename = $feature.time().'.html';
 
         $session = $this->getSession();
         $data = $session->getPage()->getContent();
-        file_put_contents($this->behatDebugDir . $filename, $data);
-        echo '- Url: ' . $session->getCurrentUrl() . "\n";
+        file_put_contents($this->behatDebugDir.$filename, $data);
+        echo '- Url: '.$session->getCurrentUrl()."\n";
         echo "- View response at: https://localhost/behat/{$filename}\n";
     }
 
     /**
      * @Then I save the page as :name
+     *
+     * @param mixed $name
      */
     public function iSaveThePageAs($name): void
     {
-        $filename = $this->behatDebugDir . '/screenshot-' . $name . '.html';
+        $filename = $this->behatDebugDir.'/screenshot-'.$name.'.html';
 
         $data = $this->getSession()->getPage()->getContent();
         if (!file_put_contents($filename, $data)) {
-            echo "Cannot write screenshot into $filename \n";
+            echo "Cannot write screenshot into {$filename} \n";
         }
     }
 
@@ -38,10 +46,10 @@ trait DebugTrait
      *
      * @AfterStep
      */
-    public function debugOnException(\Behat\Behat\Hook\Scope\AfterStepScope $scope): void
+    public function debugOnException(AfterStepScope $scope): void
     {
         if (($result = $scope->getTestResult())
-            && $result instanceof \Behat\Behat\Tester\Result\ExecutedStepResult
+            && $result instanceof ExecutedStepResult
             && $result->hasException()
         ) {
             $feature = basename($scope->getFeature()->getFile());
@@ -53,9 +61,11 @@ trait DebugTrait
     /**
      * @Then die :code
      * @Then exit :code
+     *
+     * @param mixed $code
      */
-    public function interrupt($code): void
+    public function interrupt($code): never
     {
-        die($code);
+        exit($code);
     }
 }

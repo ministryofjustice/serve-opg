@@ -14,19 +14,13 @@ class UploadableFile implements UploadableFileInterface
     /**
      * @var FileCheckerInterface[]
      */
-    protected $fileCheckers;
+    protected array $fileCheckers;
 
     protected LoggerInterface $logger;
 
-    /**
-     * @var UploadedFile $file
-     */
-    protected $uploadedFile;
+    protected UploadedFile $uploadedFile;
 
-    /**
-     * @var array Scan result
-     */
-    protected $scanResult;
+    protected array $scanResult;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -36,55 +30,43 @@ class UploadableFile implements UploadableFileInterface
     /**
      * @return FileCheckerInterface[]
      */
-    public function getFileCheckers()
+    public function getFileCheckers(): array
     {
         return $this->fileCheckers;
     }
 
     /**
      * @param FileCheckerInterface[] $fileCheckers
-     *
-     * @return $this
      */
-    public function setFileCheckers($fileCheckers)
+    public function setFileCheckers(array $fileCheckers): static
     {
         $this->fileCheckers = $fileCheckers;
         return $this;
     }
 
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger()
+    public function getLogger(): loggerInterface
     {
         return $this->logger;
     }
 
     /**
      * @param LoggerInterface $logger
-     *
-     * @return $this
      */
-    public function setLogger($logger)
+    public function setLogger($logger): static
     {
         $this->logger = $logger;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getUploadedFile()
+    public function getUploadedFile(): UploadedFile
     {
         return $this->uploadedFile;
     }
 
     /**
      * @param UploadedFile $uploadedFile
-     *
-     * @return $this
      */
-    public function setUploadedFile($uploadedFile)
+    public function setUploadedFile($uploadedFile): static
     {
         $this->uploadedFile = $uploadedFile;
         return $this;
@@ -113,10 +95,7 @@ class UploadableFile implements UploadableFileInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getScanResult()
+    public function getScanResult(): array
     {
         return $this->scanResult;
     }
@@ -124,20 +103,16 @@ class UploadableFile implements UploadableFileInterface
     /**
      * @param array $scanResult
      */
-    public function setScanResult($scanResult)
+    public function setScanResult($scanResult): static
     {
         $this->scanResult = $scanResult;
         return $this;
     }
 
-    /**
-     * Is the file safe to upload?
-     *
-     * @return bool
-     */
-    public function isSafe()
+    public function isSafe(): bool
     {
         /**** TO DO REMOVE THIS ONCE FILE SCANNER IMPLEMENTED *****/
+        /**** TO DO 2024 *****/
         return true;
         $scanResult = $this->getScanResult();
 
@@ -148,7 +123,7 @@ class UploadableFile implements UploadableFileInterface
         return false;
     }
 
-    public function getScannerEndpoint()
+    public function getScannerEndpoint(): string
     {
         return $this->scannerEndpoint;
     }

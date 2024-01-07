@@ -29,15 +29,6 @@ class FileCheckerFactory
 
     protected LoggerInterface $logger;
 
-    /**
-     * FileCheckerFactory constructor.
-     * @param Pdf $pdf
-     * @param Png $png
-     * @param Jpg $jpg
-     * @param Tif $tif
-     * @param Doc $doc
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         Pdf $pdf,
         Png $png,
@@ -88,9 +79,8 @@ class FileCheckerFactory
      * Is file a word docx file?
      *
      * @param UploadedFile $uploadedFile
-     * @return bool
      */
-    private function isWordDoc(UploadedFile $uploadedFile)
+    private function isWordDoc(UploadedFile $uploadedFile): bool
     {
         // specific check to handle word X documents but not other files with same mime type
         $mimeType = $uploadedFile->getMimeType();

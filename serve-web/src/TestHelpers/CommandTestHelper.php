@@ -50,7 +50,7 @@ class CommandTestHelper extends WebTestCase
         ]);
     }
 
-    protected static function createApplication()
+    protected static function createApplication(): Application
     {
         $kernel = static::createKernel();
         $application = new Application($kernel);

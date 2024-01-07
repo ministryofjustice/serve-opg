@@ -33,7 +33,7 @@ class DatabaseAvailability extends ServiceAvailabilityAbstract
         }
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Database';
     }

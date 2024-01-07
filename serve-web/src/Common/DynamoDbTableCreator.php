@@ -16,15 +16,12 @@ class DynamoDbTableCreator
     private string $keyAttrName;
 
     /**
-     * @var boolean array cache to avoid querying dynamo in the same script lifespan
+     * @var bool array cache to avoid querying dynamo in the same script lifespan
      */
     private static ?bool $tableCreated = null;
 
     /**
      * DynamoDbTableCreator constructor.
-     * @param DynamoDbClient $client
-     * @param string $tableName
-     * @param string $keyAttrName
      */
     public function __construct(DynamoDbClient $client, string $tableName, string $keyAttrName)
     {

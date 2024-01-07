@@ -64,12 +64,7 @@ class MailSender
         );
     }
 
-    /**
-     * @param string $emailAddress
-     *
-     * @return Client
-     */
-    private function getNotifyClient()
+    private function getNotifyClient(): Client
     {
         return $this->notifyClient;
     }

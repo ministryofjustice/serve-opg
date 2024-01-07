@@ -11,7 +11,7 @@ trait RegionLinksTrait
      *
      * @Then I should not see the :element :type
      */
-    public function iShouldNotSeeTheBehatElement($element, $type): void
+    public function iShouldNotSeeTheBehatElement(string $element, string $type): void
     {
         $this->assertResponseStatus(200);
 
@@ -134,7 +134,7 @@ trait RegionLinksTrait
         $this->assertSession()->elementTextNotContains('css', self::behatElementToCssSelector($region, 'region'), $text);
     }
 
-    public static function behatElementToCssSelector($element, $type)
+    public static function behatElementToCssSelector($element, $type): string
     {
         return '.behat-' . $type . '-' . preg_replace('/\s+/', '-', $element);
     }

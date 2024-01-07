@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Repository\OrderRepository;
-use App\Service\Security\LoginAttempts\Checker;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,7 +21,6 @@ class CaseController extends AbstractController
 
     /**
      * UserController constructor.
-     * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
     {
@@ -32,7 +31,7 @@ class CaseController extends AbstractController
     /**
      * @Route("", name="case-list")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         $limit = 50;
 

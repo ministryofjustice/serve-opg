@@ -7,12 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class OrderRepository extends EntityRepository
 {
-    /**
-     * @param array $filters
-     *
-     * @return integer
-     */
-    public function getOrdersCount(array $filters)
+    public function getOrdersCount(array $filters): mixed
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
@@ -31,7 +26,7 @@ class OrderRepository extends EntityRepository
      *
      * @return Order[]
      */
-    public function getOrders(array $filters, $maxResults)
+    public function getOrders(array $filters, $maxResults): array
     {
         /**
          * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
@@ -98,7 +93,8 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    public function getOrdersBeforeGoLive() {
+    public function getOrdersBeforeGoLive(): mixed
+    {
 
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder("o")

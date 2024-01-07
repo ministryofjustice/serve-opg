@@ -54,18 +54,12 @@ class S3Storage implements StorageInterface
         $this->logger = $logger;
     }
 
-    /**
-     * @return string
-     */
-    public function getLocalBucketName()
+    public function getLocalBucketName(): string
     {
         return $this->localBucketName;
     }
 
-    /**
-     * @return string
-     */
-    public function getRemoteBucketName()
+    public function getRemoteBucketName(): string
     {
         return $this->remoteBucketName;
     }
@@ -101,9 +95,9 @@ class S3Storage implements StorageInterface
 
     /**
      * @param  string      $key
-     * @return \Aws\Result
+     * @return Result
      */
-    public function delete($key)
+    public function delete($key): Result
     {
         /** If no access to remove, we'll need to reimplment tagging **/
 
@@ -118,7 +112,7 @@ class S3Storage implements StorageInterface
     /**
      * @param $key
      * @param $body
-     * @return \Aws\Result
+     * @return Result
      */
     public function store($key, $body)
     {
@@ -134,9 +128,8 @@ class S3Storage implements StorageInterface
     /**
      * Move S3 Objects To new bucket
      * @param Collection $documents
-     * @return \Generator
      */
-    public function moveDocuments(Collection $documents)
+    public function moveDocuments(Collection $documents): Collection
     {
         // set up variables used in closures
         $s3Client = $this->s3Client;

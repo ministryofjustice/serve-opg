@@ -5,11 +5,12 @@ namespace App\Controller;
 use App\Entity\Deputy;
 use App\Entity\Order;
 use App\Form\ConfirmationForm;
-use App\Service\DeputyService;
 use App\Form\DeputyForm;
+use App\Service\DeputyService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,9 +25,6 @@ class DeputyController extends AbstractController
 
     /**
      * DeputyController constructor.
-     * @param EntityManager $em
-     * @param DeputyService $deputyService
-     * @param OrderService $orderService
      */
     public function __construct(EntityManager $em, DeputyService $deputyService, OrderService $orderService)
     {
@@ -38,7 +36,7 @@ class DeputyController extends AbstractController
     /**
      * @Route("/order/{orderId}/deputy/add", name="deputy-add")
      */
-    public function add(Request $request, $orderId)
+    public function add(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -56,11 +54,11 @@ class DeputyController extends AbstractController
             $this->em->persist($deputy);
             $this->em->flush();
 
-            if ($buttonClicked->getName() == 'saveAndAddAnother') {
+            if ('saveAndAddAnother' == $buttonClicked->getName()) {
                 return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
-            } else {
-                return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
             }
+
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
         return $this->render('Deputy/add.html.twig', [
@@ -74,7 +72,7 @@ class DeputyController extends AbstractController
     /**
      * @Route("/order/{orderId}/deputy/add/deputy-type", name="deputy-type")
      */
-    public function chooseDeputyType(Request $request, $orderId)
+    public function chooseDeputyType(Request $request, int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -85,13 +83,8 @@ class DeputyController extends AbstractController
 
     /**
      * @Route("/case/order/{orderId}/deputy/edit/{deputyId}", name="deputy-edit")
-     * @param Request $request
-     * @param $orderId
-     * @param $deputyId
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function edit(Request $request, $orderId, $deputyId)
+    public function edit(Request $request, $orderId, $deputyId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
@@ -121,13 +114,8 @@ class DeputyController extends AbstractController
 
     /**
      * @Route("/case/order/{orderId}/deputy/delete/{deputyId}", name="deputy-delete")
-     * @param Request $request
-     * @param $orderId
-     * @param $deputyId
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function delete(Request $request, $orderId, $deputyId)
+    public function delete(Request $request, $orderId, $deputyId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 

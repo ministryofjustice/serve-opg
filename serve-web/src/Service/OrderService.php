@@ -175,11 +175,10 @@ REGEX;
      * @param string $fileContents, Text extracted from Court Order
      * @param Order $order
      *
-     * @return Order Returns an updated version of the order
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function answerQuestionsFromText(string $fileContents, Order $order)
+    public function answerQuestionsFromText(string $fileContents, Order $order): Order
     {
         if (!$this->extractCaseNumber($fileContents, $order)) {
             throw new WrongCaseNumberException(
@@ -200,9 +199,8 @@ REGEX;
     /**
      * @param string $text
      * @param Order $order
-     * @return bool
      */
-    private function extractCaseNumber(string $text, Order $order)
+    private function extractCaseNumber(string $text, Order $order): bool
     {
         preg_match(self::CASE_NUMBER_REGEX, $text, $matches);
 

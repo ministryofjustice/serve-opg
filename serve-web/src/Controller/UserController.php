@@ -19,8 +19,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Throwable;
-use Twig\Environment;
 
 class UserController extends AbstractController
 {
@@ -32,9 +30,6 @@ class UserController extends AbstractController
 
     /**
      * UserController constructor.
-     * @param EntityManager $em
-     * @param MailSender $mailerSender
-     * @param UserPasswordEncoderInterface $encoder
      */
     public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder)
     {
@@ -46,7 +41,7 @@ class UserController extends AbstractController
     /**
      * @Route("/login", name="login")
      */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up)
+    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up): Response
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -62,15 +57,15 @@ class UserController extends AbstractController
     /**
      * @Route("/user/password-reset/request", name="password-reset-request")
      */
-    public function passwordResetRequest(Request $request)
+    public function passwordResetRequest(Request $request): RedirectResponse|Response
     {
         $form = $this->createForm(PasswordResetForm::class);
         $form->handleRequest($request);
-        $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
+        $userRepo = $this->em->getRepository(User::class); // @var $userRepo UserRepository
 
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->getData()['email'];
-            $user = $userRepo->findOneByEmail($email); /* @var $user User */
+            $user = $userRepo->findOneByEmail($email); // @var $user User
             if ($user) {
                 if (empty($user->getActivationToken()) || !$user->isTokenValid()) {
                     $userRepo->refreshActivationToken($user);
@@ -88,11 +83,13 @@ class UserController extends AbstractController
 
     /**
      * @Route("/user/password-reset/change/{token}", name="password-change")
+     *
+     * @param mixed $token
      */
-    public function passwordChange(Request $request, $token)
+    public function passwordChange(Request $request, $token): RedirectResponse|Response
     {
-        $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
-        $user = $userRepo->findOneBy(['activationToken' => $token]); /* @var $user User */
+        $userRepo = $this->em->getRepository(User::class); // @var $userRepo UserRepository
+        $user = $userRepo->findOneBy(['activationToken' => $token]); // @var $user User
         if (!$user) {
             throw new NotFoundHttpException('User not found');
         }
@@ -124,7 +121,7 @@ class UserController extends AbstractController
     /**
      * @Route("/user/password-reset/sent", name="password-reset-sent")
      */
-    public function passwordResetSent(Request $request)
+    public function passwordResetSent(Request $request): Response
     {
         return $this->render('User/password-reset-sent.html.twig', [
             'email' => $request->get('email')
@@ -134,7 +131,7 @@ class UserController extends AbstractController
     /**
      * @Route("/users", name="view-users", methods={"GET"})
      */
-    public function viewUsers()
+    public function viewUsers(): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -144,11 +141,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/view", name="view-user", methods={"GET", "POST"})
-     * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
      */
-    public function viewUser(Request $request, int $id)
+    public function viewUser(Request $request, int $id): RedirectResponse|Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -176,11 +170,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/edit", name="edit-user", methods={"GET", "POST"})
-     * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
      */
-    public function editUser(Request $request, int $id)
+    public function editUser(Request $request, int $id): RedirectResponse|Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -210,11 +201,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/add", name="add-user", methods={"GET", "POST"})
-     * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
      */
-    public function addUser(Request $request)
+    public function addUser(Request $request): RedirectResponse|Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -229,7 +217,7 @@ class UserController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
-            $userRepo = $this->em->getRepository(User::class); /* @var $userRepo UserRepository */
+            $userRepo = $this->em->getRepository(User::class); // @var $userRepo UserRepository
             $userRepo->refreshActivationToken($user);
             $this->mailerSender->sendPasswordResetEmail($user);
 
@@ -243,11 +231,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/confirmation", name="add-user-confirmation", methods={"GET"})
-     * @param Request $request
-     * @param int $id
-     * @return RedirectResponse|Response
      */
-    public function addUserConfirmation(int $id)
+    public function addUserConfirmation(int $id): RedirectResponse|Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -265,11 +250,10 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/resend-activation", name="resend-activation-user", methods={"GET"})
-     * @param Request $request
-     * @param int $id
+     *
      * @return Response
      */
-    public function resendActivationUser(Request $request, int $id)
+    public function resendActivationUser(Request $request, int $id): RedirectResponse
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -291,11 +275,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/delete", name="delete-user", methods={"GET"})
-     * @param Request $request
-     * @param int $id
-     * @return RedirectResponse
      */
-    public function deleteUser(Request $request, int $id)
+    public function deleteUser(Request $request, int $id): RedirectResponse
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
