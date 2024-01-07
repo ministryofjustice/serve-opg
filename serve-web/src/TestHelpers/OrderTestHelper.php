@@ -41,8 +41,6 @@ class OrderTestHelper
     }
 
     /**
-     * @param int $numberOfOrders, amount of orders to generate
-     * @param bool $setAsServed, whether to add a servedAt date to orders generated
      * @return Order[]
      * @throws Exception
      */
@@ -70,7 +68,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders array or Order objects
-     * @param string $datePropertyName , issuedAt|servedAt
      * @return array<Order>
      * @throws Exception
      */
@@ -94,7 +91,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getOldestOrderByIssuedAt(array $orders): Order
@@ -105,7 +101,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getMostRecentOrderByIssuedAt(array $orders): Order
@@ -116,7 +111,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getOldestOrderByServedAt(array $orders): Order
@@ -127,7 +121,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getMostRecentOrderByServedAt(array $orders): Order

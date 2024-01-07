@@ -18,34 +18,19 @@ class MailSender
 {
     const FORGOTTEN_PASSWORD_TEMPLATE_ID = 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a';
 
-    /**
-     * @var null
-     */
-    private $lastEmailId = null;
+    private mixed $lastEmailId = null;
 
     private Client $notifyClient;
 
     private RouterInterface $router;
 
-    /**
-     * MailSender constructor.
-     *
-     * @param Client $notifyClient
-     * @param RouterInterface $router
-     */
     public function __construct(Client $notifyClient, RouterInterface $router)
     {
         $this->notifyClient = $notifyClient;
         $this->router = $router;
     }
 
-
-    /**
-     * @param User $user
-     *
-     * @return array notify API response
-     */
-    public function sendPasswordResetEmail(User $user)
+    public function sendPasswordResetEmail(User $user): array
     {
         if (empty($user->getActivationToken())) {
             throw new \RuntimeException("Cannot send an activation link, the token was not generated");
@@ -70,11 +55,9 @@ class MailSender
     }
 
     /**
-     * @param $notificationId
-     *
      * @return null|array [body, email_address, sent_at, status = delivered, subject, template=>[id]]
      */
-    public function getLastEmailStatus($notificationId)
+    public function getLastEmailStatus(string $notificationId): ?array
     {
         return $this->notifyClient->getNotification($notificationId);
     }

@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,11 +21,6 @@ class CsvImporterService
     private OrderService $orderService;
     private EntityManagerInterface $em;
 
-    /**
-     * CsvImporterService constructor.
-     * @param ClientService $clientService
-     * @param OrderService $orderService
-     */
     public function __construct(ClientService $clientService, OrderService $orderService, EntityManagerInterface $em)
     {
         $this->clientService = $clientService;
@@ -33,7 +29,7 @@ class CsvImporterService
     }
 
     /**
-     * @param string $filePath file CSV with keys:
+     * file CSV with keys:
      * Case : 8 digits. might end with a T
      * Forename
      * Surname
@@ -69,11 +65,9 @@ class CsvImporterService
     }
 
     /**
-     * @param array $row
-     *
-     * @return Order
+     * @throws \Exception
      */
-    private function importSingleRow(array $row)
+    private function importSingleRow(array $row): Order
     {
         $row = array_map('trim', $row);
 
@@ -85,8 +79,8 @@ class CsvImporterService
         $client = $this->clientService->upsert($case, $clientName);
 
         // order
-        $issuedAt = new \DateTime($row['Issue Date']);
-        $madeAt = new \DateTime($row['Made Date']);
+        $issuedAt = new DateTime($row['Issue Date']);
+        $madeAt = new DateTime($row['Made Date']);
         $orderNumber = $row['Order No'];
 
         return $this->orderService->upsert($client, $orderType, $madeAt, $issuedAt, $orderNumber);

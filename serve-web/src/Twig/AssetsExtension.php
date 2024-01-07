@@ -19,16 +19,16 @@ class AssetsExtension extends AbstractExtension
 
     private ?string $assetsVersion = null;
 
-    /**
-     * AssetsExtension constructor.
-     */
     public function __construct(string $basePath, ?string $assetsVersion)
     {
         $this->basePath = rtrim($basePath, '/');
         $this->assetsVersion = $assetsVersion;
     }
 
-    public function getFilters()
+    /**
+     * @return TwigFilter[]
+     */
+    public function getFilters(): array
     {
         return [
             new TwigFilter('assetUrl', function ($originalUrl): string {

@@ -23,9 +23,6 @@ class DeputyController extends AbstractController
 
     private OrderService $orderService;
 
-    /**
-     * DeputyController constructor.
-     */
     public function __construct(EntityManager $em, DeputyService $deputyService, OrderService $orderService)
     {
         $this->em = $em;
@@ -84,7 +81,7 @@ class DeputyController extends AbstractController
     /**
      * @Route("/case/order/{orderId}/deputy/edit/{deputyId}", name="deputy-edit")
      */
-    public function edit(Request $request, $orderId, $deputyId): RedirectResponse|Response
+    public function edit(Request $request, $orderId, int $deputyId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
@@ -115,7 +112,7 @@ class DeputyController extends AbstractController
     /**
      * @Route("/case/order/{orderId}/deputy/delete/{deputyId}", name="deputy-delete")
      */
-    public function delete(Request $request, $orderId, $deputyId): RedirectResponse|Response
+    public function delete(Request $request, $orderId, int $deputyId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 

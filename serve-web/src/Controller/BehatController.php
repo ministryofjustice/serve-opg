@@ -55,13 +55,14 @@ class BehatController extends AbstractController
 
     /**
      * BehatController constructor.
-     * @param EntityManager $em
-     * @param ClientService $clientService
-     * @param OrderService $orderService
-     * @param UserPasswordEncoderInterface $encoder
-     * @param UserProvider $userProvider
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider)
+    public function __construct(
+        EntityManager $em,
+        ClientService $clientService,
+        OrderService $orderService,
+        UserPasswordEncoderInterface $encoder,
+        UserProvider $userProvider
+    )
     {
         $this->em = $em;
         $this->clientService = $clientService;
@@ -177,10 +178,8 @@ class BehatController extends AbstractController
 
     /**
      * @Route("/document-list/{orderIdentifier}")
-     *
-     * @param mixed $orderIdentifier
      */
-    public function orderDocumentsList(Request $request, $orderIdentifier): Response
+    public function orderDocumentsList(Request $request, mixed $orderIdentifier): Response
     {
         $this->securityChecks();
 
@@ -197,9 +196,7 @@ class BehatController extends AbstractController
         return new Response(implode("|", array_filter($ret)));
     }
 
-
-
-    private function getOrderFromIdentifier($orderIdentifier)
+    private function getOrderFromIdentifier(string $orderIdentifier)
     {
         list($caseNumber, $orderType) = explode('-', $orderIdentifier);
 

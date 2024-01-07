@@ -6,10 +6,8 @@ trait SiriusTrait
 {
     /**
      * @Then the documents for order :orderIdentifier should be transferred
-     *
-     * @param null|string $orderIdentifier
      */
-    public function theDocumentsForOrderShouldBeTransferred($orderIdentifier): void
+    public function theDocumentsForOrderShouldBeTransferred(string $orderIdentifier): void
     {
         $documentsList = explode("|", $this->getDocumentsList($orderIdentifier));
 
@@ -22,10 +20,7 @@ trait SiriusTrait
         }
     }
 
-    /**
-     * @param null|string $orderIdentifier
-     */
-    private function getDocumentsList($orderIdentifier): ?string
+    private function getDocumentsList(string $orderIdentifier): ?string
     {
         $this->visit('/behat/document-list/'.$orderIdentifier);
 

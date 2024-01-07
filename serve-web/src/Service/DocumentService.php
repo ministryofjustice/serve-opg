@@ -37,16 +37,6 @@ class DocumentService
 
     private string $appEnv;
 
-    /**
-     * DocumentService constructor.
-     * @param EntityManager $em
-     * @param StorageInterface $s3Storage
-     * @param LoggerInterface $logger
-     * @param FileCheckerFactory $fileCheckerFactory
-     * @param FileUploader $fileUploader
-     * @param TranslatorInterface $translator
-     * @param string $appEnv
-     */
     public function __construct(
         EntityManager $em,
         StorageInterface $s3Storage,
@@ -80,13 +70,9 @@ class DocumentService
     }
 
     /**
-     * @param  Document   $document
-     * @param  bool       $ignoreS3Failure
      * @throws Exception if the document doesn't exist (in addition to S3 network/access failures
-     * @return bool       true if delete is successful
-     *
      */
-    private function deleteFromS3(Document $document, $ignoreS3Failure = false)
+    private function deleteFromS3(Document $document, ?bool $ignoreS3Failure = false): bool
     {
         $ref = $document->getStorageReference();
         if (!$ref) {
@@ -113,7 +99,8 @@ class DocumentService
         Document $document,
         UploadedFile $file,
         string $requestId
-    ): array {
+    ): array
+    {
         $response = array(
             'response' => self::FAIL,
             'message' => '',

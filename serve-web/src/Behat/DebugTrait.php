@@ -28,10 +28,8 @@ trait DebugTrait
 
     /**
      * @Then I save the page as :name
-     *
-     * @param mixed $name
      */
-    public function iSaveThePageAs($name): void
+    public function iSaveThePageAs(string $name): void
     {
         $filename = $this->behatDebugDir.'/screenshot-'.$name.'.html';
 

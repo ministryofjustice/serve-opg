@@ -24,10 +24,7 @@ class UserProvider implements UserProviderInterface
 
     private BruteForceChecker $bruteForceChecker;
 
-    /**
-     * @var array
-     */
-    private $rules;
+    private array $rules;
 
     public function __construct(EntityManager $em, AttemptsStorageInterface $storage, BruteForceChecker $bruteForceChecker, $rules = [])
     {
@@ -40,14 +37,8 @@ class UserProvider implements UserProviderInterface
     /**
      * Return the highest timestamp when the user can be unlocked,
      * based on the rules and previous attempts from the same username, stored in the storage (e.g. dynamoDb)
-     *
-     * Return false,if *
-     *
-     * @param $username
-     *
-     * @return bool|int
      */
-    public function usernameLockedForSeconds($username)
+    public function usernameLockedForSeconds(string $username): bool|int
     {
         $waits = [];
         foreach ($this->rules as $rule) {
@@ -61,10 +52,7 @@ class UserProvider implements UserProviderInterface
         return $waits ? max($waits) : false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): User
     {
         if (empty($username)) {
             throw new UsernameNotFoundException('Missing username');
@@ -84,10 +72,7 @@ class UserProvider implements UserProviderInterface
         return $user;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): User
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
@@ -101,18 +86,13 @@ class UserProvider implements UserProviderInterface
         throw new UsernameNotFoundException(sprintf('User with id %s not found', $user->getId()));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return $class === User::class || is_subclass_of($class, User::class);
     }
 
     /**
      * Store failing attempt
-     *
-     * @param AuthenticationFailureEvent $event
      */
     public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {
@@ -128,8 +108,6 @@ class UserProvider implements UserProviderInterface
 
     /**
      * Reset attempts after a successful login
-     *
-     * @param AuthenticationEvent $e
      */
     public function onAuthenticationSuccess(AuthenticationEvent $e): void
     {
@@ -143,7 +121,7 @@ class UserProvider implements UserProviderInterface
         }
     }
 
-    public function resetUsernameAttempts($userId): void
+    public function resetUsernameAttempts(string $userId): void
     {
         $this->storage->resetAttempts($userId);
 

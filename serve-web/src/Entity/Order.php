@@ -201,7 +201,7 @@ abstract class Order
      * @param $deputyType
      * @return int|void
      */
-    protected function hasDeputyByType($deputyType)
+    protected function hasDeputyByType(mixed $deputyType)
     {
         return $this->getDeputiesByType($deputyType)->count();
     }
@@ -211,7 +211,7 @@ abstract class Order
      *
      * @return ArrayCollection|\Doctrine\Common\Collections\Collection|static
      */
-    public function getDeputiesByType($deputyType)
+    public function getDeputiesByType(mixed $deputyType)
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('deputyType', $deputyType));
@@ -227,7 +227,7 @@ abstract class Order
     /**
      * @param null|int $id
      */
-    public function setId($id): Order
+    public function setId(?int $id): Order
     {
         $this->id = $id;
         return $this;
@@ -284,7 +284,7 @@ abstract class Order
      *
      * @return Order
      */
-    public function setAppointmentType($appointmentType): static
+    public function setAppointmentType(?string $appointmentType): static
     {
         $this->appointmentType = $appointmentType;
         return $this;
@@ -317,7 +317,7 @@ abstract class Order
     /**
      * @param ArrayCollection $deputies
      */
-    public function setDeputies($deputies): void
+    public function setDeputies(\Doctrine\Common\Collections\Collection $deputies): void
     {
         $this->deputies = $deputies;
     }
@@ -404,7 +404,7 @@ abstract class Order
      *
      * @return $this
      */
-    public function setPayloadServed($payloadServed): static
+    public function setPayloadServed(?array $payloadServed): static
     {
         $this->payloadServed = $payloadServed;
         return $this;
@@ -423,7 +423,7 @@ abstract class Order
      *
      * @return $this
      */
-    public function setApiResponse($apiResponse): static
+    public function setApiResponse(?array $apiResponse): static
     {
         $this->apiResponse = $apiResponse;
         return $this;

@@ -62,21 +62,13 @@ class Document
 
     private DateTime $createdAt;
 
-    /**
-     * Document constructor.
-     * @param Order|null $order
-     * @param null|string $type
-     */
-    public function __construct(Order $order, string $type)
+    public function __construct(?Order $order, ?string $type)
     {
         $this->order = $order;
         $this->type = $type;
         //$this->setCreatedAt(new \DateTime());
     }
 
-    /**
-     * @param ExecutionContextInterface $context
-     */
     public function isValidForOrder(ExecutionContextInterface $context): void
     {
         if (!($this->getFile() instanceof UploadedFile)) {
@@ -144,12 +136,7 @@ class Document
         return $this->fileName;
     }
 
-    /**
-     * @param string $fileName
-     *
-     * @return Document
-     */
-    public function setFileName($fileName): static
+    public function setFileName(?string $fileName): static
     {
         $this->fileName = $fileName;
 
@@ -161,11 +148,7 @@ class Document
         return $this->storageReference;
     }
 
-    /**
-     * @param  string   $storageReference
-     * @return Document
-     */
-    public function setStorageReference($storageReference): static
+    public function setStorageReference(string $storageReference): static
     {
         $this->storageReference = $storageReference;
 
@@ -177,10 +160,7 @@ class Document
         return $this->remoteStorageReference;
     }
 
-    /**
-     * @param string $remoteStorageReference
-     */
-    public function setRemoteStorageReference($remoteStorageReference): void
+    public function setRemoteStorageReference(?string $remoteStorageReference): void
     {
         $this->remoteStorageReference = $remoteStorageReference;
     }
@@ -190,27 +170,24 @@ class Document
         return $this->file;
     }
 
-    /**
-     * @param UploadedFile $file
-     */
-    public function setFile($file): void
+    public function setFile(?UploadedFile $file): void
     {
         $this->file = $file;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param DateTime $createdAt
-     */
-    public function setCreatedAt($createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
+    /**
+     * @deprecated
+     */
     public static function getPermittedMimeTypes()
     {
         return self::permittedMimeTypes;
@@ -240,10 +217,7 @@ class Document
         return in_array($this->getMimeType(), $wordMimeTypes);
     }
 
-    /**
-     * @return string|null
-     */
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         if (!$this->getFile()) {
             return null;

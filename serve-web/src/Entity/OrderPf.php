@@ -9,9 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class OrderPf extends Order
 {
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return Order::TYPE_PF;

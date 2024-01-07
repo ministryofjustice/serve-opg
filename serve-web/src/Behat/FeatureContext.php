@@ -31,7 +31,7 @@ class FeatureContext extends MinkContext implements Context
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
      */
-    public function theHeaderContains($name, $value): void
+    public function theHeaderContains(string $name, string $value): void
     {
         $this->assertSession()->responseHeaderContains($name, $value);
     }
@@ -50,9 +50,8 @@ class FeatureContext extends MinkContext implements Context
 
     /**
      * @Given I log in as :user with correct password
-     * @param $user
      */
-    public function iLogInAsCorrect($user): void
+    public function iLogInAsCorrect(?string $user): void
     {
         $this->visit("/login");
         $this->fillField('email', $user);
@@ -62,9 +61,8 @@ class FeatureContext extends MinkContext implements Context
 
     /**
      * @Given I log in as :user with wrong password
-     * @param $user
      */
-    public function iLogInAsWrong($user): void
+    public function iLogInAsWrong(?string $user): void
     {
         $this->visit("/login");
         $this->fillField('inputEmail', $user);
@@ -74,9 +72,8 @@ class FeatureContext extends MinkContext implements Context
 
     /**
      * @Given I log in as :user with new password
-     * @param $user
      */
-    public function iLogInAsNew($user): void
+    public function iLogInAsNew(?string $user): void
     {
         $this->visit("/login");
         $this->fillField('email', $user);
@@ -86,16 +83,15 @@ class FeatureContext extends MinkContext implements Context
 
     /**
      * @Given I log in as :user with no password
-     * @param $user
      */
-    public function iLogInAsNone($user): void
+    public function iLogInAsNone(?string $user): void
     {
         $this->visit("/login");
         $this->fillField('email', $user);
         $this->fillField('password', '');
         $this->pressButton('login_submit');
     }
-    
+
     /**
      * @Then /^the order should be (?P<shouldBe>(servable|unservable))$/
      */

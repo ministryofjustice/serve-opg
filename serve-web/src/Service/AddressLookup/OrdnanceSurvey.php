@@ -14,22 +14,16 @@ class OrdnanceSurvey
 
     private ?string $apiKey;
 
-    /**
-     * OrdnanceSurvey constructor.
-     * @param ClientInterface $httpClient
-     */
-    public function __construct(ClientInterface $httpClient, $apiKey)
+    public function __construct(ClientInterface $httpClient, ?string $apiKey)
     {
         $this->httpClient = $httpClient;
         $this->apiKey = $apiKey;
     }
 
     /**
-     * @param $postcode
-     * @return array
      * @throws GuzzleException
      */
-    public function lookupPostcode($postcode): array
+    public function lookupPostcode(?string $postcode): array
     {
         $results = $this->getPostcodeData($postcode);
         $addresses = [];
@@ -43,10 +37,9 @@ class OrdnanceSurvey
     }
 
     /**
-     * @param $postcode
      * @throws GuzzleException
      */
-    private function getPostcodeData($postcode): array
+    private function getPostcodeData(?string $postcode): array
     {
         $url = new Uri($this->httpClient->getConfig('base_uri'));
         $url = URI::withQueryValue($url, 'key', $this->apiKey);

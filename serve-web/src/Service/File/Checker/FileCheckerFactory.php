@@ -47,12 +47,8 @@ class FileCheckerFactory
 
     /**
      * Sets the uploaded file to the file Object created based on mime type
-     *
-     * @param UploadedFile $uploadedFile
-     *
-     * @return UploadableFile
      */
-    public function factory(UploadedFile $uploadedFile)
+    public function factory(UploadedFile $uploadedFile): UploadableFile
     {
         if ($uploadedFile->isExecutable() ||
             preg_match('/([^\.])+(\.exe|\.bin|\.bat|\.js|\.zip|\.php)/i', $uploadedFile->getClientOriginalName())) {
@@ -77,8 +73,6 @@ class FileCheckerFactory
 
     /**
      * Is file a word docx file?
-     *
-     * @param UploadedFile $uploadedFile
      */
     private function isWordDoc(UploadedFile $uploadedFile): bool
     {
