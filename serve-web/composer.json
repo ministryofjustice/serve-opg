@@ -17,7 +17,6 @@
         "guzzlehttp/guzzle": "^7.4",
         "php-http/guzzle7-adapter": "^1.0",
         "phpdocumentor/reflection-docblock": "^5.2",
-        "sensio/framework-extra-bundle": "^5.3",
         "shuchkin/simplexlsx": "^1.0",
         "squizlabs/php_codesniffer": "3.*",
         "symfony/browser-kit": "^5.4",
