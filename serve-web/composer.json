@@ -47,12 +47,13 @@
         "symfony/yaml": "^5.4"
     },
     "require-dev": {
-        "acsauk/mink-extension": "^2.5.2",
         "behat/behat": "^3.8",
         "behat/common-contexts": "1.2.*",
-        "behat/mink": "^1.8",
+        "behat/mink": "^1.11",
+        "behat/mink-browserkit-driver": "^2.0",
         "doctrine/doctrine-fixtures-bundle": "^3.5.1",
         "egulias/email-validator": "^3.2.6",
+        "friends-of-behat/mink-extension": "^2.5.2",
         "friends-of-behat/symfony-extension": "^2.0",
         "mockery/mockery": "^1.2",
         "phpspec/prophecy-phpunit": "^2.0",
