@@ -87,14 +87,14 @@ abstract class Order
     /**
      * JSON string served to the API
      */
-    #[ORM\Column(name: 'payload_served', type: 'json_array', nullable: true)]
-    private ?array $payloadServed;
+    #[ORM\Column(name: 'payload_served', type: 'json', nullable: true)]
+    private mixed $payloadServed;
 
     /**
      * API response as a string
      */
-    #[ORM\Column(name: 'api_response', type: 'json_array', nullable: true)]
-    private ?array $apiResponse;
+    #[ORM\Column(name: 'api_response', type: 'json', nullable: true)]
+    private mixed $apiResponse;
 
     #[ORM\Column(name: 'order_number', type: 'string', unique: true, nullable: true)]
     private ?string $orderNumber = null;
