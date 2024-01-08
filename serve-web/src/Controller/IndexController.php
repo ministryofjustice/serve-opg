@@ -11,17 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
-    /**
-     * @Route("/", name="homepage")
-     */
+    #[Route(path: '/', name: 'homepage')]
     public function indexAction(): RedirectResponse
     {
         return $this->redirectToRoute('case-list');
     }
 
-    /**
-     * @Route("/design", name="design")
-     */
+    #[Route(path: '/design', name: 'design')]
     public function designAction(): Response
     {
         // design stuff
@@ -31,9 +27,8 @@ class IndexController extends AbstractController
 
     /**
      * keep session alive. Called from session timeout dialog.
-     *
-     * @Route("session-keep-alive", name="session-keep-alive", methods={"GET"})
      */
+    #[Route(path: 'session-keep-alive', name: 'session-keep-alive', methods: ['GET'])]
     public function sessionKeepAliveAction(Request $request): Response
     {
         $request->getSession()->set('refreshedAt', time());

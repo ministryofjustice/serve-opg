@@ -9,9 +9,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/report")
- */
+#[Route(path: '/report')]
 class ReportController extends AbstractController
 {
     private ReportService $reportService;
@@ -21,17 +19,13 @@ class ReportController extends AbstractController
         $this->reportService = $reportService;
     }
 
-    /**
-     * @Route("", name="report")
-     */
+    #[Route(path: '', name: 'report')]
     public function reportAction(): Response
     {
         return $this->render('Report/report.html.twig');
     }
 
-    /**
-     * @Route("/download", name="download-report")
-     */
+    #[Route(path: '/download', name: 'download-report')]
     public function downloadReportAction(): BinaryFileResponse
     {
         $csv = $this->reportService->generateCsv();
@@ -39,9 +33,7 @@ class ReportController extends AbstractController
         return $this->file($csv);
     }
 
-    /**
-     * @Route("/download-orders-not-served", name="download-orders-not-served")
-     */
+    #[Route(path: '/download-orders-not-served', name: 'download-orders-not-served')]
     public function downloadOrdersNotServed(): BinaryFileResponse
     {
         $csv = $this->reportService->generateOrdersNotServedCsv();
@@ -49,9 +41,7 @@ class ReportController extends AbstractController
         return $this->file($csv);
     }
 
-    /**
-     * @Route("/download-served-orders", name="download-served-orders")
-     */
+    #[Route(path: '/download-served-orders', name: 'download-served-orders')]
     public function downloadServedOrders(): BinaryFileResponse
     {
         $csv = $this->reportService->generateAllServedOrdersCsv();
@@ -59,17 +49,13 @@ class ReportController extends AbstractController
         return $this->file($csv);
     }
 
-    /**
-     * @Route("/cases", name="cases")
-     */
+    #[Route(path: '/cases', name: 'cases')]
     public function casesAction(): Response
     {
         return $this->render('Report/case-report.html.twig');
     }
 
-    /**
-     * @Route("/download-cases", name="download-report-cases")
-     */
+    #[Route(path: '/download-cases', name: 'download-report-cases')]
     public function downloadCasesReportAction(): BinaryFileResponse
     {
         $this->reportService->getCasesBeforeGoLive();

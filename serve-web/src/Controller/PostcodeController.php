@@ -18,9 +18,7 @@ class PostcodeController extends AbstractController
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/postcode-lookup", name="postcode-lookup")
-     */
+    #[Route(path: '/postcode-lookup', name: 'postcode-lookup')]
     public function postcodeLookupAction(Request $request, OrdnanceSurvey $ordnanceSurvey): JsonResponse
     {
         $postcode = $request->query->get('postcode');

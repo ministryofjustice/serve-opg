@@ -48,14 +48,14 @@ class Deputy
 
     /**
      * @ORM\Column(name="dob", type="date", nullable=true)
-     * @Assert\NotBlank(message="deputy.dateOfBirth.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.dateOfBirth.notBlank')]
     private ?DateTime $dateOfBirth;
 
     /**
      * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.emailAddress.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.emailAddress.notBlank')]
     private ?string $emailAddress;
 
     /**
@@ -75,8 +75,8 @@ class Deputy
 
     /**
      * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_line_1.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.address_line_1.notBlank')]
     private ?string $addressLine1;
 
     /**
@@ -91,8 +91,8 @@ class Deputy
 
     /**
      * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_town.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.address_town.notBlank')]
     private ?string $addressTown;
 
     /**
@@ -102,8 +102,8 @@ class Deputy
 
     /**
      * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_postcode.notBlank")
      */
+    #[Assert\NotBlank(message: 'deputy.address_postcode.notBlank')]
     private ?string $addressPostcode;
 
     private ?string $addressCountry;

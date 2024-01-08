@@ -41,11 +41,11 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{orderId}/edit", name="order-edit")
      *
      * @throws ORMException
      * @throws OptimisticLockException
      */
+    #[Route(path: '/order/{orderId}/edit', name: 'order-edit')]
     public function editAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -88,9 +88,7 @@ class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/summary", name="order-summary")
-     */
+    #[Route(path: '/order/{orderId}/summary', name: 'order-summary')]
     public function summaryAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -112,9 +110,7 @@ class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/declaration", name="order-declaration")
-     */
+    #[Route(path: '/order/{orderId}/declaration', name: 'order-declaration')]
     public function declarationAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -158,9 +154,7 @@ class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/upload", name="upload-order")
-     */
+    #[Route(path: '/order/{orderId}/upload', name: 'upload-order')]
     public function uploadOrder(int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -169,11 +163,11 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{orderId}/process-order-doc", name="process-order-doc", methods={"POST"})
      *
      * @throws ORMException
      * @throws OptimisticLockException
      */
+    #[Route(path: '/order/{orderId}/process-order-doc', name: 'process-order-doc', methods: ['POST'])]
     public function processOrderDocument(Request $request, int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -224,9 +218,7 @@ MESSAGE;
         );
     }
 
-    /**
-     * @Route("/order/{orderId}/confirm-order-details", name="confirm-order-details", methods={"GET", "POST"})
-     */
+    #[Route(path: '/order/{orderId}/confirm-order-details', name: 'confirm-order-details', methods: ['GET', 'POST'])]
     public function confirmOrderDetails(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -259,9 +251,7 @@ MESSAGE;
         );
     }
 
-    /**
-     * @Route("/order/{orderId}/summary-served", name="served-order-summary", methods={"GET"})
-     */
+    #[Route(path: '/order/{orderId}/summary-served', name: 'served-order-summary', methods: ['GET'])]
     public function servedOrderSummary(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);

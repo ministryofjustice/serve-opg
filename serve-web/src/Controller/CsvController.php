@@ -19,9 +19,7 @@ class CsvController extends AbstractController
         $this->spreadsheetImporterService = $spreadsheetImporterService;
     }
 
-    /**
-     * @Route("/upload-csv", name="upload-csv")
-     */
+    #[Route(path: '/upload-csv', name: 'upload-csv')]
     public function uploadAction(Request $request): RedirectResponse|Response
     {
         $form = $this->createForm(CsvUploadForm::class);

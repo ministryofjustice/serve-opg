@@ -30,9 +30,7 @@ class DeputyController extends AbstractController
         $this->orderService = $orderService;
     }
 
-    /**
-     * @Route("/order/{orderId}/deputy/add", name="deputy-add")
-     */
+    #[Route(path: '/order/{orderId}/deputy/add', name: 'deputy-add')]
     public function add(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -66,9 +64,7 @@ class DeputyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/deputy/add/deputy-type", name="deputy-type")
-     */
+    #[Route(path: '/order/{orderId}/deputy/add/deputy-type', name: 'deputy-type')]
     public function chooseDeputyType(Request $request, int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -78,9 +74,7 @@ class DeputyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/case/order/{orderId}/deputy/edit/{deputyId}", name="deputy-edit")
-     */
+    #[Route(path: '/case/order/{orderId}/deputy/edit/{deputyId}', name: 'deputy-edit')]
     public function edit(Request $request, $orderId, int $deputyId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
@@ -109,9 +103,7 @@ class DeputyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/case/order/{orderId}/deputy/delete/{deputyId}", name="deputy-delete")
-     */
+    #[Route(path: '/case/order/{orderId}/deputy/delete/{deputyId}', name: 'deputy-delete')]
     public function delete(Request $request, $orderId, int $deputyId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
