@@ -12,98 +12,66 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="deputy")
- */
+#[ORM\Table(name: 'deputy')]
+#[ORM\Entity]
 class Deputy
 {
     const DEPUTY_TYPE_LAY = 'LAY';
     const DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
     const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id;
 
     private Order $order;
 
-    /**
-     * @ORM\Column(name="deputy_type", type="string", length=255)
-     */
+    #[ORM\Column(name: 'deputy_type', type: 'string', length: 255)]
     private ?string $deputyType;
 
-    /**
-     * @ORM\Column(name="forename", type="string", length=255)
-     */
+    #[ORM\Column(name: 'forename', type: 'string', length: 255)]
     private string $forename;
 
-    /**
-     * @ORM\Column(name="surname", type="string", length=255)
-     */
+    #[ORM\Column(name: 'surname', type: 'string', length: 255)]
     private string $surname;
 
-    /**
-     * @ORM\Column(name="dob", type="date", nullable=true)
-     */
     #[Assert\NotBlank(message: 'deputy.dateOfBirth.notBlank')]
+    #[ORM\Column(name: 'dob', type: 'date', nullable: true)]
     private ?DateTime $dateOfBirth;
 
-    /**
-     * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank(message: 'deputy.emailAddress.notBlank')]
+    #[ORM\Column(name: 'email_address', type: 'string', length: 255, nullable: true)]
     private ?string $emailAddress;
 
-    /**
-     * @ORM\Column(name="daytime_contact_number", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'daytime_contact_number', type: 'string', length: 255, nullable: true)]
     private ?string $daytimeContactNumber;
 
-    /**
-     * @ORM\Column(name="evening_contact_number", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'evening_contact_number', type: 'string', length: 255, nullable: true)]
     private ?string $eveningContactNumber;
 
-    /**
-     * @ORM\Column(name="mobile_contact_number", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'mobile_contact_number', type: 'string', length: 255, nullable: true)]
     private ?string $mobileContactNumber;
 
-    /**
-     * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank(message: 'deputy.address_line_1.notBlank')]
+    #[ORM\Column(name: 'address_line_1', type: 'string', length: 255, nullable: true)]
     private ?string $addressLine1;
 
-    /**
-     * @ORM\Column(name="address_line_2", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'address_line_2', type: 'string', length: 255, nullable: true)]
     private ?string $addressLine2;
 
-    /**
-     * @ORM\Column(name="address_line_3", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'address_line_3', type: 'string', length: 255, nullable: true)]
     private ?string $addressLine3;
 
-    /**
-     * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank(message: 'deputy.address_town.notBlank')]
+    #[ORM\Column(name: 'address_town', type: 'string', length: 255, nullable: true)]
     private ?string $addressTown;
 
-    /**
-     * @ORM\Column(name="address_county", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'address_county', type: 'string', length: 255, nullable: true)]
     private ?string $addressCounty;
 
-    /**
-     * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank(message: 'deputy.address_postcode.notBlank')]
+    #[ORM\Column(name: 'address_postcode', type: 'string', length: 255, nullable: true)]
     private ?string $addressPostcode;
 
     private ?string $addressCountry;
