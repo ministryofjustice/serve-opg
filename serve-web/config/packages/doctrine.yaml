@@ -24,7 +24,7 @@ doctrine:
         auto_mapping: true
         mappings:
             commonEntities:
-                type: attributes
+                type: attribute
                 dir: "%kernel.project_dir%/src/Entity"
                 prefix: App\Entity
                 is_bundle: false
