@@ -39,7 +39,7 @@ services:
 
     logstash_formatter:
         class: Monolog\Formatter\LogstashFormatter
-        arguments: ["serve-opg.frontend", null, null, "", 1]
+        arguments: ["serve-opg.frontend"]
 
     line_formatter:
         class: Monolog\Formatter\LineFormatter
