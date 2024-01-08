@@ -66,9 +66,7 @@ services:
                 base_uri: "https://api.os.uk/search/places/v1/postcode?"
 
     notificationHttpClient:
-        class: Http\Adapter\Guzzle6\Client
-        arguments:
-            $client: "@guzzleClient"
+        class: Http\Adapter\Guzzle7\Client
 
     # Notify (used for email sending)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
