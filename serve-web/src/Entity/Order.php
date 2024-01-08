@@ -11,16 +11,11 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({
- *     "PF" = "App\Entity\OrderPf",
- *     "HW" = "App\Entity\OrderHw",
- * })
- * @ORM\Table(name="dc_order")
- */
+#[ORM\Table(name: 'dc_order')]
+#[ORM\Entity(repositoryClass: 'App\Repository\OrderRepository')]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap(['PF' => 'App\Entity\OrderPf', 'HW' => 'App\Entity\OrderHw'])]
 abstract class Order
 {
     const TYPE_PF = 'PF';
@@ -40,133 +35,98 @@ abstract class Order
     const APPOINTMENT_TYPE_JOINT = 'JOINT';
     const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'JOINT_AND_SEVERAL';
 
-    /**
-     * @return array
-     */
-    abstract public function getAcceptedDocumentTypes();
+    abstract public function getAcceptedDocumentTypes(): array;
 
-    /**
-     * @return boolean
-     */
-    abstract public function isOrderValid();
+    abstract public function isOrderValid(): bool;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="orders", cascade={"persist"})
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id", onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Client', cascade: ['persist'], inversedBy: 'orders')]
+    #[ORM\JoinColumn(name: 'client_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Client $client;
 
-    /**
-     * @ORM\Column(name="sub_type", type="string", length=50, nullable=true)
-     */
+    #[ORM\Column(name: 'sub_type', type: 'string', length: 50, nullable: true)]
     private ?string $subType = null;
 
-    /**
-     * @ORM\Column(name="has_assets_above_threshold", type="string", length=50, nullable=true)
-     */
+    #[ORM\Column(name: 'has_assets_above_threshold', type: 'string', length: 50, nullable: true)]
     private ?string $hasAssetsAboveThreshold = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Deputy", cascade={"persist"})
-     * @ORM\JoinTable(name="ordertype_deputy",
-     *   joinColumns={@ORM\JoinColumn(name="deputy_id", referencedColumnName="id", onDelete="CASCADE")},
-     *   inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")}
-     * )
-     */
+    #[ORM\JoinTable(name: 'ordertype_deputy')]
+    #[ORM\JoinColumn(name: 'deputy_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\Deputy', cascade: ['persist'])]
     private Collection $deputies;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="order", cascade={"persist"})
-     */
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: 'App\Entity\Document', cascade: ['persist'])]
     private Collection $documents;
 
-    /**
-     * @ORM\Column(name="appointment_type", type="string", length=50, nullable=true)
-     */
+    #[ORM\Column(name: 'appointment_type', type: 'string', length: 50, nullable: true)]
     private ?string $appointmentType = null;
 
     /**
      * Date order was created in DC database
-     *
-     * @ORM\Column(name="created_at", type="datetime")
      */
-    private \DateTime $createdAt;
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    private DateTime $createdAt;
 
     /**
      * Date order was first made outside DC
-     *
-     * @ORM\Column(name="made_at", type="datetime", options={"default":"2017-01-01 00:00:00"})
      */
-    private \DateTime $madeAt;
+    #[ORM\Column(name: 'made_at', type: 'datetime', options: ['default' => '2017-01-01 00:00:00'])]
+    private DateTime $madeAt;
 
-    /**
-     * @ORM\Column(name="issued_at", type="datetime", nullable=true)
-     */
-    private \DateTime $issuedAt;
+    #[ORM\Column(name: 'issued_at', type: 'datetime', nullable: true)]
+    private ?DateTime $issuedAt;
 
-    /**
-     * @ORM\Column(name="served_at", type="datetime", nullable=true)
-     */
-    private ?\DateTime $servedAt = null;
+    #[ORM\Column(name: 'served_at', type: 'datetime', nullable: true)]
+    private ?DateTime $servedAt = null;
 
     /**
      * JSON string served to the API
-     *
-     * @ORM\Column(name="payload_served", type="json_array", nullable=true)
      */
+    #[ORM\Column(name: 'payload_served', type: 'json_array', nullable: true)]
     private ?array $payloadServed;
 
     /**
      * API response as a string
-     *
-     * @ORM\Column(name="api_response", type="json_array", nullable=true)
      */
+    #[ORM\Column(name: 'api_response', type: 'json_array', nullable: true)]
     private ?array $apiResponse;
 
-    /**
-     * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
-     */
+    #[ORM\Column(name: 'order_number', type: 'string', unique: true, nullable: true)]
     private ?string $orderNumber = null;
 
     /**
      * Order constructor.
      *
-     * @param \DateTime $madeAt      Date Order was first made, outside DC
-     * @param \DateTime $issuedAt    Date Order was issues at
+     * @param DateTime $madeAt      Date Order was first made, outside DC
+     * @param DateTime $issuedAt    Date Order was issues at
      * @param string    $orderNumber The order number from casrec
      *
      * @throws \Exception
      */
     public function __construct(
-        Client $client,
-        \DateTime $madeAt,
-        \DateTime $issuedAt,
-        string $orderNumber,
-        string $createdAt = 'now'
+        Client   $client,
+        DateTime $madeAt,
+        DateTime $issuedAt,
+        string   $orderNumber,
+        string   $createdAt = 'now'
     ) {
         $this->client = $client;
         $this->madeAt = $madeAt;
         $this->issuedAt = $issuedAt;
         $this->orderNumber = $orderNumber;
 
-        $this->createdAt = new \DateTime($createdAt);
+        $this->createdAt = new DateTime($createdAt);
         $this->deputies = new ArrayCollection();
         $this->documents = new ArrayCollection();
 
         $client->addOrder($this);
     }
 
-    /**
-    /**
-     * @return bool
-     */
     public function readyToServe(): bool
     {
         if (!$this->isOrderValid() ||
@@ -198,10 +158,9 @@ abstract class Order
     /**
      * Has at least one deputy by type
      *
-     * @param $deputyType
      * @return int|void
      */
-    protected function hasDeputyByType(mixed $deputyType)
+    protected function hasDeputyByType(mixed $deputyType): int
     {
         return $this->getDeputiesByType($deputyType)->count();
     }
@@ -209,7 +168,7 @@ abstract class Order
     /**
      * Returns a list of deputies by type
      *
-     * @return ArrayCollection|\Doctrine\Common\Collections\Collection|static
+     * @return ArrayCollection|Collection|static
      */
     public function getDeputiesByType(mixed $deputyType)
     {
@@ -224,9 +183,6 @@ abstract class Order
         return $this->id;
     }
 
-    /**
-     * @param null|int $id
-     */
     public function setId(?int $id): Order
     {
         $this->id = $id;
@@ -244,10 +200,7 @@ abstract class Order
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getType();
+    abstract public function getType(): string;
 
     public function getSubType(): ?string
     {
@@ -271,40 +224,31 @@ abstract class Order
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     public function getAppointmentType(): ?string
     {
         return $this->appointmentType;
     }
 
-    /**
-     * @param null|string $appointmentType
-     *
-     * @return Order
-     */
     public function setAppointmentType(?string $appointmentType): static
     {
         $this->appointmentType = $appointmentType;
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    public function getMadeAt(): \DateTime
+    public function getMadeAt(): DateTime
     {
         return $this->madeAt;
     }
 
-    public function getIssuedAt(): \DateTime
+    public function getIssuedAt(): DateTime
     {
         return $this->issuedAt;
     }
-
 
     /**
      * @return ArrayCollection
@@ -317,7 +261,7 @@ abstract class Order
     /**
      * @param ArrayCollection $deputies
      */
-    public function setDeputies(\Doctrine\Common\Collections\Collection $deputies): void
+    public function setDeputies(Collection $deputies): void
     {
         $this->deputies = $deputies;
     }
@@ -340,7 +284,7 @@ abstract class Order
     /**
      * @return ArrayCollection
      */
-    public function getDocumentsByType($type)
+    public function getDocumentsByType($type): collection
     {
         return $this->documents->filter(function ($doc) use ($type): bool {
             return $doc->getType() == $type;
@@ -352,23 +296,21 @@ abstract class Order
         $this->documents = $documents;
     }
 
-    public function setServedAt(\DateTime $servedAt = null): Order
+    public function setServedAt(DateTime $servedAt = null): Order
     {
         $this->servedAt = $servedAt;
         return $this;
     }
 
-    public function getServedAt(): ?\DateTime
+    public function getServedAt(): ?DateTime
     {
         return $this->servedAt;
     }
 
     /**
      * Filter o ut a deputy from the list of deputies assigned to this order
-     *
-     * @return bool|static
      */
-    public function getDeputyById($deputyId)
+    public function getDeputyById($deputyId): ?Deputy
     {
         $result = $this->getDeputies()->filter(
             function (Deputy $deputy) use ($deputyId): bool {
@@ -380,8 +322,6 @@ abstract class Order
 
     /**
      * Remove a deputy from the order
-     *
-     * @return $this
      */
     public function removeDeputy(Deputy $deputy): static
     {
@@ -391,38 +331,22 @@ abstract class Order
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPayloadServed(): ?array
     {
         return $this->payloadServed;
     }
 
-    /**
-     * @param string $payloadServed
-     *
-     * @return $this
-     */
     public function setPayloadServed(?array $payloadServed): static
     {
         $this->payloadServed = $payloadServed;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getApiResponse(): ?array
     {
         return $this->apiResponse;
     }
 
-    /**
-     * @param string $apiResponse
-     *
-     * @return $this
-     */
     public function setApiResponse(?array $apiResponse): static
     {
         $this->apiResponse = $apiResponse;

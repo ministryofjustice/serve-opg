@@ -9,37 +9,25 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="client")
- */
+#[ORM\Table(name: 'client')]
+#[ORM\Entity]
 class Client
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    /**
-     * @ORM\Column(name="case_number", type="string", length=8, unique=true)
-     */
+    #[ORM\Column(name: 'case_number', type: 'string', length: 8, unique: true)]
     private string $caseNumber;
 
-    /**
-     * @ORM\Column(name="client_name", type="string", length=255)
-     */
+    #[ORM\Column(name: 'client_name', type: 'string', length: 255)]
     private string $clientName;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetime")
-     */
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
     private DateTime $createdAt;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="client", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\Order', mappedBy: 'client', cascade: ['persist'])]
     private Collection $orders;
 
     public function __construct(string $caseNumber, string $clientName, DateTime $createdAt)

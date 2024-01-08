@@ -9,10 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="document")
- */
+#[ORM\Table(name: 'document')]
+#[ORM\Entity]
 class Document
 {
     const TYPE_COP1A = 'COP1A'; // required by PF
@@ -25,39 +23,27 @@ class Document
     const MAX_UPLOAD_PER_ORDER = 100;
     const MAX_UPLOAD_FILE_SIZE = '20M';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="documents", cascade={"persist"})
-     * @ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Order', inversedBy: 'documents', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Order $order = null;
 
-    /**
-     * @ORM\Column(name="type", type="string", length=100)
-     */
+    #[ORM\Column(name: 'type', type: 'string', length: 100)]
     private ?string $type = null;
 
     private ?UploadedFile $file = null;
 
-    /**
-     * @ORM\Column(name="filename", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'filename', type: 'string', length: 255, nullable: true)]
     private ?string $fileName = null;
 
-    /**
-     * @ORM\Column(name="storagereference", type="string", length=255)
-     */
+    #[ORM\Column(name: 'storagereference', type: 'string', length: 255)]
     private string $storageReference;
 
-    /**
-     * @ORM\Column(name="remotestoragereference", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'remotestoragereference', type: 'string', length: 255, nullable: true)]
     private ?string $remoteStorageReference;
 
     private DateTime $createdAt;

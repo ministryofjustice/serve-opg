@@ -7,11 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(name="dc_user")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'dc_user')]
+#[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, EquatableInterface
 {
     /**
@@ -19,61 +17,39 @@ class User implements UserInterface, EquatableInterface
      */
     const TOKEN_EXPIRY = '48 hours ago';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    /**
-     * @ORM\Column(name="email", type="string", length=255, unique=true)
-     */
+    #[ORM\Column(name: 'email', type: 'string', length: 255, unique: true)]
     private ?string $email;
 
-    /**
-     * @ORM\Column(name="password", type="string", length=255)
-     */
+    #[ORM\Column(name: 'password', type: 'string', length: 255)]
     private string $password;
 
-    /**
-     * @ORM\Column(name="activation_token_created_at", type="datetime", nullable=true)
-     */
+    #[ORM\Column(name: 'activation_token_created_at', type: 'datetime', nullable: true)]
     private ?DateTime $activationTokenCreatedAt = null;
 
-    /**
-     * @ORM\Column(name="activation_token", type="string", length=40, nullable=true)
-     */
+    #[ORM\Column(name: 'activation_token', type: 'string', length: 40, nullable: true)]
     private ?string $activationToken = null;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
-     */
+    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: true)]
     private ?DateTime $createdAt = null;
 
-    /**
-     * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
-     */
+    #[ORM\Column(name: 'last_login_at', type: 'datetime', nullable: true)]
     private ?DateTime $lastLoginAt = null;
 
-    /**
-     * @ORM\Column(name="roles", type="array")
-     */
+    #[ORM\Column(name: 'roles', type: 'array')]
     private array $roles = [];
 
-    /**
-     * @ORM\Column(name="first_name", type="string", length=100, nullable=true)
-     */
+    #[ORM\Column(name: 'first_name', type: 'string', length: 100, nullable: true)]
     private ?string $firstName = null;
 
-    /**
-     * @ORM\Column(name="last_name", type="string", length=100, nullable=true)
-     */
+    #[ORM\Column(name: 'last_name', type: 'string', length: 100, nullable: true)]
     private ?string $lastName = null;
 
-    /**
-     * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
-     */
+    #[ORM\Column(name: 'phone_number', type: 'string', length: 20, nullable: true)]
     private ?string $phoneNumber = null;
 
     public function __construct(string $email)
@@ -234,9 +210,7 @@ class User implements UserInterface, EquatableInterface
         $this->phoneNumber = $phoneNumber;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function onPrePersist(): void
     {
         $this->setCreatedAt(new DateTime());
