@@ -59,23 +59,12 @@ services:
 
     # OrdnanceSurvey (used for Postcode Lookup)
     # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
-    OrdnanceGuzzleClient:
-        class: GuzzleHttp\Client
-        arguments:
-            $config:
-                base_uri: "https://api.os.uk/search/places/v1/postcode?"
+    OrdnanceGuzzleClient: '@eight_points_guzzle.client.OrdnanceGuzzleClient'
+
+    App\Service\SiriusClient: '@eight_points_guzzle.client.SiriusClient'
 
     notificationHttpClient:
         class: Http\Adapter\Guzzle7\Client
-
-    # Notify (used for email sending)
-    # Uses custom guzzle client to avoid autowiring with the other ones that might be used around
-    # Consider creating a NotifyClient extending and setting the options if needed
-    guzzleClient:
-        class: GuzzleHttp\Client
-        arguments:
-            $config:
-                - timeout: 10
 
     # Notifications client, using Secret manager
     alphagov.notifications.client.real:
@@ -98,11 +87,6 @@ services:
     App\Service\MailSender:
         arguments:
             $notifyClient: "@alphagov.notifications.client.real"
-
-    App\Service\SiriusClient:
-        class: App\Service\SiriusClient
-        arguments:
-            $args: { base_uri: "%env(DC_SIRIUS_URL)%" }
 
     # twig extensions
     App\Twig\AssetsExtension:

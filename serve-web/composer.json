@@ -13,6 +13,7 @@
         "doctrine/doctrine-migrations-bundle": "3.3",
         "doctrine/inflector": "^2.0.0",
         "doctrine/orm": "^2.9.0",
+        "eightpoints/guzzle-bundle": "*",
         "lukemadhanga/php-document-parser": "^0.1.0",
         "guzzlehttp/guzzle": "^7.4",
         "php-http/guzzle7-adapter": "^1.0",
