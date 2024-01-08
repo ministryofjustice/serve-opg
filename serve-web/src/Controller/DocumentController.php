@@ -135,9 +135,7 @@ class DocumentController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{docType}", methods={"POST"})
-     */
+    #[Route(path: '/order/{orderId}/document/{docType}', methods: ['POST'])]
     public function postAction(Request $request, int $orderId, string $docType)
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -165,9 +163,7 @@ class DocumentController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{docType}/add", name="document-add")
-     */
+    #[Route(path: '/order/{orderId}/document/{docType}/add', name: 'document-add')]
     public function addAction(Request $request, int $orderId, string $docType): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
@@ -202,9 +198,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{id}/remove", name="document-remove")
-     */
+    #[Route(path: '/order/{orderId}/document/{id}/remove', name: 'document-remove')]
     public function removeAction(Request $request, $orderId, $id): RedirectResponse
     {
         if ($this->removeDocument($id) === self::FAIL) {
@@ -214,9 +208,7 @@ class DocumentController extends AbstractController
         return $this->redirectToRoute('order-summary', ['orderId' => $orderId, '_fragment' => 'documents']);
     }
 
-    /**
-     * @Route("/order/{orderId}/document/{id}", methods={"DELETE"})
-     */
+    #[Route(path: '/order/{orderId}/document/{id}', methods: ['DELETE'])]
     public function deleteAction(Request $request, int $orderId, $id): JsonResponse
     {
         try {

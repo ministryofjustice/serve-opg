@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/case")
- */
+#[Route(path: '/case')]
 class CaseController extends AbstractController
 {
     private EntityManager $em;
@@ -28,9 +26,7 @@ class CaseController extends AbstractController
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
-    /**
-     * @Route("", name="case-list")
-     */
+    #[Route(path: '', name: 'case-list')]
     public function indexAction(Request $request): Response
     {
         $limit = 50;
