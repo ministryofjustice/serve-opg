@@ -91,10 +91,10 @@ abstract class Order
     private mixed $payloadServed;
 
     /**
-     * API response as a string
+     * @var array<string>
      */
     #[ORM\Column(name: 'api_response', type: 'json', nullable: true)]
-    private mixed $apiResponse;
+    private array $apiResponse;
 
     #[ORM\Column(name: 'order_number', type: 'string', unique: true, nullable: true)]
     private ?string $orderNumber = null;
