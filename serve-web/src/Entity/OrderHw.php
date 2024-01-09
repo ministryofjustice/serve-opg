@@ -4,20 +4,15 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class OrderHw extends Order
 {
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return Order::TYPE_HW;
     }
 
-    public function getAcceptedDocumentTypes()
+    public function getAcceptedDocumentTypes(): array
     {
         $requiredDocs = [
             Document::TYPE_COURT_ORDER => true
@@ -35,7 +30,7 @@ class OrderHw extends Order
         return $requiredDocs;
     }
 
-    public function isOrderValid()
+    public function isOrderValid(): bool
     {
         return !empty($this->getSubType()) &&
             !empty($this->getAppointmentType());

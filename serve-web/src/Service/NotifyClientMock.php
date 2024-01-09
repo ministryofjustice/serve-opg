@@ -9,14 +9,14 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class NotifyClientMock extends Client
 {
-    public static $failNext = false;
+    public static bool $failNext = false;
 
     public function __construct(array $config)
     {
         return true;
     }
 
-    public function sendEmail($emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL)
+    public function sendEmail($emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL): array
     {
         if (self::$failNext) {
             throw new ApiException('Error sending email', 1, ['errors' => []], new Response());
@@ -41,7 +41,7 @@ class NotifyClientMock extends Client
         $emailsItem->set(json_encode($emails));
         $cache->save($emailsItem);
 
-        return true;
+        return $emails;
     }
 
     public static function getLastEmail()

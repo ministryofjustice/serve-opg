@@ -20,27 +20,12 @@ REGEX;
     const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
     const BOND_REGEX = '/sum of (.*) in/';
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var SiriusService
-     */
-    private $siriusService;
+    private SiriusService $siriusService;
 
-    /**
-     * @var DocumentReaderService
-     */
-    private $documentReader;
+    private DocumentReaderService $documentReader;
 
-    /**
-     * OrderService constructor.
-     * @param EntityManager $em
-     * @param SiriusService $siriusService
-     * @param DocumentReaderService $documentReader
-     */
     public function __construct(
         EntityManager $em,
         SiriusService $siriusService,
@@ -57,7 +42,7 @@ REGEX;
         return $this->siriusService->ping();
     }
 
-    public function serve(Order $order)
+    public function serve(Order $order): void
     {
         if (!$order->readyToServe()) {
             throw new \RuntimeException("Order not ready to be served");
@@ -79,11 +64,7 @@ REGEX;
         }
     }
 
-    /**
-     * @param int $orderId
-     * @return Order
-     */
-    public function getOrderByIdIfNotServed(int $orderId)
+    public function getOrderByIdIfNotServed(int $orderId): Order
     {
         /** @var $order Order */
         $order = $this->em->getRepository(Order::class)->find($orderId);
@@ -98,20 +79,13 @@ REGEX;
         return $order;
     }
 
-    /**
-     * @param Client $client
-     * @param string $orderClass
-     * @param DateTime $issuedAt
-     *
-     * @return Order
-     */
     public function upsert(
         Client $client,
         string $orderClass,
         DateTime $madeAt,
         DateTime $issuedAt,
         string $orderNumber
-    )
+    ): Order
     {
         /* @var $order Order */
         $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
@@ -129,10 +103,7 @@ REGEX;
         return $order;
     }
 
-    /**
-     * @param Order $order
-     */
-    public function emptyOrder(Order $order)
+    public function emptyOrder(Order $order): void
     {
         $orderId = $order->getId();
         $this->em->clear();
@@ -155,13 +126,8 @@ REGEX;
     }
 
     /**
-     * @param UploadedFile $file
-     * @param Order $dehydratedOrder
-     * @return Order
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function hydrateOrderFromDocument(UploadedFile $file, Order $dehydratedOrder)
     {
@@ -182,13 +148,11 @@ REGEX;
 
     /**
      * @param string $fileContents, Text extracted from Court Order
-     * @param Order $order
      *
-     * @return Order Returns an updated version of the order
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function answerQuestionsFromText(string $fileContents, Order $order)
+    public function answerQuestionsFromText(string $fileContents, Order $order): Order
     {
         if (!$this->extractCaseNumber($fileContents, $order)) {
             throw new WrongCaseNumberException(
@@ -206,12 +170,7 @@ REGEX;
         return $order;
     }
 
-    /**
-     * @param string $text
-     * @param Order $order
-     * @return bool
-     */
-    private function extractCaseNumber(string $text, Order $order)
+    private function extractCaseNumber(string $text, Order $order): bool
     {
         preg_match(self::CASE_NUMBER_REGEX, $text, $matches);
 
@@ -221,13 +180,7 @@ REGEX;
         return false;
     }
 
-    /**
-     * @param string $text
-     * @param string $regex
-     * @param Order $order
-     * @throws NoMatchesFoundException
-     */
-    private function extractAppointmentTypeAndSubtype(string $text, Order $order)
+    private function extractAppointmentTypeAndSubtype(string $text, Order $order): void
     {
         preg_match(self::APPOINTMENT_TYPE_SUB_TYPE_REGEX, $text, $matches);
 
@@ -264,11 +217,7 @@ REGEX;
         }
     }
 
-    /**
-     * @param string $text
-     * @param Order $order
-     */
-    private function extractBondType(string $text, Order $order)
+    private function extractBondType(string $text, Order $order): void
     {
         preg_match(self::BOND_REGEX, $text, $matches);
 
