@@ -12,8 +12,7 @@ class FileTestHelper extends WebTestCase
     static public function createUploadedFile(string $fileLocation, string $originalName, string $mimeType): UploadedFile
     {
         self::bootKernel();
-        $container = self::$container;
-        $projectDir = $container->get('kernel')->getProjectDir();
+        $projectDir = self::bootKernel()->getProjectDir();
         $location = $projectDir . $fileLocation;
 
         return new UploadedFile($location, $originalName, $mimeType, null);
