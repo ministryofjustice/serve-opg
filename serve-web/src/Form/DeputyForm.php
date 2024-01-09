@@ -72,10 +72,6 @@ class DeputyForm extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
-            ->add('addressLine3', TextType::class, [
-                'required' => false,
-                'attr' => ['maxlength'=> 255]
-            ])
             ->add('addressTown', TextType::class, [
                 'label' => 'deputy.addressTown',
                 'required' => true,
@@ -101,7 +97,6 @@ class DeputyForm extends AbstractType
                 'placeholder' => array(
                     'day' => 'Day','month' => 'Month' , 'year' => 'Year'
                 ),
-                'format' => 'dd-MM-yyyy',
             ]);
         }
     }

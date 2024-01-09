@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,7 +39,7 @@ class Deputy
 
     #[Assert\NotBlank(message: 'deputy.dateOfBirth.notBlank')]
     #[ORM\Column(name: 'dob', type: 'date', nullable: true)]
-    private ?DateTime $dateOfBirth;
+    private ?DateTimeInterface $dateOfBirth;
 
     #[Assert\NotBlank(message: 'deputy.emailAddress.notBlank')]
     #[ORM\Column(name: 'email_address', type: 'string', length: 255, nullable: true)]
@@ -142,12 +143,12 @@ class Deputy
         return $this->forename . ' ' . $this->surname;
     }
 
-    public function getDateOfBirth(): ?DateTime
+    public function getDateOfBirth(): ?DateTimeInterface
     {
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(?DateTime $dateOfBirth): static
+    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
 
