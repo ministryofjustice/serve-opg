@@ -109,22 +109,22 @@ class SiriusService
                     $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
                     if ($apiResponse instanceof Psr7\Response) {
-                        $order->setApiResponse((array)Psr7\str($apiResponse));
+                        $order->setApiResponse((array)Psr7\Message::toString($apiResponse));
                     }
 
                     if ($apiResponse->getStatusCode() !== 200) {
-                        $this->logger->error(Psr7\str($apiResponse));
+                        $this->logger->error(Psr7\Message::toString($apiResponse));
                     }
                 }
             }
 
         } catch (RequestException $e) {
-            $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
+            $this->logger->error('RequestException: Request -> ' . Psr7\Message::toString($e->getRequest()));
             $order->setPayloadServed($payload);
 
             if ($e->hasResponse()) {
-                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
-                $order->setApiResponse((array)Psr7\str($e->getResponse()));
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\Message::toString($e->getResponse()));
+                $order->setApiResponse(Psr7\Message::toString($e->getResponse()));
             }
             throw $e;
         } catch (\Exception $e) {
@@ -140,7 +140,7 @@ class SiriusService
             $this->logout();
         } catch (RequestException $e) {
             if ($e->getCode() != 401) {
-                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\Message::toString($e->getResponse()));
                 throw $e;
             }
         }
