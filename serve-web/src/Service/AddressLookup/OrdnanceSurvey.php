@@ -33,7 +33,6 @@ class OrdnanceSurvey
             $addresses[] = $address;
         }
         return $addresses;
-
     }
 
     /**
@@ -41,7 +40,7 @@ class OrdnanceSurvey
      */
     private function getPostcodeData(?string $postcode): array
     {
-        $url = new Uri($this->httpClient->getConfig('base_uri'));
+        $url = new Uri();
         $url = URI::withQueryValue($url, 'key', $this->apiKey);
         $url = URI::withQueryValue($url, 'postcode', $postcode);
         $request = new Request('GET', $url);
@@ -50,7 +49,7 @@ class OrdnanceSurvey
         if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Error retrieving address details: bad status code');
         }
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode(strval($response->getBody()), true);
         if (isset($body['header']['totalresults']) && $body['header']['totalresults'] === 0) {
             return [];
         }
