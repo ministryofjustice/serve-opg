@@ -93,8 +93,14 @@ class UserProvider implements UserProviderInterface
 
     /**
      * Store failing attempt
+     *
+     * @param AuthenticationFailureEvent|AuthenticationEvent $event
+     *
+     * TO DO 2024
+     * Should just be AuthenticationFailureEvent but we can't mock this deprecated Final class in testing
+     * This will come out entirely when we switch to Symfony's newer authentication system
      */
-    public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
+    public function onAuthenticationFailure(AuthenticationFailureEvent|AuthenticationEvent $event): void
     {
         if (empty($this->rules)) {
             return;
