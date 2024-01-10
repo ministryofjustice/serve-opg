@@ -26,7 +26,7 @@ class BruteForceChecker
             $attemptsGroup = array_slice($userAttempts, $index, $maxAttempts);
             $lastAttemptAt = $attemptsGroup[$maxAttempts - 1];
             $from = $lastAttemptAt - $timeRange;
-            $attemptsInRange = array_filter($attemptsGroup, function ($el) use ($from) {
+            $attemptsInRange = array_filter($attemptsGroup, function ($el) use ($from): bool {
                 return $el >= $from;
             });
             if (count($attemptsInRange) === $maxAttempts && $currentTime <= $lastAttemptAt + $lockFor) {
