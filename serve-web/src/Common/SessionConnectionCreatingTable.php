@@ -51,24 +51,4 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
 
         parent::__construct($client, $config = []);
     }
-
-    public function read($id)
-    {
-        return parent::read($id);
-    }
-
-    public function write($id, $data, $isChanged)
-    {
-        return parent::write($id, $data, $isChanged);
-    }
-
-    public function delete($id)
-    {
-        return parent::delete($id);
-    }
-
-    public function deleteExpired(): void
-    {
-        parent::deleteExpired();
-    }
 }

@@ -14,7 +14,7 @@ class CastAsInteger extends FunctionNode
 {
     public $stringPrimary;
 
-    public function getSql(SqlWalker $sqlWalker)
+    public function getSql(SqlWalker $sqlWalker): string
     {
         return 'CAST(' . $this->stringPrimary->dispatch($sqlWalker) . ' AS integer)';
     }
