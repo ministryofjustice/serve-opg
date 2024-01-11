@@ -11,7 +11,7 @@ trait RegionLinksTrait
      *
      * @Then I should not see the :element :type
      */
-    public function iShouldNotSeeTheBehatElement($element, $type)
+    public function iShouldNotSeeTheBehatElement(string $element, string $type): void
     {
         $this->assertResponseStatus(200);
 
@@ -26,7 +26,7 @@ trait RegionLinksTrait
     /**
      * @Then I should not see :text text
      */
-    public function iShouldNotSee($text)
+    public function iShouldNotSee($text): void
     {
         $this->assertResponseStatus(200);
 
@@ -38,7 +38,7 @@ trait RegionLinksTrait
      *
      * @Then I should see the :element :type
      */
-    public function iShouldSeeTheBehatElement($element, $type)
+    public function iShouldSeeTheBehatElement($element, $type): void
     {
         $regionCss = self::behatElementToCssSelector($element, $type);
         $found = count($this->getSession()->getPage()->findAll('css', $regionCss));
@@ -52,7 +52,7 @@ trait RegionLinksTrait
      *
      * @Then I should see the :element :type exactly :n times
      */
-    public function iShouldSeeTheBehatElementNTimes($element, $type, $n)
+    public function iShouldSeeTheBehatElementNTimes($element, $type, $n): void
     {
         $regionCss = self::behatElementToCssSelector($element, $type);
         $linksElementsFound = $this->getSession()->getPage()->findAll('css', $regionCss);
@@ -65,7 +65,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see :text in the :region region
      */
-    public function iShouldSeeInTheRegion($text, $region)
+    public function iShouldSeeInTheRegion($text, $region): void
     {
         // assert only one region is present
         $regionCss = self::behatElementToCssSelector($region, 'region');
@@ -80,7 +80,7 @@ trait RegionLinksTrait
     /**
      * @Then each text should be present in the corresponding region:
      */
-    public function eachTextShouldBePresentCorrespondingRegion(TableNode $fields)
+    public function eachTextShouldBePresentCorrespondingRegion(TableNode $fields): void
     {
         foreach ($fields->getRowsHash() as $text => $region) {
             $this->iShouldSeeInTheRegion($text, $region);
@@ -90,7 +90,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see :text in :section section
      */
-    public function iShouldSeeInSection($text, $section)
+    public function iShouldSeeInSection(string $text, string $section): void
     {
         $this->assertSession()->elementTextContains('css', '#' . $section . '-section', $text);
     }
@@ -98,7 +98,7 @@ trait RegionLinksTrait
     /**
      * @Then I should not see :text in the :section section
      */
-    public function iShouldNotSeeInTheSection($text, $section)
+    public function iShouldNotSeeInTheSection(string $text, string $section): void
     {
         $this->assertResponseStatus(200);
 
@@ -108,7 +108,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see :text in :container
      */
-    public function iShouldSeeInTheContainer($text, $container)
+    public function iShouldSeeInTheContainer(string $text, string $container): void
     {
         $this->assertSession()->elementTextContains('css', '#' . $container . ', .' . $container, $text);
     }
@@ -116,7 +116,7 @@ trait RegionLinksTrait
     /**
      * @Then the :selector element should be empty
      */
-    public function theElementShouldBeEmpty($selector)
+    public function theElementShouldBeEmpty(string $selector): void
     {
         $this->assertSession()->elementExists('css', '#' . $selector);
         if (!empty($this->getSession()->getPage()->find('css', '#' . $selector)->getText())) {
@@ -127,14 +127,14 @@ trait RegionLinksTrait
     /**
      * @Then I should not see :text in the :region region
      */
-    public function iShouldNotSeeInTheRegion($text, $region)
+    public function iShouldNotSeeInTheRegion(string $text, $region): void
     {
         $this->assertResponseStatus(200);
 
         $this->assertSession()->elementTextNotContains('css', self::behatElementToCssSelector($region, 'region'), $text);
     }
 
-    public static function behatElementToCssSelector($element, $type)
+    public static function behatElementToCssSelector(string $element, string $type): string
     {
         return '.behat-' . $type . '-' . preg_replace('/\s+/', '-', $element);
     }
@@ -142,7 +142,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see the cookie warning banner
      */
-    public function seeCookieBanner()
+    public function seeCookieBanner(): void
     {
         $driver = $this->getSession()->getDriver();
 
@@ -166,7 +166,7 @@ trait RegionLinksTrait
     /**
      * @Then I should see :text in the page header
      */
-    public function iShouldSeeInThePageHeader($text)
+    public function iShouldSeeInThePageHeader($text): void
     {
         $this->assertSession()->elementTextContains('css', '.page-header', $text);
     }
@@ -177,7 +177,7 @@ trait RegionLinksTrait
      *
      * @When I click on ":link"
      */
-    public function clickOnBehatLink($link)
+    public function clickOnBehatLink($link): void
     {
         // if multiple links are specified (comma-separated), click on all of them
         if (strpos($link, ',') !== false) {
@@ -209,7 +209,7 @@ trait RegionLinksTrait
      *
      * @When I click on :link in the :region region
      */
-    public function clickLinkInsideElement($link, $region)
+    public function clickLinkInsideElement($link, $region): void
     {
         $linkSelector = self::behatElementToCssSelector($link, 'link');
 
@@ -226,7 +226,7 @@ trait RegionLinksTrait
         $linksElementsFound[0]->click();
     }
 
-    private function findRegion($region)
+    private function findRegion(string $region)
     {
         // find region
         $regionSelector = '#' . $region . ', ' . self::behatElementToCssSelector($region, 'region');
