@@ -2,28 +2,25 @@
 
 namespace App\Twig;
 
-use Doctrine\Common\Util\Debug;
+use Symfony\Component\VarDumper\VarDumper;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-/**
- * debug filter, using \Doctrine\Common\Util\Debug::dump();
- *
- * {{ var | debug }}
- */
 class DebugExtension extends AbstractExtension
 {
-    public function getFilters()
+    /**
+     * @return TwigFilter[]
+     */
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('debug', function ($e) {
-
-                Debug::dump($e);
+            new TwigFilter('debug', function ($e): void {
+                VarDumper::dump($e);
             }),
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'debug_extension';
     }

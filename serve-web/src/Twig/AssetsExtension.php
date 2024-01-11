@@ -15,31 +15,23 @@ use Twig\TwigFilter;
  */
 class AssetsExtension extends AbstractExtension
 {
-    /**
-     * @var string
-     */
-    private $basePath;
+    private string $basePath;
 
-    /**
-     * @var string|null
-     */
-    private $assetsVersion;
+    private ?string $assetsVersion = null;
 
-    /**
-     * AssetsExtension constructor.
-     * @param string $basePath
-     * @param null|string $assetsVersion
-     */
     public function __construct(string $basePath, ?string $assetsVersion)
     {
         $this->basePath = rtrim($basePath, '/');
         $this->assetsVersion = $assetsVersion;
     }
 
-    public function getFilters()
+    /**
+     * @return TwigFilter[]
+     */
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('assetUrl', function ($originalUrl) {
+            new TwigFilter('assetUrl', function ($originalUrl): string {
                 $assetVersion = $this->assetsVersion ?: time();
                 $pathToFile = ltrim($originalUrl, '/');
 
@@ -48,7 +40,7 @@ class AssetsExtension extends AbstractExtension
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'assets_extension';
     }
