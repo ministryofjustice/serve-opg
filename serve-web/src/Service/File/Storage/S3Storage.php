@@ -23,8 +23,6 @@ use Psr\Log\LoggerInterface;
 class S3Storage implements StorageInterface
 {
     /**
-     * @var S3Client
-     *
      * https://github.com/aws/aws-sdk-php
      * http://docs.aws.amazon.com/aws-sdk-php/v2/api/class-Aws.S3.S3Client.html
      *
@@ -33,31 +31,18 @@ class S3Storage implements StorageInterface
      * https://github.com/jubos/fake-s3
      * https://github.com/jubos/fake-s3/wiki/Supported-Clients
      */
-    private $s3Client;
+    private S3ClientInterface $s3Client;
 
-    /**
-     * @var string
-     */
-    private $localBucketName;
+    private string $localBucketName;
 
-    /**
-     * @var string
-     */
-    private $remoteBucketName;
+    private string $remoteBucketName;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * S3Storage constructor.
-     * @param S3ClientInterface $s3Client
-     * @param $localBucketName
-     * @param $remoteBucketName
-     * @param LoggerInterface $logger
      */
-    public function __construct(S3ClientInterface $s3Client, $localBucketName, $remoteBucketName, LoggerInterface $logger)
+    public function __construct(S3ClientInterface $s3Client, string $localBucketName, string $remoteBucketName, LoggerInterface $logger)
     {
         $this->s3Client = $s3Client;
         $this->localBucketName = $localBucketName;
@@ -65,18 +50,12 @@ class S3Storage implements StorageInterface
         $this->logger = $logger;
     }
 
-    /**
-     * @return string
-     */
-    public function getLocalBucketName()
+    public function getLocalBucketName(): string
     {
         return $this->localBucketName;
     }
 
-    /**
-     * @return string
-     */
-    public function getRemoteBucketName()
+    public function getRemoteBucketName(): string
     {
         return $this->remoteBucketName;
     }
@@ -87,13 +66,9 @@ class S3Storage implements StorageInterface
      * header('Content-Disposition: attachment; filename="' . $_GET['filename'] .'"');
      * readfile(<this method>);
      *
-     * @param $key
-     *
      * @throws FileNotFoundException is the file is not found
-     *
-     * @return string file content
      */
-    public function retrieve($key)
+    public function retrieve(?string $key): string
     {
         try {
             $result = $this->s3Client->getObject([
@@ -110,14 +85,9 @@ class S3Storage implements StorageInterface
         }
     }
 
-    /**
-     * @param  string      $key
-     * @return \Aws\Result
-     */
-    public function delete($key)
+    public function delete(string $key): Result
     {
         /** If no access to remove, we'll need to reimplment tagging **/
-
         //$this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
 
         return $this->s3Client->deleteObject([
@@ -126,12 +96,7 @@ class S3Storage implements StorageInterface
         ]);
     }
 
-    /**
-     * @param $key
-     * @param $body
-     * @return \Aws\Result
-     */
-    public function store($key, $body)
+    public function store(string $key, string $body): result
     {
         return $this->s3Client->putObject([
             'Bucket'   => $this->localBucketName,
@@ -144,10 +109,8 @@ class S3Storage implements StorageInterface
 
     /**
      * Move S3 Objects To new bucket
-     * @param Collection $documents
-     * @return \Generator
      */
-    public function moveDocuments(Collection $documents)
+    public function moveDocuments(Collection $documents): Collection
     {
         // set up variables used in closures
         $s3Client = $this->s3Client;
@@ -173,14 +136,14 @@ class S3Storage implements StorageInterface
 
         // Create the generator using the collection iterator
         $commands = $commandGenerator($documentsIterator, $this->getRemoteBucketName());
-        
+
         // Create a pool and provide an optional array of configuration
         $pool = new CommandPool($s3Client, $commands, [
             // Only send 5 files at a time (this is set to 25 by default)
             'concurrency' => 5,
             'preserve_iterator_keys' => true,
             // Invoke this function before executing each command
-            'before' => function (CommandInterface $cmd, $iterKey) use ($logger) {
+            'before' => function (CommandInterface $cmd, $iterKey) use ($logger): void {
                 $logger->debug("About to send {$iterKey}: " . print_r($cmd->toArray(), true));
             },
             // Invoke this function for each successful transfer
@@ -188,7 +151,7 @@ class S3Storage implements StorageInterface
                 ResultInterface $result,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            ) use ($logger, $documentsIterator) {
+            ) use ($logger, $documentsIterator): void {
 
                 // update current document being processed with new location
                 $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
@@ -199,7 +162,7 @@ class S3Storage implements StorageInterface
                 AwsException $reason,
                 $iterKey,
                 PromiseInterface $aggregatePromise
-            ) use ($logger) {
+            ) use ($logger): void {
                 $logger->error("Failed to send {$iterKey}: {$reason}\n");
             },
         ]);
@@ -210,7 +173,7 @@ class S3Storage implements StorageInterface
         // Force the pool to complete synchronously
         $promise->wait();
 
-        $promise->then(function () use ($logger) {
+        $promise->then(function () use ($logger): void {
             $logger->info("Transfer complete");
         });
 
@@ -220,11 +183,9 @@ class S3Storage implements StorageInterface
     /**
      * Appends new tagset to S3 Object
      *
-     * @param $key
-     * @param $newTagset
      * @throws \Exception
      */
-    public function appendTagset($key, $newTagset)
+    public function appendTagset(?string $key, array $newTagset): void
     {
         $this->log('info', "Appending Purge tag for $key to S3");
         if (empty($key)) {
@@ -260,13 +221,7 @@ class S3Storage implements StorageInterface
         $this->log('info', "Tagset Updated for $key ");
     }
 
-    /**
-     * Log message using the internal logger
-     *
-     * @param $level
-     * @param $message
-     */
-    private function log($level, $message)
+    private function log(string $level, string $message): void
     {
         //echo $message."\n"; //enable for debugging reasons. Tail the log with log-level=info otherwise
 

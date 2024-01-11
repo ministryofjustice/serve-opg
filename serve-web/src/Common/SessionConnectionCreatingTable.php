@@ -3,6 +3,7 @@
 namespace App\Common;
 
 use Aws\DynamoDb\DynamoDbClient;
+use App\Common\DynamoDbTableCreator;
 use Aws\DynamoDb\StandardSessionConnection;
 
 /**
@@ -36,10 +37,7 @@ use Aws\DynamoDb\StandardSessionConnection;
  */
 class SessionConnectionCreatingTable extends StandardSessionConnection
 {
-    /**
-     * @var DynamoDbTableCreator
-     */
-    private $tableCreator;
+    private DynamoDbTableCreator $tableCreator;
 
     public function __construct(DynamoDbClient $client, array $config = [])
     {
@@ -69,7 +67,7 @@ class SessionConnectionCreatingTable extends StandardSessionConnection
         return parent::delete($id);
     }
 
-    public function deleteExpired()
+    public function deleteExpired(): void
     {
         parent::deleteExpired();
     }

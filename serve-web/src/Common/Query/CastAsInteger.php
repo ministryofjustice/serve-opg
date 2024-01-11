@@ -8,9 +8,7 @@ use Doctrine\ORM\Query\SqlWalker;
 
 /**
  * Class Cast
- * Function to allow CAST to be called within query builder
- *
- * @package App\Repository\Query
+ * Function to allow CAST to be called within query builder.
  */
 class CastAsInteger extends FunctionNode
 {
@@ -21,7 +19,7 @@ class CastAsInteger extends FunctionNode
         return 'CAST(' . $this->stringPrimary->dispatch($sqlWalker) . ' AS integer)';
     }
 
-    public function parse(Parser $parser)
+    public function parse(Parser $parser): void
     {
         $parser->match(Lexer::T_IDENTIFIER);
         $parser->match(Lexer::T_OPEN_PARENTHESIS);
