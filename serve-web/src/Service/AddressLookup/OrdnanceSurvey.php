@@ -3,39 +3,27 @@
 namespace App\Service\AddressLookup;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\ClientInterface;
 
 class OrdnanceSurvey
 {
+    private ClientInterface $httpClient;
 
-    /**
-     * @var Client
-     */
-    private $httpClient;
+    private ?string $apiKey;
 
-    /**
-     * @var
-     */
-    private $apiKey;
-
-    /**
-     * OrdnanceSurvey constructor.
-     * @param ClientInterface $httpClient
-     */
-    public function __construct(ClientInterface $httpClient, $apiKey)
+    public function __construct(ClientInterface $httpClient, ?string $apiKey)
     {
         $this->httpClient = $httpClient;
         $this->apiKey = $apiKey;
     }
 
     /**
-     * @param $postcode
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function lookupPostcode($postcode)
+    public function lookupPostcode(?string $postcode): array
     {
         $results = $this->getPostcodeData($postcode);
         $addresses = [];
@@ -45,17 +33,14 @@ class OrdnanceSurvey
             $addresses[] = $address;
         }
         return $addresses;
-
     }
 
     /**
-     * @param $postcode
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    private function getPostcodeData($postcode)
+    private function getPostcodeData(?string $postcode): array
     {
-        $url = new Uri($this->httpClient->getConfig('base_uri'));
+        $url = new Uri();
         $url = URI::withQueryValue($url, 'key', $this->apiKey);
         $url = URI::withQueryValue($url, 'postcode', $postcode);
         $request = new Request('GET', $url);
@@ -64,7 +49,7 @@ class OrdnanceSurvey
         if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Error retrieving address details: bad status code');
         }
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode(strval($response->getBody()), true);
         if (isset($body['header']['totalresults']) && $body['header']['totalresults'] === 0) {
             return [];
         }
@@ -82,11 +67,8 @@ class OrdnanceSurvey
      *      'addressTown' => string
      *      'addressPostcode' => string
      *  ]
-     *
-     * @param array $address
-     * @return array
      */
-    private function getAddressLines(array $address)
+    private function getAddressLines(array $address): array
     {
         $result = [];
         $building = '';
@@ -116,11 +98,8 @@ class OrdnanceSurvey
 
     /**
      * Get a single line address description (without postcode)
-     *
-     * @param array $address
-     * @return string
      */
-    private function getDescription(array $address)
+    private function getDescription(array $address): string
     {
         unset($address['postcode']);
         $address = array_filter($address);

@@ -9,10 +9,7 @@ use Alphagov\Notifications\Exception\NotifyException;
 
 class NotifyAvailability extends ServiceAvailabilityAbstract
 {
-    /**
-     * @var NotifyClient
-     */
-    private $notifyClient;
+    private NotifyClient $notifyClient;
 
     public function __construct(NotifyClient $notifyClient)
     {
@@ -20,7 +17,7 @@ class NotifyAvailability extends ServiceAvailabilityAbstract
         $this->isHealthy = true;
     }
 
-    public function ping()
+    public function ping(): void
     {
         try {
             $this->pingNotify();
@@ -30,15 +27,12 @@ class NotifyAvailability extends ServiceAvailabilityAbstract
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'Notify';
     }
 
-    public function pingNotify()
+    public function pingNotify(): ?array
     {
         return $this->notifyClient->listTemplates();
     }
