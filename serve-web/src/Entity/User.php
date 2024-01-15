@@ -7,11 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(name="dc_user")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'dc_user')]
+#[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, EquatableInterface
 {
     /**
@@ -19,165 +17,102 @@ class User implements UserInterface, EquatableInterface
      */
     const TOKEN_EXPIRY = '48 hours ago';
 
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255, unique=true)
-     */
-    private $email;
+    #[ORM\Column(name: 'email', type: 'string', length: 255, unique: true)]
+    private ?string $email;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=255)
-     */
-    private $password;
+    #[ORM\Column(name: 'password', type: 'string', length: 255)]
+    private string $password;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_token_created_at", type="datetime", nullable=true)
-     */
-    private $activationTokenCreatedAt;
+    #[ORM\Column(name: 'activation_token_created_at', type: 'datetime', nullable: true)]
+    private ?DateTime $activationTokenCreatedAt = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="activation_token", type="string", length=40, nullable=true)
-     */
-    private $activationToken;
+    #[ORM\Column(name: 'activation_token', type: 'string', length: 40, nullable: true)]
+    private ?string $activationToken = null;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
-     */
-    private $createdAt;
+    #[ORM\Column(name: 'created_at', type: 'datetime', nullable: true)]
+    private ?DateTime $createdAt = null;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
-     */
-    private $lastLoginAt;
+    #[ORM\Column(name: 'last_login_at', type: 'datetime', nullable: true)]
+    private ?DateTime $lastLoginAt = null;
 
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="roles", type="array")
-     */
-    private $roles = [];
+    #[ORM\Column(name: 'roles', type: 'array')]
+    private array $roles = [];
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="first_name", type="string", length=100, nullable=true)
-     */
-    private $firstName;
+    #[ORM\Column(name: 'first_name', type: 'string', length: 100, nullable: true)]
+    private ?string $firstName = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="last_name", type="string", length=100, nullable=true)
-     */
-    private $lastName;
+    #[ORM\Column(name: 'last_name', type: 'string', length: 100, nullable: true)]
+    private ?string $lastName = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
-     */
-    private $phoneNumber;
+    #[ORM\Column(name: 'phone_number', type: 'string', length: 20, nullable: true)]
+    private ?string $phoneNumber = null;
 
-    /**
-     * User constructor.
-     * @param string $email
-     */
     public function __construct(string $email)
     {
         $this->email = $email;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return array_unique(array_merge(['ROLE_USER'], $this->roles));
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return in_array('ROLE_ADMIN', $this->roles);
     }
 
-    public function setRoles(array $roles)
+    public function setRoles(array $roles): void
     {
         $this->roles = $roles;
     }
 
-    /**
-     * @param string $password
-     */
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function getSalt()
+    public function getSalt(): string
     {
         return '';
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->email;
     }
 
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
             return false;
@@ -190,139 +125,93 @@ class User implements UserInterface, EquatableInterface
         return true;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getActivationTokenCreatedAt()
+    public function getActivationTokenCreatedAt(): ?DateTime
     {
         return $this->activationTokenCreatedAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getActivationToken()
+    public function getActivationToken(): ?string
     {
         return $this->activationToken;
     }
 
-    /**
-     * @param string|null $activationToken
-     */
-    public function setActivationToken($activationToken)
+    public function setActivationToken(?string $activationToken): void
     {
         $this->activationToken = $activationToken;
         $this->activationTokenCreatedAt = new DateTime();
     }
 
     /**
-     * Return true if the token is present and create after the TOKEN_EXPIRY value of the constant
-     *
-     * @return bool
+     * Return true if the token is present and create after the TOKEN_EXPIRY value of the constant.
      */
-    public function isTokenValid()
+    public function isTokenValid(): bool
     {
         return $this->getActivationTokenCreatedAt()
             && $this->getActivationTokenCreatedAt() >= new DateTime(self::TOKEN_EXPIRY);
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getLastLoginAt(): ?DateTime
     {
         return $this->lastLoginAt;
     }
 
-    /**
-     * @param DateTime|null $lastLoginAt
-     */
     public function setLastLoginAt(?DateTime $lastLoginAt): void
     {
         $this->lastLoginAt = $lastLoginAt;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param DateTime|null $createdAt
-     */
     public function setCreatedAt(?DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * @param string $firstName
-     */
     public function setFirstName(string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * @param string $lastName
-     */
     public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
     }
 
-    /**
-     * @return string
-     */
     public function getFullName(): string
     {
         return trim($this->firstName . ' ' . $this->lastName) ?: $this->email;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    /**
-     * @param string $phoneNumber
-     */
     public function setPhoneNumber(string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
     {
         $this->setCreatedAt(new DateTime());
     }

@@ -20,10 +20,9 @@ class OrderTestHelper
      * @param string $orderType , HW or PF
      * @param string $createdAt
      * @param string|null $orderNumber
-     * @return Order
      * @throws Exception
      */
-    public static function generateOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType, string $createdAt = 'now', ?string $orderNumber = null)
+    public static function generateOrder(string $madeAt, string $issuedAt, string $caseNumber, string $orderType, string $createdAt = 'now', ?string $orderNumber = null): Order
     {
         $orderMadeDate = new DateTime($madeAt);
         $orderIssuedDate = new DateTime($issuedAt);
@@ -42,12 +41,10 @@ class OrderTestHelper
     }
 
     /**
-     * @param int $numberOfOrders, amount of orders to generate
-     * @param bool $setAsServed, whether to add a servedAt date to orders generated
      * @return Order[]
      * @throws Exception
      */
-    public static function generateOrders(int $numberOfOrders, bool $setAsServed)
+    public static function generateOrders(int $numberOfOrders, bool $setAsServed): array
     {
         $orders = [];
         $lastOrderNumber = 99900000 + $numberOfOrders;
@@ -71,7 +68,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders array or Order objects
-     * @param string $datePropertyName , issuedAt|servedAt
      * @return array<Order>
      * @throws Exception
      */
@@ -79,12 +75,12 @@ class OrderTestHelper
     {
         switch ($datePropertyName) {
             case 'issuedAt':
-                usort($orders, function ($a, $b) {
+                usort($orders, function ($a, $b): int {
                     return strtotime($a->getIssuedAt()->format('Y-m-d')) - strtotime($b->getIssuedAt()->format('Y-m-d'));
                 });
                 return $orders;
             case 'servedAt':
-                usort($orders, function ($a, $b) {
+                usort($orders, function ($a, $b): int {
                     return strtotime($a->getServedAt()->format('Y-m-d')) - strtotime($b->getServedAt()->format('Y-m-d'));
                 });
                 return $orders;
@@ -95,7 +91,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getOldestOrderByIssuedAt(array $orders): Order
@@ -106,7 +101,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getMostRecentOrderByIssuedAt(array $orders): Order
@@ -117,7 +111,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getOldestOrderByServedAt(array $orders): Order
@@ -128,7 +121,6 @@ class OrderTestHelper
 
     /**
      * @param array<Order> $orders
-     * @return Order
      * @throws Exception
      */
     public static function getMostRecentOrderByServedAt(array $orders): Order
