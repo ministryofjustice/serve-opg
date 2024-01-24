@@ -63,16 +63,15 @@ services:
       - .env
     #    Setting here rather than .env to stop them being overwritten during build steps on prod
     environment:
+      - APP_SECRET=aFakeSecret
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
-      - DC_BEHAT_CONTROLLER_ENABLED=1
+      - BEHAT_PASSWORD=Abcd1234
       - DC_S3_ENDPOINT=http://localstack:4566
       - DYNAMODB_ENDPOINT=http://localstack:4566
+      - FIXTURES_ENABLED=true
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
-      - APP_SECRET=aFakeSecret
-      - FIXTURES_ENABLED=true
-      - BEHAT_PASSWORD=Abcd1234
     depends_on:
       - localstack
       - postgres
@@ -140,10 +139,10 @@ services:
       - --no-interaction
     env_file:
       - .env
-    depends_on:
-      - loadbalancer
     environment:
+      APP_ENV: 'test'
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
+      BEHAT_PASSWORD: 'Abcd1234'
 
   qa:
     image: jakzal/phpqa:alpine

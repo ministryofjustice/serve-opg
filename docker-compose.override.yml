@@ -1,13 +1,9 @@
 version: '3'
 services:
   app:
-    environment:
-      APP_ENV: 'dev'
-      APP_DEBUG: 'false'
     volumes:
       - ./serve-web:/var/www
       - ./serve-web/var:/www/var/
-
   api:
     build:
       context: ./serve-api
