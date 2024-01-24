@@ -8,26 +8,18 @@ use App\Repository\OrderRepository;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use DoctrineExtensions\Query\Mysql\Date;
+use phpDocumentor\Reflection\Types\Resource_;
 use Symfony\Component\HttpFoundation\File\File;
 
 class ReportService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var OrderRepository
-     */
-    private $orderRepo;
+    private EntityRepository $orderRepo;
 
 
-    /**
-     * ReportService constructor
-     * @param EntityManagerInterface $em
-     */
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -36,7 +28,6 @@ class ReportService
 
     /**
      * Generates a CSV file of served orders for the past 4 weeks
-     * @return File
      */
     public function generateCsv(): File
     {
@@ -75,7 +66,6 @@ class ReportService
 
     /**
      * Generates a CSV file of orders waiting to be served
-     * @return File
      */
     public function generateOrdersNotServedCsv(): File
     {
@@ -115,7 +105,6 @@ class ReportService
 
     /**
      * Generates a CSV file of all served orders
-     * @return File
      */
     public function generateAllServedOrdersCsv(): File
     {
@@ -156,7 +145,7 @@ class ReportService
      *
      * @return Order[]
      */
-    public function getOrders(string $type, DateTime $startDate, DateTime $endDate, int $maxResults)
+    public function getOrders(string $type, DateTime $startDate, DateTime $endDate, int $maxResults): array
     {
         $formattedEndDate = $endDate->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
@@ -169,8 +158,12 @@ class ReportService
         return $this->orderRepo->getOrders($filters, $maxResults);
     }
 
-    public function getCasesBeforeGoLive() {
 
+    /**
+     * @return false|resource
+     */
+    public function getCasesBeforeGoLive()
+    {
         $orders =  $this->orderRepo->getOrdersBeforeGoLive();
 
         $headers = ['DateCreated', 'DateServed', 'CaseNumber', 'OrderType'];

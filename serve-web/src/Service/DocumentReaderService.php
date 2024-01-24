@@ -8,11 +8,8 @@ class DocumentReaderService
 {
     /**
      * Get text from word document - supports .doc and .docx
-     *
-     * @param string $fileLocation, the path of the word doc to parse
-     * @return \LukeMadhanga\html|string
      */
-    public function readWordDoc(string $fileLocation)
+    public function readWordDoc(string $fileLocation): string
     {
         return DocumentParser::parseFromFile($fileLocation);
     }

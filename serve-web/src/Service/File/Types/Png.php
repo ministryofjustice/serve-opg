@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 
 class Png extends UploadableFile
 {
-    protected $scannerEndpoint = 'upload/png';
+    protected string $scannerEndpoint = 'upload/png';
 
     public function __construct(
         ClamAVChecker $virusChecker,
@@ -16,6 +16,6 @@ class Png extends UploadableFile
         LoggerInterface $logger
     ) {
         parent::__construct($logger);
-        $this->fileCheckers = [$virusChecker, $fileChecker];
+        $this->setFileCheckers([$virusChecker, $fileChecker]);
     }
 }
