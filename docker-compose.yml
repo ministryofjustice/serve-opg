@@ -144,6 +144,7 @@ services:
       - loadbalancer
     environment:
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
+      APP_SECRET: aFakeSecret
 
   qa:
     image: jakzal/phpqa:alpine
