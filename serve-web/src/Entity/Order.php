@@ -6,20 +6,16 @@ use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({
- *     "PF" = "App\Entity\OrderPf",
- *     "HW" = "App\Entity\OrderHw",
- * })
- * @ORM\Table(name="dc_order")
- */
+#[ORM\Table(name: 'dc_order')]
+#[ORM\Entity(repositoryClass: 'App\Repository\OrderRepository')]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap(['PF' => 'App\Entity\OrderPf', 'HW' => 'App\Entity\OrderHw'])]
 abstract class Order
 {
     const TYPE_PF = 'PF';
@@ -39,146 +35,86 @@ abstract class Order
     const APPOINTMENT_TYPE_JOINT = 'JOINT';
     const APPOINTMENT_TYPE_JOINT_AND_SEVERAL = 'JOINT_AND_SEVERAL';
 
-    /**
-     * @return array
-     */
-    abstract public function getAcceptedDocumentTypes();
+    abstract public function getAcceptedDocumentTypes(): array;
 
-    /**
-     * @return boolean
-     */
-    abstract public function isOrderValid();
+    abstract public function isOrderValid(): bool;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id;
 
-    /**
-     * @var Client
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="orders", cascade={"persist"})
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $client;
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Client', cascade: ['persist'], inversedBy: 'orders')]
+    #[ORM\JoinColumn(name: 'client_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Client $client;
 
-    /**
-     * @var string|null see SUBTYPE_* values
-     *
-     * @ORM\Column(name="sub_type", type="string", length=50, nullable=true)
-     */
-    private $subType;
+    #[ORM\Column(name: 'sub_type', type: 'string', length: 50, nullable: true)]
+    private ?string $subType = null;
 
-    /**
-     * @var string|null yes/no/na/null
-     *
-     * @ORM\Column(name="has_assets_above_threshold", type="string", length=50, nullable=true)
-     */
-    private $hasAssetsAboveThreshold;
+    #[ORM\Column(name: 'has_assets_above_threshold', type: 'string', length: 50, nullable: true)]
+    private ?string $hasAssetsAboveThreshold = null;
 
-    /**
-     * @var ArrayCollection of Deputy[]
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Deputy", cascade={"persist"})
-     * @ORM\JoinTable(name="ordertype_deputy",
-     *   joinColumns={@ORM\JoinColumn(name="deputy_id", referencedColumnName="id", onDelete="CASCADE")},
-     *   inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id", onDelete="CASCADE")}
-     * )
-     */
-    private $deputies;
+    #[ORM\JoinTable(name: 'ordertype_deputy')]
+    #[ORM\JoinColumn(name: 'deputy_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\Deputy', cascade: ['persist'])]
+    private Collection $deputies;
 
-    /**
-     * @var ArrayCollection of Document[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Document", mappedBy="order", cascade={"persist"})
-     */
-    private $documents;
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: 'App\Entity\Document', cascade: ['persist'])]
+    private Collection $documents;
 
-    /**
-     * @var string|null see APPOINTMENT_TYPE_* values
-     *
-     * @ORM\Column(name="appointment_type", type="string", length=50, nullable=true)
-     */
-    private $appointmentType;
+    #[ORM\Column(name: 'appointment_type', type: 'string', length: 50, nullable: true)]
+    private ?string $appointmentType = null;
 
     /**
      * Date order was created in DC database
-     *
-     * @var DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    private DateTime $createdAt;
 
     /**
      * Date order was first made outside DC
-     *
-     * @var DateTime
-     *
-     * @ORM\Column(name="made_at", type="datetime", options={"default":"2017-01-01 00:00:00"})
      */
-    private $madeAt;
+    #[ORM\Column(name: 'made_at', type: 'datetime', options: ['default' => '2017-01-01 00:00:00'])]
+    private DateTime $madeAt;
 
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="issued_at", type="datetime", nullable=true)
-     */
-    private $issuedAt;
+    #[ORM\Column(name: 'issued_at', type: 'datetime', nullable: true)]
+    private ?DateTime $issuedAt;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="served_at", type="datetime", nullable=true)
-     */
-    private $servedAt;
+    #[ORM\Column(name: 'served_at', type: 'datetime', nullable: true)]
+    private ?DateTime $servedAt = null;
 
     /**
      * JSON string served to the API
-     *
-     * @var string
-     *
-     * @ORM\Column(name="payload_served", type="json_array", nullable=true)
      */
-    private $payloadServed;
+    #[ORM\Column(name: 'payload_served', type: 'json', nullable: true)]
+    private mixed $payloadServed;
 
     /**
-     * API response as a string
-     *
-     * @var string
-     *
-     * @ORM\Column(name="api_response", type="json_array", nullable=true)
+     * @var array<string>
      */
-    private $apiResponse;
+    #[ORM\Column(name: 'api_response', type: 'json', nullable: true)]
+    private array $apiResponse;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="order_number", type="string", nullable=true, unique=true)
-     */
-    private $orderNumber;
+    #[ORM\Column(name: 'order_number', type: 'string', unique: true, nullable: true)]
+    private ?string $orderNumber = null;
 
     /**
      * Order constructor.
-     * @param Client $client
-     * @param DateTime $madeAt Date Order was first made, outside DC
-     * @param DateTime $issuedAt Date Order was issues at
-     * @param string $orderNumber The order number from casrec
-     * @param string $createdAt
      *
-     * @throws Exception
+     * @param DateTime $madeAt      Date Order was first made, outside DC
+     * @param DateTime $issuedAt    Date Order was issues at
+     * @param string    $orderNumber The order number from casrec
+     *
+     * @throws \Exception
      */
     public function __construct(
-        Client $client,
+        Client   $client,
         DateTime $madeAt,
         DateTime $issuedAt,
-        string $orderNumber,
-        string $createdAt = 'now')
-    {
+        string   $orderNumber,
+        string   $createdAt = 'now'
+    ) {
         $this->client = $client;
         $this->madeAt = $madeAt;
         $this->issuedAt = $issuedAt;
@@ -191,9 +127,6 @@ abstract class Order
         $client->addOrder($this);
     }
 
-    /**
-     * @return bool
-     */
     public function readyToServe(): bool
     {
         if (!$this->isOrderValid() ||
@@ -211,18 +144,11 @@ abstract class Order
         return true;
     }
 
-    /**
-     * @return string|null
-     */
     public function getOrderNumber(): ?string
     {
         return $this->orderNumber;
     }
 
-    /**
-     * @param string|null $orderNumber
-     * @return Order
-     */
     public function setOrderNumber(?string $orderNumber): Order
     {
         $this->orderNumber = $orderNumber;
@@ -232,10 +158,9 @@ abstract class Order
     /**
      * Has at least one deputy by type
      *
-     * @param $deputyType
      * @return int|void
      */
-    protected function hasDeputyByType($deputyType)
+    protected function hasDeputyByType(mixed $deputyType): int
     {
         return $this->getDeputiesByType($deputyType)->count();
     }
@@ -243,10 +168,9 @@ abstract class Order
     /**
      * Returns a list of deputies by type
      *
-     * @param $deputyType
-     * @return ArrayCollection|\Doctrine\Common\Collections\Collection|static
+     * @return ArrayCollection|Collection|static
      */
-    public function getDeputiesByType($deputyType)
+    public function getDeputiesByType(mixed $deputyType)
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('deputyType', $deputyType));
@@ -254,132 +178,82 @@ abstract class Order
         return $this->getDeputies()->matching($criteria);
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     * @return Order
-     */
-    public function setId($id): Order
+    public function setId(?int $id): Order
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return Client
-     */
     public function getClient(): Client
     {
         return $this->client;
     }
 
-    /**
-     * @param Client $client
-     * @return Order
-     */
     public function setClient(Client $client): Order
     {
         $this->client = $client;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getType();
+    abstract public function getType(): string;
 
-    /**
-     * @return null|string
-     */
     public function getSubType(): ?string
     {
         return $this->subType;
     }
 
-    /**
-     * @param null|string $subType
-     * @return Order
-     */
     public function setSubType(?string $subType): Order
     {
         $this->subType = $subType;
         return $this;
     }
 
-
-    /**
-     * @return null|string
-     */
     public function getHasAssetsAboveThreshold(): ?string
     {
         return $this->hasAssetsAboveThreshold;
     }
 
-    /**
-     * @param null|string $hasAssetsAboveThreshold
-     * @return Order
-     */
     public function setHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): Order
     {
         $this->hasAssetsAboveThreshold = $hasAssetsAboveThreshold;
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getAppointmentType()
+    public function getAppointmentType(): ?string
     {
         return $this->appointmentType;
     }
 
-    /**
-     * @param null|string $appointmentType
-     *
-     * @return Order
-     */
-    public function setAppointmentType($appointmentType)
+    public function setAppointmentType(?string $appointmentType): static
     {
         $this->appointmentType = $appointmentType;
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getMadeAt(): DateTime
     {
         return $this->madeAt;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getIssuedAt()
+    public function getIssuedAt(): DateTime
     {
         return $this->issuedAt;
     }
 
-
     /**
      * @return ArrayCollection
      */
-    public function getDeputies()
+    public function getDeputies(): Collection
     {
         return $this->deputies;
     }
@@ -387,15 +261,12 @@ abstract class Order
     /**
      * @param ArrayCollection $deputies
      */
-    public function setDeputies($deputies)
+    public function setDeputies(Collection $deputies): void
     {
         $this->deputies = $deputies;
     }
 
-    /**
-     * @param Deputy $deputy
-     */
-    public function addDeputy(Deputy $deputy)
+    public function addDeputy(Deputy $deputy): void
     {
         if (!$this->deputies->contains($deputy)) {
             $this->deputies->add($deputy);
@@ -405,7 +276,7 @@ abstract class Order
     /**
      * @return ArrayCollection
      */
-    public function getDocuments()
+    public function getDocuments(): Collection
     {
         return $this->documents;
     }
@@ -413,34 +284,24 @@ abstract class Order
     /**
      * @return ArrayCollection
      */
-    public function getDocumentsByType($type)
+    public function getDocumentsByType($type): collection
     {
-        return $this->documents->filter(function ($doc) use ($type) {
+        return $this->documents->filter(function ($doc) use ($type): bool {
             return $doc->getType() == $type;
         });
     }
 
-    /**
-     * @param ArrayCollection $documents
-     */
     public function setDocuments(ArrayCollection $documents): void
     {
         $this->documents = $documents;
     }
 
-    /**
-     * @param DateTime|null $servedAt
-     * @return Order
-     */
     public function setServedAt(DateTime $servedAt = null): Order
     {
         $this->servedAt = $servedAt;
         return $this;
     }
 
-    /**
-     * @return DateTime|null
-     */
     public function getServedAt(): ?DateTime
     {
         return $this->servedAt;
@@ -448,14 +309,11 @@ abstract class Order
 
     /**
      * Filter o ut a deputy from the list of deputies assigned to this order
-     *
-     * @param $deputyId
-     * @return bool|static
      */
-    public function getDeputyById($deputyId)
+    public function getDeputyById($deputyId): ?Deputy
     {
         $result = $this->getDeputies()->filter(
-            function (Deputy $deputy) use ($deputyId) {
+            function (Deputy $deputy) use ($deputyId): bool {
                 return $deputy->getId() == $deputyId;
             }
         );
@@ -464,11 +322,8 @@ abstract class Order
 
     /**
      * Remove a deputy from the order
-     *
-     * @param Deputy $deputy
-     * @return $this
      */
-    public function removeDeputy(Deputy $deputy)
+    public function removeDeputy(Deputy $deputy): static
     {
         if (!$this->deputies->contains($deputy)) {
             $this->deputies->removeElement($deputy);
@@ -476,39 +331,23 @@ abstract class Order
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPayloadServed()
+    public function getPayloadServed(): ?array
     {
         return $this->payloadServed;
     }
 
-    /**
-     * @param string $payloadServed
-     *
-     * @return $this
-     */
-    public function setPayloadServed($payloadServed)
+    public function setPayloadServed(?array $payloadServed): static
     {
         $this->payloadServed = $payloadServed;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getApiResponse()
+    public function getApiResponse(): ?array
     {
         return $this->apiResponse;
     }
 
-    /**
-     * @param string $apiResponse
-     *
-     * @return $this
-     */
-    public function setApiResponse($apiResponse)
+    public function setApiResponse(?array $apiResponse): static
     {
         $this->apiResponse = $apiResponse;
         return $this;

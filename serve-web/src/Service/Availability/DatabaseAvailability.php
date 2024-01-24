@@ -6,15 +6,14 @@ use Doctrine\ORM\EntityManager;
 
 class DatabaseAvailability extends ServiceAvailabilityAbstract
 {
-    private $em;
+    private EntityManager $em;
 
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
-
-    public function ping()
+    public function ping(): void
     {
         try {
             $this->em->getConnection()->query('select * from information_schema.tables LIMIT 1')->fetchAll();
@@ -34,7 +33,7 @@ class DatabaseAvailability extends ServiceAvailabilityAbstract
         }
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Database';
     }
