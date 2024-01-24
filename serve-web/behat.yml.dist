@@ -15,7 +15,9 @@ default:
                 tags: ~@excludeLocal
 
     extensions:
-        FriendsOfBehat\SymfonyExtension: ~
+        FriendsOfBehat\SymfonyExtension:
+            kernel:
+                environment: test
         Behat\MinkExtension:
             sessions:
                 symfony:
