@@ -15,12 +15,14 @@ default:
                 tags: ~@excludeLocal
 
     extensions:
-        FriendsOfBehat\SymfonyExtension: ~
-        Behat\MinkExtension\ServiceContainer\MinkExtension:
-              goutte:
-                  guzzle_parameters:
-                    verify: false
-              files_path: "%paths.base%/features/fixtures/"
+        FriendsOfBehat\SymfonyExtension:
+            kernel:
+                environment: test
+        Behat\MinkExtension:
+            sessions:
+                symfony:
+                    symfony: ~
+            files_path: "%paths.base%/features/fixtures/"
 
     formatters:
         pretty: true
