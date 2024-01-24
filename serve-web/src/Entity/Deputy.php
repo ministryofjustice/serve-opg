@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,484 +13,270 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="deputy")
- */
+#[ORM\Table(name: 'deputy')]
+#[ORM\Entity]
 class Deputy
 {
     const DEPUTY_TYPE_LAY = 'LAY';
     const DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
     const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id;
 
-    /**
-     * @var Order
-     */
-    private $order;
+    private Order $order;
 
-    /**
-     * @var string|null see DEPUTY_TYPE_* values
-     *
-     * @ORM\Column(name="deputy_type", type="string", length=255)
-     */
-    private $deputyType;
+    #[ORM\Column(name: 'deputy_type', type: 'string', length: 255)]
+    private ?string $deputyType;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="forename", type="string", length=255)
-     */
-    private $forename;
+    #[ORM\Column(name: 'forename', type: 'string', length: 255)]
+    private string $forename;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="surname", type="string", length=255)
-     */
-    private $surname;
+    #[ORM\Column(name: 'surname', type: 'string', length: 255)]
+    private string $surname;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dob", type="date", nullable=true)
-     * @Assert\NotBlank(message="deputy.dateOfBirth.notBlank")
-     */
-    private $dateOfBirth;
+    #[Assert\NotBlank(message: 'deputy.dateOfBirth.notBlank')]
+    #[ORM\Column(name: 'dob', type: 'date', nullable: true)]
+    private ?DateTimeInterface $dateOfBirth;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email_address", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.emailAddress.notBlank")
-     */
-    private $emailAddress;
+    #[Assert\NotBlank(message: 'deputy.emailAddress.notBlank')]
+    #[ORM\Column(name: 'email_address', type: 'string', length: 255, nullable: true)]
+    private ?string $emailAddress;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="daytime_contact_number", type="string", length=255, nullable=true)
-     */
-    private $daytimeContactNumber;
+    #[ORM\Column(name: 'daytime_contact_number', type: 'string', length: 255, nullable: true)]
+    private ?string $daytimeContactNumber;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="evening_contact_number", type="string", length=255, nullable=true)
-     */
-    private $eveningContactNumber;
+    #[ORM\Column(name: 'evening_contact_number', type: 'string', length: 255, nullable: true)]
+    private ?string $eveningContactNumber;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="mobile_contact_number", type="string", length=255, nullable=true)
-     */
-    private $mobileContactNumber;
+    #[ORM\Column(name: 'mobile_contact_number', type: 'string', length: 255, nullable: true)]
+    private ?string $mobileContactNumber;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address_line_1", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_line_1.notBlank")
-     */
-    private $addressLine1;
+    #[Assert\NotBlank(message: 'deputy.address_line_1.notBlank')]
+    #[ORM\Column(name: 'address_line_1', type: 'string', length: 255, nullable: true)]
+    private ?string $addressLine1;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address_line_2", type="string", length=255, nullable=true)
-     */
-    private $addressLine2;
+    #[ORM\Column(name: 'address_line_2', type: 'string', length: 255, nullable: true)]
+    private ?string $addressLine2;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address_line_3", type="string", length=255, nullable=true)
-     */
-    private $addressLine3;
+    #[ORM\Column(name: 'address_line_3', type: 'string', length: 255, nullable: true)]
+    private ?string $addressLine3;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address_town", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_town.notBlank")
-     */
-    private $addressTown;
+    #[Assert\NotBlank(message: 'deputy.address_town.notBlank')]
+    #[ORM\Column(name: 'address_town', type: 'string', length: 255, nullable: true)]
+    private ?string $addressTown;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address_county", type="string", length=255, nullable=true)
-     */
-    private $addressCounty;
+    #[ORM\Column(name: 'address_county', type: 'string', length: 255, nullable: true)]
+    private ?string $addressCounty;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address_postcode", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="deputy.address_postcode.notBlank")
-     */
-    private $addressPostcode;
+    #[Assert\NotBlank(message: 'deputy.address_postcode.notBlank')]
+    #[ORM\Column(name: 'address_postcode', type: 'string', length: 255, nullable: true)]
+    private ?string $addressPostcode;
 
-    /**
-     * @var string
-     */
-    private $addressCountry;
+    private ?string $addressCountry;
 
-    /**
-     * Deputy constructor.
-     * @param Order $order
-     */
     public function __construct(Order $order)
     {
         $this->order = $order;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     *
-     * @return Deputy
-     */
-    public function setId($id)
+    public function setId(?int $id): static
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return Order
-     */
-    public function getOrder()
+    public function getOrder(): Order
     {
         return $this->order;
     }
 
-    /**
-     * @param Order $order
-     *
-     * @return Deputy
-     */
-    public function setOrder(Order $order)
+    public function setOrder(Order $order): static
     {
         $this->order = $order;
         return $this;
     }
 
-
-    /**
-     * @return null|string
-     */
-    public function getDeputyType()
+    public function getDeputyType(): ?string
     {
         return $this->deputyType;
     }
 
-    /**
-     * @param null|string $deputyType
-     *
-     * @return Deputy
-     */
-    public function setDeputyType($deputyType)
+    public function setDeputyType(?string $deputyType): static
     {
         $this->deputyType = $deputyType;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getForename()
+    public function getForename(): string
     {
         return $this->forename;
     }
 
-    /**
-     * @param string $forename
-     *
-     * @return Deputy
-     */
-    public function setForename($forename)
+    public function setForename(string $forename): static
     {
         $this->forename = $forename;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSurname()
+    public function getSurname(): string
     {
         return $this->surname;
     }
 
-    /**
-     * @param string $surname
-     *
-     * @return Deputy
-     */
-    public function setSurname($surname)
+    public function setSurname(string $surname): static
     {
         $this->surname = $surname;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFullname()
+    public function getFullname(): string
     {
         return $this->forename . ' ' . $this->surname;
     }
 
-    /**
-     * @return \DateTime $dateOfBirth
-     */
-    public function getDateOfBirth()
+    public function getDateOfBirth(): ?DateTimeInterface
     {
         return $this->dateOfBirth;
     }
 
-    /**
-     * @param \DateTime $dateOfBirth
-     * @return $this
-     */
-    public function setDateOfBirth($dateOfBirth)
+    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAddress()
+    public function getEmailAddress(): ?string
     {
         return $this->emailAddress;
     }
 
-    /**
-     * @param string $emailAddress
-     *
-     * @return Deputy
-     */
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress(?string $emailAddress): static
     {
         $this->emailAddress = $emailAddress;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDaytimeContactNumber()
+    public function getDaytimeContactNumber(): ?string
     {
         return $this->daytimeContactNumber;
     }
 
-    /**
-     * @param string $daytimeContactNumber
-     *
-     * @return Deputy
-     */
-    public function setDaytimeContactNumber($daytimeContactNumber)
+    public function setDaytimeContactNumber(?string $daytimeContactNumber): static
     {
         $this->daytimeContactNumber = $daytimeContactNumber;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEveningContactNumber()
+    public function getEveningContactNumber(): ?string
     {
         return $this->eveningContactNumber;
     }
 
-    /**
-     * @param string $eveningContactNumber
-     *
-     * @return Deputy
-     */
-    public function setEveningContactNumber($eveningContactNumber)
+    public function setEveningContactNumber(?string $eveningContactNumber): static
     {
         $this->eveningContactNumber = $eveningContactNumber;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getMobileContactNumber()
+    public function getMobileContactNumber(): ?string
     {
         return $this->mobileContactNumber;
     }
 
-    /**
-     * @param string $mobileContactNumber
-     *
-     * @return Deputy
-     */
-    public function setMobileContactNumber($mobileContactNumber)
+    public function setMobileContactNumber(?string $mobileContactNumber): static
     {
         $this->mobileContactNumber = $mobileContactNumber;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressLine1()
+    public function getAddressLine1(): ?string
     {
         return $this->addressLine1;
     }
 
-    /**
-     * @param string $addressLine1
-     *
-     * @return Deputy
-     */
-    public function setAddressLine1($addressLine1)
+    public function setAddressLine1(?string $addressLine1): static
     {
         $this->addressLine1 = $addressLine1;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressLine2()
+    public function getAddressLine2(): ?string
     {
         return $this->addressLine2;
     }
 
-    /**
-     * @param string $addressLine2
-     *
-     * @return Deputy
-     */
-    public function setAddressLine2($addressLine2)
+    public function setAddressLine2(?string $addressLine2): static
     {
         $this->addressLine2 = $addressLine2;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressLine3()
+    public function getAddressLine3(): ?string
     {
         return $this->addressLine3;
     }
 
-    /**
-     * @param string $addressLine3
-     *
-     * @return Deputy
-     */
-    public function setAddressLine3($addressLine3)
+    public function setAddressLine3(?string $addressLine3): static
     {
         $this->addressLine3 = $addressLine3;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressTown()
+    public function getAddressTown(): ?string
     {
         return $this->addressTown;
     }
 
-    /**
-     * @param string $addressTown
-     *
-     * @return Deputy
-     */
-    public function setAddressTown($addressTown)
+    public function setAddressTown(?string $addressTown): static
     {
         $this->addressTown = $addressTown;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressCounty()
+    public function getAddressCounty(): ?string
     {
         return $this->addressCounty;
     }
 
-    /**
-     * @param string $addressCounty
-     *
-     * @return Deputy
-     */
-    public function setAddressCounty($addressCounty)
+    public function setAddressCounty(?string $addressCounty): static
     {
         $this->addressCounty = $addressCounty;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressPostcode()
+    public function getAddressPostcode(): ?string
     {
         return $this->addressPostcode;
     }
 
-    /**
-     * @param string $addressPostcode
-     *
-     * @return Deputy
-     */
-    public function setAddressPostcode($addressPostcode)
+    public function setAddressPostcode(?string $addressPostcode): static
     {
         $this->addressPostcode = $addressPostcode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressCountry()
+    public function getAddressCountry(): ?string
     {
         return $this->addressCountry;
     }
 
-    /**
-     * @param string $addressCountry
-     *
-     * @return Deputy
-     */
-    public function setAddressCountry($addressCountry)
+    public function setAddressCountry(?string $addressCountry): static
     {
         $this->addressCountry = $addressCountry;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressFormatted()
+    public function getAddressFormatted(): string
     {
         return implode(', ', array_filter([
             $this->getAddressLine1(),
