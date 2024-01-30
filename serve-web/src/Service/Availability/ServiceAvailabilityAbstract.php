@@ -9,33 +9,18 @@ namespace App\Service\Availability;
  */
 abstract class ServiceAvailabilityAbstract
 {
-    /**
-     * @var bool
-     */
-    protected $isHealthy;
+    protected bool $isHealthy;
 
-    /**
-     * @var string
-     */
-    protected $errors;
+    protected string $errors;
 
-    /**
-     * @var
-     */
-    protected $customMessage;
+    protected ?string $customMessage = null;
 
-    /**
-     * @return bool
-     */
-    public function isHealthy()
+    public function isHealthy(): bool
     {
         return $this->isHealthy;
     }
 
-    /**
-     * @return string
-     */
-    public function getErrors()
+    public function getErrors(): string
     {
         return $this->errors;
     }
@@ -45,10 +30,7 @@ abstract class ServiceAvailabilityAbstract
         return $this->customMessage;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'healthy' => $this->isHealthy(),
@@ -56,10 +38,7 @@ abstract class ServiceAvailabilityAbstract
         ];
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getName();
+    abstract public function getName(): string;
 
     abstract public function ping();
 }

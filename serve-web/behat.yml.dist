@@ -17,10 +17,11 @@ default:
     extensions:
         FriendsOfBehat\SymfonyExtension: ~
         Behat\MinkExtension\ServiceContainer\MinkExtension:
-              goutte:
-                  guzzle_parameters:
-                    verify: false
-              files_path: "%paths.base%/features/fixtures/"
+            goutte:
+                server_parameters:
+                    verify_host: false
+                    verify_peer: false
+            files_path: "%paths.base%/features/fixtures/"
 
     formatters:
         pretty: true

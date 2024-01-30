@@ -4,21 +4,9 @@ namespace App\Service\Security\LoginAttempts;
 
 interface AttemptsStorageInterface
 {
-    /**
-     * @param string $userId
-     * @param integer $timestamp
-     */
-    public function storeAttempt($userId, $timestamp);
+    public function storeAttempt(string $userId, int $timestamp);
 
-    /**
-     * @param string $userId
-     *
-     * @return array of timestamps with the attempts for that userId
-     */
-    public function getAttempts($userId);
+    public function getAttempts(string $userId): array;
 
-    /**
-     * @param string $userId
-     */
-    public function resetAttempts($userId);
+    public function resetAttempts(string $userId);
 }

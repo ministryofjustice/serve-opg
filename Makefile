@@ -28,59 +28,48 @@ up-prod: ##@application Brings the app up in prod mode - requires deps to be bui
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
-	# Build app
 	docker-compose up -d --remove-orphans loadbalancer
-	docker-compose run --rm app php bin/console cache:clear --env=test
+	docker-compose run --rm app php bin/console cache:clear --env=prod
 
-up-dev: ##@application Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
-	WITH_XDEBUG=0 docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml build app
+up-dev: ##@application Brings the app up in dev mode with profiler enabled and xdebug disabled - requires deps to be built
+	WITH_XDEBUG=0 docker-compose -f docker-compose.yml -f docker-compose.local.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
-	# Build app
-	docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
-	docker-compose run --rm app php bin/console cache:clear --env=test
+	docker-compose -f docker-compose.yml -f docker-compose.local.yml up -d --remove-orphans loadbalancer
+	docker-compose -f docker-compose.yml -f docker-compose.local.yml run --rm app php bin/console cache:clear --env=dev
 
 up-dev-xdebug: ##@application Brings the app up in dev mode with profiler and xdebug enabled - requires deps to be built
-	WITH_XDEBUG=1 docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml build app
+	WITH_XDEBUG=1 docker-compose -f docker-compose.yml -f docker-compose.local.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
-	# Build app
-	docker-compose -f docker-compose.local.yml -f docker-compose.override.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
-	docker-compose run --rm app php bin/console cache:clear --env=test
+	docker-compose -f docker-compose.yml -f docker-compose.local.yml up -d --remove-orphans loadbalancer
+	docker-compose -f docker-compose.yml -f docker-compose.local.yml run --rm app php bin/console cache:clear --env=dev
 
 up-test: ##@application Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
-	WITH_XDEBUG=0 docker-compose -f docker-compose.test.yml -f docker-compose.yml build app
+	WITH_XDEBUG=0 docker-compose -f docker-compose.yml -f docker-compose.test.yml build app
 
 	docker-compose run --rm app waitforit -address=tcp://postgres:5432 -timeout=20 -debug
 	docker-compose run --rm app php bin/console doctrine:migrations:migrate --no-interaction
 
 	# Build app
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml up -d --remove-orphans loadbalancer
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
 	docker-compose run --rm app php bin/console cache:clear --env=test
 
 phpunit-tests: up-test ##@testing Requires the app to be built and up before running
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm app php bin/phpunit --verbose tests $(args)
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm app php bin/phpunit --verbose tests $(args)
 
-behat-tests: up-test ##@testing Requires the app to be built and up before running
-	# Add sample users and cases (local env only).
-	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
-	docker-compose -f docker-compose.test.yml -f docker-compose.yml run --rm behat --suite=local
+behat-tests: up-test reset-fixtures ##@testing Requires the app to be built and up before running
+	docker-compose run --rm behat --suite=local
 
-build-up-prod: build-deps up-prod ##@builds Build dependencies and spin up the project in prod mode. Purges database and loads fixtures.
-	# Add sample users and cases (local env only).
-	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+build-up-prod: build-deps up-prod reset-fixtures
 
-build-up-dev: build-deps up-dev ##@builds Build dependencies and spin up the project in dev mode, profiler and xdebug enabled. Purges database and loads fixtures.
-	# Add sample users and cases (local env only).
-	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+build-up-dev: build-deps up-dev reset-fixtures
 
-build-up-test: build-deps up-test ##@builds Build dependencies and spin up the project in test mode, profiler and xdebug disabled. Purges database and and fixtures.
-	# Add sample users and cases (local env only).
-	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+build-up-test: build-deps up-test reset-fixtures
 
 build-deps: ##@builds Runs through all steps required before the app can be brought up
 	# Create the s3 buckets, generate localstack data in /localstack-data
@@ -103,5 +92,5 @@ build-deps: ##@builds Runs through all steps required before the app can be brou
 	# Compile static assets
 	docker-compose run --rm yarn build-dev
 
-reset-fixtures: ##@application Reset the fixture data for the app 
+reset-fixtures: ##@application Reset the fixture data for the app
 	docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate -n

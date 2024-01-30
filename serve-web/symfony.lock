@@ -61,6 +61,15 @@
             "migrations/.gitignore"
         ]
     },
+    "eightpoints/guzzle-bundle": {
+        "version": "8.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "7.0",
+            "ref": "7babb21a3928e44e485391907e3abc346804e0d2"
+        }
+    },
     "friends-of-behat/symfony-extension": {
         "version": "2.3",
         "recipe": {
@@ -82,18 +91,6 @@
             ".env.test",
             "phpunit.xml.dist",
             "tests/bootstrap.php"
-        ]
-    },
-    "sensio/framework-extra-bundle": {
-        "version": "5.6",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "5.2",
-            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
-        },
-        "files": [
-            "config/packages/sensio_framework_extra.yaml"
         ]
     },
     "squizlabs/php_codesniffer": {

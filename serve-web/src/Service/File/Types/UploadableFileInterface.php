@@ -4,9 +4,9 @@ namespace App\Service\File\Types;
 
 interface UploadableFileInterface
 {
-    public function checkFile();
+    public function checkFile(): void;
 
-    public function callFileCheckers();
+    public function callFileCheckers(): void;
 
-    public function getFileCheckers();
+    public function getFileCheckers(): array;
 }
