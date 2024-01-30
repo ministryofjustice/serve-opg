@@ -9,31 +9,19 @@ use Aws\DynamoDb\DynamoDbClient;
  */
 class DynamoDbTableCreator
 {
-    /**
-     * @var DynamoDbClient
-     */
-    private $client;
+    private DynamoDbClient $client;
+
+    private string $tableName;
+
+    private string $keyAttrName;
 
     /**
-     * @var string
+     * @var bool array cache to avoid querying dynamo in the same script lifespan
      */
-    private $tableName;
-
-    /**
-     * @var string
-     */
-    private $keyAttrName;
-
-    /**
-     * @var boolean array cache to avoid querying dynamo in the same script lifespan
-     */
-    private static $tableCreated = null;
+    private static ?bool $tableCreated = null;
 
     /**
      * DynamoDbTableCreator constructor.
-     * @param DynamoDbClient $client
-     * @param string $tableName
-     * @param string $keyAttrName
      */
     public function __construct(DynamoDbClient $client, string $tableName, string $keyAttrName)
     {
@@ -42,7 +30,7 @@ class DynamoDbTableCreator
         $this->keyAttrName = $keyAttrName;
     }
 
-    public function createHashTableIfNotExisting()
+    public function createHashTableIfNotExisting(): void
     {
         // enable the following to delete the table, for testing purposes only
         //$this->client->deleteTable(['TableName' => $tableName]);
