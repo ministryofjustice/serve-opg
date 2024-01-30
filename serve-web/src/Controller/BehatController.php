@@ -23,9 +23,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @Route("/behat")
- */
+#[Route(path: '/behat')]
 class BehatController extends AbstractController
 {
     const BEHAT_USERS = [
@@ -38,30 +36,15 @@ class BehatController extends AbstractController
     const BEHAT_CASE_NUMBER = '93559316';
     const BEHAT_INTERIM_CASE_NUMBER = '93559317';
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var ClientService
-     */
-    private $clientService;
+    private ClientService $clientService;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
-    /**
-     * @var UserProvider
-     */
-    private $userProvider;
+    private UserProvider $userProvider;
 
     /**
      * @string behatPassword
@@ -70,13 +53,14 @@ class BehatController extends AbstractController
 
     /**
      * BehatController constructor.
-     * @param EntityManager $em
-     * @param ClientService $clientService
-     * @param OrderService $orderService
-     * @param UserPasswordEncoderInterface $encoder
-     * @param UserProvider $userProvider
      */
-    public function __construct(EntityManager $em, ClientService $clientService, OrderService $orderService, UserPasswordEncoderInterface $encoder, UserProvider $userProvider)
+    public function __construct(
+        EntityManager $em,
+        ClientService $clientService,
+        OrderService $orderService,
+        UserPasswordEncoderInterface $encoder,
+        UserProvider $userProvider
+    )
     {
         $this->em = $em;
         $this->clientService = $clientService;
@@ -89,17 +73,15 @@ class BehatController extends AbstractController
     /**
      * throw a AccessDeniedException if DC_BEHAT_CONTROLLER_ENABLED is empty or false
      */
-    private function securityChecks()
+    private function securityChecks(): void
     {
         if (!getenv('DC_BEHAT_CONTROLLER_ENABLED')) {
             throw new AccessDeniedException('Not accessible on this environment');
         }
     }
 
-    /**
-     * @Route("/behat-user-upsert")
-     */
-    public function userUpsert(Request $request)
+    #[Route(path: '/behat-user-upsert')]
+    public function userUpsert(Request $request): Response
     {
         $this->securityChecks();
 
@@ -132,10 +114,8 @@ class BehatController extends AbstractController
         return new Response($ret);
     }
 
-    /**
-     * @Route("/reset-behat-test-users")
-     */
-    public function resetBehatTestUsersAction(EntityManagerInterface $entityManager)
+    #[Route(path: '/reset-behat-test-users')]
+    public function resetBehatTestUsersAction(EntityManagerInterface $entityManager): Response
     {
         $this->securityChecks();
 
@@ -151,10 +131,8 @@ class BehatController extends AbstractController
         return new Response('Test users reset');
     }
 
-    /**
-     * @Route("/reset-behat-orders")
-     */
-    public function resetBehatOrdersAction(Request $request)
+    #[Route(path: '/reset-behat-orders')]
+    public function resetBehatOrdersAction(Request $request): Response
     {
         $this->securityChecks();
 
@@ -176,10 +154,8 @@ class BehatController extends AbstractController
         return new Response(implode("\n", array_filter($ret)));
     }
 
-    /**
-     * @Route("/reset-brute-force-attempts-logger")
-     */
-    public function resetBruteForceAction(Request $request)
+    #[Route(path: '/reset-brute-force-attempts-logger')]
+    public function resetBruteForceAction(Request $request): Response
     {
         $this->securityChecks();
 
@@ -190,10 +166,8 @@ class BehatController extends AbstractController
         return new Response("attempts reset done");
     }
 
-    /**
-     * @Route("/document-list/{orderIdentifier}")
-     */
-    public function orderDocumentsList(Request $request, $orderIdentifier)
+    #[Route(path: '/document-list/{orderIdentifier}')]
+    public function orderDocumentsList(Request $request, mixed $orderIdentifier): Response
     {
         $this->securityChecks();
 
@@ -210,9 +184,7 @@ class BehatController extends AbstractController
         return new Response(implode("|", array_filter($ret)));
     }
 
-
-
-    private function getOrderFromIdentifier($orderIdentifier)
+    private function getOrderFromIdentifier(string $orderIdentifier)
     {
         list($caseNumber, $orderType) = explode('-', $orderIdentifier);
 
@@ -223,10 +195,8 @@ class BehatController extends AbstractController
         return $this->em->getRepository($repo)->findOneBy(['client' => $client->getId()]);
     }
 
-    /**
-     * @Route("/reset-database")
-     */
-    public function resetDatabase(KernelInterface $kernel)
+    #[Route(path: '/reset-database')]
+    public function resetDatabase(KernelInterface $kernel): Response
     {
         $this->securityChecks();
 
