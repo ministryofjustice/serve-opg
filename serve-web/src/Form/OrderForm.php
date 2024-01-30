@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class OrderForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['show_assets_question']) {
             $builder
@@ -57,12 +57,12 @@ class OrderForm extends AbstractType
             ->add('submit', SubmitType::class, ['translation_domain' => 'forms', 'label' => 'common.submit.label']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => Order::class,
             'show_assets_question' => true,
-            'validation_groups' => function (FormInterface $form) {
+            'validation_groups' => function (FormInterface $form): array {
                 /* @var $data Order */
                 $order = $form->getData();
 

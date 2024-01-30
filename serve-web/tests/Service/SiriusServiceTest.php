@@ -8,13 +8,13 @@ use App\Entity\Document;
 use App\Entity\Order;
 use App\Entity\OrderPf;
 use App\Service\File\Storage\S3Storage;
-use App\Service\SiriusClient;
 use App\Service\SiriusService;
 use Aws\SecretsManager\SecretsManagerClient;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Prophecy\Argument;
@@ -39,7 +39,7 @@ class SiriusServiceTest extends MockeryTestCase
     public function setUp(): void
     {
         $this->mockEntityManager = $this->prophesize(EntityManager::class);
-        $this->mockHttpClient = $this->prophesize(SiriusClient::class);
+        $this->mockHttpClient = $this->prophesize(GuzzleHttpClient::class);
         $this->mockS3Storage = $this->prophesize(S3Storage::class);
         $this->mockLogger =  $this->prophesize(LoggerInterface::class);
         $this->mockSecretsManager = $this->prophesize(SecretsManagerClient::class);
@@ -176,8 +176,10 @@ class SiriusServiceTest extends MockeryTestCase
      */
     private function generateOrder($client, $madeAt, $issuedAt)
     {
-        $orderNumber = strval(rand(1, 100000));
+        $orderId = rand(50000, 100000);
+        $orderNumber = strval($orderId);
         $order = new OrderPf($client, $madeAt, $issuedAt, $orderNumber);
+        $order->setId($orderId);
 
         $mockDeputies = new ArrayCollection(
             [
