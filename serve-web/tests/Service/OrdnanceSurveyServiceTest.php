@@ -4,10 +4,10 @@ namespace tests\Service;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
-use Psr\Http\Message\ResponseInterface;
 
 use App\Service\AddressLookup\OrdnanceSurvey;
 
@@ -19,34 +19,29 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
      */
     private $httpClient;
 
-    /**
-     * @var MockInterface|ResponseInterface
-     */
-    private $response;
-
     private $ordnanceSurveyService;
+
+    private string $bodyInvalid;
+
+    private array $bodyValid;
 
     protected function setUp(): void
     {
         $this->httpClient = Mockery::mock(Client::class);
-        $this->httpClient->shouldReceive('getConfig')->with('base_uri');
-        $this->httpClient->shouldReceive('getConfig')->with('apiKey');
+        $this->httpClient->allows()->getConfig('base_uri');
+        $this->httpClient->allows()->getConfig('apiKey');
 
-        $this->response = Mockery::mock(ResponseInterface::class);
+        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient, 'DUMMY_KEY');
 
-        $this->ordnanceSurveyService = new OrdnanceSurvey($this->httpClient, null);
+        $this->bodyValid = ['results' => []];
+        $this->bodyInvalid = '';
     }
     //------------------------------------------------------------------------------------
 
-    // Lookup Tests
     public function testHttpLookupUrl()
     {
         $postcode = 'SW1A2AA';
-
-        $this->response->shouldReceive('getStatusCode')->andReturn(200);
-        $this->response->shouldReceive('getBody')->andReturn(json_encode([
-            'results' => []
-        ]));
+        $response = new Response(200, [], json_encode($this->bodyValid));
 
         $this->httpClient->shouldReceive('send')
             ->withArgs(function ($arg) use ($postcode) {
@@ -63,41 +58,41 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
                 return true;
             })
             ->once()
-            ->andReturn($this->response);
+            ->andReturn($response);
 
         $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
+
     public function testInvalidHttpLookupResponseCode()
     {
         $postcode = 'SW1A 2AA';
-        $this->response->shouldReceive('getStatusCode')->andReturn(500);
+        $response = new Response(500);
         $this->httpClient->shouldReceive('send')
             ->once()
-            ->andReturn($this->response);
+            ->andReturn($response);
         $this->expectException(\RuntimeException::class);
         $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
+
     public function testInvalidHttpLookupResponseBody()
     {
         $postcode = 'SW1A 2AA';
-        $this->response->shouldReceive('getStatusCode')->andReturn(200);
-        $this->response->shouldReceive('getBody')->andReturn('');   // <- Invalid JSON response
+        $response = new Response(200, [], json_encode($this->bodyInvalid));
         $this->httpClient->shouldReceive('send')
             ->once()
-            ->andReturn($this->response);
+            ->andReturn($response);
         $this->expectException(\RuntimeException::class);
         $this->ordnanceSurveyService->lookupPostcode($postcode);
     }
+
     public function testValidHttpLookupResponse()
     {
         $postcode = 'SW1A 2AA';
-        $this->response->shouldReceive('getStatusCode')->andReturn(200);
-        $this->response->shouldReceive('getBody')->andReturn(json_encode([
-            'results' => []
-        ]));
+        $response = new Response(200, [], json_encode($this->bodyValid));
         $this->httpClient->shouldReceive('send')
             ->once()
-            ->andReturn($this->response);
+            ->andReturn($response);
+
         $result = $this->ordnanceSurveyService->lookupPostcode($postcode);
         // We expect an empty array.
         $this->assertIsArray($result);

@@ -4,32 +4,24 @@ namespace App\Service\File\Types;
 
 use App\Service\File\Checker\ClamAVChecker;
 use App\Service\File\Checker\FileCheckerInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploadableFile implements UploadableFileInterface
 {
-    protected $scannerEndpoint = 'UNDEFINED';
+    protected string $scannerEndpoint = 'UNDEFINED';
 
     /**
      * @var FileCheckerInterface[]
      */
-    protected $fileCheckers;
+    protected array $fileCheckers;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var UploadedFile $file
-     */
-    protected $uploadedFile;
+    protected UploadedFile $uploadedFile;
 
-    /**
-     * @var array Scan result
-     */
-    protected $scanResult;
+    protected array $scanResult;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -39,55 +31,37 @@ class UploadableFile implements UploadableFileInterface
     /**
      * @return FileCheckerInterface[]
      */
-    public function getFileCheckers()
+    public function getFileCheckers(): array
     {
         return $this->fileCheckers;
     }
 
     /**
      * @param FileCheckerInterface[] $fileCheckers
-     *
-     * @return $this
      */
-    public function setFileCheckers($fileCheckers)
+    public function setFileCheckers(array $fileCheckers): static
     {
         $this->fileCheckers = $fileCheckers;
         return $this;
     }
 
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger()
+    public function getLogger(): loggerInterface
     {
         return $this->logger;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     *
-     * @return $this
-     */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger): static
     {
         $this->logger = $logger;
         return $this;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function getUploadedFile()
+    public function getUploadedFile(): UploadedFile
     {
         return $this->uploadedFile;
     }
 
-    /**
-     * @param UploadedFile $uploadedFile
-     *
-     * @return $this
-     */
-    public function setUploadedFile($uploadedFile)
+    public function setUploadedFile(UploadedFile $uploadedFile): static
     {
         $this->uploadedFile = $uploadedFile;
         return $this;
@@ -96,9 +70,9 @@ class UploadableFile implements UploadableFileInterface
     /**
      * Checks a file by calling configured file checkers for that file type
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function checkFile()
+    public function checkFile(): void
     {
         $this->callFileCheckers();
     }
@@ -106,9 +80,9 @@ class UploadableFile implements UploadableFileInterface
     /**
      * Checks a file by calling configured file checkers for that file type
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function callFileCheckers()
+    public function callFileCheckers(): void
     {
         foreach ($this->getFileCheckers() as $fc) {
             // send file
@@ -116,31 +90,21 @@ class UploadableFile implements UploadableFileInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getScanResult()
+    public function getScanResult(): array
     {
         return $this->scanResult;
     }
 
-    /**
-     * @param array $scanResult
-     */
-    public function setScanResult($scanResult)
+    public function setScanResult(array $scanResult): static
     {
         $this->scanResult = $scanResult;
         return $this;
     }
 
-    /**
-     * Is the file safe to upload?
-     *
-     * @return bool
-     */
-    public function isSafe()
+    public function isSafe(): bool
     {
         /**** TO DO REMOVE THIS ONCE FILE SCANNER IMPLEMENTED *****/
+        /**** TO DO 2024 *****/
         return true;
         $scanResult = $this->getScanResult();
 
@@ -151,7 +115,7 @@ class UploadableFile implements UploadableFileInterface
         return false;
     }
 
-    public function getScannerEndpoint()
+    public function getScannerEndpoint(): string
     {
         return $this->scannerEndpoint;
     }

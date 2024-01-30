@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DeputyForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $deputyTypeValue = !empty($options['deputyType']) ? $options['deputyType'] : '';
 
@@ -65,20 +65,16 @@ class DeputyForm extends AbstractType
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine1', TextType::class, [
-                'required' => true,
+                'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine2', TextType::class, [
                 'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
-            ->add('addressLine3', TextType::class, [
-                'required' => false,
-                'attr' => ['maxlength'=> 255]
-            ])
             ->add('addressTown', TextType::class, [
                 'label' => 'deputy.addressTown',
-                'required' => true,
+                'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressCounty', TextType::class, [
@@ -88,7 +84,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('addressPostcode', TextType::class, [
                 'label' => 'deputy.addressPostcode',
-                'required' => true,
+                'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('saveAndContinue', SubmitType::class);
@@ -96,22 +92,21 @@ class DeputyForm extends AbstractType
         if ($deputyTypeValue === 'LAY') {
             $builder->add('dateOfBirth', BirthdayType::class, [
                 'label' => 'deputy.dateOfBirth.label',
-                'required' => true,
+                'required' => false,
                 'widget' => 'text',
                 'placeholder' => array(
                     'day' => 'Day','month' => 'Month' , 'year' => 'Year'
                 ),
-                'format' => 'dd-MM-yyyy',
             ]);
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => Deputy::class,
             'translation_domain' => 'forms',
-            'validation_groups' => function (FormInterface $form) {
+            'validation_groups' => function (FormInterface $form): array {
 
                 /* @var $data \App\Entity\Deputy */
                 $data = $form->getData();
