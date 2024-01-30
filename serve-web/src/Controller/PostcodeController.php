@@ -11,24 +11,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostcodeController extends AbstractController
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * PostcodeController constructor.
-     * @param LoggerInterface $logger
-     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @Route("/postcode-lookup", name="postcode-lookup")
-     */
-    public function postcodeLookupAction(Request $request, OrdnanceSurvey $ordnanceSurvey)
+    #[Route(path: '/postcode-lookup', name: 'postcode-lookup')]
+    public function postcodeLookupAction(Request $request, OrdnanceSurvey $ordnanceSurvey): JsonResponse
     {
         $postcode = $request->query->get('postcode');
 

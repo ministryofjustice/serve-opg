@@ -15,84 +15,63 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ClamAVChecker implements FileCheckerInterface
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var array
-     */
-    private $options;
+    private array $options;
 
-    /**
-     * ClamAVChecker constructor.
-     * @param ClientInterface $client
-     * @param LoggerInterface $logger
-     * @param array           $options
-     */
     public function __construct(ClientInterface $client, LoggerInterface $logger)
     {
-        /** @var GuzzleHttp\Client client */
         $this->client = $client;
         $this->logger = $logger;
     }
 
     /**
-     *
      * Checks file for viruses using ClamAv
      *
-     * @param UploadableFileInterface $uploadedFile
-     *
      * @throws RuntimeException in case the result is not PASS
-     *
-     * @return bool
      */
-    public function checkFile(UploadableFileInterface $file)
+    public function checkFile(UploadableFileInterface $file): UploadableFileInterface
     {
-        return true;
-        // POST body to clamAV
-        $response = $this->getScanResults($file);
-
-        $file->setScanResult($response);
-
-        $isResultPass = strtoupper(trim($response['file_scanner_result'])) === 'PASS';
-
-        // log results
-        $level = $isResultPass ? Logger::INFO : Logger::ERROR;
-        $this->log($level, 'File scan result', $file->getUploadedFile(), $response);
-
-        if ($file instanceof Pdf && !$isResultPass) { // @shaun STILL NEEDED ? wouldn't this case go in the next "switch"
-            throw new RiskyFileException('PDF file scan failed');
-        }
-
-        if ($isResultPass) {
-            return true;
-        }
-
-        switch (strtoupper(trim($response['file_scanner_code']))) {
-            case 'AV_FAIL':
-                throw new VirusFoundException();
-            case 'PDF_INVALID_FILE':
-            case 'PDF_BAD_KEYWORD':
-                throw new RiskyFileException();
-        }
-
-        throw new RuntimeException('Files scanner FAIL. Unrecognised code. Full response: ' . print_r($response));
+        return $file;
+        /**** TO DO 2024 *****/
+        /**** This looks to be work in progress 2018 *****/
+        /**** Made the return type correct and commented out pending work *****/
+//        // POST body to clamAV
+//        $response = $this->getScanResults($file);
+//
+//        $file->setScanResult($response);
+//
+//        $isResultPass = strtoupper(trim($response['file_scanner_result'])) === 'PASS';
+//
+//        // log results
+//        $level = $isResultPass ? Logger::INFO : Logger::ERROR;
+//        $this->log($level, 'File scan result', $file->getUploadedFile(), $response);
+//
+//        if ($file instanceof Pdf && !$isResultPass) { // @shaun STILL NEEDED ? wouldn't this case go in the next "switch"
+//            throw new RiskyFileException('PDF file scan failed');
+//        }
+//
+//        if ($isResultPass) {
+//            return $file;
+//        }
+//
+//        switch (strtoupper(trim($response['file_scanner_code']))) {
+//            case 'AV_FAIL':
+//                throw new VirusFoundException();
+//            case 'PDF_INVALID_FILE':
+//            case 'PDF_BAD_KEYWORD':
+//                throw new RiskyFileException();
+//        }
+//
+//        throw new RuntimeException('Files scanner FAIL. Unrecognised code. Full response: ' . print_r($response));
     }
 
     /**
      * POSTS the file body to file scanner, and continually polls until result is returned.
-     *
-     * @param  UploadableFileInterface $uploadedFile
-     * @return array
      */
-    private function getScanResults(UploadableFileInterface $file)
+    private function getScanResults(UploadableFileInterface $file): array
     {
         // avoid contacting ClamAV for files with already-known asnwer
         if ($cachedResponse = ClamAVMocks::getCachedResponse($file)) {
@@ -134,12 +113,8 @@ class ClamAVChecker implements FileCheckerInterface
 
     /**
      * Send file to File Scanner
-     *
-     * @param UploadableFileInterface $file
-     *
-     * @return array
      */
-    private function makeScannerRequest(UploadableFileInterface $file)
+    private function makeScannerRequest(UploadableFileInterface $file): array
     {
         $fullFilePath = $file->getUploadedFile()->getPathName();
 
@@ -162,11 +137,8 @@ class ClamAVChecker implements FileCheckerInterface
 
     /**
      * Query status of file scan using location returned by AV scanner
-     * @param string $location
-     *
-     * @return array
      */
-    private function makeStatusRequest($location)
+    private function makeStatusRequest(string $location): array
     {
         $this->log(Logger::DEBUG, 'Quering scan status for location: ' . $location);
 
@@ -178,13 +150,7 @@ class ClamAVChecker implements FileCheckerInterface
         return $result;
     }
 
-    /**
-     * @param $level
-     * @param $message
-     * @param UploadedFile|null $file
-     * @param array|null        $response
-     */
-    private function log($level, $message, UploadedFile $file = null, array $response = null)
+    private function log(int $level, string $message, ?UploadedFile $file = null, ?array $response = null): void
     {
         $extra = ['service' => 'clam_av_checker'];
 

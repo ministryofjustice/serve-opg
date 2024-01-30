@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', TextType::class)
@@ -41,7 +41,7 @@ class UserForm extends AbstractType
             ])
             ->add('submit', SubmitType::class);
 
-        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event): void {
             $user = $event->getData();
             $form = $event->getForm();
 
@@ -50,7 +50,7 @@ class UserForm extends AbstractType
             }
         });
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             $user = $event->getData();
             $form = $event->getForm();
 
@@ -64,7 +64,7 @@ class UserForm extends AbstractType
         });
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(array(
             'data_class' => User::class,
