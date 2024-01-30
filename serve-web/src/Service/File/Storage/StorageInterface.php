@@ -4,9 +4,9 @@ namespace App\Service\File\Storage;
 
 interface StorageInterface
 {
-    public function retrieve($key);
+    public function retrieve(string $key);
 
-    public function delete($key);
+    public function delete(string $key);
 
-    public function store($key, $body);
+    public function store(string $key, string $body);
 }
