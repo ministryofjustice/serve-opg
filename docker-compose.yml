@@ -139,6 +139,8 @@ services:
       - --no-interaction
     env_file:
       - .env
+    depends_on:
+      - loadbalancer
     environment:
       APP_ENV: 'test'
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
