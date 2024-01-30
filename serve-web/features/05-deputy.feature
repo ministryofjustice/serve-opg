@@ -83,7 +83,6 @@ Feature: deputy
     And I should see "Emb houseE, victoria roadE, LondonE2, LondonE3, SW1 E"
     And the order should be unservable
 
-
   Scenario: HW order: remove deputy
     Given I log in as "behat@digital.justice.gov.uk" with correct password
     When I go to "/case"
@@ -120,7 +119,6 @@ Feature: deputy
     Then the response status code should be 200
     And the url should match "order/\d+/summary"
     And I should not see "deputy2-fullName"
-
 
   Scenario: PF order: add one deputy (just type, first and lastname)
     Given I log in as "behat@digital.justice.gov.uk" with correct password

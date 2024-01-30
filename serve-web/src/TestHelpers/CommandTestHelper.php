@@ -10,7 +10,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class CommandTestHelper extends WebTestCase
 {
-    public static function deleteMigrationVersion(string $version)
+    public static function deleteMigrationVersion(string $version): void
     {
         $application = self::createApplication();
         $command = $application->find('doctrine:migrations:version');
@@ -24,7 +24,7 @@ class CommandTestHelper extends WebTestCase
         ]);
     }
 
-    public static function migrateUpToVersion(string $version)
+    public static function migrateUpToVersion(string $version): void
     {
         $application = self::createApplication();
         $command = $application->find('doctrine:migrations:execute');
@@ -38,7 +38,7 @@ class CommandTestHelper extends WebTestCase
         ]);
     }
 
-    public static function runMigrations()
+    public static function runMigrations(): void
     {
         $application = self::createApplication();
         $command = $application->find('doctrine:migrations:migrate');
@@ -50,7 +50,7 @@ class CommandTestHelper extends WebTestCase
         ]);
     }
 
-    protected static function createApplication()
+    protected static function createApplication(): Application
     {
         $kernel = static::createKernel();
         $application = new Application($kernel);

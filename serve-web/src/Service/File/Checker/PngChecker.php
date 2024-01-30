@@ -8,14 +8,9 @@ class PngChecker extends AbstractFileChecker implements FileCheckerInterface
 {
     /**
      * Any other specific checks for a file type can go here
-     *
-     * Checks file extension.
-     *
-     * @param  UploadableFileInterface $file
-     * @return bool
      */
-    public function checkFile(UploadableFileInterface $fileToStore)
+    public function checkFile(UploadableFileInterface $file): UploadableFileInterface
     {
-        return parent::checkFile($fileToStore);
+        return parent::checkFile($file);
     }
 }

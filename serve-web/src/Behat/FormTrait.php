@@ -10,7 +10,7 @@ trait FormTrait
     /**
      * @Then /^the form should be (?P<shouldBe>(valid|invalid))$/
      */
-    public function theFormShouldBeOrNotBeValid($shouldBe)
+    public function theFormShouldBeOrNotBeValid($shouldBe): void
     {
         $this->assertResponseStatus(200);
         // added second css for new govuk error groups (see macro: errorSummary)
@@ -30,7 +30,7 @@ trait FormTrait
     /**
      * @return array of IDs of input/select/textarea elements inside a  .form-group.form-group-error CSS class
      */
-    private function getElementsIdsWithValidationErrors()
+    private function getElementsIdsWithValidationErrors(): array
     {
         $ret = [];
 
@@ -52,7 +52,7 @@ trait FormTrait
      *
      * @Then the following fields should have an error:
      */
-    public function theFollowingFieldsOnlyShouldHaveAnError(TableNode $table)
+    public function theFollowingFieldsOnlyShouldHaveAnError(TableNode $table): void
     {
         $foundIdsWithErrors = $this->getElementsIdsWithValidationErrors();
 
@@ -76,7 +76,7 @@ trait FormTrait
     /**
      * @Then /^the following fields should have the corresponding values:$/
      */
-    public function followingFieldsShouldHaveTheCorrespondingValues(TableNode $fields)
+    public function followingFieldsShouldHaveTheCorrespondingValues(TableNode $fields): void
     {
         foreach ($fields->getRowsHash() as $field => $value) {
             $this->assertFieldContains($field, $value);
@@ -86,7 +86,7 @@ trait FormTrait
     /**
      * @When I delete the user :name
      */
-    public function deleteUser($name) {
+    public function deleteUser($name): void {
         $userLink = $this->getSession()->getPage()->findLink($name);
         $deleteLink = $userLink->find('xpath', '../ancestor::tr//a[normalize-space(text())="Delete"]');
         $deleteLink->click();
