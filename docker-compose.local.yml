@@ -6,3 +6,6 @@ services:
       APP_DEBUG: 'true'
     env_file:
       - .env.local
+    volumes:
+      - ./serve-web:/var/www
+      - ./serve-web/var:/www/var/
