@@ -10,22 +10,11 @@ use Doctrine\Persistence\ObjectManager;
 
 class BehatFixtures extends Fixture implements FixtureGroupInterface
 {
-    /**
-     * @var bool
-     */
-    private $fixturesEnabled;
+    private bool $fixturesEnabled;
 
-    /**
-     * @var FixtureTestHelper
-     */
-    private $fixtureHelper;
+    private FixtureTestHelper $fixtureHelper;
 
-    /**
-     * DefaultFixtures constructor.
-     * @param string $fixturesEnabled
-     * @param FixtureTestHelper $fixtureHelper
-     */
-    public function __construct($fixturesEnabled, FixtureTestHelper $fixtureHelper)
+    public function __construct(bool $fixturesEnabled, FixtureTestHelper $fixtureHelper)
     {
         $this->fixturesEnabled = $fixturesEnabled;
         $this->fixtureHelper = $fixtureHelper;
@@ -42,7 +31,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
         return ['behatTests'];
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         if ($this->fixturesEnabled) {
             $this->fixtureHelper->loadUserFixture('adminUsers.yaml');

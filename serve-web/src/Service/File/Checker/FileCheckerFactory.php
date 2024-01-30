@@ -17,45 +17,18 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileCheckerFactory
 {
-    /**
-     * @var Pdf
-     */
-    protected $pdf;
+    protected Pdf $pdf;
 
-    /**
-     * @var Png
-     */
-    protected $png;
+    protected Png $png;
 
-    /**
-     * @var Jpg
-     */
-    protected $jpg;
+    protected Jpg $jpg;
 
-    /**
-     * @var Tif
-     */
-    protected $tif;
+    protected Tif $tif;
 
-    /**
-     * @var Doc
-     */
-    protected $doc;
+    protected Doc $doc;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * FileCheckerFactory constructor.
-     * @param Pdf $pdf
-     * @param Png $png
-     * @param Jpg $jpg
-     * @param Tif $tif
-     * @param Doc $doc
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         Pdf $pdf,
         Png $png,
@@ -74,12 +47,8 @@ class FileCheckerFactory
 
     /**
      * Sets the uploaded file to the file Object created based on mime type
-     *
-     * @param UploadedFile $uploadedFile
-     *
-     * @return UploadableFile
      */
-    public function factory(UploadedFile $uploadedFile)
+    public function factory(UploadedFile $uploadedFile): UploadableFile
     {
         if ($uploadedFile->isExecutable() ||
             preg_match('/([^\.])+(\.exe|\.bin|\.bat|\.js|\.zip|\.php)/i', $uploadedFile->getClientOriginalName())) {
@@ -104,11 +73,8 @@ class FileCheckerFactory
 
     /**
      * Is file a word docx file?
-     *
-     * @param UploadedFile $uploadedFile
-     * @return bool
      */
-    private function isWordDoc(UploadedFile $uploadedFile)
+    private function isWordDoc(UploadedFile $uploadedFile): bool
     {
         // specific check to handle word X documents but not other files with same mime type
         $mimeType = $uploadedFile->getMimeType();

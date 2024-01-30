@@ -1,0 +1,13 @@
+eight_points_guzzle:
+    # (de)activate logging/profiler; default: %kernel.debug%
+    logging: true
+
+    # configure when a response is considered to be slow (in ms); default 0 (disabled)
+    slow_response_time: 1000
+
+    clients:
+        OrdnanceGuzzleClient:
+            base_url: "https://api.os.uk/search/places/v1/postcode?"
+
+        SiriusClient:
+            base_url: "%env(DC_SIRIUS_URL)%"

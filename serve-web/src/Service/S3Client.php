@@ -13,7 +13,7 @@ class S3Client extends \Aws\S3\S3Client
      * @param $s3Region e.g. us-west-1
      * @param $s3Endpoint leave empty for instances with AWS credentials. Set for local env like fakes3
      */
-    public function __construct($s3Region, $s3Endpoint)
+    public function __construct(string $s3Region, ?string $s3Endpoint)
     {
         $args = [
             'version' => 'latest',
