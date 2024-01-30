@@ -10,10 +10,7 @@ use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class SuccessfulAuthenticationListener implements EventSubscriberInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -36,14 +33,13 @@ class SuccessfulAuthenticationListener implements EventSubscriberInterface
      *  * ['eventName' => ['methodName', $priority]]
      *  * ['eventName' => [['methodName1', $priority], ['methodName2']]]
      *
-     * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return ['security.authentication.success' => 'updateLastLoginAt'];
     }
 
-    public function updateLastLoginAt(AuthenticationEvent $event)
+    public function updateLastLoginAt(AuthenticationEvent $event): void
     {
         /** @var User $user */
         $user = $event->getAuthenticationToken()->getUser();

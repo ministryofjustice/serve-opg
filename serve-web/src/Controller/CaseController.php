@@ -3,31 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Repository\OrderRepository;
-use App\Service\Security\LoginAttempts\Checker;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/case")
- */
+#[Route(path: '/case')]
 class CaseController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var OrderRepository
-     */
-    private $orderRepo;
+    private ObjectRepository $orderRepo;
 
     /**
      * UserController constructor.
-     * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
     {
@@ -35,10 +26,8 @@ class CaseController extends AbstractController
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
-    /**
-     * @Route("", name="case-list")
-     */
-    public function indexAction(Request $request)
+    #[Route(path: '', name: 'case-list')]
+    public function indexAction(Request $request): Response
     {
         $limit = 50;
 
