@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 
 class Doc extends UploadableFile
 {
-    protected $scannerEndpoint = 'upload/doc';
+    protected string $scannerEndpoint = 'upload/doc';
 
     public function __construct(
         ClamAVChecker $virusChecker,
@@ -16,6 +16,6 @@ class Doc extends UploadableFile
         LoggerInterface $logger
     ) {
         parent::__construct($logger);
-        $this->fileCheckers = [$virusChecker, $fileChecker];
+        $this->setFileCheckers([$virusChecker, $fileChecker]);
     }
 }

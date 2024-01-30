@@ -17,13 +17,6 @@ class SpreadsheetImporterService
     private EntityManagerInterface $em;
     private LoggerInterface $logger;
 
-    /**
-     * SpreadsheetImporterService constructor.
-     * @param ClientService $clientService
-     * @param OrderService $orderService
-     * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         ClientService $clientService,
         OrderService $orderService,
@@ -37,16 +30,14 @@ class SpreadsheetImporterService
     }
 
     /**
-     * @param UploadedFile $file file with keys:
+     * file with keys:
      * Case : 8 digits. might end with a T
      * Forename
      * Surname
      * Order Type: integer. 2 means HW order
      * IssuedAt e.g. 15-Aug-2018 or any format accepted by DateTime
-     *
-     * @return integer added columns
      */
-    public function importFile(UploadedFile $file)
+    public function importFile(UploadedFile $file): int
     {
         $fileType = $file->getClientMimeType();
         $path = $file->getPathname();
@@ -110,12 +101,7 @@ class SpreadsheetImporterService
         }
     }
 
-    /**
-     * @param array $row
-     *
-     * @return Order
-     */
-    private function importSingleRow(array $row)
+    private function importSingleRow(array $row): Order
     {
         $row = array_map('trim', $row);
 

@@ -54,21 +54,35 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $clientService->upsert('93559316', 'Joni Mitchell')->shouldBeCalled()->willReturn($row1Client);
         $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
 
+        $row1Order = new OrderPf(
+            $row1Client,
+            new DateTime('1-Aug-2018'),
+            new DateTime('15-Aug-2018'),
+            '1'
+        );
         $orderService->upsert(
             $row1Client,
             OrderPf::class,
             new DateTime('1-Aug-2018'),
             new DateTime('15-Aug-2018'),
-            1
-        )->shouldBeCalled();
+            '1'
+        )->shouldBeCalled()
+        ->willReturn($row1Order);
 
+        $row2Order = new OrderHw(
+            $row1Client,
+            new DateTime('2-Aug-2018'),
+            new DateTime('17-Aug-2018'),
+            '2'
+        );
         $orderService->upsert(
             $row2Client,
             OrderHw::class,
             new DateTime('2-Aug-2018'),
             new DateTime('17-Aug-2018'),
-            2
-        )->shouldBeCalled();
+            '2'
+        )->shouldBeCalled()
+        ->willReturn($row2Order);
 
         $sut = new SpreadsheetImporterService(
             $clientService->reveal(),
@@ -111,21 +125,35 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $clientService->upsert('93559428', 'Johnny Depp')->shouldBeCalled()->willReturn($row1Client);
         $clientService->upsert('93559429', 'Amber Heard')->shouldBeCalled()->willReturn($row2Client);
 
+        $row1Order = new OrderPf(
+            $row1Client,
+            new DateTime('31-May-2022'),
+            new DateTime('29-May-2022'),
+            '1'
+        );
         $orderService->upsert(
             $row1Client,
             OrderPf::class,
             new DateTime('31-May-2022'),
             new DateTime('29-May-2022'),
-            1
-        )->shouldBeCalled();
+            '1'
+        )->shouldBeCalled()
+        ->willReturn($row1Order);
 
+        $row2Order = new OrderPf(
+            $row1Client,
+            new DateTime('31-May-2022'),
+            new DateTime('29-May-2022'),
+            '1'
+        );
         $orderService->upsert(
             $row2Client,
             OrderHw::class,
             new DateTime('30-May-2022'),
             new DateTime('28-May-2022'),
-            2
-        )->shouldBeCalled();
+            '2'
+        )->shouldBeCalled()
+        ->willReturn($row2Order);
 
         $sut = new SpreadsheetImporterService(
             $clientService->reveal(),
