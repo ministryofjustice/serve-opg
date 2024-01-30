@@ -75,7 +75,7 @@ class Deputy
     #[ORM\Column(name: 'address_postcode', type: 'string', length: 255, nullable: true)]
     private ?string $addressPostcode;
 
-    private ?string $addressCountry;
+    private ?string $addressCountry = '';
 
     public function __construct(Order $order)
     {

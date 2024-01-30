@@ -65,7 +65,7 @@ class DeputyForm extends AbstractType
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine1', TextType::class, [
-                'required' => true,
+                'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressLine2', TextType::class, [
@@ -74,7 +74,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('addressTown', TextType::class, [
                 'label' => 'deputy.addressTown',
-                'required' => true,
+                'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('addressCounty', TextType::class, [
@@ -84,7 +84,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('addressPostcode', TextType::class, [
                 'label' => 'deputy.addressPostcode',
-                'required' => true,
+                'required' => false,
                 'attr' => ['maxlength'=> 255]
             ])
             ->add('saveAndContinue', SubmitType::class);
@@ -92,7 +92,7 @@ class DeputyForm extends AbstractType
         if ($deputyTypeValue === 'LAY') {
             $builder->add('dateOfBirth', BirthdayType::class, [
                 'label' => 'deputy.dateOfBirth.label',
-                'required' => true,
+                'required' => false,
                 'widget' => 'text',
                 'placeholder' => array(
                     'day' => 'Day','month' => 'Month' , 'year' => 'Year'
