@@ -52,6 +52,7 @@
         "behat/common-contexts": "1.2.*",
         "behat/mink": "^1.11",
         "behat/mink-browserkit-driver": "^2.0",
+        "behat/mink-goutte-driver": "^2.0.0",
         "doctrine/doctrine-fixtures-bundle": "^3.5.1",
         "egulias/email-validator": "^3.2.6",
         "friends-of-behat/mink-extension": "^2.5.2",

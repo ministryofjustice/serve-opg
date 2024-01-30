@@ -15,13 +15,12 @@ default:
                 tags: ~@excludeLocal
 
     extensions:
-        FriendsOfBehat\SymfonyExtension:
-            kernel:
-                environment: test
-        Behat\MinkExtension:
-            sessions:
-                symfony:
-                    symfony: ~
+        FriendsOfBehat\SymfonyExtension: ~
+        Behat\MinkExtension\ServiceContainer\MinkExtension:
+            goutte:
+                server_parameters:
+                    verify_host: false
+                    verify_peer: false
             files_path: "%paths.base%/features/fixtures/"
 
     formatters:
