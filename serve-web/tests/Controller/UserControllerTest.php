@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserControllerTest extends ApiWebTestCase
 {
@@ -58,6 +59,7 @@ class UserControllerTest extends ApiWebTestCase
                 'PHP_AUTH_PW' => $this->behatPassword
             ]
         );
+        $userClient->catchExceptions(false);
 
         $adminClient = $this->createAuthenticatedClient(
             [
@@ -68,6 +70,7 @@ class UserControllerTest extends ApiWebTestCase
 
         $urlReplaced = str_replace('{id}', $user->getId(), $url);
 
+        $this->expectException(AccessDeniedException::class);
         $userClient->request(Request::METHOD_GET, $urlReplaced, [], [], ['HTTP_REFERER' => '/users']);
         self::assertEquals(Response::HTTP_FORBIDDEN, $userClient->getResponse()->getStatusCode());
 
@@ -131,6 +134,11 @@ class UserControllerTest extends ApiWebTestCase
         foreach ($tests as $test) {
             $client = ApiWebTestCase::getService('test.client');
             $client->setServerParameters($test['creds']);
+
+            if (Response::HTTP_FORBIDDEN == $test['expectedResponse']) {
+                $client->catchExceptions(false);
+                $this->expectException(AccessDeniedException::class);
+            }
 
             $client->request(Request::METHOD_GET, "/users");
             $this->assertEquals($test['expectedResponse'], $client->getResponse()->getStatusCode());
