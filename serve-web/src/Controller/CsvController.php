@@ -5,26 +5,22 @@ namespace App\Controller;
 use App\Form\CsvUploadForm;
 use App\Service\SpreadsheetImporterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CsvController extends AbstractController
 {
     private SpreadsheetImporterService $spreadsheetImporterService;
 
-    /**
-     * CsvController constructor.
-     * @param SpreadsheetImporterService $spreadsheetImporterService
-     */
     public function __construct(SpreadsheetImporterService $spreadsheetImporterService)
     {
         $this->spreadsheetImporterService = $spreadsheetImporterService;
     }
 
-    /**
-     * @Route("/upload-csv", name="upload-csv")
-     */
-    public function uploadAction(Request $request)
+    #[Route(path: '/upload-csv', name: 'upload-csv')]
+    public function uploadAction(Request $request): RedirectResponse|Response
     {
         $form = $this->createForm(CsvUploadForm::class);
 

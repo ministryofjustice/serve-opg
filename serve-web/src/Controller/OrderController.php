@@ -16,6 +16,7 @@ use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,27 +24,12 @@ use Throwable;
 
 class OrderController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var OrderService
-     */
-    private $orderService;
+    private OrderService $orderService;
 
-    /**
-     * @var DocumentService
-     */
-    private $documentService;
+    private DocumentService $documentService;
 
-    /**
-     * OrderController constructor.
-     * @param EntityManager $em
-     * @param OrderService $orderService
-     * @param DocumentService $documentService
-     */
     public function __construct(
         EntityManager $em,
         OrderService $orderService,
@@ -55,14 +41,12 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{orderId}/edit", name="order-edit")
-     * @param Request $request
-     * @param $orderId
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function editAction(Request $request, $orderId)
+    #[Route(path: '/order/{orderId}/edit', name: 'order-edit')]
+    public function editAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -104,10 +88,8 @@ class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/summary", name="order-summary")
-     */
-    public function summaryAction(Request $request, $orderId)
+    #[Route(path: '/order/{orderId}/summary', name: 'order-summary')]
+    public function summaryAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -128,10 +110,8 @@ class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/declaration", name="order-declaration")
-     */
-    public function declarationAction(Request $request, $orderId)
+    #[Route(path: '/order/{orderId}/declaration', name: 'order-declaration')]
+    public function declarationAction(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -174,13 +154,8 @@ class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/order/{orderId}/upload", name="upload-order")
-     *
-     * @param string $orderId
-     * @return Response
-     */
-    public function uploadOrder(string $orderId)
+    #[Route(path: '/order/{orderId}/upload', name: 'upload-order')]
+    public function uploadOrder(int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -188,15 +163,12 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{orderId}/process-order-doc", name="process-order-doc", methods={"POST"})
      *
-     * @param Request $request
-     * @param string $orderId
-     * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function processOrderDocument(Request $request, int $orderId)
+    #[Route(path: '/order/{orderId}/process-order-doc', name: 'process-order-doc', methods: ['POST'])]
+    public function processOrderDocument(Request $request, int $orderId): Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
         /** @var UploadedFile $file */
@@ -246,10 +218,8 @@ MESSAGE;
         );
     }
 
-    /**
-     * @Route("/order/{orderId}/confirm-order-details", name="confirm-order-details", methods={"GET", "POST"})
-     */
-    public function confirmOrderDetails(Request $request, $orderId)
+    #[Route(path: '/order/{orderId}/confirm-order-details', name: 'confirm-order-details', methods: ['GET', 'POST'])]
+    public function confirmOrderDetails(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
@@ -281,10 +251,8 @@ MESSAGE;
         );
     }
 
-    /**
-     * @Route("/order/{orderId}/summary-served", name="served-order-summary", methods={"GET"})
-     */
-    public function servedOrderSummary(Request $request, string $orderId)
+    #[Route(path: '/order/{orderId}/summary-served', name: 'served-order-summary', methods: ['GET'])]
+    public function servedOrderSummary(Request $request, int $orderId): RedirectResponse|Response
     {
         $order = $this->em->getRepository(Order::class)->find($orderId);
 

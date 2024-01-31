@@ -16,24 +16,12 @@ use Symfony\Component\Yaml\Yaml;
 
 class FixtureTestHelper
 {
-    /**
-     * @var string
-     */
-    private $yamlFixtureLocation;
+    private string $yamlFixtureLocation;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
-    /**
-     * @var string
-     */
     private string $behatPassword;
 
     public function __construct(string $yamlFixtureLocation, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em,  string $behatPassword)
@@ -49,7 +37,7 @@ class FixtureTestHelper
         return Yaml::parse(file_get_contents($this->yamlFixtureLocation . $yamlFileName));
     }
 
-    public function loadUserFixture(string $yamlFileName)
+    public function loadUserFixture(string $yamlFileName): void
     {
         $users = $this->parseYamlFixture($yamlFileName);
 
@@ -63,7 +51,7 @@ class FixtureTestHelper
         $this->em->flush();
     }
 
-    public function loadCaseFixture(string $yamlFileName)
+    public function loadCaseFixture(string $yamlFileName): void
     {
         $cases = $this->parseYamlFixture($yamlFileName);
 
