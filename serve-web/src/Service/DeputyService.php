@@ -4,34 +4,27 @@ namespace App\Service;
 
 use App\Entity\Deputy;
 use App\Entity\Order;
-use App\Entity\OrderTypeHw;
 use App\Entity\OrderPf;
 use Doctrine\ORM\EntityManager;
 
 class DeputyService
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * OrderService constructor.
-     * @param EntityManager $em
-     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
-    /**
-     * Creates and associates a new deputy for a given order type, determined by Deputy.orderType property
-     * that is used to extract the order type from the order
-     *
-     * @param Order $order
-     * @param Deputy $deputy
-     * @throws \Exception
-     */
+    // TODO 2024 Remove if not useful
+//    /**
+//     * Creates and associates a new deputy for a given order type, determined by Deputy.orderType property
+//     * that is used to extract the order type from the order
+//     *
+//     * @param Order $order
+//     * @param Deputy $deputy
+//     * @throws \Exception
+//     */
 //    public function createDeputyForOrderType(Order $order, Deputy $deputy)
 //    {
 //        switch($deputy->getOrderType()) {

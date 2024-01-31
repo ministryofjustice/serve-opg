@@ -13,7 +13,7 @@ class SiriusApiAvailability extends ServiceAvailabilityAbstract
         $this->siriusService = $siriusService;
     }
 
-    public function ping()
+    public function ping(): void
     {
         try {
            $siriusStatus = $this->siriusService->ping();
@@ -24,7 +24,7 @@ class SiriusApiAvailability extends ServiceAvailabilityAbstract
         }
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'Sirius';
     }

@@ -4,40 +4,23 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use App\Service\Availability\DatabaseAvailability;
 use App\Service\Availability\SiriusApiAvailability;
 use App\Service\Availability\NotifyAvailability;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
 
-/**
- * @Route("/health-check")
- */
+#[Route(path: '/health-check')]
 class HealthController extends AbstractController
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var string
-     */
-    private $appEnv;
+    private string $appEnv;
 
-    /**
-     * @var string
-     */
-    private $symfonyDebug;
+    private string $symfonyDebug = '';
 
-    /**
-     * HealthController constructor.
-     * @param EntityManager $em
-     * @param string $appEnv
-     * @param string %symfonyDebug
-     */
     public function __construct(
         EntityManager $em,
         private LoggerInterface $logger,
@@ -49,21 +32,17 @@ class HealthController extends AbstractController
         $this->appEnv = $appEnv;
     }
 
-    /**
-     * @Route("", name="health-check", methods={"GET"})
-     * @Template("Health/health-check.html.twig")
-     */
-    public function containerHealthAction()
+    #[Route(path: '', name: 'health-check', methods: ['GET'])]
+    public function containerHealthAction(): ?Response
     {
-        return ['status' => 'OK'];
+        return $this->render('Health/health-check.html.twig', [
+            'status' => 'OK'
+        ]);
     }
 
-    /**
-     * @Route("/service", methods={"GET"})
-     */
-    public function serviceHealthAction(
-        DatabaseAvailability $dbAvailability
-    ): ?Response {
+    #[Route(path: '/service', methods: ['GET'])]
+    public function serviceHealthAction(DatabaseAvailability $dbAvailability): ?Response
+    {
         $services = [
             $dbAvailability
         ];
@@ -82,9 +61,7 @@ class HealthController extends AbstractController
         return $response;
         }
 
-    /**
-     * @Route("/dependencies", methods={"GET"})
-     */
+    #[Route(path: '/dependencies', methods: ['GET'])]
     public function dependencyHealthAction(
         NotifyAvailability $notifyAvailability,
         SiriusApiAvailability $siriusAvailability
@@ -108,18 +85,26 @@ class HealthController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/app-env", name="app-env", methods={"GET"})
-     */
-    public function appEnv()
+    #[Route(path: '/app-env', name: 'app-env', methods: ['GET'])]
+    public function appEnv(): Response
     {
         return new Response($this->appEnv);
+    }
+
+    #[Route(path: '/version', methods: ['GET'])]
+    public function versionAction(): JsonResponse
+    {
+        return $this->json([
+            'application' => getenv('APP_VERSION'),
+            'web' => getenv('WEB_VERSION'),
+            'infrastructure' => getenv('INFRA_VERSION'),
+        ]);
     }
 
     /**
      * @return array [true if healthy, services array, string with errors, time in secs]
      */
-    private function servicesHealth($services)
+    private function servicesHealth(mixed $services): array
     {
         $start = microtime(true);
 
@@ -154,19 +139,5 @@ class HealthController extends AbstractController
         }
 
         return [$healthy, $services, $errors, microtime(true) - $start];
-    }
-
-
-    /**
-     * @Route("/version", methods={"GET"})
-     * @Template
-     */
-    public function versionAction()
-    {
-        return $this->json([
-            'application' => getenv("APP_VERSION"),
-            'web' => getenv("WEB_VERSION"),
-            'infrastructure' => getenv("INFRA_VERSION")
-        ]);
     }
 }

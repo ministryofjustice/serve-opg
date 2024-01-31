@@ -26,39 +26,21 @@ class SiriusService
     const HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS = 'HIGH';
     const HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS = 'LOW';
 
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManager $em;
 
-    /**
-     * @var SiriusClient
-     */
-    private $httpClient;
+    private ClientInterface $httpClient;
 
-    /**
-     * @var StorageInterface
-     */
-    private $S3Storage;
+    private StorageInterface $S3Storage;
 
-    /**
-     * @var CookieJarInterface
-     */
-    private $cookieJar;
+    private ?CookieJarInterface $cookieJar = null;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var SecretsManagerClient
-     */
-    private $secretsManagerClient;
+    private SecretsManagerClient $secretsManagerClient;
 
-    private $siriusApiEmail;
+    private ?string $siriusApiEmail;
 
-    private $siriusApiPassword;
+    private ?string $siriusApiPassword;
 
     /**
      * SiriusService constructor.
@@ -75,8 +57,8 @@ class SiriusService
         StorageInterface $S3storage,
         LoggerInterface $logger,
         SecretsManagerClient $secretsManagerClient,
-        $siriusApiEmail,
-        $siriusApiPassword
+        ?string $siriusApiEmail,
+        ?string $siriusApiPassword
     ) {
         $this->em = $em;
         $this->httpClient = $httpClient;
@@ -87,7 +69,7 @@ class SiriusService
         $this->siriusApiPassword = $siriusApiPassword;
     }
 
-    public function serveOrder(Order $order)
+    public function serveOrder(Order $order): void
     {
         $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
 
@@ -127,22 +109,22 @@ class SiriusService
                     $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
                     if ($apiResponse instanceof Psr7\Response) {
-                        $order->setApiResponse(Psr7\str($apiResponse));
+                        $order->setApiResponse((array)Psr7\Message::toString($apiResponse));
                     }
 
                     if ($apiResponse->getStatusCode() !== 200) {
-                        $this->logger->error(Psr7\str($apiResponse));
+                        $this->logger->error(Psr7\Message::toString($apiResponse));
                     }
                 }
             }
 
         } catch (RequestException $e) {
-            $this->logger->error('RequestException: Request -> ' . Psr7\str($e->getRequest()));
+            $this->logger->error('RequestException: Request -> ' . Psr7\Message::toString($e->getRequest()));
             $order->setPayloadServed($payload);
 
             if ($e->hasResponse()) {
-                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
-                $order->setApiResponse(Psr7\str($e->getResponse()));
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\Message::toString($e->getResponse()));
+                $order->setApiResponse(Psr7\Message::toString($e->getResponse()));
             }
             throw $e;
         } catch (\Exception $e) {
@@ -158,7 +140,7 @@ class SiriusService
             $this->logout();
         } catch (RequestException $e) {
             if ($e->getCode() != 401) {
-                $this->logger->error('RequestException: Reponse <- ' . Psr7\str($e->getResponse()));
+                $this->logger->error('RequestException: Reponse <- ' . Psr7\Message::toString($e->getResponse()));
                 throw $e;
             }
         }
@@ -243,7 +225,7 @@ class SiriusService
     /**
      * Logout from Sirius API
      */
-    private function logout()
+    private function logout(): Psr7\Response
     {
         return $this->httpClient->post(
             'auth/logout'
@@ -254,9 +236,8 @@ class SiriusService
      * Generates JSON payload for Sirius API call
      *
      * @param Order $order
-     * @return array
      */
-    private function generateOrderPayload(Order $order)
+    private function generateOrderPayload(Order $order): array
     {
         $dataArray = $this->generateOrderDetails($order);
         $dataArray['client'] = $this->generateClientDetails($order->getClient());
@@ -270,9 +251,8 @@ class SiriusService
      * Generates Order details for Sirius API call
      *
      * @param Order $order
-     * @return array
      */
-    private function generateOrderDetails(Order $order)
+    private function generateOrderDetails(Order $order): array
     {
         return array_filter([
             "courtReference" => $order->getClient()->getCaseNumber(),
@@ -289,9 +269,8 @@ class SiriusService
      * Generates client details as array in preparation for Sirius API call
      *
      * @param Client $client
-     * @return array
      */
-    private function generateClientDetails(Client $client)
+    private function generateClientDetails(Client $client): array
     {
         return array_filter([
             "firstName" => self::extractFirstname($client->getClientName()),
@@ -303,9 +282,8 @@ class SiriusService
      * Generates an array of deputy arrays for API call to Sirius
      *
      * @param ArrayCollection $deputies
-     * @return array
      */
-    private function generateDeputiesDetails(Collection $deputies)
+    private function generateDeputiesDetails(Collection $deputies): array
     {
         $deputyArray = [];
         /** @var Deputy $deputy */
@@ -320,15 +298,14 @@ class SiriusService
      * Generates data array for a single deputy
      *
      * @param Deputy $deputy
-     * @return array
      */
-    private function generateDeputyArray(Deputy $deputy)
+    private function generateDeputyArray(Deputy $deputy): array
     {
         return array_filter([
             "type" => $deputy->getDeputyType(),
             "firstName" => $deputy->getForename(),
             "lastName" => $deputy->getSurname(),
-            "dob" => (!empty($deputy->getDateOfBirth()) ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
+            "dob" => ($deputy->getDateOfBirth() instanceof \DateTime ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
             "email" => $deputy->getEmailAddress(),
             "daytimeNumber" => $deputy->getDaytimeContactNumber(),
             "eveningNumber" => $deputy->getEveningContactNumber(),
@@ -346,9 +323,8 @@ class SiriusService
      * Extract first name from a full name string
      *
      * @param string $fullName
-     * @return mixed
      */
-    protected static function extractFirstname($fullName)
+    protected static function extractFirstname($fullName): string
     {
         $name = explode(' ', $fullName, 2);
         return implode(' ', array_slice($name, 0, -1));
@@ -359,9 +335,8 @@ class SiriusService
      * Extract first name from a full name string
      *
      * @param string $fullName
-     * @return mixed
      */
-    protected static function extractLastname($fullName)
+    protected static function extractLastname($fullName): string
     {
         $name = explode(' ', $fullName, 2);
         return implode(' ', array_slice($name, 1));
@@ -371,10 +346,8 @@ class SiriusService
      * Generates an array of document arrays for API call to Sirius
      *
      * @param ArrayCollection $documents
-     *
-     * @return array
      */
-    private function generateDocumentDetails(Collection $documents)
+    private function generateDocumentDetails(Collection $documents): array
     {
         $docsArray = [];
         /** @var Document $doc */
@@ -389,10 +362,8 @@ class SiriusService
      * Generates data array for a single document
      *
      * @param Document $document
-     *
-     * @return array
      */
-    private function generateDocumentArray(Document $document)
+    private function generateDocumentArray(Document $document): array
     {
         return [
             "type" => $document->getType(),
@@ -402,10 +373,8 @@ class SiriusService
 
     /**
      * Generates a court reference accepted by the Sirius API
-     *
-     * @return string
      */
-    public static function generateCourtReference()
+    public static function generateCourtReference(): string
     {
         $constants = [3, 4, 7, 5, 8, 2, 4];
 
@@ -426,7 +395,7 @@ class SiriusService
         return $ref . $checkbit;
     }
 
-    private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold)
+    private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): ?string
     {
         if ($hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_NA || $hasAssetsAboveThreshold === null) {
             return $hasAssetsAboveThreshold;

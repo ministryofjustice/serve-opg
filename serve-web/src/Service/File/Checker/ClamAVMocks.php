@@ -12,10 +12,8 @@ class ClamAVMocks
 {
     /**
      * `tests/behat/fixtures` has files along with response
-     *
-     * @var array
      */
-    private static $fileHashToResponse = [
+    private static array $fileHashToResponse = [
         'fa7d7e650b2cec68f302b31ba28235d8' => [  // good.pdf
             'celery_task_state'    => 'SUCCESS',
             'file_scanner_code'    => null,
@@ -69,11 +67,8 @@ class ClamAVMocks
 
     /**
      * Returns cache response if there is one. Null otherwise
-     *
-     * @param  UploadableFileInterface $file
-     * @return mixed
      */
-    public static function getCachedResponse(UploadableFileInterface $file)
+    public static function getCachedResponse(UploadableFileInterface $file): mixed
     {
         $uploadedFileHash = hash_file('md5', $file->getUploadedFile()->getPathName());
         if (isset(self::$fileHashToResponse[$uploadedFileHash])) {
