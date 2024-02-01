@@ -19,3 +19,9 @@ resource "aws_secretsmanager_secret" "sirius_api_email" {
   description = "Sirius API email for ${terraform.workspace}"
   tags        = local.default_tags
 }
+
+resource "aws_secretsmanager_secret" "cloud9_users" {
+  name        = "cloud9-users"
+  description = "Serve team Cloud9 users"
+  tags        = local.default_tags
+}
