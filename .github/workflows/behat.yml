@@ -32,7 +32,7 @@ jobs:
       INFRA_VERSION: ${{ inputs.version_tag }}
     steps:
       - uses: actions/checkout@v3
-      - uses: unfor19/install-aws-cli-action@v1.0.6
+      - uses: unfor19/install-aws-cli-action@v1.0.7
       - name: Install PHP 8.1
         uses: shivammathur/setup-php@v2
         with:
