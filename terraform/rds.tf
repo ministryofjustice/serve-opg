@@ -162,6 +162,15 @@ resource "aws_security_group_rule" "database_tcp_in" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "c9_to_db_in" {
+  protocol                 = "tcp"
+  from_port                = aws_rds_cluster.cluster_serverless.port
+  to_port                  = aws_rds_cluster.cluster_serverless.port
+  security_group_id        = aws_security_group.database.id
+  source_security_group_id = data.aws_security_group.cloud9.id
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "database_tcp_out" {
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
