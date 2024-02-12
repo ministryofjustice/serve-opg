@@ -46,13 +46,10 @@ class Document
     #[ORM\Column(name: 'remotestoragereference', type: 'string', length: 255, nullable: true)]
     private ?string $remoteStorageReference;
 
-    private DateTime $createdAt;
-
     public function __construct(?Order $order, ?string $type)
     {
         $this->order = $order;
         $this->type = $type;
-        //$this->setCreatedAt(new \DateTime());
     }
 
     public function isValidForOrder(ExecutionContextInterface $context): void
@@ -159,24 +156,6 @@ class Document
     public function setFile(?UploadedFile $file): void
     {
         $this->file = $file;
-    }
-
-    public function getCreatedAt(): DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @deprecated
-     */
-    public static function getPermittedMimeTypes()
-    {
-        return self::permittedMimeTypes;
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
