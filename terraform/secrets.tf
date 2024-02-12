@@ -25,3 +25,7 @@ resource "aws_secretsmanager_secret" "cloud9_users" {
   description = "Serve team Cloud9 users"
   tags        = local.default_tags
 }
+
+data "aws_secretsmanager_secret_version" "cloud9_users" {
+  secret_id = aws_secretsmanager_secret.cloud9_users.id
+}
