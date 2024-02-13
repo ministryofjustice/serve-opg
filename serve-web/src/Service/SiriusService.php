@@ -109,7 +109,7 @@ class SiriusService
                     $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
                     if ($apiResponse instanceof Psr7\Response) {
-                        $order->setApiResponse(Psr7\Message::toString($apiResponse));
+                        $order->setApiResponse((array)Psr7\Message::toString($apiResponse));
                     }
 
                     if ($apiResponse->getStatusCode() !== 200) {

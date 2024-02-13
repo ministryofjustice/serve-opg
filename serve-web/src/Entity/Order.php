@@ -347,7 +347,7 @@ abstract class Order
         return $this->apiResponse;
     }
 
-    public function setApiResponse(?string $apiResponse): static
+    public function setApiResponse(?array $apiResponse): static
     {
         $this->apiResponse = $apiResponse;
         return $this;
