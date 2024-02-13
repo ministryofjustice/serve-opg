@@ -94,7 +94,7 @@ abstract class Order
      * @var array<string>
      */
     #[ORM\Column(name: 'api_response', type: 'json', nullable: true)]
-    private array $apiResponse;
+    private mixed $apiResponse;
 
     #[ORM\Column(name: 'order_number', type: 'string', unique: true, nullable: true)]
     private ?string $orderNumber = null;
@@ -342,12 +342,12 @@ abstract class Order
         return $this;
     }
 
-    public function getApiResponse(): ?array
+    public function getApiResponse(): mixed
     {
         return $this->apiResponse;
     }
 
-    public function setApiResponse(?array $apiResponse): static
+    public function setApiResponse(mixed $apiResponse): static
     {
         $this->apiResponse = $apiResponse;
         return $this;

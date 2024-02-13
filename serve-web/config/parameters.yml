@@ -1,0 +1,10 @@
+# This file is auto-generated during the composer install
+parameters:
+    ssm_client_params:
+        version: latest
+        region: eu-west-1
+        endpoint: http://localstack:4566
+        validate: false
+        credentials:
+            key: FAKE_ID
+            secret: FAKE_KEY
