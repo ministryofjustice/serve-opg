@@ -24,7 +24,7 @@ jobs:
             echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
           fi
         id: extract_branch
-      - uses: unfor19/install-aws-cli-action@v1.0.6
+      - uses: unfor19/install-aws-cli-action@v1.0.7
       - name: Build Containers
         run: |
             # Vendor php dependencies
