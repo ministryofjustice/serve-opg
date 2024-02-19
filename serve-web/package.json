@@ -64,7 +64,7 @@
     ]
   },
   "dependencies": {
-    "@ministryofjustice/frontend": "^0.0.17-alpha",
+    "@ministryofjustice/frontend": "^2.0.0",
     "dart-sass": "^1.25.0"
   }
 }
