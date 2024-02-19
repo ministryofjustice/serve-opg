@@ -115,7 +115,7 @@ services:
       POSTGRES_API_DB_USER: serve-opg-api
 
   yarn:
-    image: node:16-alpine
+    image: node:20-alpine
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
