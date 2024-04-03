@@ -8,7 +8,6 @@ Symfony 4.4 & PHP 8.1
 Software to download and install
 
 - [docker](https://docs.docker.com/install/)
-- [docker-compose](https://docs.docker.com/compose/install/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 # Usage
@@ -39,32 +38,32 @@ sudo security add-trusted-cert -d -r trustRoot \
 
 # Create the s3 buckets, generate localstack data in /localstack-data
 # & wait for the server to become available
-docker-compose up -d localstack
-docker-compose run --rm waitforit -address=http://localstack:4572 -debug -timeout=30
-docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius-test-bucket
-docker-compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test-bucket
+docker compose up -d localstack
+docker compose run --rm waitforit -address=http://localstack:4572 -debug -timeout=30
+docker compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://sirius-test-bucket
+docker compose run --rm aws --endpoint-url=http://localstack:4572 s3 mb s3://test-bucket
 
 # Create dynamodb tables
-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
-docker-compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
+docker compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://attempts_table.json
+docker compose run --rm aws --region eu-west-1 --endpoint-url=http://localstack:4569 dynamodb create-table --cli-input-json file://sessions_table.json
 
 # Vendor php dependencies
-docker-compose run --rm app composer install --no-interaction
+docker compose run --rm app composer install --no-interaction
 
 # Install javascript dependencies
-docker-compose run --rm yarn
+docker compose run --rm yarn
 
 # Compile static assets
-docker-compose run --rm yarn build-dev
+docker compose run --rm yarn build-dev
 
 # Build app
-docker-compose up -d --build --remove-orphans loadbalancer
+docker compose up -d --build --remove-orphans loadbalancer
 # --build Build images before starting containers
 # -d Detached mode: Run containers in the background
 
 # Add sample users and cases (local env only).
 # See docker-compose.yml app container, DC_FIXURES_USERS variable
-docker-compose run --rm app php bin/console doctrine:fixtures:load --append
+docker compose run --rm app php bin/console doctrine:fixtures:load --append
 ```
 
 ## Makefile
@@ -86,7 +85,7 @@ The Makefile included with the project includes a few different options for buil
 
 # View logs
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 
 The app will be available locally at:
@@ -96,7 +95,7 @@ The app will be available locally at:
 # Dev and prod mode
 The app runs in prod mode as default due to APP_ENV=prod APP_DEBUG=false being set in .env. To run in dev mode, and enable the Symfony web profiler toolbar, bring the app up using docker-compose.local.yml:
 
-`docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
+`docker compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
 
 Note - this will also enable xdebug which can make the test suite run slowly. If you encounter slow test runs then revert to running the app in prod mode.
 
@@ -106,23 +105,23 @@ Assets are compiled using Symfony Webpack Encore run via a yarn command.
 
 ```bash
 # Build front end assets (JS, images, etc)
-docker-compose run --rm yarn build-dev
+docker compose run --rm yarn build-dev
 
 # Build front end assets (JS, images, etc) and autocompile on any file changes in assets folder
-docker-compose run --rm yarn watch
+docker compose run --rm yarn watch
 ```
 
 # Database Migrations
 ```bash
 # Database migrations
 # Generate migration script between entities and schema
-docker-compose run --rm app php bin/console doctrine:migrations:diff
+docker compose run --rm app php bin/console doctrine:migrations:diff
 
 # Generate blank migration script
-docker-compose run --rm app php bin/console doctrine:migrations:generate
+docker compose run --rm app php bin/console doctrine:migrations:generate
 
 # Example: run migration version 20181019141515
-docker-compose run --rm app php bin/console doctrine:migrations:execute 20181019141515
+docker compose run --rm app php bin/console doctrine:migrations:execute 20181019141515
 ```
 
 # Utilities
@@ -132,5 +131,5 @@ docker-compose run --rm app php bin/console doctrine:migrations:execute 20181019
 docker cp web/app.php serve-opg_app_1:/var/www/web/app.php
 
 # Drop the data before schema update (mainl during local development)
-docker-compose run --rm app php bin/console doctrine:schema:drop --force
+docker compose run --rm app php bin/console doctrine:schema:drop --force
 ```
