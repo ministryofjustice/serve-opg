@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = local.bucket_name
+  bucket = local.account.bucket_name
   tags   = local.default_tags
 
   logging {
@@ -45,7 +45,7 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
 }
 
 resource "aws_s3_bucket" "logs" {
-  bucket = "logs.${local.bucket_name}"
+  bucket = "logs.${local.account.bucket_name}"
   policy = data.aws_iam_policy_document.logs.json
   tags   = local.default_tags
 
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "logs" {
   statement {
     sid       = "allowLoadBalancerDelivery"
     actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::logs.${local.bucket_name}/loadbalancer/*"]
+    resources = ["arn:aws:s3:::logs.${local.account.bucket_name}/loadbalancer/*"]
 
     principals {
       type        = "AWS"
@@ -108,7 +108,7 @@ data "aws_iam_policy_document" "logs" {
 }
 
 resource "aws_s3_bucket" "s3_access_logs" {
-  bucket = "s3-logging.${local.bucket_name}"
+  bucket = "s3-logging.${local.account.bucket_name}"
 }
 
 resource "aws_s3_bucket_acl" "s3_access_logs" {

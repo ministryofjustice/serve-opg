@@ -1,12 +1,12 @@
 # Debugging
 Login to Database
 ```bash
-docker-compose exec postgres psql -U serve-opg
+docker compose exec postgres psql -U serve-opg
 ```
 
 Clear Cache
 ```bash
-docker-compose exec app rm -rf /var/www/var/cache /tmp/app-cache
+docker compose exec app rm -rf /var/www/var/cache /tmp/app-cache
 ```
 
 # Xdebug
@@ -22,7 +22,7 @@ To enable Xdebug running via Docker in PHPStorm you will need to:
 
 As Xdebug has a large performance hit, it is not installed as part of the Dockerfile by default. Instead it is set as a build argument in docker-compose.local.yml to ensure it will only ever be enabled for local dev. To build the app image with xdebug enabled, run:
 
-`docker-compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
+`docker compose -f docker-compose.local.yml -f docker-compose.yml up -d --build --remove-orphans loadbalancer`
 
 or
 
