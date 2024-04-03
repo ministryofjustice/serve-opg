@@ -1,5 +1,5 @@
 data "aws_kms_key" "sirius" {
-  key_id   = "alias/${local.sirius_key_alias}"
+  key_id   = "alias/${local.account.sirius_key_alias}"
   provider = aws.sirius
 }
 
@@ -29,39 +29,6 @@ data "aws_iam_policy_document" "task_role_assume_policy" {
       type        = "Service"
     }
   }
-}
-
-
-data "aws_secretsmanager_secret" "sirius_api_email" {
-  name = "sirius_api_email_${terraform.workspace}"
-}
-
-data "aws_secretsmanager_secret_version" "sirius_api_email" {
-  secret_id = data.aws_secretsmanager_secret.sirius_api_email.id
-}
-
-data "aws_secretsmanager_secret" "public_api_password" {
-  name = data.aws_secretsmanager_secret_version.sirius_api_email.secret_string
-}
-
-data "aws_secretsmanager_secret" "notification_api_key" {
-  name = "notification_api_key"
-}
-
-data "aws_secretsmanager_secret" "os_places_api_key" {
-  name = "os_places_api_key"
-}
-
-data "aws_secretsmanager_secret" "symfony_app_secret" {
-  name = "symfony_app_secret"
-}
-
-data "aws_secretsmanager_secret" "database_password" {
-  name = "database_password"
-}
-
-data "aws_secretsmanager_secret_version" "database_password" {
-  secret_id = data.aws_secretsmanager_secret.database_password.id
 }
 
 resource "aws_iam_role_policy" "task_role" {
@@ -104,8 +71,8 @@ data "aws_iam_policy_document" "task_role" {
     resources = [
       aws_s3_bucket.bucket.arn,
       "${aws_s3_bucket.bucket.arn}/*",
-      "arn:aws:s3:::${local.sirius_bucket_name}",
-      "arn:aws:s3:::${local.sirius_bucket_name}/*",
+      "arn:aws:s3:::${local.account.sirius_bucket}",
+      "arn:aws:s3:::${local.account.sirius_bucket}/*",
     ]
   }
 
@@ -167,21 +134,12 @@ data "aws_iam_policy_document" "execution_role" {
   }
 }
 
-variable "APP_VERSION" {
-}
-
-variable "WEB_VERSION" {
-}
-
-variable "INFRA_VERSION" {
-}
-
 locals {
   web = <<EOF
   {
     "cpu": 0,
     "essential": true,
-    "image": "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:${var.WEB_VERSION}",
+    "image": "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:${var.APP_VERSION}",
     "mountPoints": [],
     "name": "web",
     "portMappings": [{
@@ -285,7 +243,7 @@ EOF
     }],
   	"environment": [{
   	  "name": "DC_GTM",
-      "value": "${local.dc_gtm}"
+      "value": "${local.account.dc_gtm}"
   	},
     {
       "name": "DC_DB_HOST",
@@ -320,24 +278,16 @@ EOF
       "value": "${var.APP_VERSION}"
     },
     {
-      "name": "WEB_VERSION",
-      "value": "${var.WEB_VERSION}"
-    },
-    {
-      "name": "INFRA_VERSION",
-      "value": "${var.INFRA_VERSION}"
-    },
-    {
       "name": "DC_BEHAT_CONTROLLER_ENABLED",
-      "value": "${local.behat_controller_enabled}"
+      "value": "${local.account.behat_controller}"
     },
     {
       "name": "DC_SIRIUS_URL",
-      "value": "${local.sirius_api_url}"
+      "value": "${local.account.sirius_api}"
     },
     {
       "name": "SIRIUS_S3_BUCKET_NAME",
-      "value": "${local.sirius_bucket_name}"
+      "value": "${local.account.sirius_bucket}"
     },
     {
       "name":"SIRIUS_KMS_KEY_ARN",
@@ -353,7 +303,7 @@ EOF
     },
     {
       "name": "FIXTURES_ENABLED",
-      "value": "${local.fixtures_enabled}"
+      "value": "${local.account.fixtures_enabled}"
     }]
   }
 

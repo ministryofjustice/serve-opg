@@ -28,16 +28,16 @@ jobs:
       - name: Build Containers
         run: |
             # Vendor php dependencies
-            docker-compose run --rm app composer install --no-interaction
+            docker compose run --rm app composer install --no-interaction
             # install js dependencies
-            docker-compose run --rm yarn install --frozen-lockfile
+            docker compose run --rm yarn install --frozen-lockfile
             # Generate static assets
-            docker-compose run --rm yarn build
+            docker compose run --rm yarn build
             # Build app
-            docker-compose build web
-            docker-compose build app
+            docker compose build web
+            docker compose build app
             # Build API
-            docker-compose build api
+            docker compose build api
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2

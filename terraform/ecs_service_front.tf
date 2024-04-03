@@ -17,7 +17,7 @@ resource "aws_ecs_service" "frontend" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_service.id]
-    subnets          = aws_subnet.private.*.id
+    subnets          = aws_subnet.private[*].id
     assign_public_ip = false
   }
 
@@ -56,4 +56,3 @@ resource "aws_security_group" "ecs_service" {
     create_before_destroy = true
   }
 }
-
