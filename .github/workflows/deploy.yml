@@ -51,21 +51,26 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
+        with:
+          tflint_version: v0.50.1
+
       - name: Lint Terraform
         id: tf_lint
+        run: tflint --recursive
+        working-directory: ./terraform
+
+      - name: Check formatting
+        id: tf_fmt
         run: terraform fmt -check -recursive
         working-directory: ./terraform
-        continue-on-error: true
 
       - name: Terraform Init
         env:
           TF_WORKSPACE: ${{ inputs.workspace_name }}
         run: |
           terraform init -input=false
-        working-directory: ./terraform
-
-      - name: TFLint
-        run: tflint
         working-directory: ./terraform
 
       - name: Terraform Plan
