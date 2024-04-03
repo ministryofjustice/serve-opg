@@ -3,12 +3,12 @@ module "allow_list" {
 }
 
 locals {
-  account_id                             = var.accounts[terraform.workspace]
-  dns_prefix                             = local.account.prefix
-  capitalized_environment                = "${upper(substr(terraform.workspace, 0, 1))}${substr(terraform.workspace, 1, -1)}"
-  service                                = "serve-opg"
-  sirius_role                            = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${terraform.workspace}" : var.SIRIUS_ROLE
-  default_allow_list                     = local.account.ip_whitelist ? module.allow_list.moj_sites : tolist(["0.0.0.0/0"])
+  account_id              = var.accounts[terraform.workspace]
+  dns_prefix              = local.account.prefix
+  capitalized_environment = "${upper(substr(terraform.workspace, 0, 1))}${substr(terraform.workspace, 1, -1)}"
+  service                 = "serve-opg"
+  sirius_role             = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${terraform.workspace}" : var.SIRIUS_ROLE
+  default_allow_list      = local.account.ip_whitelist ? module.allow_list.moj_sites : tolist(["0.0.0.0/0"])
 
   default_tags = {
     business-unit          = "OPG"

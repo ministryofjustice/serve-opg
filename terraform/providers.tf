@@ -1,11 +1,11 @@
 variable "DEFAULT_ROLE" {
   default = "serve-opg-ci"
-  type = string
+  type    = string
 }
 
 variable "SIRIUS_ROLE" {
   default = "serve-assume-role-ci"
-  type = string
+  type    = string
 }
 
 terraform {
