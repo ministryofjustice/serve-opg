@@ -4,13 +4,13 @@ Serve OPG uses PHPUnit and Behat to test the application
 ## Unit and Functional Testing
 Run php unit
 ```bash
-docker-compose run --rm app bin/phpunit --verbose tests
+docker compose run --rm app bin/phpunit --verbose tests
 
 # specific test (if unique)
-docker-compose run --rm app bin/phpunit --verbose tests --filter testHomePage
+docker compose run --rm app bin/phpunit --verbose tests --filter testHomePage
 
 # specific test (if not unique)
-docker-compose run --rm app bin/phpunit --verbose tests --filter testHomePage tests/Controller/IndexControllerTest.php
+docker compose run --rm app bin/phpunit --verbose tests --filter testHomePage tests/Controller/IndexControllerTest.php
 
 # specific test using groups
 
@@ -26,7 +26,7 @@ public function testSomething()
 
 # Then run:
 
-docker-compose run --rm app bin/phpunit --verbose tests --group failing
+docker compose run --rm app bin/phpunit --verbose tests --group failing
 ```
 
 Or using the Makefile:
@@ -36,16 +36,16 @@ Or using the Makefile:
 ## Integration Testing
 ```bash
 # Load Fixtures
-docker-compose run --rm app php bin/console doctrine:fixtures:load --append
+docker compose run --rm app php bin/console doctrine:fixtures:load --append
 
 # Load Fixtures truncating existing data (users, client, orders, deputies)
-docker-compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate
+docker compose run --rm app php bin/console doctrine:fixtures:load --purge-with-truncate
 
 # Run Behat
-docker-compose run --rm behat --suite=local
+docker compose run --rm behat --suite=local
 
 # Launch specific behat feature
-docker-compose run --rm behat features/00-security.feature:18
+docker compose run --rm behat features/00-security.feature:18
 ```
 
 Or using the Makefile:
@@ -64,28 +64,28 @@ Behat `NotifyTrait` takes care of resetting / accessing those emails from steps 
 The Docker image `jakzal/phpqa` contains many useful QA tools
 To list the available tools run:
 ```shell
-docker-compose run --rm qa
+docker compose run --rm qa
 ```
 
 A recommended set of checks is as follows:
 -   phpcs
     ```bash
-    docker-compose run --rm qa phpcs src
+    docker compose run --rm qa phpcs src
     ```
 -   phpstan
     ```bash
-    docker-compose run --rm qa phpstan analyse -l 4 src
+    docker compose run --rm qa phpstan analyse -l 4 src
     ```
 -   lint
     ```bash
-    docker-compose run --rm qa parallel-lint src web app tests
+    docker compose run --rm qa parallel-lint src web app tests
     ```
 -   security-checker
     ```bash
-    docker-compose run --rm qa security-checker security:check
+    docker compose run --rm qa security-checker security:check
     ```
 
 A convenience script is provided for the above set:
 ```bash
-docker-compose run --rm qa ./default_qa_checks.sh
+docker compose run --rm qa ./default_qa_checks.sh
 ```
