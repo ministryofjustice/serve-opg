@@ -1,6 +1,5 @@
 locals {
   availability_zones        = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  serverless_engine_version = "13.12"
 }
 
 # See the following link for further information
@@ -62,15 +61,15 @@ data "aws_kms_key" "rds" {
 
 resource "aws_rds_cluster" "cluster_serverless" {
   cluster_identifier                  = "serve-opg-${terraform.workspace}-cluster"
-  apply_immediately                   = local.rds_deletion_protection ? false : true
+  apply_immediately                   = local.account.deletion_protection ? false : true
   availability_zones                  = local.availability_zones
   backup_retention_period             = 14
   copy_tags_to_snapshot               = true
   database_name                       = "serve_opg"
   db_subnet_group_name                = aws_db_subnet_group.database.name
-  deletion_protection                 = local.rds_deletion_protection ? true : false
+  deletion_protection                 = local.account.deletion_protection ? true : false
   engine                              = "aurora-postgresql"
-  engine_version                      = local.serverless_engine_version
+  engine_version                      = local.account.postgres_version
   engine_mode                         = "provisioned"
   final_snapshot_identifier           = "serve-opg-${terraform.workspace}-final-snapshot"
   kms_key_id                          = data.aws_kms_key.rds.arn
@@ -79,7 +78,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   preferred_backup_window             = "05:15-05:45"
   preferred_maintenance_window        = "mon:05:50-mon:06:20"
   storage_encrypted                   = true
-  skip_final_snapshot                 = local.rds_deletion_protection ? false : true
+  skip_final_snapshot                 = local.account.deletion_protection ? false : true
   vpc_security_group_ids              = [aws_security_group.database.id]
   tags                                = local.default_tags
   iam_database_authentication_enabled = false
@@ -94,7 +93,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
 resource "aws_rds_cluster_instance" "serverless_instances" {
   count                           = 2
   cluster_identifier              = aws_rds_cluster.cluster_serverless.cluster_identifier
-  apply_immediately               = local.rds_deletion_protection ? false : true
+  apply_immediately               = local.account.deletion_protection ? false : true
   auto_minor_version_upgrade      = false
   db_subnet_group_name            = aws_db_subnet_group.database.name
   depends_on                      = [aws_rds_cluster.cluster_serverless]
@@ -103,7 +102,7 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
   identifier                      = "serve-opg-${terraform.workspace}-${count.index}"
   instance_class                  = "db.serverless"
   monitoring_interval             = 30
-  monitoring_role_arn             = "arn:aws:iam::${var.accounts[terraform.workspace]}:role/rds-enhanced-monitoring"
+  monitoring_role_arn             = "arn:aws:iam::${local.account.account_id}:role/rds-enhanced-monitoring"
   performance_insights_enabled    = true
   performance_insights_kms_key_id = data.aws_kms_key.rds.arn
   publicly_accessible             = false
@@ -139,7 +138,7 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  subnet_ids = aws_subnet.private.*.id
+  subnet_ids = aws_subnet.private[*].id
   tags       = local.default_tags
 }
 
