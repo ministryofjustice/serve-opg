@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine
+FROM golang:1.22-alpine3.18
 
 # Working directory
 WORKDIR /api
@@ -6,7 +6,7 @@ WORKDIR /api
 COPY go.mod .
 COPY go.sum .
 
-RUN apk update && apk --update --no-cache add \ 
+RUN apk update && apk --update --no-cache add \
     git \
     ca-certificates \
     && rm -rf /var/cache/apk/*
