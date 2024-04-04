@@ -1,12 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Behat;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Element\NodeElement;
 use Behat\MinkExtension\Context\MinkContext;
-use Exception;
 
 /**
  * Behat context class.
@@ -24,8 +24,8 @@ class FeatureContext extends MinkContext implements Context
 
     public function __construct()
     {
-        $this->behatPassword = getenv("BEHAT_PASSWORD");
-        $this->behatPasswordNew = $this->behatPassword . "9";
+        $this->behatPassword = getenv('BEHAT_PASSWORD');
+        $this->behatPasswordNew = $this->behatPassword.'9';
     }
 
     /**
@@ -42,9 +42,7 @@ class FeatureContext extends MinkContext implements Context
     public function theCurrentVersionsAreShown(): void
     {
         $this->assertResponseContains(json_encode([
-            'application' => getenv("APP_VERSION"),
-            'web' => getenv("WEB_VERSION"),
-            'infrastructure' => getenv("INFRA_VERSION")
+            'application' => getenv('APP_VERSION'),
         ]));
     }
 
@@ -53,7 +51,7 @@ class FeatureContext extends MinkContext implements Context
      */
     public function iLogInAsCorrect(?string $user): void
     {
-        $this->visit("/login");
+        $this->visit('/login');
         $this->fillField('email', $user);
         $this->fillField('password', $this->behatPassword);
         $this->pressButton('login_submit');
@@ -64,7 +62,7 @@ class FeatureContext extends MinkContext implements Context
      */
     public function iLogInAsWrong(?string $user): void
     {
-        $this->visit("/login");
+        $this->visit('/login');
         $this->fillField('inputEmail', $user);
         $this->fillField('password', 'wrong password');
         $this->pressButton('login_submit');
@@ -75,7 +73,7 @@ class FeatureContext extends MinkContext implements Context
      */
     public function iLogInAsNew(?string $user): void
     {
-        $this->visit("/login");
+        $this->visit('/login');
         $this->fillField('email', $user);
         $this->fillField('password', $this->behatPasswordNew);
         $this->pressButton('login_submit');
@@ -86,7 +84,7 @@ class FeatureContext extends MinkContext implements Context
      */
     public function iLogInAsNone(?string $user): void
     {
-        $this->visit("/login");
+        $this->visit('/login');
         $this->fillField('email', $user);
         $this->fillField('password', '');
         $this->pressButton('login_submit');
@@ -99,11 +97,11 @@ class FeatureContext extends MinkContext implements Context
     {
         $this->assertResponseStatus(200);
 
-        if ($shouldBe == 'servable') {
+        if ('servable' == $shouldBe) {
             $this->assertSession()->elementExists('css', '#serve_order_button');
         }
 
-        if ($shouldBe == 'unservable') {
+        if ('unservable' == $shouldBe) {
             $this->assertSession()->elementNotExists('css', '#serve_order_button');
         }
     }
@@ -164,24 +162,17 @@ class FeatureContext extends MinkContext implements Context
             $columnValues = [];
 
             if (empty($foundColumnValues)) {
-                throw new Exception("Could not find a column with header '$expectedTableHeader'");
+                throw new \Exception("Could not find a column with header '$expectedTableHeader'");
             }
 
-            foreach($foundColumnValues as $foundColumnValue) {
+            foreach ($foundColumnValues as $foundColumnValue) {
                 $columnValues[] = trim($foundColumnValue->getText());
             }
 
             $valueUnderExpectedHeader = in_array($expectedTableValue, $columnValues);
 
             if (!$valueUnderExpectedHeader) {
-                throw new Exception(
-                    sprintf(
-                        '"%s" was not found under the column "%s". Found values %s',
-                        $expectedTableValue,
-                        $expectedTableHeader,
-                        implode(', ', $columnValues)
-                    )
-                );
+                throw new \Exception(sprintf('"%s" was not found under the column "%s". Found values %s', $expectedTableValue, $expectedTableHeader, implode(', ', $columnValues)));
             }
         }
     }
@@ -192,7 +183,7 @@ class FeatureContext extends MinkContext implements Context
 
         $orderRow = null;
 
-        foreach($foundRows as $foundRow) {
+        foreach ($foundRows as $foundRow) {
             if (str_contains(trim($foundRow->getHtml()), $orderType)) {
                 $orderRow = $foundRow;
                 break;
@@ -200,7 +191,7 @@ class FeatureContext extends MinkContext implements Context
         }
 
         if (is_null($orderRow)) {
-            throw new Exception("Could not find an order with case number '$caseNumber' and type '$orderType'");
+            throw new \Exception("Could not find an order with case number '$caseNumber' and type '$orderType'");
         }
 
         foreach ($table->getRowsHash() as $expectedTableHeader => $expectedTableValue) {

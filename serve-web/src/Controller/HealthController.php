@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Service\Availability\DatabaseAvailability;
-use App\Service\Availability\SiriusApiAvailability;
 use App\Service\Availability\NotifyAvailability;
+use App\Service\Availability\SiriusApiAvailability;
+use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface;
 
 #[Route(path: '/health-check')]
 class HealthController extends AbstractController
@@ -26,8 +26,7 @@ class HealthController extends AbstractController
         private LoggerInterface $logger,
         string $appEnv,
         string $symfonyDebug
-        ) {
-
+    ) {
         $this->em = $em;
         $this->appEnv = $appEnv;
     }
@@ -36,7 +35,7 @@ class HealthController extends AbstractController
     public function containerHealthAction(): ?Response
     {
         return $this->render('Health/health-check.html.twig', [
-            'status' => 'OK'
+            'status' => 'OK',
         ]);
     }
 
@@ -44,7 +43,7 @@ class HealthController extends AbstractController
     public function serviceHealthAction(DatabaseAvailability $dbAvailability): ?Response
     {
         $services = [
-            $dbAvailability
+            $dbAvailability,
         ];
 
         list($healthy, $services, $errors) = $this->servicesHealth($services);
@@ -59,7 +58,7 @@ class HealthController extends AbstractController
         $response->setStatusCode($healthy ? 200 : 500);
 
         return $response;
-        }
+    }
 
     #[Route(path: '/dependencies', methods: ['GET'])]
     public function dependencyHealthAction(
@@ -68,7 +67,7 @@ class HealthController extends AbstractController
     ): ?Response {
         $services = [
             $siriusAvailability,
-            $notifyAvailability
+            $notifyAvailability,
         ];
 
         list($healthy, $services, $errors) = $this->servicesHealth($services);
@@ -96,8 +95,6 @@ class HealthController extends AbstractController
     {
         return $this->json([
             'application' => getenv('APP_VERSION'),
-            'web' => getenv('WEB_VERSION'),
-            'infrastructure' => getenv('INFRA_VERSION'),
         ]);
     }
 
