@@ -1,50 +1,11 @@
 variable "DEFAULT_ROLE" {
   default = "serve-opg-ci"
+  type    = string
 }
 
 variable "SIRIUS_ROLE" {
   default = "serve-assume-role-ci"
-}
-
-variable "SHARED_ROLE" {
-  default = "serve-opg-ci"
-}
-
-provider "aws" {
-  region = "eu-west-1"
-
-  assume_role {
-    role_arn     = "arn:aws:iam::${local.account_id}:role/${var.DEFAULT_ROLE}"
-    session_name = "terraform-session"
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-  alias  = "us-east-1"
-
-  assume_role {
-    role_arn     = "arn:aws:iam::${local.account_id}:role/${var.DEFAULT_ROLE}"
-    session_name = "terraform-session"
-  }
-}
-
-provider "aws" {
-  region = "eu-west-1"
-  alias  = "management"
-
-  assume_role {
-    role_arn = "arn:aws:iam::${var.accounts["management"]}:role/${var.DEFAULT_ROLE}"
-  }
-}
-
-provider "aws" {
-  region = "eu-west-1"
-  alias  = "sirius"
-
-  assume_role {
-    role_arn = "arn:aws:iam::${local.sirius_account}:role/${local.sirius_role}"
-  }
+  type    = string
 }
 
 terraform {
@@ -56,11 +17,41 @@ terraform {
     role_arn       = "arn:aws:iam::311462405659:role/serve-opg-ci"
     dynamodb_table = "remote_lock"
   }
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.56.0"
-    }
+}
+
+provider "aws" {
+  region = "eu-west-1"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${local.account.account_id}:role/${var.DEFAULT_ROLE}"
+    session_name = "terraform-session"
   }
 }
 
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1"
+
+  assume_role {
+    role_arn     = "arn:aws:iam::${local.account.account_id}:role/${var.DEFAULT_ROLE}"
+    session_name = "terraform-session"
+  }
+}
+
+provider "aws" {
+  alias  = "management"
+  region = "eu-west-1"
+
+  assume_role {
+    role_arn = "arn:aws:iam::${local.management}:role/${var.DEFAULT_ROLE}"
+  }
+}
+
+provider "aws" {
+  alias  = "sirius"
+  region = "eu-west-1"
+
+  assume_role {
+    role_arn = "arn:aws:iam::${local.account.sirius_account}:role/${local.sirius_role}"
+  }
+}

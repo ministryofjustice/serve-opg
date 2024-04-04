@@ -15,7 +15,7 @@ resource "aws_cloud9_environment_ec2" "shared" {
   description                 = "Shared Cloud9 instance to be used by all devs"
   subnet_id                   = aws_subnet.private[0].id
   connection_type             = "CONNECT_SSM"
-  owner_arn                   = "arn:aws:iam::${local.account_id}:assumed-role/${nonsensitive(local.cloud9_owner_from_secret)}/${nonsensitive(local.cloud9_owner_session_from_secret)}"
+  owner_arn                   = "arn:aws:iam::${local.account.account_id}:assumed-role/${nonsensitive(local.cloud9_owner_from_secret)}/${nonsensitive(local.cloud9_owner_session_from_secret)}"
   tags                        = local.default_tags
 }
 
@@ -24,7 +24,7 @@ resource "aws_cloud9_environment_membership" "shared" {
 
   environment_id = aws_cloud9_environment_ec2.shared.id
   permissions    = "read-write"
-  user_arn       = "arn:aws:iam::${local.account_id}:assumed-role/operator/${each.value}"
+  user_arn       = "arn:aws:iam::${local.account.account_id}:assumed-role/operator/${each.value}"
 }
 
 data "aws_security_group" "cloud9" {

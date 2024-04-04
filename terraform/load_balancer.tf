@@ -1,5 +1,5 @@
 resource "aws_lb" "loadbalancer" {
-  subnets         = aws_default_subnet.public.*.id
+  subnets         = aws_default_subnet.public[*].id
   security_groups = [aws_security_group.loadbalancer.id]
   tags            = local.default_tags
 
