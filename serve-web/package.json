@@ -14,7 +14,7 @@
     "dropzone": "5.5.1",
     "fetch-mock": "^7.3.3",
     "file-loader": "^6.0.0",
-    "govuk-frontend": "^3.2.0",
+    "govuk-frontend": "^3.15.0",
     "jest": "^27.4",
     "jquery": "^3.5.0",
     "node-fetch": "^2.6.7",
