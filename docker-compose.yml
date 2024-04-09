@@ -61,7 +61,7 @@ services:
       - 9000:9000
     env_file:
       - .env
-    #    Setting here rather than .env to stop them being overwritten during build steps on prod
+    # Setting here rather than .env to stop them being overwritten during build steps on prod
     environment:
       - APP_SECRET=aFakeSecret
       - AWS_ACCESS_KEY_ID=foo
@@ -100,9 +100,13 @@ services:
     ports:
       - "4566-4583:4566-4583"
     environment:
-      - SERVICES=s3,dynamodb
+      - SERVICES=s3,dynamodb,kms
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
+      - S3_SKIP_KMS_KEY_VALIDATION=1
+      - KMS_PROVIDER=local-kms
+      - LAMBDA_REMOTE_DOCKER=0
+      - DEBUG=1
     healthcheck:
       test: [ "CMD", "bash", "-c", "/tmp/healthcheck.sh" ]
       interval: 5s
@@ -136,10 +140,14 @@ services:
     entrypoint: [ "yarn" ]
 
   behat:
-    image: php:8.1.18-fpm-alpine
+    build:
+      context: ./serve-web
+      dockerfile: docker/app/Dockerfile
+    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
+#    image: php:8.1.18-fpm-alpine
     volumes:
       - ./serve-web:/var/www
-      - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
+#      - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
     working_dir: /var/www
     entrypoint:
       - vendor/bin/behat
