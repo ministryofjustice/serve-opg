@@ -55,13 +55,13 @@ up-dev-xdebug: ##@application Brings the app up in dev mode with profiler and xd
 up-test: ##@application Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
 	WITH_XDEBUG=0 docker compose -f docker-compose.yml -f docker-compose.test.yml build app
 	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
-	docker compose run --rm app php bin/console cache:clear --env=test
+	docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm app php bin/console cache:clear --env=test
 
 unit-tests: up-test ##@testing Requires the app to be built and up before running
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm app php bin/phpunit tests $(args)
+	docker compose -f docker-compose.yml -f docker-compose.test.yml run app php bin/phpunit tests $(args)
 
-behat-tests: up-test reset-fixtures ##@testing Requires the app to be built and up before running
-	docker compose run --rm behat --suite=local
+behat-tests: up-test ##@testing Requires the app to be built and up before running
+	docker compose -f docker-compose.yml -f docker-compose.test.yml run behat --suite=local
 
 reset-fixtures: ##@application Reset the fixture data for the app
 	docker compose exec app php bin/console doctrine:fixtures:load --purge-with-truncate -n
