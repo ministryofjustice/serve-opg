@@ -1,4 +1,4 @@
-FROM php:8.1.18-fpm-alpine3.16
+FROM php:8.1.18-fpm-alpine3.18
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
@@ -63,6 +63,6 @@ RUN chmod +x /usr/local/bin/health-check.sh
 ENV TIMEOUT=30
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
   && php bin/console doctrine:migrations:migrate --no-interaction \
+  && php bin/console doctrine:migrations:up-to-date \
   && chown -R www-data var \
   && php-fpm
-
