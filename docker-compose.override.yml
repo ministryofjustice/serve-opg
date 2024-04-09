@@ -4,10 +4,10 @@ services:
     volumes:
       - ./serve-web:/var/www
       - ./serve-web/var:/www/var
-#  api:
-#    build:
-#      context: ./serve-api
-#      dockerfile: docker/Dockerfile.dev
-#    volumes:
-#      - ./serve-api:/api
-#    command: air
+  api:
+    build:
+      context: ./serve-api
+      dockerfile: docker/Dockerfile.dev
+    volumes:
+      - ./serve-api:/api
+    command: air
