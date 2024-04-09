@@ -57,7 +57,7 @@ COPY . /var/www
 COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
-
+COPY docker/app/jim.php jim.php
 RUN chmod +x /usr/local/bin/health-check.sh
 
 ENV TIMEOUT=30
