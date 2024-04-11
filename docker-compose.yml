@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   aws:
     image: infrastructureascode/aws-cli
@@ -29,13 +29,13 @@ services:
       DEFAULT_HOST: localhost
       CERT_NAME: web.crt
 
-  api:
-    build:
-      context: ./serve-api
-      dockerfile: docker/Dockerfile.dev
-    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/api:latest
-    ports:
-      - 9090:9090
+#  api:
+#    build:
+#      context: ./serve-api
+#      dockerfile: docker/Dockerfile.dev
+#    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/api:latest
+#    ports:
+#      - 9090:9090
 
   web:
     build:
@@ -61,7 +61,7 @@ services:
       - 9000:9000
     env_file:
       - .env
-    #    Setting here rather than .env to stop them being overwritten during build steps on prod
+    # Setting here rather than .env to stop them being overwritten during build steps on prod
     environment:
       - APP_SECRET=aFakeSecret
       - AWS_ACCESS_KEY_ID=foo
@@ -73,10 +73,12 @@ services:
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
     depends_on:
-      - localstack
-      - postgres
-      - sirius-api
-      - api
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+      sirius-api:
+        condition: service_started
 
   sirius-api:
     image: stoplight/prism:4.4.1
@@ -92,19 +94,27 @@ services:
       - --dynamic
 
   localstack:
-    image: localstack/localstack:0.14.5
+    build:
+      context: .
+      dockerfile: local-setup/localstack/Dockerfile
+    ports:
+      - "4566-4583:4566-4583"
     environment:
-      - SERVICES=s3,dynamodb
+      - SERVICES=s3,dynamodb,kms
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
-    ports:
-      - "4566:4566"
-    volumes:
-      - ./serve-web/localstack-data:/tmp/localstack/data
+      - S3_SKIP_KMS_KEY_VALIDATION=1
+      - KMS_PROVIDER=local-kms
+      - LAMBDA_REMOTE_DOCKER=0
+      - DEBUG=1
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "/tmp/healthcheck.sh" ]
+      interval: 5s
+      timeout: 10s
+      start_period: 10s
 
   postgres:
-    image: postgres
-    build: ./serve-api/internal/db
+    image: postgres:13.14
     ports:
       - 5432:5432
     environment:
@@ -113,6 +123,11 @@ services:
       POSTGRES_USER: serve-opg
       POSTGRES_PASSWORD: dcdb2018!
       POSTGRES_API_DB_USER: serve-opg-api
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d serve-opg -U serve-opg" ]
+      interval: 3s
+      timeout: 10s
+    restart: always
 
   yarn:
     image: node:16-alpine
@@ -125,10 +140,14 @@ services:
     entrypoint: [ "yarn" ]
 
   behat:
-    image: php:8.1.18-fpm-alpine
+    build:
+      context: ./serve-web
+      dockerfile: docker/app/Dockerfile
+    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/app:latest
+#    image: php:8.1.18-fpm-alpine
     volumes:
       - ./serve-web:/var/www
-      - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
+#      - ./serve-web/tests/artifacts/behat/screenshots:/tmp/behat
     working_dir: /var/www
     entrypoint:
       - vendor/bin/behat
@@ -150,7 +169,7 @@ services:
       - ./serve-web:/var/www:ro
     working_dir: /var/www
 
-  waitforit:
-    build:
-      context: ./serve-web
-      dockerfile: docker/waitforit/Dockerfile
+#  waitforit:
+#    build:
+#      context: ./serve-web
+#      dockerfile: docker/waitforit/Dockerfile
