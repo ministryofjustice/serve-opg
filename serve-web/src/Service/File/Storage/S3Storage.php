@@ -15,7 +15,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class to upload/download/delete files from S3
+ * Class to upload/download/delete files from S3.
  *
  * Original logic
  * https://github.com/ministryofjustice/opg-av-test/blob/master/public/index.php
@@ -24,8 +24,7 @@ class S3Storage implements StorageInterface
 {
     /**
      * https://github.com/aws/aws-sdk-php
-     * http://docs.aws.amazon.com/aws-sdk-php/v2/api/class-Aws.S3.S3Client.html
-     *
+     * http://docs.aws.amazon.com/aws-sdk-php/v2/api/class-Aws.S3.S3Client.html.
      *
      * for fake s3:
      * https://github.com/jubos/fake-s3
@@ -64,7 +63,7 @@ class S3Storage implements StorageInterface
      * Gets file content
      * To download it, use
      * header('Content-Disposition: attachment; filename="' . $_GET['filename'] .'"');
-     * readfile(<this method>);
+     * readfile(<this method>);.
      *
      * @throws FileNotFoundException is the file is not found
      */
@@ -73,12 +72,12 @@ class S3Storage implements StorageInterface
         try {
             $result = $this->s3Client->getObject([
                 'Bucket' => $this->localBucketName,
-                'Key'    => $key
+                'Key' => $key,
             ]);
 
             return $result['Body'];
         } catch (S3Exception $e) {
-            if ($e->getAwsErrorCode() === 'NoSuchKey') {
+            if ('NoSuchKey' === $e->getAwsErrorCode()) {
                 throw new FileNotFoundException("Cannot find file with reference $key");
             }
             throw $e;
@@ -87,28 +86,28 @@ class S3Storage implements StorageInterface
 
     public function delete(string $key): Result
     {
-        /** If no access to remove, we'll need to reimplment tagging **/
-        //$this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
+        /* If no access to remove, we'll need to reimplment tagging * */
+        // $this->appendTagset($key, [['Key' => 'Purge', 'Value' => 1]]);
 
         return $this->s3Client->deleteObject([
             'Bucket' => $this->localBucketName,
-            'Key'    => $key
+            'Key' => $key,
         ]);
     }
 
-    public function store(string $key, string $body): result
+    public function store(string $key, string $body): Result
     {
         return $this->s3Client->putObject([
-            'Bucket'   => $this->localBucketName,
-            'Key'      => $key,
-            'Body'     => $body,
+            'Bucket' => $this->localBucketName,
+            'Key' => $key,
+            'Body' => $body,
             'ServerSideEncryption' => 'AES256',
-            'Metadata' => []
+            'Metadata' => [],
         ]);
     }
 
     /**
-     * Move S3 Objects To new bucket
+     * Move S3 Objects To new bucket.
      */
     public function moveDocuments(Collection $documents): Collection
     {
@@ -123,13 +122,19 @@ class S3Storage implements StorageInterface
         $commandGenerator = function (\Iterator $documentsIterator, $targetBucket) use ($s3Client) {
             foreach ($documentsIterator as $document) {
                 // Yield a command that will be executed by the pool
+                //                file_put_contents('php://stderr', print_r('BLAM', TRUE));
+                //                file_put_contents('php://stderr', print_r($targetBucket.'\n', TRUE));
+                //                file_put_contents('php://stderr', print_r(getenv('SIRIUS_KMS_KEY_ARN').'\n', TRUE));
+                //                file_put_contents('php://stderr', print_r(urlencode($this->getLocalBucketName() . '/' . $document->getStorageReference()).'\n', TRUE));
+                //                file_put_contents('php://stderr', print_r($document->getStorageReference().'\n', TRUE));
+
                 yield $s3Client->getCommand('CopyObject', [
-                    'Bucket'     => $targetBucket,
-                    'Key'        => $document->getStorageReference(),
-                    'CopySource' => urlencode($this->getLocalBucketName() . '/' . $document->getStorageReference()),
+                    'Bucket' => $targetBucket,
+                    'Key' => $document->getStorageReference(),
+                    'CopySource' => urlencode($this->getLocalBucketName().'/'.$document->getStorageReference()),
                     'SSEKMSKeyId' => getenv('SIRIUS_KMS_KEY_ARN'),
                     'ServerSideEncryption' => 'aws:kms',
-                    'ACL' => 'bucket-owner-full-control'
+                    'ACL' => 'bucket-owner-full-control',
                 ]);
             }
         };
@@ -144,7 +149,7 @@ class S3Storage implements StorageInterface
             'preserve_iterator_keys' => true,
             // Invoke this function before executing each command
             'before' => function (CommandInterface $cmd, $iterKey) use ($logger): void {
-                $logger->debug("About to send {$iterKey}: " . print_r($cmd->toArray(), true));
+                $logger->debug("About to send {$iterKey}: ".print_r($cmd->toArray(), true));
             },
             // Invoke this function for each successful transfer
             'fulfilled' => function (
@@ -152,7 +157,6 @@ class S3Storage implements StorageInterface
                 $iterKey,
                 PromiseInterface $aggregatePromise
             ) use ($logger, $documentsIterator): void {
-
                 // update current document being processed with new location
                 $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
                 $logger->debug("Completed {$iterKey}: {$result}");
@@ -174,14 +178,14 @@ class S3Storage implements StorageInterface
         $promise->wait();
 
         $promise->then(function () use ($logger): void {
-            $logger->info("Transfer complete");
+            $logger->info('Transfer complete');
         });
 
         return $documents;
     }
 
     /**
-     * Appends new tagset to S3 Object
+     * Appends new tagset to S3 Object.
      *
      * @throws \Exception
      */
@@ -189,11 +193,11 @@ class S3Storage implements StorageInterface
     {
         $this->log('info', "Appending Purge tag for $key to S3");
         if (empty($key)) {
-            throw new \Exception('Invalid Reference Key: ' . $key . ' when appending tag');
+            throw new \Exception('Invalid Reference Key: '.$key.' when appending tag');
         }
         foreach ($newTagset as $newTag) {
             if (!(array_key_exists('Key', $newTag) && array_key_exists('Value', $newTag))) {
-                throw new \Exception('Invalid Tagset updating: ' . $key . print_r($newTagset, true));
+                throw new \Exception('Invalid Tagset updating: '.$key.print_r($newTagset, true));
             }
         }
 
@@ -203,19 +207,19 @@ class S3Storage implements StorageInterface
         $this->log('info', "Retrieving tagset for $key from S3");
         $existingTags = $this->s3Client->getObjectTagging([
             'Bucket' => $this->localBucketName,
-            'Key' => $key
+            'Key' => $key,
         ]);
 
         $newTagset = array_merge($existingTags['TagSet'], $newTagset);
-        $this->log('info', "Tagset retrieved for $key : " . print_r($existingTags, true));
-        $this->log('info', "Updating tagset for $key with " . print_r($newTagset, true));
+        $this->log('info', "Tagset retrieved for $key : ".print_r($existingTags, true));
+        $this->log('info', "Updating tagset for $key with ".print_r($newTagset, true));
 
         // Update tags in S3
         $this->s3Client->putObjectTagging([
             'Bucket' => $this->localBucketName,
             'Key' => $key,
             'Tagging' => [
-                'TagSet' => $newTagset
+                'TagSet' => $newTagset,
             ],
         ]);
         $this->log('info', "Tagset Updated for $key ");
@@ -223,7 +227,7 @@ class S3Storage implements StorageInterface
 
     private function log(string $level, string $message): void
     {
-        //echo $message."\n"; //enable for debugging reasons. Tail the log with log-level=info otherwise
+        // echo $message."\n"; //enable for debugging reasons. Tail the log with log-level=info otherwise
 
         $this->logger->log($level, $message, ['extra' => [
             'service' => 's3-storage',
