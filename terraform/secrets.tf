@@ -15,8 +15,8 @@ resource "aws_secretsmanager_secret" "behat_password" {
 }
 
 resource "aws_secretsmanager_secret" "sirius_api_email" {
-  name        = "sirius_api_email_${terraform.workspace}"
-  description = "Sirius API email for ${terraform.workspace}"
+  name        = "sirius_api_email_${local.environment}"
+  description = "Sirius API email for ${local.environment}"
   tags        = local.default_tags
 }
 
@@ -31,7 +31,7 @@ data "aws_secretsmanager_secret_version" "cloud9_users" {
 }
 
 data "aws_secretsmanager_secret" "sirius_api_email" {
-  name = "sirius_api_email_${terraform.workspace}"
+  name = "sirius_api_email_${local.environment}"
 }
 
 data "aws_secretsmanager_secret_version" "sirius_api_email" {

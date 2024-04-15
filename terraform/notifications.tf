@@ -1,12 +1,12 @@
 resource "aws_sns_topic" "alert" {
-  name         = "${local.service}-${terraform.workspace}-app-alert"
+  name         = "${local.service}-${local.environment}-app-alert"
   display_name = "${local.default_tags["application"]} ${local.capitalized_environment} App Alert"
   tags         = local.default_tags
 }
 
 resource "aws_sns_topic" "alert_us_east" {
   provider     = aws.us-east-1
-  name         = "${local.service}-${terraform.workspace}-alert"
+  name         = "${local.service}-${local.environment}-alert"
   display_name = "${local.default_tags["application"]} ${local.capitalized_environment} Alert"
   tags         = local.default_tags
 }
@@ -14,7 +14,7 @@ resource "aws_sns_topic" "alert_us_east" {
 module "notify_slack" {
   source = "github.com/terraform-aws-modules/terraform-aws-notify-slack.git?ref=v5.6.0"
 
-  sns_topic_name   = aws_sns_topic.alert.name
+  sns_topic_name   = data.aws_sns_topic.alert.name
   create_sns_topic = false
 
   lambda_function_name = "notify-slack"
@@ -36,9 +36,9 @@ module "notify_slack_us-east-1" {
     aws = aws.us-east-1
   }
 
-  sns_topic_name   = aws_sns_topic.alert_us_east.name
+  sns_topic_name   = data.aws_sns_topic.alert_us_east.name
   create_sns_topic = false
-  create           = terraform.workspace != "development"
+  create           = local.environment != "development"
 
   lambda_function_name = "notify-slack"
 
