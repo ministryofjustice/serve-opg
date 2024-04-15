@@ -1,10 +1,10 @@
 data "aws_wafv2_web_acl" "main" {
-  name  = "${terraform.workspace}-web-acl"
+  name  = "${local.environment}-web-acl"
   scope = "REGIONAL"
 }
 
 resource "aws_wafv2_web_acl_association" "loadbalancer" {
   count        = local.account.waf_enabled ? 1 : 0
-  resource_arn = aws_lb.loadbalancer.arn
+  resource_arn = aws_lb.frontend.arn
   web_acl_arn  = data.aws_wafv2_web_acl.main.arn
 }

@@ -9,8 +9,8 @@ resource "aws_route53_record" "serve" {
   type    = "A"
 
   alias {
-    name                   = aws_lb.loadbalancer.dns_name
-    zone_id                = aws_lb.loadbalancer.zone_id
+    name                   = aws_lb.frontend.dns_name
+    zone_id                = aws_lb.frontend.zone_id
     evaluate_target_health = false
   }
 

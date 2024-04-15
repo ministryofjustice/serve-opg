@@ -28,7 +28,7 @@ resource "aws_ecs_service" "frontend" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "frontend" {
+resource "aws_cloudwatch_log_group" "serve" {
   name              = "/ecs/serve-opg"
   retention_in_days = 180
 }

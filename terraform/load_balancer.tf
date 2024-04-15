@@ -1,4 +1,4 @@
-resource "aws_lb" "loadbalancer" {
+resource "aws_lb" "frontend" {
   subnets         = aws_default_subnet.public[*].id
   security_groups = [aws_security_group.loadbalancer.id]
   tags            = local.default_tags
@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "frontend" {
 }
 
 resource "aws_lb_listener" "loadbalancer" {
-  load_balancer_arn = aws_lb.loadbalancer.arn
+  load_balancer_arn = aws_lb.frontend.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
@@ -65,4 +65,3 @@ resource "aws_security_group" "loadbalancer" {
     create_before_destroy = true
   }
 }
-
