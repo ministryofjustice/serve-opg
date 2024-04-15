@@ -1,6 +1,7 @@
 resource "aws_lb" "frontend" {
+  name            = "frontend-${local.environment}"
   subnets         = aws_default_subnet.public[*].id
-  security_groups = [aws_security_group.loadbalancer.id]
+  security_groups = [aws_security_group.load_balancer.id]
   tags            = local.default_tags
 
   access_logs {
@@ -42,8 +43,8 @@ resource "aws_lb_listener" "loadbalancer" {
   }
 }
 
-resource "aws_security_group" "loadbalancer" {
-  name   = "loadbalancer"
+resource "aws_security_group" "load_balancer" {
+  name   = "load-balancer-${local.environment}"
   vpc_id = aws_default_vpc.default.id
   tags   = local.default_tags
 

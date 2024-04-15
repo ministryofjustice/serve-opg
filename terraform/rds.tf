@@ -143,7 +143,7 @@ resource "aws_db_subnet_group" "database" {
 }
 
 resource "aws_security_group" "database" {
-  name   = "database"
+  name   = "database-${local.environment}"
   vpc_id = aws_default_vpc.default.id
   tags   = local.default_tags
 
