@@ -3,7 +3,7 @@ resource "aws_iam_service_linked_role" "ecs" {
 }
 
 resource "aws_ecs_cluster" "serve_opg" {
-  name       = "serve_opg"
+  name       = local.environment
   depends_on = [aws_iam_service_linked_role.ecs]
 }
 
@@ -29,12 +29,12 @@ resource "aws_ecs_service" "frontend" {
 }
 
 resource "aws_cloudwatch_log_group" "serve" {
-  name              = "/ecs/serve-opg"
+  name              = local.environment
   retention_in_days = 180
 }
 
 resource "aws_security_group" "ecs_service" {
-  name   = "ecs-service"
+  name   = "frontend-${local.environment}"
   vpc_id = aws_default_vpc.default.id
   tags   = local.default_tags
 
@@ -42,7 +42,7 @@ resource "aws_security_group" "ecs_service" {
     protocol        = "tcp"
     from_port       = 80
     to_port         = 80
-    security_groups = [aws_security_group.loadbalancer.id]
+    security_groups = [aws_security_group.load_balancer.id]
   }
 
   egress {
