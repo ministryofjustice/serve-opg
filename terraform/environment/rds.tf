@@ -42,14 +42,14 @@ data "aws_iam_policy_document" "cloudwatch_kms" {
 }
 
 resource "aws_kms_key" "cloudwatch_logs" {
-  description             = "Serve cloudwatch logs for ${terraform.workspace}"
+  description             = "Serve cloudwatch logs for ${local.environment}"
   deletion_window_in_days = 10
   enable_key_rotation     = true
   policy                  = data.aws_iam_policy_document.cloudwatch_kms.json
 }
 
 resource "aws_cloudwatch_log_group" "api_cluster" {
-  name              = "/aws/rds/cluster/serve-opg-${terraform.workspace}/postgresql"
+  name              = "/aws/rds/cluster/serve-opg-${local.environment}/postgresql"
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
   retention_in_days = 180
   tags              = local.default_tags
@@ -60,7 +60,7 @@ data "aws_kms_key" "rds" {
 }
 
 resource "aws_rds_cluster" "cluster_serverless" {
-  cluster_identifier                  = "serve-opg-${terraform.workspace}-cluster"
+  cluster_identifier                  = "serve-opg-${local.environment}-cluster"
   apply_immediately                   = local.account.deletion_protection ? false : true
   availability_zones                  = local.availability_zones
   backup_retention_period             = 14
@@ -71,7 +71,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   engine                              = "aurora-postgresql"
   engine_version                      = local.account.postgres_version
   engine_mode                         = "provisioned"
-  final_snapshot_identifier           = "serve-opg-${terraform.workspace}-final-snapshot"
+  final_snapshot_identifier           = "serve-opg-${local.environment}-final-snapshot"
   kms_key_id                          = data.aws_kms_key.rds.arn
   master_username                     = "serveopgadmin"
   master_password                     = data.aws_secretsmanager_secret_version.database_password.secret_string
@@ -99,7 +99,7 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
   depends_on                      = [aws_rds_cluster.cluster_serverless]
   engine                          = aws_rds_cluster.cluster_serverless.engine
   engine_version                  = aws_rds_cluster.cluster_serverless.engine_version
-  identifier                      = "serve-opg-${terraform.workspace}-${count.index}"
+  identifier                      = "serve-opg-${local.environment}-${count.index}"
   instance_class                  = "db.serverless"
   monitoring_interval             = 30
   monitoring_role_arn             = "arn:aws:iam::${local.account.account_id}:role/rds-enhanced-monitoring"
@@ -138,13 +138,13 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  subnet_ids = aws_subnet.private[*].id
+  subnet_ids = data.aws_subnet.private[*].id
   tags       = local.default_tags
 }
 
 resource "aws_security_group" "database" {
   name   = "database"
-  vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   lifecycle {
@@ -159,6 +159,13 @@ resource "aws_security_group_rule" "database_tcp_in" {
   security_group_id        = aws_security_group.database.id
   source_security_group_id = aws_security_group.ecs_service.id
   type                     = "ingress"
+}
+
+data "aws_security_group" "cloud9" {
+  filter {
+    name   = "tag:aws:cloud9:environment"
+    values = [local.account.cloud9_env_id]
+  }
 }
 
 resource "aws_security_group_rule" "c9_to_db_in" {

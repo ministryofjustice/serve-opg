@@ -26,11 +26,3 @@ resource "aws_cloud9_environment_membership" "shared" {
   permissions    = "read-write"
   user_arn       = "arn:aws:iam::${local.account.account_id}:assumed-role/operator/${each.value}"
 }
-
-data "aws_security_group" "cloud9" {
-  depends_on = [aws_cloud9_environment_ec2.shared]
-  filter {
-    name   = "tag:aws:cloud9:environment"
-    values = [aws_cloud9_environment_ec2.shared.id]
-  }
-}

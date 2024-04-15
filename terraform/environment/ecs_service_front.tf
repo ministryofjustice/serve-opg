@@ -3,12 +3,12 @@ resource "aws_iam_service_linked_role" "ecs" {
 }
 
 resource "aws_ecs_cluster" "serve_opg" {
-  name       = "serve_opg"
+  name       = local.environment
   depends_on = [aws_iam_service_linked_role.ecs]
 }
 
 resource "aws_ecs_service" "frontend" {
-  name                  = "frontend"
+  name                  = aws_ecs_task_definition.frontend.family
   cluster               = aws_ecs_cluster.serve_opg.id
   task_definition       = aws_ecs_task_definition.frontend.arn
   desired_count         = 1
@@ -17,7 +17,7 @@ resource "aws_ecs_service" "frontend" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_service.id]
-    subnets          = aws_subnet.private[*].id
+    subnets          = data.aws_subnet.private[*].id
     assign_public_ip = false
   }
 
@@ -28,21 +28,21 @@ resource "aws_ecs_service" "frontend" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "frontend" {
-  name              = "/ecs/serve-opg"
+resource "aws_cloudwatch_log_group" "serve" {
+  name              = local.environment
   retention_in_days = 180
 }
 
 resource "aws_security_group" "ecs_service" {
-  name   = "ecs-service"
-  vpc_id = aws_default_vpc.default.id
+  name   = "frontend-${local.environment}"
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {
     protocol        = "tcp"
     from_port       = 80
     to_port         = 80
-    security_groups = [aws_security_group.loadbalancer.id]
+    security_groups = [aws_security_group.load_balancer.id]
   }
 
   egress {

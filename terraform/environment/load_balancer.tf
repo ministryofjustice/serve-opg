@@ -1,7 +1,9 @@
-resource "aws_lb" "loadbalancer" {
-  subnets         = aws_default_subnet.public[*].id
-  security_groups = [aws_security_group.loadbalancer.id]
-  tags            = local.default_tags
+resource "aws_lb" "frontend" {
+  name               = "frontend-${local.environment}"
+  load_balancer_type = "application"
+  subnets            = data.aws_subnet.public[*].id
+  security_groups    = [aws_security_group.load_balancer.id]
+  tags               = local.default_tags
 
   access_logs {
     bucket  = aws_s3_bucket.logs.bucket
@@ -14,7 +16,7 @@ resource "aws_lb_target_group" "frontend" {
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
-  vpc_id               = aws_default_vpc.default.id
+  vpc_id               = data.aws_vpc.vpc.id
   deregistration_delay = 0
   tags                 = local.default_tags
 
@@ -28,8 +30,8 @@ resource "aws_lb_target_group" "frontend" {
   }
 }
 
-resource "aws_lb_listener" "loadbalancer" {
-  load_balancer_arn = aws_lb.loadbalancer.arn
+resource "aws_lb_listener" "frontend" {
+  load_balancer_arn = aws_lb.frontend.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
@@ -42,9 +44,9 @@ resource "aws_lb_listener" "loadbalancer" {
   }
 }
 
-resource "aws_security_group" "loadbalancer" {
-  name   = "loadbalancer"
-  vpc_id = aws_default_vpc.default.id
+resource "aws_security_group" "load_balancer" {
+  name   = "load-balancer-${local.environment}"
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {
@@ -65,4 +67,3 @@ resource "aws_security_group" "loadbalancer" {
     create_before_destroy = true
   }
 }
-
