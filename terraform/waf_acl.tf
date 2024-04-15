@@ -1,5 +1,5 @@
 resource "aws_wafv2_web_acl" "main" {
-  name        = "${terraform.workspace}-web-acl"
+  name        = "${local.environment}-web-acl"
   description = "Managed rules"
   scope       = "REGIONAL"
 
@@ -89,7 +89,7 @@ resource "aws_wafv2_web_acl" "main" {
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = "${terraform.workspace}-web-acl"
+    metric_name                = "${local.environment}-web-acl"
     sampled_requests_enabled   = true
   }
 }
@@ -103,16 +103,16 @@ resource "aws_wafv2_web_acl_logging_configuration" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "waf_web_acl" {
-  name              = "aws-waf-logs-${terraform.workspace}"
+  name              = "aws-waf-logs-${local.environment}"
   retention_in_days = 120
   kms_key_id        = aws_kms_key.waf_cloudwatch_log_encryption.arn
   tags = {
-    "Name" = "${terraform.workspace}-web-acl"
+    "Name" = "${local.environment}-web-acl"
   }
 }
 
 resource "aws_kms_key" "waf_cloudwatch_log_encryption" {
-  description             = "AWS WAF Cloudwatch encryption ${terraform.workspace}"
+  description             = "AWS WAF Cloudwatch encryption ${local.environment}"
   deletion_window_in_days = 10
   enable_key_rotation     = true
   policy                  = data.aws_iam_policy_document.waf_cloudwatch_log_encryption_kms.json
