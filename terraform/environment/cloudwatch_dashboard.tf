@@ -145,10 +145,10 @@ EOF
 }
 
 data "aws_sns_topic" "alert" {
-  name = "serve-opg-${terraform.workspace}-app-alert"
+  name = "serve-opg-${local.environment}-app-alert"
 }
 
 data "aws_sns_topic" "alert_us_east" {
   provider = aws.us-east-1
-  name     = "serve-opg-${terraform.workspace}-alert"
+  name     = "serve-opg-${local.environment}-alert"
 }

@@ -14,6 +14,6 @@ resource "aws_secretsmanager_secret" "cloud9_users" {
   tags        = local.default_tags
 }
 
-data "aws_secretsmanager_secret_version" "cloud9_users" {
-  secret_id = aws_secretsmanager_secret.cloud9_users.id
-}
+#data "aws_secretsmanager_secret_version" "cloud9_users" {
+#  secret_id = aws_secretsmanager_secret.cloud9_users.id
+#}

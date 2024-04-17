@@ -14,8 +14,9 @@ resource "aws_ecs_task_definition" "frontend" {
   execution_role_arn       = aws_iam_role.execution_role.arn
 }
 
+# TODO - Change to env specific after change to sirius side
 resource "aws_iam_role" "task_role" {
-  name               = "frontend-${local.environment}"
+  name               = "frontend"
   assume_role_policy = data.aws_iam_policy_document.task_role_assume_policy.json
 }
 

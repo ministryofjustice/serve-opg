@@ -1,5 +1,5 @@
 data "aws_wafv2_web_acl" "main" {
-  name  = "${terraform.workspace}-web-acl"
+  name  = "${local.environment}-web-acl"
   scope = "REGIONAL"
 }
 
