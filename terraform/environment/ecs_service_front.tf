@@ -8,7 +8,7 @@ resource "aws_ecs_cluster" "serve_opg" {
 }
 
 resource "aws_ecs_service" "frontend" {
-  name                  = aws_ecs_task_definition.frontend.family
+  name                  = "frontend"
   cluster               = aws_ecs_cluster.serve_opg.id
   task_definition       = aws_ecs_task_definition.frontend.arn
   desired_count         = 1

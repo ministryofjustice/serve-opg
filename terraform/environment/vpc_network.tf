@@ -1,10 +1,5 @@
 data "aws_availability_zones" "available" {}
 
-data "aws_nat_gateway" "nat" {
-  subnet_id = element(data.aws_subnet.public[*].id, count.index)
-  count     = 3
-}
-
 data "aws_vpc" "vpc" {
   filter {
     name   = "tag:Name"
