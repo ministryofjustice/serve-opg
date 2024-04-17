@@ -138,13 +138,13 @@ data "aws_iam_policy_document" "enhanced_monitoring" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  subnet_ids = aws_subnet.private[*].id
+  subnet_ids = data.aws_subnet.private[*].id
   tags       = local.default_tags
 }
 
 resource "aws_security_group" "database" {
   name   = "database-${local.environment}"
-  vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   lifecycle {
@@ -159,6 +159,13 @@ resource "aws_security_group_rule" "database_tcp_in" {
   security_group_id        = aws_security_group.database.id
   source_security_group_id = aws_security_group.ecs_service.id
   type                     = "ingress"
+}
+
+data "aws_security_group" "cloud9" {
+  filter {
+    name   = "tag:aws:cloud9:environment"
+    values = [local.account.cloud9_env_id]
+  }
 }
 
 resource "aws_security_group_rule" "c9_to_db_in" {

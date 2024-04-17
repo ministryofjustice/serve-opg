@@ -19,6 +19,8 @@ web/behat
 **/.DS_Store
 localstack-data
 .dd-*.sh
+**/.terraform
+terraform/**/builds
 
 ###> symfony/phpunit-bridge ###
 .phpunit
@@ -28,8 +30,8 @@ localstack-data
 /features/screenshots/*
 /tests/artifacts/behat/*
 /tests/artifacts/phpunit/*
-/terraform/cluster_config.json
-/terraform/builds/*
+**/cluster_config.json
+**/builds/*
 
 /s3/
 /web/
