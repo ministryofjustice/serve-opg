@@ -17,7 +17,7 @@ resource "aws_ecs_service" "frontend" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_service.id]
-    subnets          = aws_subnet.private[*].id
+    subnets          = data.aws_subnet.private[*].id
     assign_public_ip = false
   }
 
@@ -35,7 +35,7 @@ resource "aws_cloudwatch_log_group" "serve" {
 
 resource "aws_security_group" "ecs_service" {
   name   = "frontend-${local.environment}"
-  vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {

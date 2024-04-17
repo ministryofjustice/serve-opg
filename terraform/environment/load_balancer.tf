@@ -1,8 +1,9 @@
 resource "aws_lb" "frontend" {
-  name            = "frontend-${local.environment}"
-  subnets         = aws_default_subnet.public[*].id
-  security_groups = [aws_security_group.load_balancer.id]
-  tags            = local.default_tags
+  name               = "frontend-${local.environment}"
+  load_balancer_type = "application"
+  subnets            = data.aws_subnet.public[*].id
+  security_groups    = [aws_security_group.load_balancer.id]
+  tags               = local.default_tags
 
   access_logs {
     bucket  = aws_s3_bucket.logs.bucket
@@ -15,7 +16,7 @@ resource "aws_lb_target_group" "frontend" {
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
-  vpc_id               = aws_default_vpc.default.id
+  vpc_id               = data.aws_vpc.vpc.id
   deregistration_delay = 0
   tags                 = local.default_tags
 
@@ -29,7 +30,7 @@ resource "aws_lb_target_group" "frontend" {
   }
 }
 
-resource "aws_lb_listener" "loadbalancer" {
+resource "aws_lb_listener" "frontend" {
   load_balancer_arn = aws_lb.frontend.arn
   port              = 443
   protocol          = "HTTPS"
@@ -45,7 +46,7 @@ resource "aws_lb_listener" "loadbalancer" {
 
 resource "aws_security_group" "load_balancer" {
   name   = "load-balancer-${local.environment}"
-  vpc_id = aws_default_vpc.default.id
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {

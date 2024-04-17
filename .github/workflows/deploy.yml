@@ -66,32 +66,44 @@ jobs:
         run: terraform fmt -check -recursive
         working-directory: ./terraform
 
-      - name: Terraform Init
-        env:
-          TF_WORKSPACE: ${{ inputs.workspace_name }}
-        run: |
-          terraform init -input=false
-        working-directory: ./terraform
-
-      - name: Terraform Plan
+      - name: Terraform Plan Account
         env:
           TF_WORKSPACE: ${{ inputs.workspace_name }}
           TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
         run: |
+          terraform init -input=false
           terraform workspace show
           terraform plan -input=false -parallelism=30
-        working-directory: ./terraform
+        working-directory: ./terraform/account
 
-      - name: Terraform Apply
+      - name: Terraform Plan Environment
+        env:
+          TF_WORKSPACE: ${{ inputs.workspace_name }}
+          TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+        run: |
+          terraform init -input=false
+          terraform workspace show
+          terraform plan -input=false -parallelism=30
+        working-directory: ./terraform/environment
+
+      - name: Terraform Apply Account
         env:
           TF_WORKSPACE: ${{ inputs.workspace_name }}
           TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
         run: |
           terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
-        working-directory: ./terraform
+        working-directory: ./terraform/account
+
+      - name: Terraform Apply Environment
+        env:
+          TF_WORKSPACE: ${{ inputs.workspace_name }}
+          TF_VAR_APP_VERSION: ${{ inputs.version_tag }}
+        run: |
+          terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
+        working-directory: ./terraform/environment
 
       - name: Upload Config
         uses: actions/upload-artifact@v3
         with:
           name: cluster_config
-          path: ./terraform/cluster_config.json
+          path: ./terraform/environment/cluster_config.json
