@@ -214,6 +214,6 @@ resource "aws_cloudwatch_metric_alarm" "sirius_unavailable_errors" {
   threshold           = 1
   period              = 60
   namespace           = aws_cloudwatch_log_metric_filter.sirius_unavailable_errors.metric_transformation[0].namespace
-  alarm_actions       = [aws_sns_topic.alert.arn]
+  alarm_actions       = [data.aws_sns_topic.alert.arn]
   tags                = local.default_tags
 }
