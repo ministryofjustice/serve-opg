@@ -117,28 +117,28 @@ jobs:
     secrets: inherit
 
   deploy_to_production_account:
-    name: Deploy to Preproduction Account
+    name: Deploy to Production Account
     needs: [
       workflow_variables,
       behat_preproduction
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
-      workspace: preproduction
+      workspace: production
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
     secrets: inherit
 
   deploy_to_production_environment:
-    name: Deploy to Preproduction Environment
+    name: Deploy to Production Environment
     needs: [
       workflow_variables,
       deploy_to_production_account
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
-      workspace: preproduction
+      workspace: production
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
