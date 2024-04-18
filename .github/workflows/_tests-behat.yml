@@ -29,16 +29,20 @@ jobs:
       TF_WORKSPACE: ${{ inputs.workspace_name }}
       APP_VERSION: ${{ inputs.version_tag }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: unfor19/install-aws-cli-action@v1.0.7
+      - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+
+      - uses: unfor19/install-aws-cli-action@46282f151073130d90347412d9c4ef0640177f22
+
       - name: Install PHP 8.1
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.1.18"
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10.9"
+
       - name: Install Python packages
         run: |
           pip3 install -r scripts/ci_ingress/requirements.txt
@@ -48,6 +52,7 @@ jobs:
         run: |
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
         working-directory: ./serve-web
+
       - name: Cache PHP Dependencies
         uses: actions/cache@v3
         with:
@@ -55,6 +60,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
+
       - name: Composer Install
         run: |
           composer install --no-interaction

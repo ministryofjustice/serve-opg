@@ -1,0 +1,157 @@
+name: "[Workflow] Path to Live"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  security-events: write
+  pull-requests: read
+  actions: none
+  checks: none
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  statuses: none
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  workflow_variables:
+    runs-on: ubuntu-latest
+    name: output workflow variables
+    outputs:
+      build_identifier: "main"
+      version_tag: ${{ steps.semver_tag.outputs.created_tag }}
+    steps:
+      - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90 # pin@v3
+      - name: generate semver tag and release
+        id: semver_tag
+        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.3
+        with:
+          prerelease: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: "minor"
+
+  unit_test_api:
+    name: Unit tests on API app
+    uses: ./.github/workflows/_tests-api.yml
+
+  unit_test_frontend:
+    name: Unit tests on Frontend app
+    uses: ./.github/workflows/_tests-frontend.yml
+
+  build_scan_push_containers:
+    name: Docker Build, Scan and Push
+    uses: ./.github/workflows/_build-push.yml
+    needs: [workflow_variables]
+    with:
+      tag: ${{ needs.workflow_variables.outputs.version_tag }}
+      branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
+    secrets: inherit
+
+  deploy_to_development_account:
+    name: Deploy to Development
+    needs: [
+      workflow_variables,
+      build_scan_push_containers,
+      unit_test_api,
+      unit_test_frontend
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: development
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: account
+      apply: true
+    secrets: inherit
+
+  deploy_to_preproduction_account:
+    name: Deploy to Preproduction Account
+    needs: [
+      workflow_variables,
+      build_scan_push_containers,
+      unit_test_api,
+      unit_test_frontend
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: preproduction
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: account
+      apply: true
+    secrets: inherit
+
+  deploy_to_preproduction_environment:
+    name: Deploy to Preproduction Environment
+    needs: [
+      workflow_variables,
+      deploy_to_preproduction_account
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: preproduction
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: environment
+      apply: true
+    secrets: inherit
+
+  behat_preproduction:
+    name: Preproduction Behat Tests
+    uses: ./.github/workflows/_tests-behat.yml
+    needs: [
+      workflow_variables,
+      deploy_to_preproduction_environment,
+    ]
+    with:
+      workspace_name: preproduction
+      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+      base_url: preproduction.serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-preprod
+      suite: --suite=main
+    secrets: inherit
+
+  deploy_to_production_account:
+    name: Deploy to Preproduction Account
+    needs: [
+      workflow_variables,
+      behat_preproduction
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: preproduction
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: account
+      apply: true
+    secrets: inherit
+
+  deploy_to_production_environment:
+    name: Deploy to Preproduction Environment
+    needs: [
+      workflow_variables,
+      deploy_to_production_account
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: preproduction
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: environment
+      apply: true
+    secrets: inherit
+
+  behat_prod:
+    name: Production Smoke Tests
+    uses: ./.github/workflows/_tests-behat.yml
+    needs: [workflow_variables,deploy_to_production_environment]
+    with:
+      workspace_name: production
+      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+      base_url: serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-production
+      suite: --tags @smoke
+    secrets: inherit

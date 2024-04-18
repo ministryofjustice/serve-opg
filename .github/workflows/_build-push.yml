@@ -1,9 +1,14 @@
 on:
   workflow_call:
     inputs:
-      tag:
-        description: 'Version tag for docker images'
+      branch_name:
+        description: "Name of the branch doing the build"
         required: true
+        type: string
+      tag:
+        description: "Tag for docker image"
+        required: false
+        default: "latest"
         type: string
 
 defaults:
@@ -15,29 +20,19 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Extract branch name
-        run: |
-          if [ "${{ github.head_ref }}" == "" ]; then
-            echo BRANCH_NAME=main >> $GITHUB_ENV
-          else
-            echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
-          fi
-        id: extract_branch
-      - uses: unfor19/install-aws-cli-action@v1.0.7
+      - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+
+      - name: install aws cli
+        uses: unfor19/install-aws-cli-action@46282f151073130d90347412d9c4ef0640177f22
+
       - name: Build Containers
         run: |
-            # Vendor php dependencies
-            docker compose run --rm app composer install --no-interaction
-            # install js dependencies
-            docker compose run --rm yarn install --frozen-lockfile
-            # Generate static assets
-            docker compose run --rm yarn build
-            # Build app
-            docker compose build web
-            docker compose build app
-            # Build API
-            docker compose build api
+          # Create composer and JS dependencies
+          docker compose run --rm app composer install --no-interaction
+          docker compose run --rm yarn install --frozen-lockfile
+          docker compose run --rm yarn build
+          # Build all apps
+          docker compose build web app api
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -51,13 +46,19 @@ jobs:
 
       - name: ECR Login
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1.6.1
+        uses: aws-actions/amazon-ecr-login@ae939c465be2882e7fe4d2e2e4083de854a59655
         with:
           registries: 311462405659
+
+      - name: Show build tag
+        env:
+          IMAGE_TAG: ${{ inputs.tag }}
+        run: echo "Tag to use - ${IMAGE_TAG}"
 
       - name: Push Containers
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          BRANCH: ${{ inputs.branch_name }}
         run: |
           docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ inputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ inputs.tag }}
