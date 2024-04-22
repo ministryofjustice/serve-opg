@@ -7,7 +7,7 @@ variable "accounts" {
   type = map(
     object({
       account_id          = string
-      prefix              = string
+      account_name        = string
       behat_controller    = number
       sirius_api          = string
       sirius_bucket       = string
@@ -27,10 +27,10 @@ variable "accounts" {
 
 locals {
   environment        = terraform.workspace
-  account            = var.accounts[local.environment]
+  account            = contains(keys(var.accounts), local.environment) ? var.accounts[local.environment] : var.accounts["default"]
   management         = "311462405659"
-  dns_prefix         = local.account.prefix
-  sirius_role        = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${local.environment}" : var.SIRIUS_ROLE
+  dns_prefix         = local.environment == "production" ? "serve" : "${local.environment}.serve"
+  sirius_role        = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${local.account.account_name}" : var.SIRIUS_ROLE
   default_allow_list = local.account.ip_whitelist ? module.allow_list.moj_sites : tolist(["0.0.0.0/0"])
 
   default_tags = {
