@@ -1,17 +1,5 @@
-resource "aws_secretsmanager_secret" "behat_password" {
-  name        = "behat_password"
-  description = "Behat password for non local envs"
-  tags        = local.default_tags
-}
-
-resource "aws_secretsmanager_secret" "sirius_api_email" {
-  name        = "sirius_api_email_${local.environment}"
-  description = "Sirius API email for ${local.environment}"
-  tags        = local.default_tags
-}
-
 data "aws_secretsmanager_secret" "sirius_api_email" {
-  name = "sirius_api_email_${local.environment}"
+  name = "sirius_api_email_${local.account.account_name}"
 }
 
 data "aws_secretsmanager_secret_version" "sirius_api_email" {
@@ -40,4 +28,8 @@ data "aws_secretsmanager_secret" "database_password" {
 
 data "aws_secretsmanager_secret_version" "database_password" {
   secret_id = data.aws_secretsmanager_secret.database_password.id
+}
+
+data "aws_secretsmanager_secret" "behat_password" {
+  name = "behat_password"
 }

@@ -2,6 +2,7 @@ locals {
   bucket_name = local.environment == "production" ? "serve-opg.opg.digital" : "${local.environment}.serve-opg.opg.digital"
 }
 
+# ===== Main bucket =====
 resource "aws_s3_bucket" "bucket" {
   bucket = local.bucket_name
   tags   = local.default_tags
@@ -48,6 +49,7 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
   restrict_public_buckets = true
 }
 
+# ===== Logs bucket =====
 resource "aws_s3_bucket" "logs" {
   bucket = "logs.${local.bucket_name}"
   policy = data.aws_iam_policy_document.logs.json
@@ -111,6 +113,7 @@ data "aws_iam_policy_document" "logs" {
   }
 }
 
+# ===== S3 logging bucket =====
 resource "aws_s3_bucket" "s3_access_logs" {
   bucket = "s3-logging.${local.bucket_name}"
 }

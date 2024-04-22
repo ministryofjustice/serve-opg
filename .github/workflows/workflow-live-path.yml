@@ -69,15 +69,29 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
+      path_to_live: true
+    secrets: inherit
+
+  deploy_to_development_environment:
+    name: Deploy to Development Environment
+    needs: [
+      workflow_variables,
+      deploy_to_development_account
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: development
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: environment
+      apply: true
+      path_to_live: true
     secrets: inherit
 
   deploy_to_preproduction_account:
     name: Deploy to Preproduction Account
     needs: [
       workflow_variables,
-      build_scan_push_containers,
-      unit_test_api,
-      unit_test_frontend
+      deploy_to_development_environment
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
@@ -85,6 +99,7 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
+      path_to_live: true
     secrets: inherit
 
   deploy_to_preproduction_environment:
@@ -99,6 +114,7 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
+      path_to_live: true
     secrets: inherit
 
   behat_preproduction:
@@ -128,6 +144,7 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
+      path_to_live: true
     secrets: inherit
 
   deploy_to_production_environment:
@@ -142,6 +159,7 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
+      path_to_live: true
     secrets: inherit
 
   behat_prod:
