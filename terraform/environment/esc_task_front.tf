@@ -10,8 +10,8 @@ resource "aws_ecs_task_definition" "frontend" {
   cpu                      = 512
   memory                   = 1024
   container_definitions    = "[${local.app},${local.web}]"
-  task_role_arn            = aws_iam_role.task_role.arn
-  execution_role_arn       = aws_iam_role.execution_role.arn
+  task_role_arn            = aws_iam_role.task.arn
+  execution_role_arn       = aws_iam_role.execution.arn
 }
 
 locals {
@@ -40,9 +40,9 @@ locals {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group         = "/ecs/serve-opg",
+          awslogs-group         = aws_cloudwatch_log_group.serve.name,
           awslogs-region        = "eu-west-1",
-          awslogs-stream-prefix = "frontend"
+          awslogs-stream-prefix = "frontend.web"
         }
       },
       environment = [{
@@ -87,9 +87,9 @@ locals {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group         = "/ecs/serve-opg",
+          awslogs-group         = aws_cloudwatch_log_group.serve.name,
           awslogs-region        = "eu-west-1",
-          awslogs-stream-prefix = "frontend"
+          awslogs-stream-prefix = "frontend.app"
         }
       },
       secrets = [
