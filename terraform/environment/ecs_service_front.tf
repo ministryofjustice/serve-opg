@@ -4,7 +4,14 @@ resource "aws_iam_service_linked_role" "ecs" {
 
 resource "aws_ecs_cluster" "serve_opg" {
   name       = local.environment
-  depends_on = [aws_iam_service_linked_role.ecs]
+  depends_on = [aws_iam_service_linked_role.ecs, aws_cloudwatch_log_group.container_insights]
+}
+
+resource "aws_cloudwatch_log_group" "container_insights" {
+  name              = "/aws/ecs/containerinsights/${local.environment}/performance"
+  retention_in_days = 1
+  kms_key_id        = aws_kms_key.cloudwatch_logs.arn
+  tags              = local.default_tags
 }
 
 resource "aws_ecs_service" "frontend" {

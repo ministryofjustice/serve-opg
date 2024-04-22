@@ -11,7 +11,7 @@ resource "aws_secretsmanager_secret" "sirius_api_email" {
 }
 
 data "aws_secretsmanager_secret" "sirius_api_email" {
-  name = "sirius_api_email_${local.environment}"
+  name = "sirius_api_email_${local.account.account_name}"
 }
 
 data "aws_secretsmanager_secret_version" "sirius_api_email" {

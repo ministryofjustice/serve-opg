@@ -19,7 +19,11 @@ on:
         required: false
         type: boolean
         default: false
-
+      path_to_live:
+        description: "If we are on path to live"
+        required: false
+        type: boolean
+        default: false
 jobs:
   terraform_workflow_job:
     runs-on: ubuntu-latest
@@ -69,15 +73,30 @@ jobs:
         run: terraform fmt -check -recursive
         working-directory: terraform/${{ inputs.terraform_path }}
 
+      - name: Terraform init
+        run: terraform init -input=false
+        working-directory: terraform/${{ inputs.terraform_path }}
+
       - name: Terraform Plan
         env:
           TF_WORKSPACE: ${{ inputs.workspace }}
           TF_VAR_APP_VERSION: ${{ inputs.container_version }}
         run: |
-          terraform init -input=false
           terraform workspace show
           terraform plan -input=false -parallelism=30
         working-directory: terraform/${{ inputs.terraform_path }}
+
+      - name: Register Workspace
+        id: terraform_workspace_manager
+        if: inputs.apply == true && inputs.terraform_path == 'environment' && inputs.path_to_live == false
+        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-workspace-manager@v3.0.3
+        with:
+          aws_account_id: 248804316466
+          aws_iam_role: serve-ci
+          register_workspace: ${{ inputs.workspace }}
+          time_to_protect: 3
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Apply
         if: inputs.apply == true

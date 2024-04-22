@@ -1,0 +1,79 @@
+name: "[Scheduled] Cleanup PR Workspaces"
+
+on:
+  schedule:
+    # 10pm every day except Sundays
+    - cron: "0 22 * * 0-6"
+
+permissions:
+  id-token: write
+  contents: read
+  security-events: none
+  pull-requests: none
+  actions: none
+  checks: none
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  statuses: none
+
+jobs:
+  terraform_environment_cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90 # pin@v3
+
+      - id: terraform_version
+        name: get terraform version
+        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@v3.0.3
+        with:
+          terraform_directory: terraform/environment
+
+      - uses: hashicorp/setup-terraform@1b93182764c8332e7679b2393cb307cbe7baf9dc # pin@v2.0.0
+        with:
+          terraform_version: ${{ steps.terraform_version.outputs.version }}
+          terraform_wrapper: false
+
+      - uses: webfactory/ssh-agent@fd34b8dee206fe74b288a5e61bc95fba2f1911eb # pin@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
+
+      - name: Configure AWS Credentials For Terraform
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-duration-seconds: 3600
+          role-session-name: GithubActions
+
+      - name: install workspace manager
+        run: |
+          wget https://github.com/ministryofjustice/opg-terraform-workspace-manager/releases/download/v0.3.2/opg-terraform-workspace-manager_Linux_x86_64.tar.gz -O $HOME/terraform-workspace-manager.tar.gz
+          sudo tar -xvf $HOME/terraform-workspace-manager.tar.gz -C /usr/local/bin
+          sudo chmod +x /usr/local/bin/terraform-workspace-manager
+
+      - name: terraform init
+        run: terraform init -input=false
+        working-directory: terraform/environment
+
+      - name: clean up ephemeral environments
+        run: |
+          unset TF_WORKSPACE
+          ../../scripts/cleanup/workspace_cleanup.sh $(terraform-workspace-manager -protected-workspaces=true -aws-account-id=248804316466 -aws-iam-role=serve-ci)
+        working-directory: terraform/environment
+
+      - name: install python
+        uses: actions/setup-python@871daa956ca9ea99f3c3e30acb424b7960676734 # pin@v4.2.0
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: clean up old task definitions
+        env:
+          REGION: eu-west-1
+        run: |
+          pip install -r requirements.txt
+          python cleanup_task_definitions.py
+        working-directory: scripts/cleanup
