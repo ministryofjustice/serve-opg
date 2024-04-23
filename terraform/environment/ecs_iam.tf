@@ -1,17 +1,4 @@
 # ===== Task role =====
-
-# Original Role
-resource "aws_iam_role" "task_role" {
-  name               = "frontend"
-  assume_role_policy = data.aws_iam_policy_document.task_role_assume_policy.json
-}
-
-resource "aws_iam_role_policy" "task_role" {
-  policy = data.aws_iam_policy_document.task_role.json
-  role   = aws_iam_role.task_role.name
-}
-
-# New environment based role
 resource "aws_iam_role" "task" {
   name               = "frontend-${local.environment}"
   assume_role_policy = data.aws_iam_policy_document.task_role_assume_policy.json
@@ -93,19 +80,6 @@ data "aws_iam_policy_document" "task_role" {
 }
 
 # ===== Task Execution Role =====
-
-# Original Role
-resource "aws_iam_role" "execution_role" {
-  name               = "execution_role"
-  assume_role_policy = data.aws_iam_policy_document.execution_role_assume_policy.json
-}
-
-resource "aws_iam_role_policy" "execution_role" {
-  policy = data.aws_iam_policy_document.execution_role.json
-  role   = aws_iam_role.execution_role.id
-}
-
-# New environment based role
 resource "aws_iam_role" "execution" {
   name               = "execution-role-${local.environment}"
   assume_role_policy = data.aws_iam_policy_document.execution_role_assume_policy.json

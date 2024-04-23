@@ -1,10 +1,5 @@
-resource "aws_iam_service_linked_role" "ecs" {
-  aws_service_name = "ecs.amazonaws.com"
-}
-
 resource "aws_ecs_cluster" "serve_opg" {
-  name       = local.environment
-  depends_on = [aws_iam_service_linked_role.ecs]
+  name = local.environment
 }
 
 resource "aws_ecs_service" "frontend" {

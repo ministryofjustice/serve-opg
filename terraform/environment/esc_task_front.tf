@@ -115,7 +115,7 @@ locals {
         },
         {
           name      = "BEHAT_PASSWORD",
-          valueFrom = aws_secretsmanager_secret.behat_password.arn
+          valueFrom = data.aws_secretsmanager_secret.behat_password.arn
         },
         {
           name      = "DC_DB_PASS",
