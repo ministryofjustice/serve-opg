@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 RUN apk add --no-cache fcgi
 
 #force upgrade packages
-RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib busybox curl gzip xz xz-libs libcurl
+RUN apk upgrade
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"

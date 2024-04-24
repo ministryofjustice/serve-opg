@@ -46,10 +46,3 @@ locals {
 module "allow_list" {
   source = "git@github.com:ministryofjustice/opg-terraform-aws-moj-ip-allow-list.git?ref=v3.0.1"
 }
-
-# ToDo add and remove in state between env and account the following:
-#aws_iam_service_linked_role.ecs
-#aws_iam_role.enhanced_monitoring
-#aws_secretsmanager_secret.behat_password
-#aws_secretsmanager_secret.sirius_api_email
-#aws_iam_role_policy_attachment.enhanced_monitoring
