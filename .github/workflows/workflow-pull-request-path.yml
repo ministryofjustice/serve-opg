@@ -111,7 +111,7 @@ jobs:
     with:
       workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-      base_url: development.serve.opg.service.justice.gov.uk
+      base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
     secrets: inherit

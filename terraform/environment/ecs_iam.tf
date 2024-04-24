@@ -1,3 +1,7 @@
+# ===== Data task role =====
+data "aws_iam_role" "task_account" {
+  name = "frontend-${local.account.account_name}"
+}
 # ===== Task role =====
 resource "aws_iam_role" "task" {
   name               = "frontend-${local.environment}"
