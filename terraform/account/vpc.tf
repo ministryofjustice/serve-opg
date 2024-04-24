@@ -17,3 +17,7 @@ data "aws_internet_gateway" "default" {
 resource "aws_default_vpc_dhcp_options" "default" {
   tags = local.default_tags
 }
+
+resource "aws_iam_service_linked_role" "ecs" {
+  aws_service_name = "ecs.amazonaws.com"
+}
