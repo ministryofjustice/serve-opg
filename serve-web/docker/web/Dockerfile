@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine
 
-RUN apk upgrade libxml2 openssl libssl1.1 libcrypto1.1 libretls zlib
+RUN apk upgrade
 
 # Add Confd to configure nginx on start
 ENV CONFD_VERSION="0.16.0"
