@@ -12,7 +12,7 @@ protected_workspaces="$in_use_workspaces $reserved_workspaces"
 all_workspaces=$(terraform workspace list|sed 's/*//g')
 
 unset TF_WORKSPACE
-export TF_VAR_OPG_DOCKER_TAG=""
+export TF_VAR_APP_VERSION="foo"
 export TF_EXIT_CODE="0"
 
 for workspace in $all_workspaces
@@ -32,7 +32,7 @@ do
         if [ $? != 0 ]; then
           export TF_EXIT_CODE="1"
         else
-          terraform destroy -auto-approve
+          export TF_EXIT_CODE="0"
           terraform workspace select default
           terraform workspace delete $workspace
         fi

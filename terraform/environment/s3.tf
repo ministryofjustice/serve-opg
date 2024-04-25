@@ -8,12 +8,9 @@ data "aws_s3_bucket" "access_logging" {
 
 # ===== Main bucket =====
 resource "aws_s3_bucket" "bucket" {
-  bucket = local.bucket_name
-  tags   = local.default_tags
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  bucket        = local.bucket_name
+  force_destroy = local.account.deletion_protection == "false" ? true : false
+  tags          = local.default_tags
 }
 
 resource "aws_s3_bucket_logging" "bucket" {
@@ -66,12 +63,9 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
 
 # ===== ELB bucket =====
 resource "aws_s3_bucket" "logs" {
-  bucket = "logs.${local.bucket_name}"
-  tags   = local.default_tags
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  bucket        = "logs.${local.bucket_name}"
+  force_destroy = local.account.deletion_protection == "false" ? true : false
+  tags          = local.default_tags
 }
 
 resource "aws_s3_bucket_logging" "logs" {
