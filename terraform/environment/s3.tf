@@ -23,9 +23,18 @@ resource "aws_s3_bucket_logging" "bucket" {
   target_prefix = "log/${aws_s3_bucket.bucket.id}/"
 }
 
-resource "aws_s3_bucket_acl" "bucket" {
+resource "aws_s3_bucket_ownership_controls" "bucket" {
   bucket = aws_s3_bucket.bucket.id
-  acl    = "private"
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket" {
+  depends_on = [aws_s3_bucket_ownership_controls.bucket]
+  bucket     = aws_s3_bucket.bucket.id
+  acl        = "private"
 }
 
 resource "aws_s3_bucket_versioning" "bucket" {
@@ -55,7 +64,7 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
   restrict_public_buckets = true
 }
 
-# ELB S3
+# ===== ELB bucket =====
 resource "aws_s3_bucket" "logs" {
   bucket = "logs.${local.bucket_name}"
   tags   = local.default_tags
@@ -72,9 +81,18 @@ resource "aws_s3_bucket_logging" "logs" {
   target_prefix = "log/${aws_s3_bucket.logs.id}/"
 }
 
-resource "aws_s3_bucket_acl" "logs" {
+resource "aws_s3_bucket_ownership_controls" "logs" {
   bucket = aws_s3_bucket.logs.id
-  acl    = "private"
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "logs" {
+  depends_on = [aws_s3_bucket_ownership_controls.logs]
+  bucket     = aws_s3_bucket.logs.id
+  acl        = "private"
 }
 
 resource "aws_s3_bucket_versioning" "logs" {
@@ -118,61 +136,6 @@ data "aws_iam_policy_document" "logs" {
 }
 
 resource "aws_s3_bucket_public_access_block" "logs" {
-  bucket = aws_s3_bucket.logs.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-# ===== S3 logging bucket =====
-resource "aws_s3_bucket" "s3_access_logs" {
-  bucket = "s3-logging.${local.bucket_name}"
-}
-
-resource "aws_s3_bucket_acl" "s3_access_logs" {
-  bucket = aws_s3_bucket.s3_access_logs.id
-  acl    = "log-delivery-write"
-}
-
-resource "aws_s3_bucket_versioning" "s3_access_logs" {
-  bucket = aws_s3_bucket.s3_access_logs.id
-
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "s3_access_logs" {
-  bucket = aws_s3_bucket.s3_access_logs.id
-
-  rule {
-    id     = "ExpireObjectsAfter180Days"
-    status = "Enabled"
-
-    transition {
-      days          = 30
-      storage_class = "GLACIER"
-    }
-
-    noncurrent_version_transition {
-      noncurrent_days = 30
-      storage_class   = "GLACIER"
-    }
-
-    noncurrent_version_expiration {
-      noncurrent_days = 180
-    }
-
-    expiration {
-      days                         = 180
-      expired_object_delete_marker = true
-    }
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "s3_access_logs" {
   bucket = aws_s3_bucket.logs.id
 
   block_public_acls       = true

@@ -74,8 +74,8 @@ jobs:
       branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
     secrets: inherit
 
-  deploy_to_development:
-    name: Deploy to Development
+  deploy_to_branch_environment:
+    name: Deploy to Branch Environment
     needs: [
       workflow_variables,
       build_scan_push_containers,
@@ -84,7 +84,7 @@ jobs:
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
-      workspace: development
+      workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
@@ -104,14 +104,14 @@ jobs:
       apply: false
     secrets: inherit
 
-  behat_development:
-    name: Development Behat
+  behat_branch_environment:
+    name: Branch Environment Behat
     uses: ./.github/workflows/_tests-behat.yml
-    needs: [workflow_variables,deploy_to_development]
+    needs: [workflow_variables,deploy_to_branch_environment]
     with:
-      workspace_name: development
+      workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-      base_url: development.serve.opg.service.justice.gov.uk
+      base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
     secrets: inherit
@@ -119,7 +119,7 @@ jobs:
   end_of_pr_workflow:
     name: End of PR Workflow
     runs-on: ubuntu-latest
-    needs: [workflow_variables,behat_development]
+    needs: [workflow_variables,behat_branch_environment]
     steps:
       - name: End of PR Workflow
         run: echo "${{ needs.workflow_variables.outputs.version_tag }} tested, built and deployed to Development"
