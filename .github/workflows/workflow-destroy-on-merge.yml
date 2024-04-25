@@ -77,8 +77,10 @@ jobs:
       - name: clean up environment
         working-directory: ./terraform/environment
         env:
-          WORKSPACE: ${{ needs.workflow_variables.outputs.build_identifier }}
-          TF_VAR_OPG_DOCKER_TAG: foo
+#          WORKSPACE: ${{ needs.workflow_variables.outputs.build_identifier }}
+          WORKSPACE: ser165617
+          TF_VAR_APP_VERSION: foo
+          TF_EXIT_CODE: 0
         run: |
           echo "Running script against ${WORKSPACE}"
           ../../scripts/cleanup/destroy_workspace.sh ${WORKSPACE}

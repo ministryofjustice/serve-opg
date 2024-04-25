@@ -19,6 +19,7 @@ if [ "$1" == "-h" ]; then
   exit 0
 fi
 
+export TF_EXIT_CODE="0"
 workspace_name=$1
 reserved_workspaces="default production preproduction development integration"
 
