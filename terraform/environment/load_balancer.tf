@@ -67,3 +67,22 @@ resource "aws_security_group" "load_balancer" {
     create_before_destroy = true
   }
 }
+
+# ===== Healthcheck security group rules =====
+data "aws_ip_ranges" "route53_healthchecks_ips" {
+  services = ["route53_healthchecks"]
+}
+
+locals {
+  route53_healthchecker_ips = data.aws_ip_ranges.route53_healthchecks_ips.cidr_blocks
+}
+
+resource "aws_security_group_rule" "front_elb_route53_hc_in" {
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+  security_group_id = aws_security_group.load_balancer.id
+  cidr_blocks       = local.route53_healthchecker_ips
+  description       = "Route53 Healthcheck to Front LB"
+}

@@ -9,7 +9,6 @@ server {
     }
 
     error_log /var/log/nginx/error.log {{ getv "/nginx/log/level" "warn" }};
-    access_log /var/log/nginx/access.log;
 
     location ~ ^/index\.php(/|$) {
         fastcgi_pass {{getv "/app/host" }}:{{getv "/app/port" }};

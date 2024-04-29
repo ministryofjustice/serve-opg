@@ -15,6 +15,7 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxcnunes/waitforit/r
 WORKDIR /var/www
 COPY public/build public/build
 COPY docker/web/etc /etc
+COPY docker/web/nginx.conf /etc/nginx/nginx.conf
 
 ENV TIMEOUT=30
 CMD confd -onetime -backend env \
