@@ -4,9 +4,6 @@ repo:
 pipeline:
   - any: [".github/workflows/*"]
 
-api:
-  - any: ["serve-api/**/*"]
-
 web:
   - any: ["serve-web/**/*"]
 

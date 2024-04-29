@@ -38,10 +38,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: "minor"
 
-  unit_test_api:
-    name: Unit tests on API app
-    uses: ./.github/workflows/_tests-api.yml
-
   unit_test_frontend:
     name: Unit tests on Frontend app
     uses: ./.github/workflows/_tests-frontend.yml
@@ -60,7 +56,6 @@ jobs:
     needs: [
       workflow_variables,
       build_scan_push_containers,
-      unit_test_api,
       unit_test_frontend
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml

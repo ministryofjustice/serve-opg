@@ -32,7 +32,7 @@ jobs:
           docker compose run --rm yarn install --frozen-lockfile
           docker compose run --rm yarn build
           # Build all apps
-          docker compose build web app api
+          docker compose build web app
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -62,15 +62,12 @@ jobs:
         run: |
           docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ inputs.tag }}
           docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ inputs.tag }}
-          docker tag $ECR_REGISTRY/serve-opg/api:latest $ECR_REGISTRY/serve-opg/api:${{ inputs.tag }}
 
           if [ "$BRANCH_NAME" == "main" ]; then
             # We want all of the tags pushed
             docker push --all-tags $ECR_REGISTRY/serve-opg/app
             docker push --all-tags $ECR_REGISTRY/serve-opg/web
-            docker push --all-tags $ECR_REGISTRY/serve-opg/api
           else
             docker push $ECR_REGISTRY/serve-opg/app:${{ inputs.tag }}
             docker push $ECR_REGISTRY/serve-opg/web:${{ inputs.tag }}
-            docker push $ECR_REGISTRY/serve-opg/api:${{ inputs.tag }}
           fi
