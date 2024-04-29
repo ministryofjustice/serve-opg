@@ -20,6 +20,7 @@ variable "accounts" {
       ip_whitelist        = string
       deletion_protection = string
       postgres_version    = string
+      rds_instance_count  = number
       cloud9_env_id       = string
     })
   )

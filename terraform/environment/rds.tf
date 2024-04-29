@@ -91,7 +91,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
 }
 
 resource "aws_rds_cluster_instance" "serverless_instances" {
-  count                           = 2
+  count                           = local.account.rds_instance_count
   cluster_identifier              = aws_rds_cluster.cluster_serverless.cluster_identifier
   apply_immediately               = local.account.deletion_protection ? false : true
   auto_minor_version_upgrade      = false
