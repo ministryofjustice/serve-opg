@@ -62,7 +62,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "title": "Availability",
                   "annotations": {
                       "alarms": [
-                          "${aws_cloudwatch_metric_alarm.availability_24h.arn}"
+                          "${aws_cloudwatch_metric_alarm.availability_service.arn}"
                       ]
                   },
                   "view": "timeSeries",
@@ -96,24 +96,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "title": "TG 5xx Errors",
                   "annotations": {
                       "alarms": [
-                          "${aws_cloudwatch_metric_alarm.errors_24h.arn}"
-                      ]
-                  },
-                  "view": "singleValue",
-                  "setPeriodToTimeRange": true
-              }
-          },
-          {
-              "type": "metric",
-              "x": 0,
-              "y": 8,
-              "width": 3,
-              "height": 3,
-              "properties": {
-                  "title": "LB 5xx Errors",
-                  "annotations": {
-                      "alarms": [
-                          "${aws_cloudwatch_metric_alarm.alb_errors_24h.arn}"
+                          "${aws_cloudwatch_metric_alarm.loadbalancer_app_errors.arn}"
                       ]
                   },
                   "view": "singleValue",
@@ -130,7 +113,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "title": "Response Time",
                   "annotations": {
                       "alarms": [
-                          "${aws_cloudwatch_metric_alarm.response_time.arn}"
+                          "${aws_cloudwatch_metric_alarm.loadbalancer_response_time.arn}"
                       ]
                   },
                   "view": "singleValue",
