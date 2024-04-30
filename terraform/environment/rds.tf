@@ -105,6 +105,7 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
   monitoring_role_arn             = "arn:aws:iam::${local.account.account_id}:role/rds-enhanced-monitoring"
   performance_insights_enabled    = true
   performance_insights_kms_key_id = data.aws_kms_key.rds.arn
+  ca_cert_identifier              = "rds-ca-rsa2048-g1"
   publicly_accessible             = false
   tags                            = local.default_tags
 
