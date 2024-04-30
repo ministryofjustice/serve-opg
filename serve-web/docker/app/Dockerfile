@@ -58,6 +58,7 @@ COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
 COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
 RUN chmod +x /usr/local/bin/health-check.sh
+RUN mkdir certs && chmod 755 certs && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
 
 ENV TIMEOUT=30
 CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \

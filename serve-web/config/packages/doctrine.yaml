@@ -14,10 +14,11 @@ doctrine:
         dbname:   "%env(DC_DB_NAME)%"
         user:     "%env(DC_DB_USER)%"
         password: "%env(DC_DB_PASS)%"
+        sslmode: "%env(DC_DB_SSL)%"
+        sslrootcert: "%kernel.project_dir%/certs/eu-west-1-bundle.pem"
         charset:  UTF8
-        server_version: 9.6
-        #options:
-        #sslmode: require
+
+        server_version: 13.14
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"
