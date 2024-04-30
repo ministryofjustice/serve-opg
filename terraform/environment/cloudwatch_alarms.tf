@@ -134,47 +134,48 @@ resource "aws_cloudwatch_metric_alarm" "availability_service" {
   }
 }
 
-moved {
-  from = aws_route53_health_check.availability-dependencies
-  to   = aws_route53_health_check.availability_dependencies
-}
-
-resource "aws_route53_health_check" "availability_dependencies" {
-  fqdn              = aws_route53_record.serve.fqdn
-  resource_path     = "/health-check/dependencies"
-  port              = 443
-  type              = "HTTPS"
-  failure_threshold = 1
-  request_interval  = 30
-  measure_latency   = true
-  regions           = ["us-east-1", "eu-west-1", "us-west-1"]
-  tags              = merge(local.default_tags, { Name = "availability-dependencies" }, )
-}
-
-moved {
-  from = aws_cloudwatch_metric_alarm.availability-dependencies
-  to   = aws_cloudwatch_metric_alarm.availability_dependencies
-}
-
-resource "aws_cloudwatch_metric_alarm" "availability_dependencies" {
-  provider            = aws.us-east-1
-  alarm_name          = "[SERVE]-${local.environment}-availability-dependencies"
-  alarm_description   = "Serve route53 health-checks for route /health-check/dependencies have failed"
-  statistic           = "Minimum"
-  metric_name         = "HealthCheckStatus"
-  comparison_operator = "LessThanThreshold"
-  datapoints_to_alarm = 5
-  threshold           = 1
-  period              = 60
-  evaluation_periods  = 5
-  namespace           = "AWS/Route53"
-  alarm_actions       = [data.aws_sns_topic.alert_us_east.arn]
-  tags                = local.default_tags
-
-  dimensions = {
-    HealthCheckId = aws_route53_health_check.availability_dependencies.id
-  }
-}
+# TODO Fix the /dependencies endpoint!
+#moved {
+#  from = aws_route53_health_check.availability-dependencies
+#  to   = aws_route53_health_check.availability_dependencies
+#}
+#
+#resource "aws_route53_health_check" "availability_dependencies" {
+#  fqdn              = aws_route53_record.serve.fqdn
+#  resource_path     = "/health-check/dependencies"
+#  port              = 443
+#  type              = "HTTPS"
+#  failure_threshold = 1
+#  request_interval  = 30
+#  measure_latency   = true
+#  regions           = ["us-east-1", "eu-west-1", "us-west-1"]
+#  tags              = merge(local.default_tags, { Name = "availability-dependencies" }, )
+#}
+#
+#moved {
+#  from = aws_cloudwatch_metric_alarm.availability-dependencies
+#  to   = aws_cloudwatch_metric_alarm.availability_dependencies
+#}
+#
+#resource "aws_cloudwatch_metric_alarm" "availability_dependencies" {
+#  provider            = aws.us-east-1
+#  alarm_name          = "[SERVE]-${local.environment}-availability-dependencies"
+#  alarm_description   = "Serve route53 health-checks for route /health-check/dependencies have failed"
+#  statistic           = "Minimum"
+#  metric_name         = "HealthCheckStatus"
+#  comparison_operator = "LessThanThreshold"
+#  datapoints_to_alarm = 5
+#  threshold           = 1
+#  period              = 60
+#  evaluation_periods  = 5
+#  namespace           = "AWS/Route53"
+#  alarm_actions       = [data.aws_sns_topic.alert_us_east.arn]
+#  tags                = local.default_tags
+#
+#  dimensions = {
+#    HealthCheckId = aws_route53_health_check.availability_dependencies.id
+#  }
+#}
 
 # ===== Application Errors =====
 resource "aws_cloudwatch_log_metric_filter" "sirius_login_errors" {
