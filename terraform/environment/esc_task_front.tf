@@ -144,6 +144,10 @@ locals {
           value = aws_rds_cluster.cluster_serverless.master_username
         },
         {
+          name  = "DC_DB_SSL",
+          value = "verify-full"
+        },
+        {
           name  = "TIMEOUT",
           value = "60"
         },
