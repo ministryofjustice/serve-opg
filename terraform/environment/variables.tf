@@ -27,11 +27,11 @@ variable "accounts" {
 }
 
 locals {
-  environment        = terraform.workspace
-  account            = contains(keys(var.accounts), local.environment) ? var.accounts[local.environment] : var.accounts["default"]
-  management         = "311462405659"
-  dns_prefix         = local.environment == "production" ? "serve" : "${local.environment}.serve"
-  sirius_role        = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${local.account.account_name}" : var.SIRIUS_ROLE
+  environment = terraform.workspace
+  account     = contains(keys(var.accounts), local.environment) ? var.accounts[local.environment] : var.accounts["default"]
+  management  = "311462405659"
+  dns_prefix  = local.environment == "production" ? "serve" : "${local.environment}.serve"
+  #  sirius_role        = var.SIRIUS_ROLE == "serve-assume-role-ci" ? "${var.SIRIUS_ROLE}-${local.account.account_name}" : var.SIRIUS_ROLE
   default_allow_list = local.account.ip_whitelist ? module.allow_list.moj_sites : tolist(["0.0.0.0/0"])
 
   default_tags = {
