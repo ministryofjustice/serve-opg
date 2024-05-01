@@ -1,0 +1,14 @@
+[profile serve-ci-development]
+region=eu-west-1
+role_arn=arn:aws:iam::705467933182:role/serve-opg-ci
+credential_source=Environment
+
+[profile serve-ci-preproduction]
+region=eu-west-1
+role_arn=arn:aws:iam::540070264006:role/serve-opg-ci
+credential_source=Environment
+
+[profile serve-ci-production]
+region=eu-west-1
+role_arn=arn:aws:iam::933639921819:role/serve-opg-ci
+credential_source=Environment

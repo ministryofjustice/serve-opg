@@ -9,6 +9,7 @@ on:
       - main
 
 permissions:
+  id-token: write
   contents: write
   security-events: write
   pull-requests: read
@@ -34,6 +35,7 @@ jobs:
       version_tag: ${{ steps.semver_tag.outputs.created_tag }}
     steps:
       - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90 # pin@v3
+
       - name: extract variables for workflow
         id: variables
         env:
@@ -43,13 +45,14 @@ jobs:
           echo "branch_formatted=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
           echo "build_identifier=$(echo ${BRANCH}${PR_NUMBER})" >> $GITHUB_OUTPUT
           echo ${build_identifier}
+
       - name: generate semver tag and release
         id: semver_tag
         uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.3
         with:
           prerelease: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: "minor"
+
       - uses: actions/labeler@main
         if: github.event_name == 'pull_request'
         with:
@@ -80,6 +83,7 @@ jobs:
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
+      account_name: development
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
@@ -94,6 +98,7 @@ jobs:
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: development
+      account_name: development
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: false
@@ -109,6 +114,7 @@ jobs:
       base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
+      account_name: development
       account_id: 705467933182
     secrets: inherit
 
