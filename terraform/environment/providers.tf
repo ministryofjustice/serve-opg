@@ -3,10 +3,10 @@ variable "DEFAULT_ROLE" {
   type    = string
 }
 
-variable "SIRIUS_ROLE" {
-  default = "serve-assume-role-ci"
-  type    = string
-}
+#variable "SIRIUS_ROLE" {
+#  default = "serve-assume-role-ci"
+#  type    = string
+#}
 
 terraform {
   backend "s3" {
@@ -47,11 +47,11 @@ provider "aws" {
   }
 }
 
-provider "aws" {
-  alias  = "sirius"
-  region = "eu-west-1"
-
-  assume_role {
-    role_arn = "arn:aws:iam::${local.account.sirius_account}:role/${local.sirius_role}"
-  }
-}
+#provider "aws" {
+#  alias  = "sirius"
+#  region = "eu-west-1"
+#
+#  assume_role {
+#    role_arn = "arn:aws:iam::${local.account.sirius_account}:role/${local.sirius_role}"
+#  }
+#}
