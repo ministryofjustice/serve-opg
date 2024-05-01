@@ -21,6 +21,10 @@ on:
         description: "Test suite to run"
         required: true
         type: string
+      account_name:
+        description: "Account Name"
+        required: true
+        type: string
       account_id:
         description: "Account ID"
         required: true
@@ -84,7 +88,7 @@ jobs:
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-${{ inputs.account_name }}"
-          role-duration-seconds: 120
+          role-duration-seconds: 900
           role-session-name: identity-oidc-serve
 
       - name: Get Behat password
