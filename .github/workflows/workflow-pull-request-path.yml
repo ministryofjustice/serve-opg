@@ -109,6 +109,7 @@ jobs:
       base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
+      account_id: 705467933182
     secrets: inherit
 
   end_of_pr_workflow:
