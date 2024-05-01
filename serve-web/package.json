@@ -7,11 +7,11 @@
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
-    "@symfony/webpack-encore": "2.0.0",
+    "@symfony/webpack-encore": "2.1.0",
     "babel-jest": "^26.6.3",
     "core-js": "^3.0.0",
     "del": "^3.0.0",
-    "dropzone": "5.5.1",
+    "dropzone": "5.9.3",
     "fetch-mock": "^7.3.3",
     "file-loader": "^6.0.0",
     "govuk-frontend": "^3.15.0",
@@ -19,7 +19,7 @@
     "jquery": "^3.5.0",
     "node-fetch": "^2.6.7",
     "sass": "^1.35.2",
-    "sass-loader": "12.1.0",
+    "sass-loader": "12.6.0",
     "tar": "6.2.1",
     "webpack-notifier": "^1.6.0"
   },
@@ -64,7 +64,7 @@
     ]
   },
   "dependencies": {
-    "@ministryofjustice/frontend": "^0.0.17-alpha",
+    "@ministryofjustice/frontend": "^0.2.0",
     "dart-sass": "^1.25.0"
   }
 }

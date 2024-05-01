@@ -14,7 +14,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:0.9.3-alpine
+    image: jwilder/nginx-proxy:0.10.1-alpine
     ports:
       - 443:443
     volumes:
@@ -72,7 +72,7 @@ services:
         condition: service_started
 
   sirius-api:
-    image: stoplight/prism:4.4.1
+    image: stoplight/prism:4.14.1
     ports:
       - 4010:4010
     volumes:
