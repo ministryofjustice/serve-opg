@@ -21,6 +21,10 @@ on:
         description: "Test suite to run"
         required: true
         type: string
+      account_name:
+        description: "Account Name"
+        required: true
+        type: string
       account_id:
         description: "Account ID"
         required: true
@@ -84,18 +88,15 @@ jobs:
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-${{ inputs.account_name }}"
-          role-duration-seconds: 120
+          role-duration-seconds: 900
           role-session-name: identity-oidc-serve
 
       - name: Get Behat password
         env:
-          ACCOUNT_ID: ${{ inputs.account_id }}
+          ACCOUNT_ID: ${{ inputs.account_name }}
         run: |
-          BEHAT_PASSWORD=$(aws secretsmanager get-secret-value \
-          --secret-id behat_password \
-          --role-arn "arn:aws:iam::${ACCOUNT_ID}:role/serve-opg-ci" \
-          --role-session-name "serve-get-behat-pw" \
-          --region eu-west-1 | jq -r '.SecretString' 2>/dev/null)
+          python scripts/ci_ingress/get_behat_secret.py
+          echo $BEHAT_PASSWORD
           echo "::add-mask::$BEHAT_PASSWORD"
           echo BEHAT_PASSWORD=$BEHAT_PASSWORD >> $GITHUB_ENV
 
