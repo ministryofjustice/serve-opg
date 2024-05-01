@@ -34,6 +34,7 @@ jobs:
       version_tag: ${{ steps.semver_tag.outputs.created_tag }}
     steps:
       - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90 # pin@v3
+
       - name: extract variables for workflow
         id: variables
         env:
@@ -43,13 +44,14 @@ jobs:
           echo "branch_formatted=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
           echo "build_identifier=$(echo ${BRANCH}${PR_NUMBER})" >> $GITHUB_OUTPUT
           echo ${build_identifier}
+
       - name: generate semver tag and release
         id: semver_tag
         uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.3
         with:
           prerelease: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: "minor"
+
       - uses: actions/labeler@main
         if: github.event_name == 'pull_request'
         with:
