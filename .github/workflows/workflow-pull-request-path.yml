@@ -9,6 +9,7 @@ on:
       - main
 
 permissions:
+  id-token: write
   contents: write
   security-events: write
   pull-requests: read
@@ -82,6 +83,7 @@ jobs:
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
+      account_name: development
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
@@ -96,6 +98,7 @@ jobs:
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: development
+      account_name: development
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: false
@@ -111,6 +114,8 @@ jobs:
       base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-integration
       suite: --suite=local
+      account_name: development
+      account_id: 705467933182
     secrets: inherit
 
   end_of_pr_workflow:

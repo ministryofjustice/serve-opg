@@ -21,6 +21,14 @@ on:
         description: "Test suite to run"
         required: true
         type: string
+      account_name:
+        description: "Account Name"
+        required: true
+        type: string
+      account_id:
+        description: "Account ID"
+        required: true
+        type: string
 
 jobs:
   run_behat_tests:
@@ -75,36 +83,23 @@ jobs:
         with:
           name: cluster_config
 
-      - name: Configure AWS Credentials for Behat Password
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Configure OIDC AWS Credentials to get password
+        uses: aws-actions/configure-aws-credentials@b140ab7b246475139f89894ebae4ba00bd5b374e
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::705467933182:role/serve-opg-ci
-          role-duration-seconds: 3600
-          role-session-name: BehatPasswordActions
+          role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-${{ inputs.account_name }}"
+          role-duration-seconds: 900
+          role-session-name: identity-oidc-serve
 
       - name: Get Behat password
+        env:
+          ACCOUNT_ID: ${{ inputs.account_id }}
         run: |
-          BEHAT_PASSWORD=$(aws secretsmanager get-secret-value \
-          --secret-id behat_password \
-          --region eu-west-1 | jq -r '.SecretString' 2>/dev/null)
+          export BEHAT_PASSWORD=$(python scripts/ci_ingress/get_behat_secret.py)
           echo "::add-mask::$BEHAT_PASSWORD"
           echo BEHAT_PASSWORD=$BEHAT_PASSWORD >> $GITHUB_ENV
 
-      - name: Unset AWS Credentials
-        run: |
-          echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
-          echo "AWS_DEFAULT_REGION=" >> $GITHUB_ENV
-          echo "AWS_REGION=" >> $GITHUB_ENV
-
       - name: Allow CI ingress
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo $TF_WORKSPACE
           python scripts/ci_ingress/ci_ingress.py cluster_config.json --add
@@ -125,9 +120,6 @@ jobs:
           path: /tmp/behat
 
       - name: Remove CI ingress
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo $TF_WORKSPACE
           python scripts/ci_ingress/ci_ingress.py cluster_config.json
