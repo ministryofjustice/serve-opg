@@ -23,7 +23,6 @@ def assume_role_and_get_secret_client(role_arn, session_name, region):
 
 
 if __name__ == "__main__":
-    # Replace these values with your actual AWS configuration
     account_id = os.getenv('ACCOUNT_ID')
     role_arn = f'arn:aws:iam::{account_id}:role/serve-opg-ci'
     session_name = 'serve-ci-get-behat-user'

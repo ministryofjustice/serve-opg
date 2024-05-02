@@ -26,7 +26,12 @@ data "aws_iam_policy_document" "task_role" {
     sid       = "KmsAccess"
     effect    = "Allow"
     actions   = ["kms:*"]
-    resources = ["*"]
+    resources = ["arn:aws:kms:eu-west-1:${local.account.sirius_account}:key/*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:RequestAlias"
+      values   = ["alias/${local.account.sirius_key_alias}"]
+    }
   }
 
   statement {
