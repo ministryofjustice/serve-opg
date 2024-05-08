@@ -14,7 +14,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:0.9.3-alpine
+    image: jwilder/nginx-proxy:0.10.1-alpine
     ports:
       - 443:443
     volumes:
