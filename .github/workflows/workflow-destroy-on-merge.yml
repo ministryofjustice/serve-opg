@@ -65,14 +65,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
-      - name: Configure AWS Credentials For Terraform
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Configure Terraform OIDC AWS Credentials
+        uses: aws-actions/configure-aws-credentials@b140ab7b246475139f89894ebae4ba00bd5b374e
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
+          role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-development"
           role-duration-seconds: 3600
-          role-session-name: GithubActions
+          role-session-name: terraform-oidc-serve-cleanup-on-merge
 
       - name: clean up environment
         working-directory: ./terraform/environment

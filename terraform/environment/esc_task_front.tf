@@ -1,8 +1,3 @@
-data "aws_kms_key" "sirius" {
-  key_id   = "alias/${local.account.sirius_key_alias}"
-  provider = aws.sirius
-}
-
 resource "aws_ecs_task_definition" "frontend" {
   family                   = "frontend-${local.environment}"
   requires_compatibilities = ["FARGATE"]
@@ -177,7 +172,7 @@ locals {
         },
         {
           name  = "SIRIUS_KMS_KEY_ARN",
-          value = data.aws_kms_key.sirius.arn
+          value = local.sirius_key_alias_arn
         },
         {
           "name" : "DYNAMODB_ENDPOINT",
