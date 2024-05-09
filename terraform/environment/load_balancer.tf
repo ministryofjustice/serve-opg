@@ -2,7 +2,7 @@ resource "aws_lb" "frontend" {
   name               = "frontend-${local.environment}"
   load_balancer_type = "application"
   subnets            = data.aws_subnet.public[*].id
-  security_groups    = [aws_security_group.load_balancer.id]
+  security_groups    = [aws_security_group.load_balancer.id, aws_security_group.load_balancer_hc.id]
   tags               = local.default_tags
 
   access_logs {
@@ -77,12 +77,22 @@ locals {
   route53_healthchecker_ips = data.aws_ip_ranges.route53_healthchecks_ips.cidr_blocks
 }
 
+# New SG as large number of cidr ranges
+resource "aws_security_group" "load_balancer_hc" {
+  name   = "load-balancer-hc-${local.environment}"
+  vpc_id = data.aws_vpc.vpc.id
+  tags   = local.default_tags
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_security_group_rule" "front_elb_route53_hc_in" {
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
-  security_group_id = aws_security_group.load_balancer.id
+  security_group_id = aws_security_group.load_balancer_hc.id
   cidr_blocks       = local.route53_healthchecker_ips
   description       = "Route53 Healthcheck to Front LB"
 }
