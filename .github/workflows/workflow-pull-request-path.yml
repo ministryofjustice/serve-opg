@@ -101,7 +101,7 @@ jobs:
       account_name: development
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
-      apply: false
+      apply: true
     secrets: inherit
 
   behat_branch_environment:
