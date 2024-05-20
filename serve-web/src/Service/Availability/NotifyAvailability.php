@@ -15,6 +15,7 @@ class NotifyAvailability extends ServiceAvailabilityAbstract
     {
         $this->notifyClient = $notifyClient;
         $this->isHealthy = true;
+        $this->errors = '';
     }
 
     public function ping(): void
