@@ -245,7 +245,7 @@
                 <p>To continue, please add one or more deputies and all the required order documents.</p>
             </div>
         </div>
-        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button" disabled="disabled" data-module="govuk-button" data-prevent-double-click="true">Continue</button>
+        <button id="serve_order_button_disabled" data-path="{{ path('order-declaration', {'orderId': order.id}) }}" class="govuk-button prevent-double-click" disabled="disabled" data-module="govuk-button" data-prevent-double-click="true">Continue</button>
     {% endif %}
 
 {% endblock %}
