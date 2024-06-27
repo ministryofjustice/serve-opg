@@ -57,15 +57,20 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           BRANCH: ${{ inputs.branch_name }}
+          TAG: ${{ inputs.tag }}
         run: |
-          docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${{ inputs.tag }}
-          docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${{ inputs.tag }}
+          echo "Running on branch $BRANCH_NAME"
+          docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${TAG}
+          docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${TAG}
 
           if [ "$BRANCH_NAME" == "main" ]; then
-            # We want all of the tags pushed
+            docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:main-${TAG}
+            docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:main-${TAG}
+            echo "Pushing all tags as on branch: $BRANCH_NAME"
             docker push --all-tags $ECR_REGISTRY/serve-opg/app
             docker push --all-tags $ECR_REGISTRY/serve-opg/web
           else
-            docker push $ECR_REGISTRY/serve-opg/app:${{ inputs.tag }}
-            docker push $ECR_REGISTRY/serve-opg/web:${{ inputs.tag }}
+            echo "Pushing branch $BRANCH_NAME tags only"
+            docker push $ECR_REGISTRY/serve-opg/app:${TAG}
+            docker push $ECR_REGISTRY/serve-opg/web:${TAG}
           fi
