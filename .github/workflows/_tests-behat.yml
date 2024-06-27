@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
 
-      - uses: unfor19/install-aws-cli-action@46282f151073130d90347412d9c4ef0640177f22
+      - uses: unfor19/install-aws-cli-action@27d6061dae5d39e89be4d2246824f15e111a7e06
 
       - name: Install PHP 8.1
         uses: shivammathur/setup-php@v2
