@@ -4594,10 +4594,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-govuk-frontend@^3.15.0:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.15.0.tgz#47c9cc41c8100ee28bc3aaf9a29a0c62d88070c9"
-  integrity sha512-kInDei8hrkMcrW7yC2EwhbSNBOBBPTdLxIDAye2G7KNrD9cyvNAfd0KchrfP/nWBOzu67ANoz2rtoRDLWiBN2w==
+govuk-frontend@^5.0.0:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-5.4.1.tgz#cae59d1fd441f7830445810c1d281eac06a835d1"
+  integrity sha512-Gmd8LV++TRh9OF6tA+9KQTpwvlsLcri7qRjViz9ji4YuwZvX+c9TD7tyE+dnJcqsQsJfhr9Fp38m3Hu3H7EIcQ==
 
 graceful-fs@^4.1.2, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.10"
