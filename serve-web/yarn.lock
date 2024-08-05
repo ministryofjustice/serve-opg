@@ -2275,11 +2275,12 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@ministryofjustice/frontend@^0.2.0":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@ministryofjustice/frontend/-/frontend-0.2.6.tgz#95ff647e2cd23db291650447fdea33d89fc4d84a"
-  integrity sha512-Q7VxqmOm/uFUpD2/EZjVgaAJ2EgKjNWZPFQN74HkSQ24ZK+tQERGfWkw5DM8molmtnwNns9XBL3E0lVJ/moJnA==
+"@ministryofjustice/frontend@^2.0.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@ministryofjustice/frontend/-/frontend-2.2.0.tgz#1b41e088adc67a486529fad526e0fe6651c853f0"
+  integrity sha512-d6ZPTnsJC7vofU1+nPmDXzmZeYP5oYJXWTthHHf2kABQnEBMeJvTZJdxttH2qw9NjFbV5mWiPNWZsx0wgG4qvg==
   dependencies:
+    govuk-frontend "^5.0.0"
     moment "^2.27.0"
 
 "@nuxt/friendly-errors-webpack-plugin@^2.5.1":
@@ -4598,6 +4599,11 @@ govuk-frontend@^3.15.0:
   version "3.15.0"
   resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.15.0.tgz#47c9cc41c8100ee28bc3aaf9a29a0c62d88070c9"
   integrity sha512-kInDei8hrkMcrW7yC2EwhbSNBOBBPTdLxIDAye2G7KNrD9cyvNAfd0KchrfP/nWBOzu67ANoz2rtoRDLWiBN2w==
+
+govuk-frontend@^5.0.0:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-5.4.1.tgz#cae59d1fd441f7830445810c1d281eac06a835d1"
+  integrity sha512-Gmd8LV++TRh9OF6tA+9KQTpwvlsLcri7qRjViz9ji4YuwZvX+c9TD7tyE+dnJcqsQsJfhr9Fp38m3Hu3H7EIcQ==
 
 graceful-fs@^4.1.2, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.10"
