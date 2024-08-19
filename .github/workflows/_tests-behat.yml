@@ -37,7 +37,7 @@ jobs:
       TF_WORKSPACE: ${{ inputs.workspace_name }}
       APP_VERSION: ${{ inputs.version_tag }}
     steps:
-      - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90
+      - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
       - uses: unfor19/install-aws-cli-action@27d6061dae5d39e89be4d2246824f15e111a7e06
 
@@ -84,7 +84,7 @@ jobs:
           name: cluster_config
 
       - name: Configure OIDC AWS Credentials to get password
-        uses: aws-actions/configure-aws-credentials@b140ab7b246475139f89894ebae4ba00bd5b374e
+        uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-${{ inputs.account_name }}"

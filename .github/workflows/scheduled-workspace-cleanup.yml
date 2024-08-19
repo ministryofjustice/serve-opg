@@ -22,11 +22,11 @@ jobs:
   terraform_environment_cleanup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b32f140b0c872d58512e0a66172253c302617b90 # pin@v3
+      - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08 # pin@v3
 
       - id: terraform_version
         name: get terraform version
-        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@v3.0.3
+        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@v3.0.6
         with:
           terraform_directory: terraform/environment
 
@@ -40,7 +40,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
       - name: Configure Terraform OIDC AWS Credentials
-        uses: aws-actions/configure-aws-credentials@b140ab7b246475139f89894ebae4ba00bd5b374e
+        uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-development"
@@ -64,7 +64,7 @@ jobs:
         working-directory: terraform/environment
 
       - name: install python
-        uses: actions/setup-python@871daa956ca9ea99f3c3e30acb424b7960676734 # pin@v4.2.0
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # pin@v4.2.0
         with:
           python-version: "3.10"
           cache: "pip"
