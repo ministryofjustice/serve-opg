@@ -1,4 +1,4 @@
-FROM php:8.1.18-fpm-alpine3.18
+FROM php:8.1.29-fpm-alpine3.20
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 RUN apk add --no-cache fcgi
 
 #force upgrade packages
-RUN apk upgrade
+RUN apk update && apk upgrade
 
 # Add Waitforit to wait on db starting
 ENV WAITFORIT_VERSION="v2.4.1"

@@ -113,7 +113,7 @@ jobs:
         working-directory: ./serve-web
 
       - name: Archive Test Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.4.0
         if: ${{ always() }}
         with:
           name: Behat Outputs

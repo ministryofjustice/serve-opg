@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine
 
-RUN apk upgrade
+RUN apk update && apk upgrade
 
 # Add Confd to configure nginx on start
 ENV CONFD_VERSION="0.16.0"
