@@ -81,7 +81,7 @@ jobs:
       - name: Retrieve Cluster Config File
         uses: actions/download-artifact@v4.1.7
         with:
-          name: cluster_config
+          name: cluster_config_${{ inputs.workspace_name }}
 
       - name: Configure OIDC AWS Credentials to get password
         uses: aws-actions/configure-aws-credentials@55f725fcb586ca16a5ed5b0d75d464defbfa831b
