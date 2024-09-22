@@ -1,4 +1,4 @@
-FROM localstack/localstack:3.4 as localstack
+FROM localstack/localstack:3.7 as localstack
 
 COPY ./local-setup/localstack/localstack-init.sh /etc/localstack/init/ready.d/init-aws.sh
 COPY ./local-setup/localstack/healthcheck.sh /tmp/healthcheck.sh
