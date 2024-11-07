@@ -1,101 +1,188 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "schedule:earlyMondays"],
+  "extends": [
+    "config:recommended",
+    "schedule:earlyMondays"
+  ],
   "branchPrefix": "renovate-",
   "commitMessageAction": "Renovate Update",
-  "labels": ["Dependencies", "Renovate"],
+  "labels": [
+    "Dependencies",
+    "Renovate"
+  ],
   "packageRules": [
     {
       "groupName": "Patch Updates PHP",
       "groupSlug": "all-patch-updates-php",
-      "labels": ["Dependencies", "Renovate"],
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["patch"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "prPriority": 0,
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3,
-      "excludePackageNames": ["php"],
-      "matchLanguages":["php"]
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchCategories": [
+        "php"
+      ],
+      "matchPackageNames": [
+        "*",
+        "!php"
+      ]
     },
     {
       "groupName": "Patch Updates Node",
       "groupSlug": "all-patch-updates-node",
-      "labels": ["Dependencies", "Renovate"],
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["patch"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "prPriority": 0,
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3,
-      "matchLanguages":["node"]
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchCategories": [
+        "node"
+      ],
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "groupName": "Patch Updates Docker",
       "groupSlug": "all-patch-updates-docker",
-      "labels": ["Dependencies", "Renovate"],
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["patch"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "prPriority": 0,
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3,
-      "matchLanguages":["docker"]
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchCategories": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "groupName": "Patch Updates Python",
       "groupSlug": "all-patch-updates-python",
-      "labels": ["Dependencies", "Renovate"],
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["patch"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "prPriority": 0,
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3,
-      "matchLanguages":["python"]
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchCategories": [
+        "python"
+      ],
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "groupName": "Patch Updates Golang",
       "groupSlug": "all-patch-updates-golang",
-      "labels": ["Dependencies", "Renovate"],
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["patch"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "prPriority": 0,
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3,
-      "matchLanguages":["golang"]
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchCategories": [
+        "golang"
+      ],
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "groupName": "Minor Updates",
       "groupSlug": "all-minor-updates",
-      "labels": ["Dependencies", "Renovate"],
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["minor"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
       "prPriority": 0,
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3,
-      "excludePackageNames": ["php"]
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchPackageNames": [
+        "*",
+        "!php"
+      ]
     },
     {
       "groupName": "GitHub Actions",
-      "matchPackagePatterns": ["actions/*"],
       "automerge": true,
       "dependencyDashboardApproval": true,
-      "labels": ["Dependencies", "Renovate"],
+      "labels": [
+        "Dependencies",
+        "Renovate"
+      ],
       "prBody": "Updates the following GitHub Actions dependencies:\n\n{{#each dependencies}}- {{this.name}}\n{{/each}}",
-      "schedule": ["after 6am and before 9am on Monday"],
-      "stabilityDays": 3
+      "schedule": [
+        "after 6am and before 9am on Monday"
+      ],
+      "minimumReleaseAge": "3 days",
+      "matchPackageNames": [
+        "/actions/*/"
+      ]
     }
   ],
   "major": {
-    "labels": ["Dependencies", "Renovate"],
+    "labels": [
+      "Dependencies",
+      "Renovate"
+    ],
     "prCreation": "status-success",
     "rangeStrategy": "pin",
     "prPriority": 1,
-    "schedule": ["after 6am and before 9am on Monday"]
+    "schedule": [
+      "after 6am and before 9am on Monday"
+    ]
   },
   "vulnerabilityAlerts": {
     "groupName": "Security Alerts",
-    "labels": ["Dependencies", "Renovate"],
-    "schedule": ["after 6am and before 9am every weekday"],
+    "labels": [
+      "Dependencies",
+      "Renovate"
+    ],
+    "schedule": [
+      "after 6am and before 9am every weekday"
+    ],
     "dependencyDashboardApproval": false,
-    "stabilityDays": 0,
+    "minimumReleaseAge": null,
     "rangeStrategy": "pin",
     "commitMessagePrefix": "[SECURITY]",
     "branchTopic": "{{{datasource}}}-{{{depName}}}-vulnerability",
