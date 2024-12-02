@@ -44,7 +44,12 @@ jobs:
         with:
           terraform_directory: terraform/${{ inputs.terraform_path }}
 
-      - uses: hashicorp/setup-terraform@344fef46b6edc7c46ce8b3b8b0a3ece7e77e05f0 # pin@v2.0.0
+      - name: version
+        env:
+          TERR_VER: ${{ steps.terraform_version.outputs.version }}
+        run: echo $TERR_VER
+
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
           terraform_version: ${{ steps.terraform_version.outputs.version }}
           terraform_wrapper: false
@@ -76,8 +81,10 @@ jobs:
         run: terraform fmt -check -recursive
         working-directory: terraform/${{ inputs.terraform_path }}
 
-      - name: Terraform init
-        run: terraform init -input=false
+      - name: Terraform Init
+        run: |
+          terraform --version
+          terraform init -input=false
         working-directory: terraform/${{ inputs.terraform_path }}
 
       - name: Terraform Plan
