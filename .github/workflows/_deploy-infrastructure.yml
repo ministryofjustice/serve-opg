@@ -77,6 +77,8 @@ jobs:
         working-directory: terraform/${{ inputs.terraform_path }}
 
       - name: Terraform init
+        env:
+          TF_WORKSPACE: default
         run: terraform init -input=false
         working-directory: terraform/${{ inputs.terraform_path }}
 
