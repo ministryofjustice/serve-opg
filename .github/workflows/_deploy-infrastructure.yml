@@ -44,11 +44,6 @@ jobs:
         with:
           terraform_directory: terraform/${{ inputs.terraform_path }}
 
-      - name: version
-        env:
-          TERR_VER: ${{ steps.terraform_version.outputs.version }}
-        run: echo $TERR_VER
-
       - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
           terraform_version: ${{ steps.terraform_version.outputs.version }}
