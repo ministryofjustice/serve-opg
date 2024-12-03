@@ -5,11 +5,13 @@ variable "DEFAULT_ROLE" {
 
 terraform {
   backend "s3" {
-    bucket         = "opg.terraform.state"
-    key            = "serve-opg-infrastructure/terraform.tfstate"
-    encrypt        = true
-    region         = "eu-west-1"
-    role_arn       = "arn:aws:iam::311462405659:role/serve-opg-ci"
+    bucket  = "opg.terraform.state"
+    key     = "serve-opg-infrastructure/terraform.tfstate"
+    encrypt = true
+    region  = "eu-west-1"
+    assume_role = {
+      role_arn = "arn:aws:iam::311462405659:role/serve-opg-ci"
+    }
     dynamodb_table = "remote_lock"
   }
 }

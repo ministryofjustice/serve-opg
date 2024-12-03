@@ -31,7 +31,7 @@ locals {
   account              = contains(keys(var.accounts), local.environment) ? var.accounts[local.environment] : var.accounts["default"]
   management           = "311462405659"
   dns_prefix           = local.environment == "production" ? "serve" : "${local.environment}.serve"
-  default_allow_list   = local.account.ip_whitelist ? module.allow_list.moj_sites : tolist(["0.0.0.0/0"])
+  default_allow_list   = local.account.ip_whitelist ? concat(module.allow_list.palo_alto_prisma_access, module.allow_list.moj_sites) : tolist(["0.0.0.0/0"])
   sirius_key_alias_arn = "arn:aws:kms:eu-west-1:${local.account.sirius_account}:alias/${local.account.sirius_key_alias}"
 
   default_tags = {
@@ -45,5 +45,5 @@ locals {
 }
 
 module "allow_list" {
-  source = "git@github.com:ministryofjustice/opg-terraform-aws-moj-ip-allow-list.git?ref=v3.0.1"
+  source = "git@github.com:ministryofjustice/opg-terraform-aws-moj-ip-allow-list.git?ref=v3.0.3"
 }
