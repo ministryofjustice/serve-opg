@@ -17,7 +17,6 @@ defaults:
 
 jobs:
   build_and_push_containers:
-    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@cbb722410c2e876e24abbe8de2cc27693e501dcb
