@@ -31,7 +31,7 @@ jobs:
     outputs:
       build_identifier: ${{ steps.variables.outputs.build_identifier }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # pin@v3
+      - uses: actions/checkout@cbb722410c2e876e24abbe8de2cc27693e501dcb # pin@v3
       - name: extract variables for workflow
         id: variables
         env:
@@ -66,7 +66,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
       - name: Configure Terraform OIDC AWS Credentials
-        uses: aws-actions/configure-aws-credentials@132df1605ae82e618724f3a9ca0129373ac8d869
+        uses: aws-actions/configure-aws-credentials@97834a484a5ab3c40fa9e2eb40fcf8041105a573
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-development"
