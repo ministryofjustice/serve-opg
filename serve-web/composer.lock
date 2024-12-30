@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "25c9ce5efd69611306c61fff76862eb8",
+    "content-hash": "6b283df304ae70ac67f5250315cab3f7",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -3197,16 +3197,16 @@
         },
         {
             "name": "shuchkin/simplexlsx",
-            "version": "1.1.12",
+            "version": "1.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shuchkin/simplexlsx.git",
-                "reference": "0044a4c917037f7613bcd81c7766339a35b9832a"
+                "reference": "71a5e3d40d14e33161f8a40b3fd02de542218ef0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shuchkin/simplexlsx/zipball/0044a4c917037f7613bcd81c7766339a35b9832a",
-                "reference": "0044a4c917037f7613bcd81c7766339a35b9832a",
+                "url": "https://api.github.com/repos/shuchkin/simplexlsx/zipball/71a5e3d40d14e33161f8a40b3fd02de542218ef0",
+                "reference": "71a5e3d40d14e33161f8a40b3fd02de542218ef0",
                 "shasum": ""
             },
             "require": {
@@ -3245,9 +3245,9 @@
             ],
             "support": {
                 "issues": "https://github.com/shuchkin/simplexlsx/issues",
-                "source": "https://github.com/shuchkin/simplexlsx/tree/1.1.12"
+                "source": "https://github.com/shuchkin/simplexlsx/tree/1.1.13"
             },
-            "time": "2024-12-11T14:13:23+00:00"
+            "time": "2024-12-21T13:32:13+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -12101,7 +12101,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -12109,6 +12109,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
