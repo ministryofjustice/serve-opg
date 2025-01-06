@@ -84,7 +84,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   iam_database_authentication_enabled = false
 
   serverlessv2_scaling_configuration {
-    min_capacity = 0.5
+    min_capacity = local.environment == "production" ? 0.5 : 0
     max_capacity = 16
   }
   depends_on = [aws_cloudwatch_log_group.api_cluster]
