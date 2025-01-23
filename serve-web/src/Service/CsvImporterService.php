@@ -6,7 +6,6 @@ use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CsvImporterService
@@ -45,7 +44,7 @@ class CsvImporterService
             'Ord Type',
             'Made Date',
             'Issue Date',
-            'Order No'
+            'Order No',
         ], true);
         $rows = $csvToArray->getData();
 
@@ -53,12 +52,11 @@ class CsvImporterService
         foreach ($rows as $row) {
             $this->importSingleRow($row);
 
-            if ($count % 25 === 0) {
-                $this->em->flush();
+            if (0 === $count % 25) {
                 $this->em->clear();
             }
 
-            $count++;
+            ++$count;
         }
 
         return $count;
@@ -72,15 +70,15 @@ class CsvImporterService
         $row = array_map('trim', $row);
 
         $case = strtoupper($row['Case']);
-        $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
-        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
+        $clientName = $row['Forename'].' '.$row['Surname']; // TODO different fields ?
+        $orderType = 2 == $row['Ord Type'] ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);
 
         // order
-        $issuedAt = new DateTime($row['Issue Date']);
-        $madeAt = new DateTime($row['Made Date']);
+        $issuedAt = new \DateTime($row['Issue Date']);
+        $madeAt = new \DateTime($row['Made Date']);
         $orderNumber = $row['Order No'];
 
         return $this->orderService->upsert($client, $orderType, $madeAt, $issuedAt, $orderNumber);

@@ -6,19 +6,18 @@ use App\Entity\Client;
 use App\Entity\Order;
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
-use DateTime;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OrderService
 {
-    const APPOINTMENT_TYPE_SUB_TYPE_REGEX = <<<REGEX
+    public const APPOINTMENT_TYPE_SUB_TYPE_REGEX = <<<REGEX
 /ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)\s*(?:DEPUTIES|DEPUTY)/m
 REGEX;
 
-    const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
-    const BOND_REGEX = '/sum of (.*) in/';
+    public const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
+    public const BOND_REGEX = '/sum of (.*) in/';
 
     private EntityManager $em;
 
@@ -30,8 +29,7 @@ REGEX;
         EntityManager $em,
         SiriusService $siriusService,
         DocumentReaderService $documentReader
-    )
-    {
+    ) {
         $this->em = $em;
         $this->siriusService = $siriusService;
         $this->documentReader = $documentReader;
@@ -45,7 +43,7 @@ REGEX;
     public function serve(Order $order): void
     {
         if (!$order->readyToServe()) {
-            throw new \RuntimeException("Order not ready to be served");
+            throw new \RuntimeException('Order not ready to be served');
         }
 
         if (!$this->isAvailable()) {
@@ -56,7 +54,7 @@ REGEX;
         try {
             $this->siriusService->serveOrder($order);
 
-            $order->setServedAt(new DateTime());
+            $order->setServedAt(new \DateTime());
             $this->em->persist($order);
             $this->em->flush();
         } catch (\Exception $e) {
@@ -70,7 +68,7 @@ REGEX;
         $order = $this->em->getRepository(Order::class)->find($orderId);
 
         if (!$order) {
-            throw new \RuntimeException("Order not existing");
+            throw new \RuntimeException('Order not existing');
         }
         if ($order->getServedAt()) {
             throw new AccessDeniedException('Cannot access an already served order');
@@ -82,22 +80,21 @@ REGEX;
     public function upsert(
         Client $client,
         string $orderClass,
-        DateTime $madeAt,
-        DateTime $issuedAt,
+        \DateTime $madeAt,
+        \DateTime $issuedAt,
         string $orderNumber
-    ): Order
-    {
+    ): Order {
         /* @var $order Order */
-        $order = $this->em->getRepository($orderClass)->findOneBy(['client' => $client]);
+        $order = $this->em->getRepository($orderClass)->findOneBy([
+            'client' => $client,
+            'orderNumber' => $orderNumber,
+        ]);
+
         if (!$order) {
+            // Create a new order if no matching order is found
             $order = new $orderClass($client, $madeAt, $issuedAt, $orderNumber);
             $this->em->persist($order);
-            $this->em->persist($client);
-        }
-
-        if ($order->getOrderNumber() !== $orderNumber){
-            $order->setOrderNumber($orderNumber);
-            $this->em->persist($order);
+            $this->em->flush();
         }
 
         return $order;
@@ -147,17 +144,13 @@ REGEX;
     }
 
     /**
-     * @param string $fileContents, Text extracted from Court Order
-     *
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
     public function answerQuestionsFromText(string $fileContents, Order $order): Order
     {
         if (!$this->extractCaseNumber($fileContents, $order)) {
-            throw new WrongCaseNumberException(
-                'The case number in the document does not match the case number for this order. Please check the file and try again.'
-            );
+            throw new WrongCaseNumberException('The case number in the document does not match the case number for this order. Please check the file and try again.');
         }
 
         // Answer the questions from the order
@@ -177,6 +170,7 @@ REGEX;
         if ($matches[1] === $order->getClient()->getCaseNumber()) {
             return true;
         }
+
         return false;
     }
 
@@ -225,16 +219,16 @@ REGEX;
             return;
         }
 
-        $bond = preg_replace("/[^a-zA-Z0-9]/", "", $matches[1]);
+        $bond = preg_replace('/[^a-zA-Z0-9]/', '', $matches[1]);
 
         switch ($bond) {
-            case "":
+            case '':
                 $order->setHasAssetsAboveThreshold(null);
                 break;
-            case ($bond >= 21000):
+            case $bond >= 21000:
                 $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
                 break;
-            case ($bond < 21000):
+            case $bond < 21000:
                 $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_NO);
                 break;
         }

@@ -7,4 +7,4 @@ services:
     environment:
       APP_ENV: 'test'
       DC_BEHAT_CONTROLLER_ENABLED: 1
-      SYMFONY_DEPRECATIONS_HELPER: 1500
+      SYMFONY_DEPRECATIONS_HELPER: disabled

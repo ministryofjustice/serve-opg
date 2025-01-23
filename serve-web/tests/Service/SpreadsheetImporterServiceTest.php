@@ -8,14 +8,13 @@ use App\Entity\Client;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Service\ClientService;
-use App\Service\SpreadsheetImporterService;
 use App\Service\OrderService;
-use DateTime;
+use App\Service\SpreadsheetImporterService;
 use Doctrine\ORM\EntityManagerInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Prophecy\PhpUnit\ProphecyTrait;
 
 class SpreadsheetImporterServiceTest extends KernelTestCase
 {
@@ -27,7 +26,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $this->projectDir = self::bootKernel()->getProjectDir();
     }
 
-    public function test_csv_importFile()
+    public function testCsvImportFile()
     {
         $csvFilePath = 'tests/TestData/cases.csv';
 
@@ -42,47 +41,63 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $row1Client = new Client(
             '93559316',
             'Joni Mitchell',
-            new DateTime()
+            new \DateTime()
         );
 
         $row2Client = new Client(
             '93559317',
             'Lorely Rodriguez',
-            new DateTime()
+            new \DateTime()
         );
 
         $clientService->upsert('93559316', 'Joni Mitchell')->shouldBeCalled()->willReturn($row1Client);
         $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
+        $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
 
         $row1Order = new OrderPf(
             $row1Client,
-            new DateTime('1-Aug-2018'),
-            new DateTime('15-Aug-2018'),
+            new \DateTime('1-Aug-2018'),
+            new \DateTime('15-Aug-2018'),
             '1'
         );
         $orderService->upsert(
             $row1Client,
             OrderPf::class,
-            new DateTime('1-Aug-2018'),
-            new DateTime('15-Aug-2018'),
+            new \DateTime('1-Aug-2018'),
+            new \DateTime('15-Aug-2018'),
             '1'
         )->shouldBeCalled()
         ->willReturn($row1Order);
 
         $row2Order = new OrderHw(
-            $row1Client,
-            new DateTime('2-Aug-2018'),
-            new DateTime('17-Aug-2018'),
+            $row2Client,
+            new \DateTime('2-Aug-2018'),
+            new \DateTime('17-Aug-2018'),
             '2'
         );
         $orderService->upsert(
             $row2Client,
             OrderHw::class,
-            new DateTime('2-Aug-2018'),
-            new DateTime('17-Aug-2018'),
+            new \DateTime('2-Aug-2018'),
+            new \DateTime('17-Aug-2018'),
             '2'
         )->shouldBeCalled()
         ->willReturn($row2Order);
+
+        $row3Order = new OrderPf(
+            $row2Client,
+            new \DateTime('3-Aug-2018'),
+            new \DateTime('18-Aug-2018'),
+            '3'
+        );
+        $orderService->upsert(
+            $row2Client,
+            OrderPf::class,
+            new \DateTime('3-Aug-2018'),
+            new \DateTime('18-Aug-2018'),
+            '3'
+        )->shouldBeCalled()
+            ->willReturn($row3Order);
 
         $sut = new SpreadsheetImporterService(
             $clientService->reveal(),
@@ -94,7 +109,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $sut->importFile($uploadedFile);
     }
 
-    public function test_xlsx_importFile()
+    public function testXlsxImportFile()
     {
         $csvFilePath = 'tests/TestData/cases.xlsx';
 
@@ -113,13 +128,13 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $row1Client = new Client(
             '93559428',
             'Johnny Depp',
-            new DateTime()
+            new \DateTime()
         );
 
         $row2Client = new Client(
             '93559429',
             'Amber Heard',
-            new DateTime()
+            new \DateTime()
         );
 
         $clientService->upsert('93559428', 'Johnny Depp')->shouldBeCalled()->willReturn($row1Client);
@@ -127,30 +142,30 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
 
         $row1Order = new OrderPf(
             $row1Client,
-            new DateTime('31-May-2022'),
-            new DateTime('29-May-2022'),
+            new \DateTime('31-May-2022'),
+            new \DateTime('29-May-2022'),
             '1'
         );
         $orderService->upsert(
             $row1Client,
             OrderPf::class,
-            new DateTime('31-May-2022'),
-            new DateTime('29-May-2022'),
+            new \DateTime('31-May-2022'),
+            new \DateTime('29-May-2022'),
             '1'
         )->shouldBeCalled()
         ->willReturn($row1Order);
 
         $row2Order = new OrderPf(
             $row1Client,
-            new DateTime('31-May-2022'),
-            new DateTime('29-May-2022'),
+            new \DateTime('31-May-2022'),
+            new \DateTime('29-May-2022'),
             '1'
         );
         $orderService->upsert(
             $row2Client,
             OrderHw::class,
-            new DateTime('30-May-2022'),
-            new DateTime('28-May-2022'),
+            new \DateTime('30-May-2022'),
+            new \DateTime('28-May-2022'),
             '2'
         )->shouldBeCalled()
         ->willReturn($row2Order);
