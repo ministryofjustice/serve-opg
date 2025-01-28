@@ -10,19 +10,18 @@ use App\Entity\OrderPf;
 use App\Service\ClientService;
 use App\Service\CsvImporterService;
 use App\Service\OrderService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Prophecy\PhpUnit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class CsvImporterServiceTest extends TestCase
 {
     use ProphecyTrait;
-    
+
     /** @test */
     public function importFile()
     {
-        $csvFilePath = __DIR__ . '/../TestData/cases.csv';
+        $csvFilePath = __DIR__.'/../TestData/cases.csv';
 
         $clientService = $this->prophesize(ClientService::class);
         $orderService = $this->prophesize(OrderService::class);
@@ -31,32 +30,41 @@ class CsvImporterServiceTest extends TestCase
         $row1Client = new Client(
             '93559316',
             'Joni Mitchell',
-            new DateTime()
+            new \DateTime()
         );
 
         $row2Client = new Client(
             '93559317',
             'Lorely Rodriguez',
-            new DateTime()
+            new \DateTime()
         );
 
         $clientService->upsert('93559316', 'Joni Mitchell')->shouldBeCalled()->willReturn($row1Client);
+        $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
         $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
 
         $orderService->upsert(
             $row1Client,
             OrderPf::class,
-            new DateTime('1-Aug-2018'),
-            new DateTime('15-Aug-2018'),
+            new \DateTime('1-Aug-2018'),
+            new \DateTime('15-Aug-2018'),
             1
         )->shouldBeCalled();
 
         $orderService->upsert(
             $row2Client,
             OrderHw::class,
-            new DateTime('2-Aug-2018'),
-            new DateTime('17-Aug-2018'),
+            new \DateTime('2-Aug-2018'),
+            new \DateTime('17-Aug-2018'),
             2
+        )->shouldBeCalled();
+
+        $orderService->upsert(
+            $row2Client,
+            OrderPf::class,
+            new \DateTime('3-Aug-2018'),
+            new \DateTime('18-Aug-2018'),
+            3
         )->shouldBeCalled();
 
         $sut = new CsvImporterService($clientService->reveal(), $orderService->reveal(), $em->reveal());

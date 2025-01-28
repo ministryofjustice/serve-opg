@@ -42,7 +42,7 @@ class SpreadsheetImporterService
         $fileType = $file->getClientMimeType();
         $path = $file->getPathname();
         switch ($fileType) {
-            case ('text/csv'):
+            case 'text/csv':
                 $csvToArray = new CsvToArray($path, [
                     'Case',
                     'Forename',
@@ -50,7 +50,7 @@ class SpreadsheetImporterService
                     'Ord Type',
                     'Made Date',
                     'Issue Date',
-                    'Order No'
+                    'Order No',
                 ], true);
                 $rows = $csvToArray->getData();
 
@@ -58,45 +58,46 @@ class SpreadsheetImporterService
                 foreach ($rows as $row) {
                     $this->importSingleRow($row);
 
-                    if ($count % 25 === 0) {
-                        $this->em->flush();
+                    if (0 === $count % 25) {
                         $this->em->clear();
                     }
 
-                    $count++;
+                    ++$count;
                 }
+
                 return $count;
 
-            case ('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):
+            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
                 $xlsx = SimpleXLSX::parse($path);
 
                 $header_values = $rows = [];
-                foreach ( $xlsx->rows() as $k => $r ) {
-                    if ( $k === 0 ) {
+                foreach ($xlsx->rows() as $k => $r) {
+                    if (0 === $k) {
                         $header_values = $r;
                         continue;
                     }
-                    $rows[] = array_combine( $header_values, $r );
+                    $rows[] = array_combine($header_values, $r);
                 }
 
                 $count = 0;
                 if (!$xlsx->success()) {
-                    $this->logger->error('Error parsing XLSX file: ' . $xlsx->error());
+                    $this->logger->error('Error parsing XLSX file: '.$xlsx->error());
                 } else {
                     foreach ($rows as $row) {
                         $this->importSingleRow($row);
 
-                        if ($count % 25 === 0) {
-                            $this->em->flush();
+                        if (0 === $count % 25) {
                             $this->em->clear();
                         }
 
-                        $count++;
+                        ++$count;
                     }
                 }
+
                 return $count;
             default:
                 $this->logger->error(sprintf('Unsupported file type %s. Did not match CSV or XLXS', $fileType));
+
                 return 0;
         }
     }
@@ -106,8 +107,8 @@ class SpreadsheetImporterService
         $row = array_map('trim', $row);
 
         $case = strtoupper($row['Case']);
-        $clientName = $row['Forename'].' '. $row['Surname']; //TODO different fields ?
-        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
+        $clientName = $row['Forename'].' '.$row['Surname']; // TODO different fields ?
+        $orderType = 2 == $row['Ord Type'] ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);

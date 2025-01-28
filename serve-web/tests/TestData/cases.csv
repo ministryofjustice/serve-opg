@@ -1,4 +1,4 @@
 Case,Forename,Surname,Adrs1,Adrs2,Adrs3,Adrs4,Adrs5,Postcode,DOB,Client Phone,Order No,Ord Type,Desc,Made Date,Issue Date
-93559316,Joni,Mitchell,Address 1,Address 2,Address 3,Address 4,Address 5,AB1 7CD,12-Apr-2020,123456789,1,1,"Property & Affairs Deputy (Financial)
-",1-Aug-2018,15-Aug-2018
-93559317,Lorely,Rodriguez,Address 1,Address 2,Address 3,Address 4,Address 5,AB1 7CD,12-Apr-2020,123456789,2,2,Health & Welfare Deputy,2-Aug-2018,17-Aug-2018
+93559316,Joni,Mitchell,Address 1,Address 2,Address 3,Address 4,Address 5,AB1 7CD,12-Apr-2020,123456789,1,1,"Property & Affairs Deputy (Financial)",1-Aug-2018,15-Aug-2018
+93559317,Lorely,Rodriguez,Address 1,Address 2,Address 3,Address 4,Address 5,AB1 7CD,12-Apr-2020,123456789,2,2,"Health & Welfare Deputy",2-Aug-2018,17-Aug-2018
+93559317,Lorely,Rodriguez,Address 1,Address 2,Address 3,Address 4,Address 5,AB1 7CD,12-Apr-2020,123456789,3,1,"Property & Affairs Deputy (Financial)",3-Aug-2018,18-Aug-2018
