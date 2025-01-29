@@ -82,7 +82,7 @@ docker compose run --rm app php bin/console doctrine:migrations:execute 20181019
 There are two suites of tests:
 
 - Unit tests
-- Integration tests (behat tests)
+- Integration tests (php behat tests)
 
 You can run the tests with their respective `make` commands. There is more detailed information on
 updating and working with tests in the [testing ](docs/runbooks/TESTING.md) and [debugging ](docs/runbooks/DEBUGGING.md) docs.
