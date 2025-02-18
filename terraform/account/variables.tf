@@ -1,6 +1,7 @@
 variable "accounts" {
   type = map(
     object({
+      name       = string,
       account_id = string
     })
   )
