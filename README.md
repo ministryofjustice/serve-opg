@@ -38,6 +38,9 @@ and resets the fixture data.
 The app will be available locally at:
 > [https://localhost](https://localhost/)
 
+You can log in as an [admin user](serve-web/src/DataFixtures/adminUsers.yaml) or a [standard user](serve-web/src/DataFixtures/testUsers.yaml)
+The password for these users is stored in the BEHAT_PASSWORD envvar.
+
 ### Working with local environment
 
 To get a full list of commands for working with serve type:
