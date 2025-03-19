@@ -29,7 +29,7 @@ up: ##@application Brings the app up in prod mode - requires deps to be built
 	docker compose up -d --remove-orphans loadbalancer
 	sleep 3
 
-initialise: build dependencies up reset-fixtures ##@application Initialise and bring up the application
+initialise: dependencies build up reset-fixtures ##@application Initialise and bring up the application
 
 build-up: build up reset-fixtures ##@application Builds and brings the app up in prod mode
 
