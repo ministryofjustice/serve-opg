@@ -19,10 +19,10 @@ jobs:
   build_and_push_containers:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@cbb722410c2e876e24abbe8de2cc27693e501dcb
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: install aws cli
-        uses: unfor19/install-aws-cli-action@27d6061dae5d39e89be4d2246824f15e111a7e06
+        uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1
 
       - name: Build Containers
         run: |
@@ -34,7 +34,7 @@ jobs:
           docker compose build web app
 
       - name: Configure OIDC AWS Credentials
-        uses: aws-actions/configure-aws-credentials@97834a484a5ab3c40fa9e2eb40fcf8041105a573
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::311462405659:role/serve-gh-actions-ecr-push
@@ -43,7 +43,7 @@ jobs:
 
       - name: ECR Login
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@37b726ebcaba9d1c1838caf54540902bad814823
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
         with:
           registries: 311462405659
 
