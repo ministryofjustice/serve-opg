@@ -72,7 +72,7 @@ class ReportService
         $startDate = new DateTime("2001-01-01 00:00:00");
         $endDate = (new DateTime('now'))->modify('+1 days');
 
-        $orders = $this->getOrders('pending', $startDate, $endDate, 1000000);
+        $orders = $this->getOrders('pending', $startDate, $endDate);
 
         $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderMadeDate', 'OrderIssueDate', 'Status' ];
         $ordersCsv = [];
@@ -123,7 +123,6 @@ class ReportService
         foreach ($orders as $order) {
 
             $line = [
-                "OrderId" => $order['id_1'],
                 "CaseNumber" => $order['case_number_13'],
                 "OrderType" => $order['type_16'],
                 "OrderNumber" => $order['order_number_11'],
@@ -145,7 +144,7 @@ class ReportService
      *
      * @return Order[]
      */
-    public function getOrders(string $type, DateTime $startDate, DateTime $endDate): array
+    public function getOrders(string $type, DateTime $startDate, DateTime $endDate, $maxResults = 1000000): array
     {
         $formattedEndDate = $endDate->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
@@ -155,7 +154,13 @@ class ReportService
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate
         ];
-        return $this->orderRepo->getOrders($filters);
+
+        if($type === 'served' && $maxResults === 1000000 ) {
+            return $this->orderRepo->getAllServedOrders($filters);
+        } else {
+            return $this->orderRepo->getOrdersNotServedAndOrderReports($filters, $maxResults);
+        }
+
     }
 
 

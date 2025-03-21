@@ -20,13 +20,38 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function getAllServedOrders(array $filters, int $maxResults = 1000000)
+    {
+        $servedOrderQueryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+
+        $rawParams = $servedOrderQueryBuilder->getParameters();
+
+        $params = [];
+
+        foreach($rawParams as $parameter) {
+            $params[] = $parameter->getValue();
+        }
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->executeQuery($servedOrderQueryBuilder->getQuery()->getSQL(), $params);
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function getOrdersNotServedAndOrderReports(array $filters, int $maxResults)
+    {
+        $servedOrderQueryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+
+        return $servedOrderQueryBuilder->getQuery()->getResult();
+
+    }
+
     /**
      * @param array $filters
      * @param integer $maxResults
      *
      * @return Order[]
      */
-    public function getOrders(array $filters, int $maxResults = 100000): array
+    private function createOrdersQueryBuilder(array $filters, int $maxResults): QueryBuilder
     {
         /**
          * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
@@ -56,19 +81,7 @@ class OrderRepository extends EntityRepository
 
         $this->applyFilters($qb, $filters);
 
-        $rawParams = $qb->getParameters();
-
-        $params = [];
-
-        foreach($rawParams as $parameter) {
-            $params[] = $parameter->getValue();
-        }
-
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->executeQuery($qb->getQuery()->getSQL(), $params);
-        return $stmt->fetchAllAssociative();
-
-//        return $qb->getQuery()->getArrayResult();
+        return $qb;
 
     }
 
