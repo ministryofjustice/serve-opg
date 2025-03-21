@@ -110,34 +110,34 @@ class ReportService
     {
         $startDate = new DateTime("2001-01-01 00:00:00");
         $endDate = (new DateTime('now'))->modify('+1 days');
-
-        $orders = $this->getOrders('served', $startDate, $endDate, 1000000);
-
-        $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderServedDate'];
-        $ordersCsv = [];
-
-        foreach ($orders as $order) {
-            $ordersCsv[] = [
-                "CaseNumber" => $order->getClient()->getCaseNumber(),
-                "OrderType" => $order->getType(),
-                "OrderNumber" => $order->getOrderNumber(),
-                "ClientName" => $order->getClient()->getClientName(),
-                "OrderMadeDate" => $order->getServedAt()->format('Y-m-d'),
-            ];
-        }
-
         $today = (new DateTime('now'))->format('Y-m-d');
+
         $file = fopen("/tmp/all-served-orders-$today.csv","w");
+
+        $headers = ['OrderId', 'CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderServedDate'];
 
         fputcsv($file, $headers);
 
-        foreach($ordersCsv as $line) {
+        $orders = $this->getOrders('served', $startDate, $endDate);
+
+        foreach ($orders as $order) {
+
+            $line = [
+                "OrderId" => $order['id_1'],
+                "CaseNumber" => $order['case_number_13'],
+                "OrderType" => $order['type_16'],
+                "OrderNumber" => $order['order_number_11'],
+                "ClientName" => $order['client_name_14'],
+                "OrderServedDate" => $order['served_at_8'],
+            ];
+
             fputcsv($file, $line);
+
         }
 
-        fclose($file);
+            fclose($file);
 
-        return new File("/tmp/all-served-orders-$today.csv");
+            return new File("/tmp/all-served-orders-$today.csv");
     }
 
     /**
@@ -145,7 +145,7 @@ class ReportService
      *
      * @return Order[]
      */
-    public function getOrders(string $type, DateTime $startDate, DateTime $endDate, int $maxResults): array
+    public function getOrders(string $type, DateTime $startDate, DateTime $endDate): array
     {
         $formattedEndDate = $endDate->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
@@ -155,7 +155,7 @@ class ReportService
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate
         ];
-        return $this->orderRepo->getOrders($filters, $maxResults);
+        return $this->orderRepo->getOrders($filters);
     }
 
 
