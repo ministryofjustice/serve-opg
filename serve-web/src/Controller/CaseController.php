@@ -37,7 +37,7 @@ class CaseController extends AbstractController
         ];
 
         return $this->render('Case/index.html.twig', [
-            'orders' => $this->orderRepo->getOrders($filters, $limit),
+            'orders' => $this->orderRepo->getOrdersNotServedAndOrderReports($filters, $limit),
             'filters' => $filters,
             'counts' => [
                 'pending' => $this->orderRepo->getOrdersCount(['type' => 'pending'] + $filters),

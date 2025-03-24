@@ -64,7 +64,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         /** @var ObjectProphecy|OrderRepository $orderRepo */
         $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrders($filters, 10000)->shouldBeCalled()->willReturn($orders);
+        $orderRepo->getOrdersNotServedAndOrderReports($filters, 10000)->shouldBeCalled()->willReturn($orders);
 
         /** @var ObjectProphecy|EntityManager $em */
         $em = $this->prophesize(EntityManager::class);

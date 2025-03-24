@@ -114,7 +114,7 @@ class ReportService
 
         $file = fopen("/tmp/all-served-orders-$today.csv","w");
 
-        $headers = ['OrderId', 'CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderServedDate'];
+        $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderServedDate'];
 
         fputcsv($file, $headers);
 
@@ -122,12 +122,14 @@ class ReportService
 
         foreach ($orders as $order) {
 
+            $orderServedDate = date('Y-m-d', strtotime($order['served_at_8']));
+
             $line = [
                 "CaseNumber" => $order['case_number_13'],
                 "OrderType" => $order['type_16'],
                 "OrderNumber" => $order['order_number_11'],
                 "ClientName" => $order['client_name_14'],
-                "OrderServedDate" => $order['served_at_8'],
+                "OrderServedDate" => $orderServedDate,
             ];
 
             fputcsv($file, $line);

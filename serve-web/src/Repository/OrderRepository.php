@@ -20,11 +20,12 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    //Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead fetching data back as an associative array to handle large dataset and avoid timeouts
     public function getAllServedOrders(array $filters, int $maxResults = 1000000)
     {
-        $servedOrderQueryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+        $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
 
-        $rawParams = $servedOrderQueryBuilder->getParameters();
+        $rawParams = $queryBuilder->getParameters();
 
         $params = [];
 
@@ -33,16 +34,16 @@ class OrderRepository extends EntityRepository
         }
 
         $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->executeQuery($servedOrderQueryBuilder->getQuery()->getSQL(), $params);
+        $stmt = $conn->executeQuery($queryBuilder->getQuery()->getSQL(), $params);
+
         return $stmt->fetchAllAssociative();
     }
 
     public function getOrdersNotServedAndOrderReports(array $filters, int $maxResults)
     {
-        $servedOrderQueryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+        $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
 
-        return $servedOrderQueryBuilder->getQuery()->getResult();
-
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
