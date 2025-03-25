@@ -42,7 +42,7 @@ class CaseController extends AbstractController
             'counts' => [
                 'pending' => $this->orderRepo->getOrdersCount(['type' => 'pending'] + $filters),
                 'served' => $this->orderRepo->getOrdersCount(['type' => 'served'] + $filters),
-            ]
+            ],
         ]);
     }
 }

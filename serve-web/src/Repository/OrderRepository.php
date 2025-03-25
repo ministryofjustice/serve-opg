@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Order;
@@ -20,7 +21,7 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    //Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead fetching data back as an associative array to handle large dataset and avoid timeouts
+    // Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead fetching data back as an associative array to handle large dataset and avoid timeouts
     public function getAllServedOrders(array $filters, int $maxResults = 1000000)
     {
         $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
@@ -29,7 +30,7 @@ class OrderRepository extends EntityRepository
 
         $params = [];
 
-        foreach($rawParams as $parameter) {
+        foreach ($rawParams as $parameter) {
             $params[] = $parameter->getValue();
         }
 
@@ -46,12 +47,6 @@ class OrderRepository extends EntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    /**
-     * @param array $filters
-     * @param integer $maxResults
-     *
-     * @return Order[]
-     */
     private function createOrdersQueryBuilder(array $filters, int $maxResults): QueryBuilder
     {
         /**
@@ -83,18 +78,13 @@ class OrderRepository extends EntityRepository
         $this->applyFilters($qb, $filters);
 
         return $qb;
-
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function applyFilters(QueryBuilder $qb, array $filters): void
     {
-        if ($filters['type'] == 'pending') {
+        if ('pending' == $filters['type']) {
             $qb->where('o.servedAt IS NULL');
-        } elseif ($filters['type'] == 'served') {
+        } elseif ('served' == $filters['type']) {
             $qb->where('o.servedAt IS NOT NULL');
         }
 
@@ -104,15 +94,14 @@ class OrderRepository extends EntityRepository
         }
 
         if (
-            array_key_exists('startDate', $filters) &&
-            array_key_exists('endDate', $filters)
+            array_key_exists('startDate', $filters)
+            && array_key_exists('endDate', $filters)
         ) {
-            if ($filters['type'] == 'served') {
+            if ('served' == $filters['type']) {
                 $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
                     ->setParameter('start', $filters['startDate'])
                     ->setParameter('end', $filters['endDate']);
-            }
-            else {
+            } else {
                 $qb->andWhere('o.madeAt >= :start AND o.madeAt <= :end')
                     ->setParameter('start', $filters['startDate'])
                     ->setParameter('end', $filters['endDate']);
@@ -122,12 +111,11 @@ class OrderRepository extends EntityRepository
 
     public function getOrdersBeforeGoLive(): mixed
     {
-
         $qb = $this->_em->getRepository(Order::class)
-            ->createQueryBuilder("o")
-            ->select("o")
+            ->createQueryBuilder('o')
+            ->select('o')
             ->where("o.createdAt < '2019-03-11'")
-            ->andWhere("o.servedAt IS NULL");
+            ->andWhere('o.servedAt IS NULL');
 
         return $qb->getQuery()->getResult();
     }
