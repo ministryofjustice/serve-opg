@@ -13,8 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/case')]
 class CaseController extends AbstractController
 {
-    private EntityManager $em;
-
     private ObjectRepository $orderRepo;
 
     /**
@@ -22,7 +20,6 @@ class CaseController extends AbstractController
      */
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
         $this->orderRepo = $em->getRepository(Order::class);
     }
 

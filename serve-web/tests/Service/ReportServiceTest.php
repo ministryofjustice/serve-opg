@@ -75,11 +75,11 @@ class ReportServiceTest extends ApiWebTestCase
         $sut = new ReportService($em->reveal());
 
         $expectedCsv = <<<CSV
-DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
-$expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
-$expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
+        DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
+        $expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
+        $expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
 
-CSV;
+        CSV;
 
         $actualCsv = $sut->generateCsv();
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
@@ -150,11 +150,16 @@ CSV;
         self::assertEquals(3, $csvRows);
     }
 
-    public function testReportsReturnsAllServedOrders()
+    /**
+     * @test
+     *
+     * @dataProvider numberOfOrders
+     */
+    public function testReportsReturnsAllServedOrders($numberOfOrders, $expectedRows)
     {
         $em = self::getEntityManager();
 
-        $notServedOrders = OrderTestHelper::generateOrders(10, true);
+        $notServedOrders = OrderTestHelper::generateOrders($numberOfOrders, true);
 
         $batchSize = 500;
 
@@ -182,7 +187,16 @@ CSV;
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
-        self::assertEquals(10, $csvRows);
+        self::assertEquals($expectedRows, $csvRows);
+    }
+
+    public function numberOfOrders()
+    {
+        return [
+            'tenOrders' => [10, 10],
+            'tenThousandOrders' => [10000, 10000],
+            'thirtyThousandOrders' => [30000, 30000],
+        ];
     }
 
     public function testReportsReturnsAllOrdersNotServed()

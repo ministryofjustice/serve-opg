@@ -9,13 +9,10 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class ReportService
 {
-    private EntityManagerInterface $em;
-
     private EntityRepository $orderRepo;
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this->em = $em;
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
@@ -114,19 +111,17 @@ class ReportService
         $orders = $this->getOrders('served', $startDate, $endDate);
 
         foreach ($orders as $order) {
-
             $orderServedDate = date('Y-m-d', strtotime($order['served_at_8']));
 
             $line = [
-                "CaseNumber" => $order['case_number_13'],
-                "OrderType" => $order['type_16'],
-                "OrderNumber" => $order['order_number_11'],
-                "ClientName" => $order['client_name_14'],
-                "OrderServedDate" => $orderServedDate,
+                'CaseNumber' => $order['case_number_13'],
+                'OrderType' => $order['type_16'],
+                'OrderNumber' => $order['order_number_11'],
+                'ClientName' => $order['client_name_14'],
+                'OrderServedDate' => $orderServedDate,
             ];
 
             fputcsv($file, $line);
-
         }
 
         fclose($file);
