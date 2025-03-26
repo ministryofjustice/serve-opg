@@ -13,8 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/case')]
 class CaseController extends AbstractController
 {
-    private EntityManager $em;
-
     private ObjectRepository $orderRepo;
 
     /**
@@ -22,7 +20,6 @@ class CaseController extends AbstractController
      */
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
         $this->orderRepo = $em->getRepository(Order::class);
     }
 
@@ -37,12 +34,12 @@ class CaseController extends AbstractController
         ];
 
         return $this->render('Case/index.html.twig', [
-            'orders' => $this->orderRepo->getOrders($filters, $limit),
+            'orders' => $this->orderRepo->getOrdersNotServedAndOrderReports($filters, $limit),
             'filters' => $filters,
             'counts' => [
                 'pending' => $this->orderRepo->getOrdersCount(['type' => 'pending'] + $filters),
                 'served' => $this->orderRepo->getOrdersCount(['type' => 'served'] + $filters),
-            ]
+            ],
         ]);
     }
 }

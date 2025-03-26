@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Service;
 
@@ -10,11 +12,11 @@ use App\Service\ReportService;
 use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
 use App\Tests\ApiWebTestCase;
-use DateTime;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
+
 class ReportServiceTest extends ApiWebTestCase
 {
     use ProphecyTrait;
@@ -23,48 +25,48 @@ class ReportServiceTest extends ApiWebTestCase
     {
         $expectedCaseRef = 'COURTREFERENCE1';
 
-        $today = (new DateTime())->format('Y-m-d');
-        $minus4Weeks = (new DateTime())->modify('-4 weeks')->format('Y-m-d');
+        $today = (new \DateTime())->format('Y-m-d');
+        $minus4Weeks = (new \DateTime())->modify('-4 weeks')->format('Y-m-d');
 
         $filters = [
             'type' => 'served',
             'startDate' => $minus4Weeks,
-            'endDate' => $today
+            'endDate' => $today,
         ];
 
         $client = new Client(
             $expectedCaseRef,
             'Client Name',
-            new DateTime()
+            new \DateTime()
         );
 
-        $expectedMadeAt = (new DateTime('now'))->format('Y-m-d');
+        $expectedMadeAt = (new \DateTime('now'))->format('Y-m-d');
         $expectedIssuedAt = '2019-05-23';
         $expectedServedAt = '2019-05-24';
 
         $orderPf = new OrderPf(
             $client,
-            new DateTime($expectedMadeAt),
-            new DateTime($expectedIssuedAt),
+            new \DateTime($expectedMadeAt),
+            new \DateTime($expectedIssuedAt),
             '123'
         );
-        $orderPf->setServedAt(new DateTime($expectedServedAt));
+        $orderPf->setServedAt(new \DateTime($expectedServedAt));
         $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
 
         $orderHw = new OrderHw(
             $client,
-            new DateTime($expectedMadeAt),
-            new DateTime($expectedIssuedAt),
+            new \DateTime($expectedMadeAt),
+            new \DateTime($expectedIssuedAt),
             '124'
         );
-        $orderHw->setServedAt(new DateTime($expectedServedAt));
+        $orderHw->setServedAt(new \DateTime($expectedServedAt));
         $orderHw->setAppointmentType('SOLE');
 
         $orders = [$orderPf, $orderHw];
 
         /** @var ObjectProphecy|OrderRepository $orderRepo */
         $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrders($filters, 10000)->shouldBeCalled()->willReturn($orders);
+        $orderRepo->getOrdersNotServedAndOrderReports($filters, 10000)->shouldBeCalled()->willReturn($orders);
 
         /** @var ObjectProphecy|EntityManager $em */
         $em = $this->prophesize(EntityManager::class);
@@ -73,11 +75,11 @@ class ReportServiceTest extends ApiWebTestCase
         $sut = new ReportService($em->reveal());
 
         $expectedCsv = <<<CSV
-DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
-$expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
-$expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
+        DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
+        $expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,JOINT_AND_SEVERAL,PF
+        $expectedIssuedAt,$expectedMadeAt,$expectedServedAt,$expectedCaseRef,SOLE,HW
 
-CSV;
+        CSV;
 
         $actualCsv = $sut->generateCsv();
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
@@ -86,7 +88,7 @@ CSV;
     }
 
     /**
-     * Includes regression test for ensuring 1000 report limit bug is not re-introduced
+     * Includes regression test for ensuring 1000 report limit bug is not re-introduced.
      */
     public function testCsvLengthEqualsNumberOfCases()
     {
@@ -124,9 +126,9 @@ CSV;
 
         $batchSize = 500;
 
-        $notServedOrders[0]->setServedAt((new DateTime())->modify('-2 weeks'));
-        $notServedOrders[1]->setServedAt((new DateTime())->modify('-3 weeks'));
-        $notServedOrders[2]->setServedAt((new DateTime())->modify('-4 weeks'));
+        $notServedOrders[0]->setServedAt((new \DateTime())->modify('-2 weeks'));
+        $notServedOrders[1]->setServedAt((new \DateTime())->modify('-3 weeks'));
+        $notServedOrders[2]->setServedAt((new \DateTime())->modify('-4 weeks'));
 
         foreach ($notServedOrders as $i => $order) {
             $em->persist($order);
@@ -148,20 +150,25 @@ CSV;
         self::assertEquals(3, $csvRows);
     }
 
-    public function testReportsReturnsAllServedOrders()
+    /**
+     * @test
+     *
+     * @dataProvider numberOfOrders
+     */
+    public function testReportsReturnsAllServedOrders($numberOfOrders, $expectedRows)
     {
         $em = self::getEntityManager();
 
-        $notServedOrders = OrderTestHelper::generateOrders(10, true);
+        $notServedOrders = OrderTestHelper::generateOrders($numberOfOrders, true);
 
         $batchSize = 500;
 
-        $notServedOrders[0]->setServedAt((new DateTime())->modify('-2 weeks'));
-        $notServedOrders[1]->setServedAt((new DateTime())->modify('-3 weeks'));
-        $notServedOrders[2]->setServedAt((new DateTime())->modify('-4 weeks'));
-        $notServedOrders[3]->setServedAt((new DateTime())->modify('-10 weeks'));
-        $notServedOrders[4]->setServedAt((new DateTime())->modify('-1 years'));
-        $notServedOrders[5]->setServedAt((new DateTime())->modify('-4 years'));
+        $notServedOrders[0]->setServedAt((new \DateTime())->modify('-2 weeks'));
+        $notServedOrders[1]->setServedAt((new \DateTime())->modify('-3 weeks'));
+        $notServedOrders[2]->setServedAt((new \DateTime())->modify('-4 weeks'));
+        $notServedOrders[3]->setServedAt((new \DateTime())->modify('-10 weeks'));
+        $notServedOrders[4]->setServedAt((new \DateTime())->modify('-1 years'));
+        $notServedOrders[5]->setServedAt((new \DateTime())->modify('-4 years'));
 
         foreach ($notServedOrders as $i => $order) {
             $em->persist($order);
@@ -180,7 +187,16 @@ CSV;
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
-        self::assertEquals(10, $csvRows);
+        self::assertEquals($expectedRows, $csvRows);
+    }
+
+    public function numberOfOrders()
+    {
+        return [
+            'tenOrders' => [10, 10],
+            'tenThousandOrders' => [10000, 10000],
+            'thirtyThousandOrders' => [30000, 30000],
+        ];
     }
 
     public function testReportsReturnsAllOrdersNotServed()
@@ -191,9 +207,9 @@ CSV;
 
         $batchSize = 500;
 
-        $notServedOrders[0]->setServedAt((new DateTime())->modify('-2 weeks'));
-        $notServedOrders[1]->setServedAt((new DateTime())->modify('-3 weeks'));
-        $notServedOrders[2]->setServedAt((new DateTime())->modify('-4 weeks'));
+        $notServedOrders[0]->setServedAt((new \DateTime())->modify('-2 weeks'));
+        $notServedOrders[1]->setServedAt((new \DateTime())->modify('-3 weeks'));
+        $notServedOrders[2]->setServedAt((new \DateTime())->modify('-4 weeks'));
 
         foreach ($notServedOrders as $i => $order) {
             $em->persist($order);

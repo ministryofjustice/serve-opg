@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Order;
@@ -20,19 +21,40 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    /**
-     * @param array $filters
-     * @param integer $maxResults
-     *
-     * @return Order[]
-     */
-    public function getOrders(array $filters, $maxResults): array
+    // Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead fetching data back as an associative array to handle large dataset and avoid timeouts
+    public function getAllServedOrders(array $filters, int $maxResults = 1000000)
+    {
+        $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+
+        $rawParams = $queryBuilder->getParameters();
+
+        $params = [];
+
+        foreach ($rawParams as $parameter) {
+            $params[] = $parameter->getValue();
+        }
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->executeQuery($queryBuilder->getQuery()->getSQL(), $params);
+
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function getOrdersNotServedAndOrderReports(array $filters, int $maxResults)
+    {
+        $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    private function createOrdersQueryBuilder(array $filters, int $maxResults): QueryBuilder
     {
         /**
          * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
          * Negative dates as a integer result in a custom ordering field allow different ordering on the two order tabs,
          * (served and pending)
          */
+
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select("o, c")
@@ -47,27 +69,22 @@ class OrderRepository extends EntityRepository
                             CONCAT('-', to_date(o.servedAt, 'YYYYMMDD'))
                         )
                     END
-                ) AS HIDDEN custom_ordering
-            ")
-
-            ->leftJoin('o.client', 'c')
-            ->setMaxResults($maxResults)
-            ->orderBy('custom_ordering', 'ASC');
+            ) AS HIDDEN custom_ordering
+        ")
+        ->leftJoin('o.client', 'c')
+        ->orderBy('custom_ordering', 'ASC')
+        ->setMaxResults($maxResults);
 
         $this->applyFilters($qb, $filters);
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function applyFilters(QueryBuilder $qb, array $filters): void
     {
-        if ($filters['type'] == 'pending') {
+        if ('pending' == $filters['type']) {
             $qb->where('o.servedAt IS NULL');
-        } elseif ($filters['type'] == 'served') {
+        } elseif ('served' == $filters['type']) {
             $qb->where('o.servedAt IS NOT NULL');
         }
 
@@ -77,15 +94,14 @@ class OrderRepository extends EntityRepository
         }
 
         if (
-            array_key_exists('startDate', $filters) &&
-            array_key_exists('endDate', $filters)
+            array_key_exists('startDate', $filters)
+            && array_key_exists('endDate', $filters)
         ) {
-            if ($filters['type'] == 'served') {
+            if ('served' == $filters['type']) {
                 $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
                     ->setParameter('start', $filters['startDate'])
                     ->setParameter('end', $filters['endDate']);
-            }
-            else {
+            } else {
                 $qb->andWhere('o.madeAt >= :start AND o.madeAt <= :end')
                     ->setParameter('start', $filters['startDate'])
                     ->setParameter('end', $filters['endDate']);
@@ -95,12 +111,11 @@ class OrderRepository extends EntityRepository
 
     public function getOrdersBeforeGoLive(): mixed
     {
-
         $qb = $this->_em->getRepository(Order::class)
-            ->createQueryBuilder("o")
-            ->select("o")
+            ->createQueryBuilder('o')
+            ->select('o')
             ->where("o.createdAt < '2019-03-11'")
-            ->andWhere("o.servedAt IS NULL");
+            ->andWhere('o.servedAt IS NULL');
 
         return $qb->getQuery()->getResult();
     }
