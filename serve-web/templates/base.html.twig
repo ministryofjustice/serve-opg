@@ -32,7 +32,7 @@
         <meta property="og:image" content="{{ asset('build/images/govuk-opengraph-image.png') }}">
     </head>
 
-    <body class="govuk-template__body -debug">
+    <body class="govuk-template__body -debug govuk-frontend-supported">
         {% if gtm is not empty  %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN4BQPM{{ gtm | striptags | raw  }}&gtm_cookies_win=x"
