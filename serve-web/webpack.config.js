@@ -64,8 +64,8 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader(options => {
-      options.implementation = require('dart-sass')
-      options.sassOptions.includePaths = ['node_modules'];
+      options.implementation = require('sass')
+      options.sassOptions.includePaths = ['./node_modules'];
     })
     .autoProvidejQuery()
 ;
