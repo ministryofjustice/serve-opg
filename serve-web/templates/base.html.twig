@@ -32,8 +32,7 @@
         <meta property="og:image" content="{{ asset('build/images/govuk-opengraph-image.png') }}">
     </head>
 
-    <body class="govuk-template__body -debug">
-
+    <body class="govuk-template__body -debug govuk-frontend-supported">
         {% if gtm is not empty  %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN4BQPM{{ gtm | striptags | raw  }}&gtm_cookies_win=x"
@@ -50,47 +49,54 @@
 
         {# TODO: Cookie banner should be here. Look at app-cookie-banner on GDS #}
 
-        <header class="govuk-header" role="banner" data-module="govuk-header">
-            <div class="govuk-header__container govuk-width-container">
+        <header class="govuk-header" data-module="govuk-header">
+          <div class="govuk-header__container govuk-width-container">
+            <div class="govuk-header__content">
+              {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                {% set homepage = path('login') %}
+              {% else %}
+                {% set homepage = path('case-list') %}
+              {% endif %}
 
-                <div class="govuk-header__content">
+              <a href="{{ homepage }}" class="govuk-header__link govuk-header__service-name">
+                Serve OPG
+              </a>
 
-                    <a href="/" class="govuk-header__link govuk-header__link--service-name">Serve OPG</a>
-
-                    <button role="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation" data-module="govuk-button">Menu</button>
-                    <nav>
-                        <ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
-                            {% block navLinks %}
-                                {% set currentRoute = app.request.attributes.get('_route') %}
-                                {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-                                    <li class="govuk-header__navigation-item {{ currentRoute =='login' ? 'govuk-header__navigation-item--active' : '' }}">
-                                        <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
-                                    </li>
-                                {% else %}
-                                    <li class="govuk-header__navigation-item {{ currentRoute =='case-list' ? 'govuk-header__navigation-item--active' : '' }}">
-                                        <a class="govuk-header__link" href="{{ path('case-list') }}">Orders</a>
-                                    </li>
-                                    <li class="govuk-header__navigation-item {{ currentRoute =='upload-csv' ? 'govuk-header__navigation-item--active' : '' }}">
-                                        <a class="govuk-header__link" href="{{ path('upload-csv') }}">Upload orders</a>
-                                    </li>
-                                    <li class="govuk-header__navigation-item {{ currentRoute =='report' ? 'govuk-header__navigation-item--active' : '' }}">
-                                        <a class="govuk-header__link" href="{{ path('report') }}">Report</a>
-                                    </li>
-                                    {% if is_granted('ROLE_ADMIN') %}
-                                        <li class="govuk-header__navigation-item {{ currentRoute =='view-users' ? 'govuk-header__navigation-item--active' : '' }}">
-                                            <a class="govuk-header__link" href="{{ path('view-users') }}">User Management</a>
-                                        </li>
-                                    {% endif %}
-                                    <li class="govuk-header__navigation-item">
-                                        <a class="govuk-header__link" href="/logout">Sign out</a>
-                                    </li>
-                                {% endif %}
-                            {% endblock %}
-                        </ul>
-                    </nav>
-
-                </div>
+              <nav aria-label="Menu" class="govuk-header__navigation">
+                <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
+                  Menu
+                </button>
+                <ul id="navigation" class="govuk-header__navigation-list">
+                  {% block navLinks %}
+                    {% set currentRoute = app.request.attributes.get('_route') %}
+                    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                      <li class="govuk-header__navigation-item {{ currentRoute == 'login' ? 'govuk-header__navigation-item--active' : '' }}">
+                        <a class="govuk-header__link" href="{{ path('login') }}">Sign in</a>
+                      </li>
+                    {% else %}
+                      <li class="govuk-header__navigation-item {{ currentRoute == 'case-list' ? 'govuk-header__navigation-item--active' : '' }}">
+                        <a class="govuk-header__link" href="{{ path('case-list') }}">Orders</a>
+                      </li>
+                      <li class="govuk-header__navigation-item {{ currentRoute == 'upload-csv' ? 'govuk-header__navigation-item--active' : '' }}">
+                        <a class="govuk-header__link" href="{{ path('upload-csv') }}">Upload orders</a>
+                      </li>
+                      <li class="govuk-header__navigation-item {{ currentRoute == 'report' ? 'govuk-header__navigation-item--active' : '' }}">
+                        <a class="govuk-header__link" href="{{ path('report') }}">Report</a>
+                      </li>
+                      {% if is_granted('ROLE_ADMIN') %}
+                        <li class="govuk-header__navigation-item {{ currentRoute == 'view-users' ? 'govuk-header__navigation-item--active' : '' }}">
+                          <a class="govuk-header__link" href="{{ path('view-users') }}">User Management</a>
+                        </li>
+                      {% endif %}
+                      <li class="govuk-header__navigation-item">
+                        <a class="govuk-header__link" href="/logout">Sign out</a>
+                      </li>
+                    {% endif %}
+                  {% endblock %}
+                </ul>
+              </nav>
             </div>
+          </div>
         </header>
 
         {% block main %}

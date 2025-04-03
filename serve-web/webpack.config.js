@@ -45,14 +45,14 @@ Encore
     // copying govuk-frontend images
     .copyFiles(
       {
-        from: './node_modules/govuk-frontend/govuk/assets/images',
+        from: './node_modules/govuk-frontend/dist/govuk/assets/images',
         to: 'images/[path][name].[ext]',
       })
 
     // copying govuk-frontend fonts
     .copyFiles(
       {
-        from: './node_modules/govuk-frontend/govuk/assets/fonts',
+        from: './node_modules/govuk-frontend/dist/govuk/assets/fonts',
         to: 'fonts/[path][name].[ext]',
       })
 
@@ -64,8 +64,8 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader(options => {
-      options.implementation = require('dart-sass')
-      options.sassOptions.includePaths = ['node_modules'];
+      options.implementation = require('sass')
+      options.sassOptions.includePaths = ['./node_modules'];
     })
     .autoProvidejQuery()
 ;
