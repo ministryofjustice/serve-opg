@@ -64,8 +64,5 @@
     "transformIgnorePatterns": [
       "/node_modules/*.+\\.js$"
     ]
-  },
-  "dependencies": {
-    "@ministryofjustice/frontend": "^4.0.1"
   }
 }
