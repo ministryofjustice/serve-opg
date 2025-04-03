@@ -1,0 +1,7 @@
+/* The only part of the moj frontend we are using */
+.moj-page-header-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
