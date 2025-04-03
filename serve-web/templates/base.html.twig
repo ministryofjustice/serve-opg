@@ -52,9 +52,16 @@
         <header class="govuk-header" data-module="govuk-header">
           <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__content">
-              <a href="#" class="govuk-header__link govuk-header__service-name">
+              {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                {% set homepage = path('login') %}
+              {% else %}
+                {% set homepage = path('case-list') %}
+              {% endif %}
+
+              <a href="{{ homepage }}" class="govuk-header__link govuk-header__service-name">
                 Serve OPG
               </a>
+
               <nav aria-label="Menu" class="govuk-header__navigation">
                 <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
                   Menu
