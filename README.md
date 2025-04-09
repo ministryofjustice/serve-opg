@@ -22,7 +22,17 @@ sudo security add-trusted-cert -d -r trustRoot \
 -k /Library/Keychains/System.keychain serve-web/certs/web.crt
 ```
 
+
+
 ## Build and Run Serve Locally
+
+#### M1 macOS Monterey ≥ 12.2 | Intel macOS Monterey ≥ 12.3 Docker settings
+
+* `Docker settings -> General -> make sure 'Use the new Virtualization framework' is ticked`
+* `Docker settings -> General -> tick 'VirtioFS' for file sharing`
+* `Docker settings -> General -> untick 'Use Rosetta'`
+
+Also in `Docker settings -> Resources`, make sure that you have at least 10gb of memory allocated or you may get performance issues.
 
 ### Starting from scratch
 
