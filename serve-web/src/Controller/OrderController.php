@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class OrderController extends AbstractController
 {
@@ -33,7 +32,7 @@ class OrderController extends AbstractController
     public function __construct(
         EntityManager $em,
         OrderService $orderService,
-        DocumentService $documentService
+        DocumentService $documentService,
     ) {
         $this->em = $em;
         $this->orderService = $orderService;
@@ -41,7 +40,6 @@ class OrderController extends AbstractController
     }
 
     /**
-     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -54,7 +52,7 @@ class OrderController extends AbstractController
             OrderForm::class,
             $order,
             [
-                'show_assets_question' => $order->getType() == Order::TYPE_PF
+                'show_assets_question' => Order::TYPE_PF == $order->getType(),
             ]
         );
 
@@ -65,10 +63,10 @@ class OrderController extends AbstractController
             $this->em->flush();
 
             // Remove documents previously added that aren't applicable to SUBTYPE_INTERIM_ORDER
-            if ($order->getSubType() === order::SUBTYPE_INTERIM_ORDER) {
+            if (Order::SUBTYPE_INTERIM_ORDER === $order->getSubType()) {
                 foreach ($order->getDocuments() as $document) {
                     $documentType = $document->getType();
-                    if ($documentType !== Document::TYPE_COURT_ORDER && $documentType !== Document::TYPE_ADDITIONAL) {
+                    if (Document::TYPE_COURT_ORDER !== $documentType && Document::TYPE_ADDITIONAL !== $documentType) {
                         try {
                             $this->documentService->deleteDocumentById($document->getId());
                         } catch (\Exception $e) {
@@ -84,7 +82,7 @@ class OrderController extends AbstractController
 
         return $this->render('Order/edit.html.twig', [
             'order' => $order,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -93,20 +91,20 @@ class OrderController extends AbstractController
     {
         $order = $this->orderService->getOrderByIdIfNotServed($orderId);
 
-       // nothing answered -> go to step 1
-       if (
-           empty($order->getHasAssetsAboveThreshold()) &&
-           empty($order->getSubType()) &&
-           empty($order->getAppointmentType())
-       ) {
-           return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
-       }
+        // nothing answered -> go to step 1
+        if (
+            empty($order->getHasAssetsAboveThreshold())
+            && empty($order->getSubType())
+            && empty($order->getAppointmentType())
+        ) {
+            return $this->redirectToRoute('order-edit', ['orderId' => $order->getId()]);
+        }
 
         $showCOUpload = $request->query->get('showCOUpload') ?? true;
 
         return $this->render('Order/summary.html.twig', [
             'order' => $order,
-            'showCOUpload' => $showCOUpload
+            'showCOUpload' => $showCOUpload,
         ]);
     }
 
@@ -119,38 +117,36 @@ class OrderController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             try {
                 $this->orderService->serve($order);
                 $client = $order->getClient();
                 $request->getSession()->getFlashBag()->add('success',
-                    array(
+                    [
                         'title' => 'order.served.title',
                         'clientName' => $client->getClientName(),
                         'caseNumber' => $client->getCaseNumber(),
-                        'orderType' =>$order->getType() . '-success'
-                    )
+                        'orderType' => $order->getType().'-success',
+                    ]
                 );
             } catch (\Exception $e) {
-                $message = 'Order ' . $orderId . ' could not be served at the moment';
+                $message = 'Order '.$orderId.' could not be served at the moment';
                 if ($this->getParameter('kernel.debug')) {
                     $message .= '.Details (only on dev mode): '.$e;
                 }
                 $request->getSession()->getFlashBag()->add('error',
-                    array(
+                    [
                         'body' => $message,
-                        'orderType' =>$order->getType() . '-error'
-                    ));
+                        'orderType' => $order->getType().'-error',
+                    ]);
             }
 
             return $this->redirectToRoute('case-list');
         }
 
-
         return $this->render('Order/declaration.html.twig', [
             'isServiceAvailable' => $this->orderService->isAvailable(),
             'order' => $order,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -163,7 +159,6 @@ class OrderController extends AbstractController
     }
 
     /**
-     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -178,7 +173,7 @@ class OrderController extends AbstractController
         $document->setFile($file);
 
         if ($document->isWordDocument()) {
-            try{
+            try {
                 $order = $this->orderService->hydrateOrderFromDocument($file, $order);
             } catch (WrongCaseNumberException $e) {
                 return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
@@ -190,7 +185,7 @@ class OrderController extends AbstractController
         try {
             $requestId = $request->headers->get('x-request-id') ?? 'test';
             $uploadDocResponse = $this->documentService->persistAndUploadDocument($order, $document, $file, $requestId);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
@@ -213,7 +208,7 @@ MESSAGE;
                 'success' => true,
                 'partial' => $partial,
                 'orderId' => $order->getId(),
-                'documentId' => $uploadDocResponse['id']
+                'documentId' => $uploadDocResponse['id'],
             ]
         );
     }
@@ -231,9 +226,9 @@ MESSAGE;
             ConfirmOrderDetailsForm::class,
             $order,
             [
-                'show_assets_question' => $order->getType() == Order::TYPE_PF && $order->getHasAssetsAboveThreshold() === null,
-                'show_subType_question' => $order->getSubType() === null,
-                'show_appointmentType_question' => $order->getAppointmentType() === null,
+                'show_assets_question' => Order::TYPE_PF == $order->getType() && null === $order->getHasAssetsAboveThreshold(),
+                'show_subType_question' => null === $order->getSubType(),
+                'show_appointmentType_question' => null === $order->getAppointmentType(),
             ]
         );
 
@@ -242,6 +237,7 @@ MESSAGE;
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($order);
             $this->em->flush();
+
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), 'showCOUpload' => false]);
         }
 
@@ -262,7 +258,7 @@ MESSAGE;
 
         return $this->render(
             'Order/summary-served.html.twig',
-            ['order' => $order, ]
+            ['order' => $order]
         );
     }
 }
