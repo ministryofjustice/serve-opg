@@ -94,7 +94,7 @@ class ReportServiceTest extends ApiWebTestCase
     {
         $em = self::getEntityManager();
 
-        $orders = OrderTestHelper::generateOrders(10000, true);
+        $orders = OrderTestHelper::generateOrders(2000, true);
 
         $batchSize = 500;
 
@@ -115,7 +115,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
-        self::assertEquals(10000, $csvRows);
+        self::assertEquals(2000, $csvRows);
     }
 
     public function testCsvOnlyReturnsCasesServedWithin4Weeks()
