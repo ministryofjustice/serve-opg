@@ -71,6 +71,7 @@ services:
       sirius-api:
         condition: service_started
 
+  # TODO - Work out why upgrades to prism break behat
   sirius-api:
     image: stoplight/prism:4.4.1
     ports:
@@ -105,7 +106,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:13.14
+    image: postgres:13.20
     ports:
       - 5432:5432
     environment:
