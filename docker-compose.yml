@@ -32,16 +32,13 @@ services:
     build:
       context: ./serve-web
       dockerfile: docker/web/Dockerfile
-      # args:
-      #   APP_HOST: ${APP_HOST:-app}
-      #   APP_PORT: 9000
-      #   NGINX_LOG_LEVEL: debug
+      args:
+         APP_HOST_ARG: ${APP_HOST_ENV:-app}
+         APP_PORT: 9000
+         NGINX_LOG_LEVEL: debug
     image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:latest
     depends_on:
       - app
-    environment:
-      APP_HOST: ${APP_HOST:-app}
-      VIRTUAL_HOST: web
     volumes:
       - ./serve-web/public:/var/www/public
 

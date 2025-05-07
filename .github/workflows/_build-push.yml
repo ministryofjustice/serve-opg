@@ -26,7 +26,7 @@ jobs:
 
       - name: Build Containers
         env:
-          APP_HOST: 127.0.0.1
+          APP_HOST_ENV: 127.0.0.1
           APP_PORT: 9000
         run: |
           # Create composer and JS dependencies
@@ -35,7 +35,8 @@ jobs:
           docker compose run --rm yarn build
           # Build all apps
           # docker compose build --build-arg APP_HOST=127.0.0.1 --build-arg APP_PORT=9000 web app
-          APP_HOST=127.0.0.1 APP_PORT=9000 docker compose build web app
+          # APP_HOST=127.0.0.1 APP_PORT=9000 docker compose build web app
+          docker compose build web --progress=plain
 
       - name: Configure OIDC AWS Credentials
         uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
