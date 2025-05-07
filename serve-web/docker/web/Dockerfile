@@ -10,12 +10,9 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxclaus/waitforit/re
 WORKDIR /var/www
 COPY public/build public/build
 
-ARG APP_HOST=${APP_HOST:-127.0.0.1}
-ARG APP_PORT=${APP_PORT:-9000}
-
-ENV APP_HOST=${APP_HOST:-127.0.0.1}
-ENV APP_PORT=${APP_PORT:-9000}
-ENV NGINX_LOG_LEVEL=${NGINX_LOG_LEVEL:-warn}
+ENV APP_HOST="app"
+ENV APP_PORT="9000"
+ENV NGINX_LOG_LEVEL="warn"
 
 RUN echo $APP_HOST
 RUN echo $APP_PORT
