@@ -40,6 +40,7 @@ services:
     depends_on:
       - app
     environment:
+      APP_HOST: ${APP_HOST:-app}
       VIRTUAL_HOST: web
     volumes:
       - ./serve-web/public:/var/www/public
