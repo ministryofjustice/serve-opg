@@ -10,9 +10,13 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxclaus/waitforit/re
 WORKDIR /var/www
 COPY public/build public/build
 
-ARG APP_HOST=${APP_HOST:-app}
+ARG APP_HOST=${APP_HOST:-127.0.0.1}
 ARG APP_PORT=${APP_PORT:-9000}
-ARG NGINX_LOG_LEVEL=${NGINX_LOG_LEVEL:-debug}
+
+RUN echo $APP_HOST
+RUN echo $APP_PORT
+
+ARG NGINX_LOG_LEVEL=${NGINX_LOG_LEVEL:-warn}
 
 COPY docker/web/nginx.conf /etc/nginx/nginx.conf
 COPY docker/web/default.conf.template /etc/nginx/conf.d/default.conf.template
