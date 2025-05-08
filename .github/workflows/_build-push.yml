@@ -25,6 +25,9 @@ jobs:
         uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1
 
       - name: Build Containers
+        env:
+            APP_HOST_LOCAL_ENV: 127.0.0.1
+            APP_PORT_LOCAL_ENV: 9000
         run: |
           # Create composer and JS dependencies
           docker compose run --rm app composer install --no-interaction

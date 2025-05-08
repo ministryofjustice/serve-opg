@@ -8,12 +8,12 @@ server {
         try_files $uri /index.php$is_args$args;
     }
 
-    error_log /var/log/nginx/error.log {{ getv "/nginx/log/level" "warn" }};
+    error_log /var/log/nginx/error.log ${LOG_LEVEL};
 
-    rewrite ^$ https://{{getv "/app/host"}}:{{getv "/app/port"}}/ permanent;
+    rewrite ^$ https://${APP_HOST}:${APP_PORT}/ permanent;
 
     location ~ ^/index\.php(/|$) {
-        fastcgi_pass {{getv "/app/host" }}:{{getv "/app/port" }};
+        fastcgi_pass ${APP_HOST}:${APP_PORT};
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
 

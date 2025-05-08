@@ -40,18 +40,12 @@ locals {
           awslogs-stream-prefix = "frontend.web"
         }
       },
-      environment = [{
-        name  = "APP_HOST",
-        value = "127.0.0.1"
-        },
-        {
-          name  = "APP_PORT",
-          value = "9000"
-        },
+      environment = [
         {
           name  = "TIMEOUT",
           value = "60"
-      }]
+        }
+      ]
     }
   )
 
