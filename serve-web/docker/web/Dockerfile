@@ -1,11 +1,9 @@
 FROM nginx:stable-alpine
 
-RUN apk update && apk upgrade
+ARG APP_HOST_ARG=${APP_HOST_LOCAL_ENV:-app}
+ARG APP_PORT_ARG=${APP_PORT_LOCAL_ENV:-9000}
 
-# Add Confd to configure nginx on start
-ENV CONFD_VERSION="0.16.0"
-RUN wget -q -O /usr/local/bin/confd "https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64" \
-  && chmod +x /usr/local/bin/confd
+RUN apk update && apk upgrade
 
 # Add Waitforit to wait on app starting
 ENV WAITFORIT_VERSION="v2.4.1"
@@ -14,10 +12,15 @@ RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxclaus/waitforit/re
 
 WORKDIR /var/www
 COPY public/build public/build
-COPY docker/web/etc /etc
 COPY docker/web/nginx.conf /etc/nginx/nginx.conf
+COPY docker/web/default.conf.tmpl /etc/nginx/conf.d/default.conf.tmpl
+
+ENV APP_HOST=$APP_HOST_ARG
+ENV APP_PORT=$APP_PORT_ARG
+
+RUN envsubst '$APP_HOST $APP_PORT' < /etc/nginx/conf.d/default.conf.tmpl > /etc/nginx/conf.d/default.conf
 
 ENV TIMEOUT=30
-CMD confd -onetime -backend env \
-  && waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=$TIMEOUT \
+
+CMD waitforit -address=tcp://$APP_HOST:$APP_PORT -timeout=$TIMEOUT \
   && nginx -g "daemon off;"
