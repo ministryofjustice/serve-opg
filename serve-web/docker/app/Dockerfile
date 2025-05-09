@@ -31,12 +31,6 @@ RUN apk add --no-cache fcgi
 #force upgrade packages
 RUN apk update && apk upgrade
 
-# Add Waitforit to wait on db starting
-ENV WAITFORIT_VERSION="v2.4.1"
-
-RUN wget -q -O /usr/local/bin/waitforit https://github.com/maxclaus/waitforit/releases/download/$WAITFORIT_VERSION/waitforit-linux_amd64 \
-  && chmod +x /usr/local/bin/waitforit
-
 #COMPOSER
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php --version=2.6.6
@@ -60,9 +54,13 @@ COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
 RUN chmod +x /usr/local/bin/health-check.sh
 RUN mkdir certs && chmod 755 certs && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
 
+COPY docker/waitforit/wait-for-it.sh /usr/bin/wait-for-it.sh
+RUN chmod +x /usr/bin/wait-for-it.sh
+
 ENV TIMEOUT=30
-CMD waitforit -address=tcp://$DC_DB_HOST:$DC_DB_PORT -timeout=$TIMEOUT \
-  && php bin/console doctrine:migrations:migrate --no-interaction \
-  && php bin/console doctrine:migrations:up-to-date \
-  && chown -R www-data var \
-  && php-fpm
+
+CMD ["/bin/ash", "-c", "/usr/bin/wait-for-it.sh -h $DC_DB_HOST -p $DC_DB_PORT -t $TIMEOUT && \
+  php bin/console doctrine:migrations:migrate --no-interaction && \
+  php bin/console doctrine:migrations:up-to-date && \
+  chown -R www-data var && \
+  php-fpm"]
