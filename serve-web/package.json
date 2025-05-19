@@ -10,7 +10,7 @@
     "@symfony/webpack-encore": "^5.0.0",
     "babel-jest": "^29.7.0",
     "core-js": "^3.0.0",
-    "del": "^3.0.0",
+    "del": "^8.0.0",
     "dropzone": "5.9.3",
     "fetch-mock": "^10.1.1",
     "file-loader": "^6.0.0",
