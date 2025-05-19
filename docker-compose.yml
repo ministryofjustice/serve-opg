@@ -92,7 +92,7 @@ services:
     ports:
       - "4566-4583:4566-4583"
     environment:
-      - SERVICES=s3,dynamodb,kms
+      - SERVICES=s3,dynamodb,kms,events,sqs
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
       - S3_SKIP_KMS_KEY_VALIDATION=1
