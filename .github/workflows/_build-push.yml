@@ -50,6 +50,46 @@ jobs:
         with:
           registries: 311462405659
 
+      - name: trivy image scanning app
+        id: trivy_scan_app
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
+        with:
+          image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/app:latest
+          severity: "HIGH,CRITICAL"
+          format: "sarif"
+          scanners: "vuln"
+          output: "trivy-results-app.sarif"
+          timeout: 15m
+        env:
+          TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-java-db
+
+      - name: upload trivy scan results to security tab
+        id: trivy_upload_sarif_app
+        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
+        with:
+          sarif_file: "trivy-results-app.sarif"
+
+      - name: trivy image scanning web
+        id: trivy_scan_web
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
+        with:
+          image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/web:latest
+          severity: "HIGH,CRITICAL"
+          format: "sarif"
+          scanners: "vuln"
+          output: "trivy-results-web.sarif"
+          timeout: 15m
+        env:
+          TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-java-db
+
+      - name: upload trivy scan results to security tab
+        id: trivy_upload_sarif_web
+        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
+        with:
+          sarif_file: "trivy-results-web.sarif"
+
       - name: Show build tag
         env:
           IMAGE_TAG: ${{ inputs.tag }}
