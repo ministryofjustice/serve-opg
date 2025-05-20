@@ -58,17 +58,17 @@ jobs:
           severity: "HIGH,CRITICAL"
           format: "sarif"
           scanners: "vuln"
-          output: "trivy-results-app.sarif"
+          output: "trivy-results.sarif"
           timeout: 15m
         env:
           TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
           TRIVY_JAVA_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-java-db
 
-      - name: upload trivy scan results to security tab
-        id: trivy_upload_sarif_app
-        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
-        with:
-          sarif_file: "trivy-results-app.sarif"
+#      - name: upload trivy scan results to security tab
+#        id: trivy_upload_sarif_app
+#        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
+#        with:
+#          sarif_file: "trivy-results.sarif"
 
       - name: trivy image scanning web
         id: trivy_scan_web
@@ -78,7 +78,7 @@ jobs:
           severity: "HIGH,CRITICAL"
           format: "sarif"
           scanners: "vuln"
-          output: "trivy-results-web.sarif"
+          output: "trivy-results.sarif"
           timeout: 15m
         env:
           TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
@@ -88,7 +88,7 @@ jobs:
         id: trivy_upload_sarif_web
         uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
         with:
-          sarif_file: "trivy-results-web.sarif"
+          sarif_file: "trivy-results.sarif"
 
       - name: Show build tag
         env:
