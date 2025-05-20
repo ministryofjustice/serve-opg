@@ -17,6 +17,12 @@ defaults:
 
 jobs:
   build_and_push_containers:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          -   svc_name: "app"
+          -   svc_name: "web"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -28,13 +34,14 @@ jobs:
         env:
             APP_HOST_LOCAL_ENV: 127.0.0.1
             APP_PORT_LOCAL_ENV: 9000
+            CONTAINER: ${{ matrix.svc_name }}
         run: |
           # Create composer and JS dependencies
           docker compose run --rm app composer install --no-interaction
           docker compose run --rm yarn install --frozen-lockfile
           docker compose run --rm yarn build
           # Build all apps
-          docker compose build web app
+          docker compose build ${CONTAINER}
 
       - name: Configure OIDC AWS Credentials
         uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
@@ -50,15 +57,15 @@ jobs:
         with:
           registries: 311462405659
 
-      - name: trivy image scanning app
+      - name: trivy image scanning
         id: trivy_scan_app
         uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
         with:
-          image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/app:latest
+          image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/${{ matrix.svc_name }}:latest
           severity: "HIGH,CRITICAL"
           format: "sarif"
           scanners: "vuln"
-          output: "trivy-results-app.sarif"
+          output: "trivy-results.sarif"
           timeout: 15m
         env:
           TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
@@ -68,27 +75,7 @@ jobs:
         id: trivy_upload_sarif_app
         uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
         with:
-          sarif_file: "trivy-results-app.sarif"
-
-      - name: trivy image scanning web
-        id: trivy_scan_web
-        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
-        with:
-          image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/web:latest
-          severity: "HIGH,CRITICAL"
-          format: "sarif"
-          scanners: "vuln"
-          output: "trivy-results-web.sarif"
-          timeout: 15m
-        env:
-          TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
-          TRIVY_JAVA_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-java-db
-
-      - name: upload trivy scan results to security tab
-        id: trivy_upload_sarif_web
-        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
-        with:
-          sarif_file: "trivy-results-web.sarif"
+          sarif_file: "trivy-results.sarif"
 
       - name: Show build tag
         env:
@@ -100,19 +87,16 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           BRANCH_NAME: ${{ inputs.branch_name }}
           TAG: ${{ inputs.tag }}
+          CONTAINER: ${{ matrix.svc_name }}
         run: |
           echo "Running on branch $BRANCH_NAME"
-          docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:${TAG}
-          docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:${TAG}
+          docker tag ${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest ${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}
 
           if [ "$BRANCH_NAME" == "main" ]; then
-            docker tag $ECR_REGISTRY/serve-opg/app:latest $ECR_REGISTRY/serve-opg/app:main-${TAG}
-            docker tag $ECR_REGISTRY/serve-opg/web:latest $ECR_REGISTRY/serve-opg/web:main-${TAG}
+            docker tag ${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest ${ECR_REGISTRY}/serve-opg/${CONTAINER}:main-${TAG}
             echo "Pushing all tags as on branch: $BRANCH_NAME"
-            docker push --all-tags $ECR_REGISTRY/serve-opg/app
-            docker push --all-tags $ECR_REGISTRY/serve-opg/web
+            docker push --all-tags ${ECR_REGISTRY}/serve-opg/${CONTAINER}
           else
             echo "Pushing branch $BRANCH_NAME tags only"
-            docker push $ECR_REGISTRY/serve-opg/app:${TAG}
-            docker push $ECR_REGISTRY/serve-opg/web:${TAG}
+            docker push ${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}
           fi
