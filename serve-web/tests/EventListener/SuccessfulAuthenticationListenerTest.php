@@ -34,6 +34,7 @@ class SuccessfulAuthenticationListenerTest extends TestCase
         $entityManager->flush()->shouldBeCalled();
 
         $dummyToken = new UsernamePasswordToken($expectedUserModel, 'bar', 'key');
+
         $authenticationEvent = new AuthenticationEvent($dummyToken);
 
         $eventListener = new SuccessfulAuthenticationListener($entityManager->reveal());

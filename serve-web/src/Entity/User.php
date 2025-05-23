@@ -6,11 +6,12 @@ use Serializable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Table(name: 'dc_user')]
 #[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
 #[ORM\HasLifecycleCallbacks]
-class User implements UserInterface, EquatableInterface
+class User implements UserInterface, EquatableInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @var string
@@ -107,11 +108,16 @@ class User implements UserInterface, EquatableInterface
         return '';
     }
 
-    public function getUsername(): ?string
+    public function getUsername(): string //This function has been replaced with getUserIdentifier() and will need to be updated for Symfony version 6 and above
     {
         return $this->email;
     }
 
+    public function getUserIdentifier(): string 
+    {
+        return (string) $this->email;
+    }
+    
     public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof User) {
