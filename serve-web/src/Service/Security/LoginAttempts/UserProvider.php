@@ -52,7 +52,7 @@ class UserProvider implements UserProviderInterface
         return $waits ? max($waits) : false;
     }
 
-    public function loadUserByUsername($username): User
+    public function loadUserByUsername($username): User // This needs to be changed to loadUserByIdentifier
     {
         if (empty($username)) {
             throw new UsernameNotFoundException('Missing username');

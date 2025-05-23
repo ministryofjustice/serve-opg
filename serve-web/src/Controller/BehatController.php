@@ -21,7 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+//use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; // New with Symfony 6
 
 #[Route(path: '/behat')]
 class BehatController extends AbstractController
@@ -42,7 +43,8 @@ class BehatController extends AbstractController
 
     private OrderService $orderService;
 
-    private UserPasswordEncoderInterface $encoder;
+    //private UserPasswordEncoderInterface $encoder;
+    private UserPasswordHasherInterface $hasher;
 
     private UserProvider $userProvider;
 
@@ -58,14 +60,14 @@ class BehatController extends AbstractController
         EntityManager $em,
         ClientService $clientService,
         OrderService $orderService,
-        UserPasswordEncoderInterface $encoder,
+        UserPasswordHasherInterface $hasher, //Changed because of deprecation to Symfony6
         UserProvider $userProvider
     )
     {
         $this->em = $em;
         $this->clientService = $clientService;
         $this->orderService = $orderService;
-        $this->encoder = $encoder;
+        $this->hasher = $hasher; // see above
         $this->userProvider = $userProvider;
         $this->behatPassword = getenv("BEHAT_PASSWORD");
     }
@@ -105,7 +107,8 @@ class BehatController extends AbstractController
             }
 
 
-            $encodedPassword = $this->encoder->encodePassword($user, $this->behatPassword);
+            //$encodedPassword = $this->encoder->encodePassword($user, $this->behatPassword);
+            $encodedPassword = $this->hasher->hashPassword($user, $this->behatPassword);
             $user->setPassword($encodedPassword);
 
             $this->em->flush();
