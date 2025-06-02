@@ -1491,6 +1491,11 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.7.tgz#4158d3105276773d5b7695cd4834b1722e4f37a8"
   integrity sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==
 
+"@types/glob-to-regexp@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@types/glob-to-regexp/-/glob-to-regexp-0.4.4.tgz#409e71290253203185b1ea8a3d6ea406a4bdc902"
+  integrity sha512-nDKoaKJYbnn1MZxUY0cA1bPmmgZbg0cTq7Rh13d0KWYNOiKbqoR+2d89SnRPszGh7ROzSwZ/GOjZ4jPbmmZ6Eg==
+
 "@types/graceful-fs@^4.1.3":
   version "4.1.9"
   resolved "https://registry.npmjs.org/@types/graceful-fs/-/graceful-fs-4.1.9.tgz"
@@ -2617,15 +2622,14 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fetch-mock@^10.1.1:
-  version "10.1.1"
-  resolved "https://registry.npmjs.org/fetch-mock/-/fetch-mock-10.1.1.tgz"
-  integrity sha512-R6MwxuGwlUe0K6GzdLY1Wa9voX/GbUBDZjNHBsvlBhrpXurCYpQN4EW0iFCmtWddDTuS0ubR93OtFSgy9E/L2A==
+fetch-mock@^12.0.0:
+  version "12.5.2"
+  resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-12.5.2.tgz#dbd7e2bb6a61fdbc7af45d399fe9aa1da97e3582"
+  integrity sha512-b5KGDFmdmado2MPQjZl6ix3dAG3iwCitb0XQwN72y2s9VnWZ3ObaGNy+bkpm1390foiLDybdJ7yjRGKD36kATw==
   dependencies:
-    debug "^4.1.1"
+    "@types/glob-to-regexp" "^0.4.4"
     dequal "^2.0.3"
-    globrex "^0.1.2"
-    is-subset "^0.1.1"
+    glob-to-regexp "^0.4.1"
     regexparam "^3.0.0"
 
 file-loader@^6.0.0:
@@ -2746,11 +2750,6 @@ globby@^6.1.0:
     object-assign "^4.0.1"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
-
-globrex@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.npmjs.org/globrex/-/globrex-0.1.2.tgz"
-  integrity sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==
 
 govuk-frontend@^5.7.0:
   version "5.9.0"
@@ -2919,11 +2918,6 @@ is-stream@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/is-stream/-/is-stream-2.0.1.tgz"
   integrity sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==
-
-is-subset@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.npmjs.org/is-subset/-/is-subset-0.1.1.tgz"
-  integrity sha512-6Ybun0IkarhmEqxXCNw/C0bna6Zb/TkfUX9UbwJtK6ObwAVCxmAP308WWTHviM/zAqXk05cdhYsUsZeGQh99iw==
 
 is-wsl@^2.2.0:
   version "2.2.0"
