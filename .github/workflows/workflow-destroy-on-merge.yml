@@ -52,7 +52,7 @@ jobs:
 
       - id: terraform_version
         name: get terraform version
-        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@73bfe6f3ea05ffbc3dd278fe29c113ec1e7dcefc # v3.1.1
+        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@c9c5dfb290b8f614df0884928c521165ba83d630 # v3.1.4
         with:
           terraform_directory: terraform/environment
 
@@ -66,7 +66,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
       - name: Configure Terraform OIDC AWS Credentials
-        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v4.2.1
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-development"
