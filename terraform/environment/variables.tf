@@ -12,7 +12,6 @@ variable "accounts" {
       sirius_api          = string
       sirius_bucket       = string
       is_production       = string
-      dc_gtm              = string
       fixtures_enabled    = string
       sirius_key_alias    = string
       sirius_account      = string

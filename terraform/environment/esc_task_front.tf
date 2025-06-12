@@ -113,10 +113,6 @@ locals {
       ],
       environment = [
         {
-          name  = "DC_GTM",
-          value = local.account.dc_gtm
-        },
-        {
           name  = "DC_DB_HOST",
           value = aws_rds_cluster.cluster_serverless.endpoint
         },
