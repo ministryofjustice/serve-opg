@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Entity\Client;
-use App\Entity\OrderHw;
-use App\Entity\OrderPf;
 use App\Repository\OrderRepository;
 use App\Service\ReportService;
 use App\TestHelpers\FileTestHelper;
@@ -34,43 +31,48 @@ class ReportServiceTest extends ApiWebTestCase
             'endDate' => $today,
         ];
 
-        $client = new Client(
-            $expectedCaseRef,
-            'Client Name',
-            new \DateTime()
-        );
-
         $expectedMadeAt = (new \DateTime('now'))->format('Y-m-d');
         $expectedIssuedAt = '2019-05-23';
         $expectedServedAt = '2019-05-24';
 
-        $orderPf = new OrderPf(
-            $client,
-            new \DateTime($expectedMadeAt),
-            new \DateTime($expectedIssuedAt),
-            '123'
-        );
-        $orderPf->setServedAt(new \DateTime($expectedServedAt));
-        $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
+        $orderPf = [
+            'client' => [
+                'caseNumber' => $expectedCaseRef,
+            ],
+            'madeAt' => new \DateTime($expectedMadeAt),
+            'issuedAt' => new \DateTime($expectedIssuedAt),
+            'servedAt' => new \DateTime($expectedServedAt),
+            'type' => 'PF',
+            'appointmentType' => 'JOINT_AND_SEVERAL',
+        ];
 
-        $orderHw = new OrderHw(
-            $client,
-            new \DateTime($expectedMadeAt),
-            new \DateTime($expectedIssuedAt),
-            '124'
-        );
-        $orderHw->setServedAt(new \DateTime($expectedServedAt));
-        $orderHw->setAppointmentType('SOLE');
+        $orderHw = [
+            'client' => [
+                'caseNumber' => $expectedCaseRef,
+            ],
+            'madeAt' => new \DateTime($expectedMadeAt),
+            'issuedAt' => new \DateTime($expectedIssuedAt),
+            'servedAt' => new \DateTime($expectedServedAt),
+            'type' => 'HW',
+            'appointmentType' => 'SOLE',
+        ];
 
         $orders = [$orderPf, $orderHw];
 
         /** @var ObjectProphecy|OrderRepository $orderRepo */
-        $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrdersNotServedAndOrderReports($filters, 10000)->shouldBeCalled()->willReturn($orders);
+        $orderRepo = $this->createMock(OrderRepository::class);
+        $orderRepo->expects($this->once())
+            ->method('getOrders')
+            ->with($filters)
+            ->willReturnCallback(function () use ($orders) {
+                foreach ($orders as $order) {
+                    yield $order;
+                }
+            });
 
         /** @var ObjectProphecy|EntityManager $em */
         $em = $this->prophesize(EntityManager::class);
-        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
+        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo);
 
         $sut = new ReportService($em->reveal());
 
