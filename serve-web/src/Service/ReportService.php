@@ -19,7 +19,7 @@ class ReportService
     /**
      * Generates a CSV file of served orders for the past 4 weeks.
      */
-    public function generateCsv(): File
+    public function generateLast4WeeksCsv(): File
     {
         $endDate = new \DateTime('now');
         $startDate = (new \DateTime('now'))->modify('-4 weeks');
@@ -100,15 +100,16 @@ class ReportService
 
         $orders = $this->getOrders('served', $startDate, $endDate);
 
+        /** @var Order $order */
         foreach ($orders as $order) {
             fputcsv($file, [
-                'DateIssued' => $order['issued_at_7'],
-                'DateMade' => $order['made_at_6'],
-                'CaseNumber' => $order['case_number_13'],
-                'OrderType' => $order['type_16'],
-                'OrderNumber' => $order['order_number_11'],
-                'ClientName' => $order['client_name_14'],
-                'OrderServedDate' => $order['served_at_8'],
+                'DateIssued' => $order['issuedAt']?->format('Y-m-d'),
+                'DateMade' => $order['madeAt']?->format('Y-m-d'),
+                'CaseNumber' => $order['client']['caseNumber'],
+                'OrderType' => $order['type'],
+                'OrderNumber' => $order['orderNumber'],
+                'ClientName' => $order['client']['clientName'],
+                'OrderServedDate' => $order['servedAt']?->format('Y-m-d'),
             ]);
         }
 

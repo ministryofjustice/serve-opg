@@ -81,7 +81,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         CSV;
 
-        $actualCsv = $sut->generateCsv();
+        $actualCsv = $sut->generateLast4WeeksCsv();
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
 
         self::assertEquals($expectedCsv, $actualCsvString);
@@ -111,7 +111,7 @@ class ReportServiceTest extends ApiWebTestCase
         $em->clear();
 
         $sut = new ReportService($em);
-        $csv = $sut->generateCsv();
+        $csv = $sut->generateLast4WeeksCsv();
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
@@ -143,7 +143,7 @@ class ReportServiceTest extends ApiWebTestCase
         $em->clear();
 
         $sut = new ReportService($em);
-        $csv = $sut->generateCsv();
+        $csv = $sut->generateLast4WeeksCsv();
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 

@@ -2,13 +2,17 @@
 
 namespace App\Repository;
 
+use App\Common\Query\QueryPager;
 use App\Entity\Order;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class OrderRepository extends EntityRepository
 {
-    public function getOrdersCount(array $filters): mixed
+    private function getOrdersCountQuery(array $filters): Query
     {
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
@@ -18,27 +22,30 @@ class OrderRepository extends EntityRepository
 
         $this->applyFilters($qb, $filters);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return $qb->getQuery();
     }
 
-    // Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead
-    // fetching data back as an associative array to handle large dataset and avoid timeouts
-    public function getAllServedOrders(array $filters)
+    public function getOrdersCount(array $filters): int
     {
-        $queryBuilder = $this->createOrdersQueryBuilder($filters);
+        /** @var int $count */
+        $count = $this->getOrdersCountQuery($filters)->getSingleScalarResult();
 
-        $rawParams = $queryBuilder->getParameters();
+        return $count;
+    }
 
-        $params = [];
+    /**
+     * @return iterable<Order>
+     *
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function getAllServedOrders(array $filters): iterable
+    {
+        $countQuery = $this->getOrdersCountQuery($filters);
+        $pageQuery = $this->createOrdersQueryBuilder($filters)->getQuery();
+        $pager = new QueryPager($countQuery, $pageQuery);
 
-        foreach ($rawParams as $parameter) {
-            $params[] = $parameter->getValue();
-        }
-
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->executeQuery($queryBuilder->getQuery()->getSQL(), $params);
-
-        return $stmt->fetchAllAssociative();
+        return $pager->getRows();
     }
 
     public function getOrdersNotServedAndOrderReports(array $filters)
