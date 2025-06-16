@@ -21,10 +21,11 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    // Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead fetching data back as an associative array to handle large dataset and avoid timeouts
-    public function getAllServedOrders(array $filters, int $maxResults = 1000000)
+    // Function is using the same query builder as 'getOrdersNotServedAndOrderReports' but instead
+    // fetching data back as an associative array to handle large dataset and avoid timeouts
+    public function getAllServedOrders(array $filters)
     {
-        $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+        $queryBuilder = $this->createOrdersQueryBuilder($filters);
 
         $rawParams = $queryBuilder->getParameters();
 
@@ -40,24 +41,23 @@ class OrderRepository extends EntityRepository
         return $stmt->fetchAllAssociative();
     }
 
-    public function getOrdersNotServedAndOrderReports(array $filters, int $maxResults)
+    public function getOrdersNotServedAndOrderReports(array $filters)
     {
-        $queryBuilder = $this->createOrdersQueryBuilder($filters, $maxResults);
+        $queryBuilder = $this->createOrdersQueryBuilder($filters);
 
         return $queryBuilder->getQuery()->getResult();
     }
 
-    private function createOrdersQueryBuilder(array $filters, int $maxResults): QueryBuilder
+    private function createOrdersQueryBuilder(array $filters): QueryBuilder
     {
         /**
          * If the order is served, we order using the inverse (-) servedBy date, otherwise we use the issued date.
          * Negative dates as a integer result in a custom ordering field allow different ordering on the two order tabs,
-         * (served and pending)
+         * (served and pending).
          */
-
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
-            ->select("o, c")
+            ->select('o, c')
             ->addSelect("
                 (
                     CASE WHEN (o.servedAt IS NULL) THEN
@@ -72,8 +72,7 @@ class OrderRepository extends EntityRepository
             ) AS HIDDEN custom_ordering
         ")
         ->leftJoin('o.client', 'c')
-        ->orderBy('custom_ordering', 'ASC')
-        ->setMaxResults($maxResults);
+        ->orderBy('custom_ordering', 'ASC');
 
         $this->applyFilters($qb, $filters);
 
