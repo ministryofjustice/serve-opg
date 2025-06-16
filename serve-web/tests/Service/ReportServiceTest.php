@@ -10,15 +10,10 @@ use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
 use App\Tests\ApiWebTestCase;
 use Doctrine\ORM\EntityManager;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 
 class ReportServiceTest extends ApiWebTestCase
 {
-    use ProphecyTrait;
-
-    public function testGenerateCsv()
+    public function testGenerateLast4WeeksCsv()
     {
         $expectedCaseRef = 'COURTREFERENCE1';
 
@@ -59,7 +54,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         $orders = [$orderPf, $orderHw];
 
-        /** @var ObjectProphecy|OrderRepository $orderRepo */
+        /** @var OrderRepository $orderRepo */
         $orderRepo = $this->createMock(OrderRepository::class);
         $orderRepo->expects($this->once())
             ->method('getOrders')
@@ -70,11 +65,13 @@ class ReportServiceTest extends ApiWebTestCase
                 }
             });
 
-        /** @var ObjectProphecy|EntityManager $em */
-        $em = $this->prophesize(EntityManager::class);
-        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo);
+        /** @var EntityManager $em */
+        $em = $this->createMock(EntityManager::class);
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($orderRepo);
 
-        $sut = new ReportService($em->reveal());
+        $sut = new ReportService($em);
 
         $expectedCsv = <<<CSV
         DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
@@ -152,10 +149,17 @@ class ReportServiceTest extends ApiWebTestCase
         self::assertEquals(3, $csvRows);
     }
 
+    protected function numberOfOrdersDataProvider()
+    {
+        return [
+            'tenOrders' => [10, 10],
+            'tenThousandOrders' => [10000, 10000],
+            'thirtyThousandOrders' => [30000, 30000],
+        ];
+    }
+
     /**
-     * @test
-     *
-     * @dataProvider numberOfOrders
+     * @dataProvider numberOfOrdersDataProvider
      */
     public function testReportsReturnsAllServedOrders($numberOfOrders, $expectedRows)
     {
@@ -190,15 +194,6 @@ class ReportServiceTest extends ApiWebTestCase
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
         self::assertEquals($expectedRows, $csvRows);
-    }
-
-    public function numberOfOrders()
-    {
-        return [
-            'tenOrders' => [10, 10],
-            'tenThousandOrders' => [10000, 10000],
-            'thirtyThousandOrders' => [30000, 30000],
-        ];
     }
 
     public function testReportsReturnsAllOrdersNotServed()
