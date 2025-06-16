@@ -64,7 +64,7 @@ class UserProviderTest extends MockeryTestCase
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => $this->userName])->andReturn($this->user);
 
-        $this->assertEquals($this->user, $sut->loadUserByUsername($this->userName));
+        $this->assertEquals($this->user, $sut->loadUserByUsername($this->userName)); // This needs to be changed to loadUserByIdentifier
     }
 
     public function testEmptyConfigLoadMissingUserThrowsException()
@@ -74,7 +74,7 @@ class UserProviderTest extends MockeryTestCase
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => 'nonExisting@provider.com'])->andReturn(false);
 
         $this->expectException(UsernameNotFoundException::class);
-        $this->assertEquals($this->user, $sut->loadUserByUsername('nonExisting@provider.com'));
+        $this->assertEquals($this->user, $sut->loadUserByUsername('nonExisting@provider.com')); //This needs to be changed to loadUserByIdentifier
     }
 
     public function testBruteForceLockNotReached()
@@ -86,7 +86,7 @@ class UserProviderTest extends MockeryTestCase
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => $this->userName])->andReturn($this->user);
 
-        $this->assertEquals($this->user, $sut->loadUserByUsername($this->userName));
+        $this->assertEquals($this->user, $sut->loadUserByUsername($this->userName)); //This needs to be changed to loadUserByIdentifier
     }
 
     public function testBruteForceLockReached()
@@ -99,7 +99,7 @@ class UserProviderTest extends MockeryTestCase
         $this->expectException(BruteForceAttackDetectedException::class);
         $this->userRepo->shouldReceive('findOneBy')->never()->with(['email' => $this->userName]);
 
-        $sut->loadUserByUsername($this->userName);
+        $sut->loadUserByUsername($this->userName); //This needs to be changed to loadUserByIdentifier
 
         $this->assertEquals(200, $this->getExpectedException()->getHasToWaitForSeconds());
     }
