@@ -152,16 +152,16 @@ class ReportServiceTest extends ApiWebTestCase
     protected function numberOfOrdersDataProvider()
     {
         return [
-            'tenOrders' => [10, 10],
-            'tenThousandOrders' => [10000, 10000],
-            'thirtyThousandOrders' => [30000, 30000],
+            'tenOrders' => [10],
+            'tenThousandOrders' => [10000],
+            'thirtyThousandOrders' => [30000],
         ];
     }
 
     /**
      * @dataProvider numberOfOrdersDataProvider
      */
-    public function testReportsReturnsAllServedOrders($numberOfOrders, $expectedRows)
+    public function testReportsReturnsAllServedOrders($numberOfOrders)
     {
         $em = self::getEntityManager();
 
@@ -193,7 +193,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
-        self::assertEquals($expectedRows, $csvRows);
+        self::assertEquals($numberOfOrders, $csvRows);
     }
 
     public function testReportsReturnsAllOrdersNotServed()
