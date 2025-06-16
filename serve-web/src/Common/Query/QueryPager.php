@@ -36,10 +36,18 @@ class QueryPager
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function getRows(int $pageSize = 1000, bool $asArray = true): \Traversable
+    public function getRows(int $pageSize = 1000, bool $asArray = true, int $limit = 0): \Traversable
     {
         /** @var int $numRows */
         $numRows = $this->countQuery->getSingleScalarResult();
+
+        if ($limit > 0 && $numRows > $limit) {
+            $numRows = $limit;
+        }
+
+        if ($limit > 0 && $pageSize > $limit) {
+            $pageSize = $limit;
+        }
 
         $numPages = ceil($numRows / $pageSize);
 

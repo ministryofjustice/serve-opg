@@ -12,49 +12,6 @@ use Doctrine\ORM\QueryBuilder;
 
 class OrderRepository extends EntityRepository
 {
-    private function getOrdersCountQuery(array $filters): Query
-    {
-        $qb = $this->_em->getRepository(Order::class)
-            ->createQueryBuilder('o')
-            ->select('COUNT(o)')
-            ->leftJoin('o.client', 'c')
-        ;
-
-        $this->applyFilters($qb, $filters);
-
-        return $qb->getQuery();
-    }
-
-    public function getOrdersCount(array $filters): int
-    {
-        /** @var int $count */
-        $count = $this->getOrdersCountQuery($filters)->getSingleScalarResult();
-
-        return $count;
-    }
-
-    /**
-     * @return iterable<Order>
-     *
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
-    public function getAllServedOrders(array $filters): iterable
-    {
-        $countQuery = $this->getOrdersCountQuery($filters);
-        $pageQuery = $this->createOrdersQueryBuilder($filters)->getQuery();
-        $pager = new QueryPager($countQuery, $pageQuery);
-
-        return $pager->getRows();
-    }
-
-    public function getOrdersNotServedAndOrderReports(array $filters)
-    {
-        $queryBuilder = $this->createOrdersQueryBuilder($filters);
-
-        return $queryBuilder->getQuery()->getResult();
-    }
-
     private function createOrdersQueryBuilder(array $filters): QueryBuilder
     {
         /**
@@ -124,5 +81,47 @@ class OrderRepository extends EntityRepository
             ->andWhere('o.servedAt IS NULL');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getOrdersCountQuery(array $filters): Query
+    {
+        $qb = $this->_em->getRepository(Order::class)
+            ->createQueryBuilder('o')
+            ->select('COUNT(o)')
+            ->leftJoin('o.client', 'c')
+        ;
+
+        $this->applyFilters($qb, $filters);
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function getOrdersCount(array $filters): int
+    {
+        /** @var int $count */
+        $count = $this->getOrdersCountQuery($filters)->getSingleScalarResult();
+
+        return $count;
+    }
+
+    /**
+     * $filters will typically contain a "type" property specifying the type of orders to return, e.g. "pending", "served".
+     *
+     * @return \Traversable<array>
+     *
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function getOrders(array $filters, int $limit = 0, bool $asArray = true): \Traversable
+    {
+        $countQuery = $this->getOrdersCountQuery($filters);
+        $pageQuery = $this->createOrdersQueryBuilder($filters)->getQuery();
+        $pager = new QueryPager($countQuery, $pageQuery);
+
+        return $pager->getRows(asArray: $asArray, limit: $limit);
     }
 }
