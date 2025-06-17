@@ -80,7 +80,7 @@ class ReportService
                 'ClientName' => $order->getClient()->getClientName(),
                 'OrderMadeDate' => $order->getMadeAt()->format('Y-m-d'),
                 'OrderIssueDate' => $order->getIssuedAt()->format('Y-m-d'),
-                'Status' => 'READY TO SERVE' ? $order->readyToServe() : 'TO DO',
+                'Status' => $order->readyToServe() ? 'READY TO SERVE' : 'TO DO',
             ]);
         }
 
