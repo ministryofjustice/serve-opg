@@ -2,10 +2,8 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\CaseController;
 use App\TestHelpers\OrderTestHelper;
 use App\Tests\ApiWebTestCase;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Request;
 
