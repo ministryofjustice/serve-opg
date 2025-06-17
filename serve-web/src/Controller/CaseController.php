@@ -15,9 +15,6 @@ class CaseController extends AbstractController
 {
     private OrderRepository $orderRepo;
 
-    /**
-     * UserController constructor.
-     */
     public function __construct(EntityManager $em)
     {
         /** @var OrderRepository $repo */
