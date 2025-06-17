@@ -11,8 +11,6 @@ use Doctrine\ORM\Query;
 /**
  * Create a generator from a pair of queries: the first which gets the size of the result set, and
  * the second which gets the data.
- *
- * Results are returned
  */
 class QueryPager
 {
@@ -27,9 +25,9 @@ class QueryPager
     }
 
     /**
-     * Return rows from the $pagedQuery as an array of arrays; each element is a row in format [<field> => <value>, ...].
-     *
-     * Set $asArray = false to get objects back (type depends on the $pageQuery); otherwise, this returns array results
+     * By default, returns rows from the $pagedQuery as an array of arrays; each element is a row in format
+     * [<field> => <value>, ...].
+     * Set $asArray = false to get objects back instead (type depends on the $pageQuery).
      *
      * @return \Traversable<array<string, mixed>>|\Traversable<object>
      *
