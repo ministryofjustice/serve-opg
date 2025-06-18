@@ -52,21 +52,21 @@ class UserProvider implements UserProviderInterface
         return $waits ? max($waits) : false;
     }
 
-    public function loadUserByUsername($username): User
+    public function loadUserByIdentifier($identifier): User
     {
-        if (empty($username)) {
+        if (empty($identifier)) {
             throw new UsernameNotFoundException('Missing username');
         }
 
-        if ($this->usernameLockedForSeconds($username)) {
+        if ($this->usernameLockedForSeconds($identifier)) {
             // throw a generic exception in case of brute force is detected, prior to query the db. The view will query this service re-calling the method and detect if locked
             throw new BruteForceAttackDetectedException();
         }
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $identifier]);
 
         if (!$user instanceof User) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
+            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $identifier));
         }
 
         return $user;
@@ -134,5 +134,10 @@ class UserProvider implements UserProviderInterface
         if ($this->storage->getAttempts($userId)) {
             throw new \Exception("Cannot wipe attempts for $userId");
         }
+    }
+
+    public function loadUserByUsername(string $username) : void
+    {
+        // TODO: Implement loadUserByUsername() method.
     }
 }
