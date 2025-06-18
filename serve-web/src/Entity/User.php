@@ -108,7 +108,7 @@ class User implements UserInterface, EquatableInterface,PasswordAuthenticatedUse
         return '';
     }
 
-    public function getUsername(): ?string
+    public function getUserIdentifier(): ?string
     {
         return $this->email;
     }
@@ -232,5 +232,10 @@ class User implements UserInterface, EquatableInterface,PasswordAuthenticatedUse
         $this->id = $data['id'];
         $this->email = $data['email'];
         $this->password = $data['password'];
+    }
+
+    public function getUsername() : void
+    {
+        // TODO: Implement getUsername() method.
     }
 }
