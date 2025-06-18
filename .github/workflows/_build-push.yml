@@ -79,9 +79,7 @@ jobs:
 
       - name: Generate SBOM
         if: inputs.branch_name == 'main'
-        run: |
-          mkdir -p sboms
-          trivy image --format spdx --output sboms/sbom-${{ matrix.svc_name }}.spdx.json ${{ steps.login-ecr.outputs.registry }}/serve-opg/${{ matrix.svc_name }}:latest
+        run: mkdir -p sboms && trivy image --format spdx --output sboms/sbom-${{ matrix.svc_name }}.spdx.json ${CONTAINER}:latest
 
       - name: Upload SBOM
         if: inputs.branch_name == 'main'
