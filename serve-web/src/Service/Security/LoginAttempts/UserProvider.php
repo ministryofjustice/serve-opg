@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -55,7 +55,7 @@ class UserProvider implements UserProviderInterface
     public function loadUserByIdentifier($identifier): User
     {
         if (empty($identifier)) {
-            throw new UsernameNotFoundException('Missing username');
+            throw new UserNotFoundException('Missing username');
         }
 
         if ($this->usernameLockedForSeconds($identifier)) {
@@ -66,7 +66,7 @@ class UserProvider implements UserProviderInterface
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $identifier]);
 
         if (!$user instanceof User) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $identifier));
+            throw new UserNotFoundException(sprintf('User "%s" not found.', $identifier));
         }
 
         return $user;
@@ -83,7 +83,7 @@ class UserProvider implements UserProviderInterface
             return $refreshedUser;
         }
 
-        throw new UsernameNotFoundException(sprintf('User with id %s not found', $user->getId()));
+        throw new UserNotFoundException(sprintf('User with id %s not found', $user->getId()));
     }
 
     public function supportsClass($class): bool

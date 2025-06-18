@@ -13,7 +13,7 @@ use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -73,7 +73,7 @@ class UserProviderTest extends MockeryTestCase
 
         $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => 'nonExisting@provider.com'])->andReturn(false);
 
-        $this->expectException(UsernameNotFoundException::class);
+        $this->expectException(UserNotFoundException::class);
         $this->assertEquals($this->user, $sut->loadUserByIdentifier('nonExisting@provider.com'));
     }
 
