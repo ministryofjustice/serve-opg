@@ -109,8 +109,8 @@ class ReportService
         /** @var Order $order */
         foreach ($orders as $order) {
             fputcsv($file, [
-                'DateIssued' => $order['issuedAt']?->format('Y-m-d'),
-                'DateMade' => $order['madeAt']?->format('Y-m-d'),
+                'DateIssued' => $order['issuedAt']?->format('Y-m-d H:i:s'),
+                'DateMade' => $order['madeAt']?->format('Y-m-d H:i:s'),
                 'CaseNumber' => $order['client']['caseNumber'],
                 'OrderType' => $order['type'],
                 'OrderNumber' => $order['orderNumber'],
