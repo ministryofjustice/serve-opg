@@ -4,24 +4,16 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Entity\Client;
-use App\Entity\OrderHw;
-use App\Entity\OrderPf;
 use App\Repository\OrderRepository;
 use App\Service\ReportService;
 use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
 use App\Tests\ApiWebTestCase;
 use Doctrine\ORM\EntityManager;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 
 class ReportServiceTest extends ApiWebTestCase
 {
-    use ProphecyTrait;
-
-    public function testGenerateCsv()
+    public function testGenerateLast4WeeksCsv()
     {
         $expectedCaseRef = 'COURTREFERENCE1';
 
@@ -34,45 +26,52 @@ class ReportServiceTest extends ApiWebTestCase
             'endDate' => $today,
         ];
 
-        $client = new Client(
-            $expectedCaseRef,
-            'Client Name',
-            new \DateTime()
-        );
-
         $expectedMadeAt = (new \DateTime('now'))->format('Y-m-d');
         $expectedIssuedAt = '2019-05-23';
         $expectedServedAt = '2019-05-24';
 
-        $orderPf = new OrderPf(
-            $client,
-            new \DateTime($expectedMadeAt),
-            new \DateTime($expectedIssuedAt),
-            '123'
-        );
-        $orderPf->setServedAt(new \DateTime($expectedServedAt));
-        $orderPf->setAppointmentType('JOINT_AND_SEVERAL');
+        $orderPf = [
+            'client' => [
+                'caseNumber' => $expectedCaseRef,
+            ],
+            'madeAt' => new \DateTime($expectedMadeAt),
+            'issuedAt' => new \DateTime($expectedIssuedAt),
+            'servedAt' => new \DateTime($expectedServedAt),
+            'type' => 'PF',
+            'appointmentType' => 'JOINT_AND_SEVERAL',
+        ];
 
-        $orderHw = new OrderHw(
-            $client,
-            new \DateTime($expectedMadeAt),
-            new \DateTime($expectedIssuedAt),
-            '124'
-        );
-        $orderHw->setServedAt(new \DateTime($expectedServedAt));
-        $orderHw->setAppointmentType('SOLE');
+        $orderHw = [
+            'client' => [
+                'caseNumber' => $expectedCaseRef,
+            ],
+            'madeAt' => new \DateTime($expectedMadeAt),
+            'issuedAt' => new \DateTime($expectedIssuedAt),
+            'servedAt' => new \DateTime($expectedServedAt),
+            'type' => 'HW',
+            'appointmentType' => 'SOLE',
+        ];
 
         $orders = [$orderPf, $orderHw];
 
-        /** @var ObjectProphecy|OrderRepository $orderRepo */
-        $orderRepo = $this->prophesize(OrderRepository::class);
-        $orderRepo->getOrdersNotServedAndOrderReports($filters, 10000)->shouldBeCalled()->willReturn($orders);
+        /** @var OrderRepository $orderRepo */
+        $orderRepo = $this->createMock(OrderRepository::class);
+        $orderRepo->expects($this->once())
+            ->method('getOrders')
+            ->with($filters)
+            ->willReturnCallback(function () use ($orders) {
+                foreach ($orders as $order) {
+                    yield $order;
+                }
+            });
 
-        /** @var ObjectProphecy|EntityManager $em */
-        $em = $this->prophesize(EntityManager::class);
-        $em->getRepository(Argument::any())->shouldBeCalled()->willReturn($orderRepo->reveal());
+        /** @var EntityManager $em */
+        $em = $this->createMock(EntityManager::class);
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($orderRepo);
 
-        $sut = new ReportService($em->reveal());
+        $sut = new ReportService($em);
 
         $expectedCsv = <<<CSV
         DateIssued,DateMade,DateServed,CaseNumber,AppointmentType,OrderType
@@ -81,7 +80,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         CSV;
 
-        $actualCsv = $sut->generateCsv();
+        $actualCsv = $sut->generateLast4WeeksCsv();
         $actualCsvString = file_get_contents($actualCsv->getRealPath());
 
         self::assertEquals($expectedCsv, $actualCsvString);
@@ -111,7 +110,7 @@ class ReportServiceTest extends ApiWebTestCase
         $em->clear();
 
         $sut = new ReportService($em);
-        $csv = $sut->generateCsv();
+        $csv = $sut->generateLast4WeeksCsv();
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
@@ -143,19 +142,26 @@ class ReportServiceTest extends ApiWebTestCase
         $em->clear();
 
         $sut = new ReportService($em);
-        $csv = $sut->generateCsv();
+        $csv = $sut->generateLast4WeeksCsv();
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
         self::assertEquals(3, $csvRows);
     }
 
+    protected function numberOfOrdersDataProvider()
+    {
+        return [
+            'tenOrders' => [10],
+            'tenThousandOrders' => [10000],
+            'thirtyThousandOrders' => [30000],
+        ];
+    }
+
     /**
-     * @test
-     *
-     * @dataProvider numberOfOrders
+     * @dataProvider numberOfOrdersDataProvider
      */
-    public function testReportsReturnsAllServedOrders($numberOfOrders, $expectedRows)
+    public function testReportsReturnsAllServedOrders($numberOfOrders)
     {
         $em = self::getEntityManager();
 
@@ -187,16 +193,7 @@ class ReportServiceTest extends ApiWebTestCase
 
         $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
 
-        self::assertEquals($expectedRows, $csvRows);
-    }
-
-    public function numberOfOrders()
-    {
-        return [
-            'tenOrders' => [10, 10],
-            'tenThousandOrders' => [10000, 10000],
-            'thirtyThousandOrders' => [30000, 30000],
-        ];
+        self::assertEquals($numberOfOrders, $csvRows);
     }
 
     public function testReportsReturnsAllOrdersNotServed()
