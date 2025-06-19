@@ -12,6 +12,8 @@ jobs:
         - name: Run Unit Tests
           run: |
             ./serve-web/generate_certs.sh
+            make up-test
+            docker image ls
             make unit-tests
 
         - name: Run Integrations Tests
