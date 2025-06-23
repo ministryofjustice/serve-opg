@@ -28,7 +28,7 @@ class ReportController extends AbstractController
     #[Route(path: '/download', name: 'download-report')]
     public function downloadReportAction(): BinaryFileResponse
     {
-        $csv = $this->reportService->generateCsv();
+        $csv = $this->reportService->generateLast4WeeksCsv();
 
         return $this->file($csv);
     }

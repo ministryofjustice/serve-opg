@@ -37,11 +37,6 @@ RUN php composer-setup.php --version=2.6.6
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
-#PHPUNIT
-RUN composer global require "phpunit/phpunit"
-
-ENV PATH /root/.composer/vendor/bin:$PATH
-
 WORKDIR /var/www
 
 RUN mkdir -p tmp/screenshots

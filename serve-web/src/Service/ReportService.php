@@ -3,50 +3,50 @@
 namespace App\Service;
 
 use App\Entity\Order;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpFoundation\File\File;
 
 class ReportService
 {
-    private EntityRepository $orderRepo;
+    private OrderRepository $orderRepo;
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this->orderRepo = $em->getRepository(Order::class);
+        /** @var OrderRepository $repo */
+        $repo = $em->getRepository(Order::class);
+
+        $this->orderRepo = $repo;
     }
 
     /**
      * Generates a CSV file of served orders for the past 4 weeks.
      */
-    public function generateCsv(): File
+    public function generateLast4WeeksCsv(): File
     {
         $endDate = new \DateTime('now');
         $startDate = (new \DateTime('now'))->modify('-4 weeks');
 
-        $orders = $this->getOrders('served', $startDate, $endDate, 10000);
+        $orders = $this->getFilteredOrders('served-last-4-weeks', $startDate, $endDate);
 
         $headers = ['DateIssued', 'DateMade', 'DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
-        $ordersCsv = [];
-
-        foreach ($orders as $order) {
-            $ordersCsv[] = [
-                'DateIssued' => $order->getIssuedAt()->format('Y-m-d'),
-                'DateMade' => $order->getMadeAt()->format('Y-m-d'),
-                'DateServed' => $order->getServedAt()->format('Y-m-d'),
-                'CaseNumber' => $order->getClient()->getCaseNumber(),
-                'AppointmentType' => $order->getAppointmentType(),
-                'OrderType' => $order->getType(),
-            ];
-        }
 
         $today = (new \DateTime('now'))->format('Y-m-d');
         $file = fopen("/tmp/orders-served-$today.csv", 'w');
 
         fputcsv($file, $headers);
 
-        foreach ($ordersCsv as $line) {
-            fputcsv($file, $line);
+        foreach ($orders as $order) {
+            fputcsv($file, [
+                'DateIssued' => $order['issuedAt']?->format('Y-m-d'),
+                'DateMade' => $order['madeAt']?->format('Y-m-d'),
+                'DateServed' => $order['servedAt']?->format('Y-m-d'),
+                'CaseNumber' => $order['client']['caseNumber'],
+                'AppointmentType' => $order['appointmentType'],
+                'OrderType' => $order['type'],
+            ]);
         }
 
         fclose($file);
@@ -62,30 +62,26 @@ class ReportService
         $startDate = new \DateTime('2001-01-01 00:00:00');
         $endDate = (new \DateTime('now'))->modify('+1 days');
 
-        $orders = $this->getOrders('pending', $startDate, $endDate);
+        $orders = $this->getFilteredOrders('pending', $startDate, $endDate, asArray: false);
 
         $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderMadeDate', 'OrderIssueDate', 'Status'];
-        $ordersCsv = [];
-
-        foreach ($orders as $order) {
-            $ordersCsv[] = [
-                'CaseNumber' => $order->getClient()->getCaseNumber(),
-                'OrderType' => $order->getType(),
-                'OrderNumber' => $order->getOrderNumber(),
-                'ClientName' => $order->getClient()->getClientName(),
-                'OrderMadeDate' => $order->getMadeAt()->format('Y-m-d'),
-                'OrderIssueDate' => $order->getIssuedAt()->format('Y-m-d'),
-                'Status' => 'READY TO SERVE' ? $order->readyToServe() : 'TO DO',
-            ];
-        }
 
         $today = (new \DateTime('now'))->format('Y-m-d');
         $file = fopen("/tmp/all-orders-not-served-$today.csv", 'w');
 
         fputcsv($file, $headers);
 
-        foreach ($ordersCsv as $line) {
-            fputcsv($file, $line);
+        /** @var Order $order */
+        foreach ($orders as $order) {
+            fputcsv($file, [
+                'CaseNumber' => $order->getClient()->getCaseNumber(),
+                'OrderType' => $order->getType(),
+                'OrderNumber' => $order->getOrderNumber(),
+                'ClientName' => $order->getClient()->getClientName(),
+                'OrderMadeDate' => $order->getMadeAt()->format('Y-m-d'),
+                'OrderIssueDate' => $order->getIssuedAt()->format('Y-m-d'),
+                'Status' => $order->readyToServe() ? 'READY TO SERVE' : 'TO DO',
+            ]);
         }
 
         fclose($file);
@@ -108,22 +104,19 @@ class ReportService
 
         fputcsv($file, $headers);
 
-        $orders = $this->getOrders('served', $startDate, $endDate);
+        $orders = $this->getFilteredOrders('served', $startDate, $endDate);
 
+        /** @var Order $order */
         foreach ($orders as $order) {
-            $orderServedDate = date('Y-m-d', strtotime($order['served_at_8']));
-
-            $line = [
-                'DateIssued' => $order['issued_at_7'],
-                'DateMade' => $order['made_at_6'],
-                'CaseNumber' => $order['case_number_13'],
-                'OrderType' => $order['type_16'],
-                'OrderNumber' => $order['order_number_11'],
-                'ClientName' => $order['client_name_14'],
-                'OrderServedDate' => $orderServedDate,
-            ];
-
-            fputcsv($file, $line);
+            fputcsv($file, [
+                'DateIssued' => $order['issuedAt']?->format('Y-m-d H:i:s'),
+                'DateMade' => $order['madeAt']?->format('Y-m-d H:i:s'),
+                'CaseNumber' => $order['client']['caseNumber'],
+                'OrderType' => $order['type'],
+                'OrderNumber' => $order['orderNumber'],
+                'ClientName' => $order['client']['clientName'],
+                'OrderServedDate' => $order['servedAt']?->format('Y-m-d'),
+            ]);
         }
 
         fclose($file);
@@ -132,26 +125,28 @@ class ReportService
     }
 
     /**
-     *  Get orders that have been served into Sirius using filters.
+     * Get orders that have been served into Sirius.
      *
-     * @return Order[]
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    public function getOrders(string $type, \DateTime $startDate, \DateTime $endDate, $maxResults = 1000000): array
+    public function getFilteredOrders(string $type, \DateTime $startDate, \DateTime $endDate, bool $asArray = true): \Traversable
     {
         $formattedEndDate = $endDate->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
 
+        $typeFilter = 'served';
+        if ('pending' == $type) {
+            $typeFilter = 'pending';
+        }
+
         $filters = [
-            'type' => $type,
+            'type' => $typeFilter,
             'startDate' => $formattedStartDate,
             'endDate' => $formattedEndDate,
         ];
 
-        if ('served' === $type && 1000000 === $maxResults) {
-            return $this->orderRepo->getAllServedOrders($filters);
-        } else {
-            return $this->orderRepo->getOrdersNotServedAndOrderReports($filters, $maxResults);
-        }
+        return $this->orderRepo->getOrders($filters, asArray: $asArray);
     }
 
     /**
