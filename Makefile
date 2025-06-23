@@ -53,7 +53,7 @@ up-dev-xdebug: ##@application Brings the app up in dev mode with profiler and xd
 	docker compose -f docker-compose.yml -f docker-compose.local.yml run --rm app php bin/console cache:clear --env=dev
 
 up-test: ##@application Brings the app up in test mode with profiler and xdebug disabled - requires deps to be built
-	WITH_XDEBUG=0 docker compose -f docker-compose.yml -f docker-compose.test.yml build app
+	WITH_XDEBUG=0 docker compose -f docker-compose.yml -f docker-compose.test.yml build app web
 	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d --remove-orphans loadbalancer
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run --rm app php bin/console cache:clear --env=test
 
