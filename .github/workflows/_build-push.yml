@@ -76,14 +76,14 @@ jobs:
         uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
         with:
           sarif_file: "trivy-results.sarif"
-          
+
       - name: Generate SBOM
-        # if: inputs.branch_name == 'main'
+        if: inputs.branch_name == 'main'
         run: mkdir -p sboms && trivy image --format spdx --output sboms/sbom-${{ matrix.svc_name }}.spdx.json 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/${{ matrix.svc_name }}:latest
 
         
       - name: Upload SBOM
-        # if: inputs.branch_name == 'main'
+        if: inputs.branch_name == 'main'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: sbom-${{ matrix.svc_name }}
