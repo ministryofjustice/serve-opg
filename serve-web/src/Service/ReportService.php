@@ -36,7 +36,7 @@ class ReportService
         $today = (new \DateTime('now'))->format('Y-m-d');
         $file = fopen("/tmp/orders-served-$today.csv", 'w');
 
-        fputcsv($file, $headers);
+        fputcsv($file, $headers, escape: '');
 
         foreach ($orders as $order) {
             fputcsv($file, [
@@ -46,7 +46,7 @@ class ReportService
                 'CaseNumber' => $order['client']['caseNumber'],
                 'AppointmentType' => $order['appointmentType'],
                 'OrderType' => $order['type'],
-            ]);
+            ], escape: '');
         }
 
         fclose($file);
@@ -69,7 +69,7 @@ class ReportService
         $today = (new \DateTime('now'))->format('Y-m-d');
         $file = fopen("/tmp/all-orders-not-served-$today.csv", 'w');
 
-        fputcsv($file, $headers);
+        fputcsv($file, $headers, escape: '');
 
         /** @var Order $order */
         foreach ($orders as $order) {
@@ -81,7 +81,7 @@ class ReportService
                 'OrderMadeDate' => $order->getMadeAt()->format('Y-m-d'),
                 'OrderIssueDate' => $order->getIssuedAt()->format('Y-m-d'),
                 'Status' => $order->readyToServe() ? 'READY TO SERVE' : 'TO DO',
-            ]);
+            ], escape: '');
         }
 
         fclose($file);
@@ -102,7 +102,7 @@ class ReportService
 
         $headers = ['DateIssued', 'DateMade', 'CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderServedDate'];
 
-        fputcsv($file, $headers);
+        fputcsv($file, $headers, escape: '');
 
         $orders = $this->getFilteredOrders('served', $startDate, $endDate);
 
@@ -116,7 +116,7 @@ class ReportService
                 'OrderNumber' => $order['orderNumber'],
                 'ClientName' => $order['client']['clientName'],
                 'OrderServedDate' => $order['servedAt']?->format('Y-m-d'),
-            ]);
+            ], escape: '');
         }
 
         fclose($file);
@@ -170,10 +170,10 @@ class ReportService
 
         $file = fopen('/tmp/cases.csv', 'w');
 
-        fputcsv($file, $headers);
+        fputcsv($file, $headers, escape: '');
 
         foreach ($ordersCsv as $line) {
-            fputcsv($file, $line);
+            fputcsv($file, $line, escape: '');
         }
 
         fclose($file);
