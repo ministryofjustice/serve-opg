@@ -1,12 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
 use App\Entity\Order;
-use App\Tests\ApiWebTestCase;
 use App\TestHelpers\FileTestHelper;
-use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\DomCrawler\Crawler;
+use App\Tests\ApiWebTestCase;
+use Behat\Mink\Driver\Goutte\Client as HTTPClient;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,27 +19,6 @@ class OrderControllerTest extends ApiWebTestCase
     {
         parent::setUp();
     }
-
-// Unused feature - Bug https://bugs.php.net/bug.php?id=77784
-//    public function testProcessOrderDocSuccess()
-//    {
-//        $order = $this->createOrder(Order::TYPE_HW);
-//
-//        $file = FileTestHelper::createUploadedFile(
-//            '/tests/TestData/validCO - 93559316.docx',
-//            'validCO - 93559316.docx',
-//            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-//        );
-//
-//        /** @var AbstractBrowser $client */
-//        $client = ApiWebTestCase::getService('test.client');
-//        $orderId = $order->getId();
-//        /** @var Crawler $crawler */
-//        $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
-//
-//        self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-//        self::assertJson($client->getResponse()->getContent());
-//    }
 
     public function testProcessOrderDocCaseNumberMismatch()
     {
@@ -48,11 +30,11 @@ class OrderControllerTest extends ApiWebTestCase
             'application/msword'
         );
 
-        /** @var Client $client */
+        /** @var HTTPClient $client */
         $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
-        /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+
+        $client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
     }
@@ -64,11 +46,11 @@ class OrderControllerTest extends ApiWebTestCase
 
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
-        /** @var Client $client */
+        /** @var HTTPClient $client */
         $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
-        /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+
+        $client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertJson($client->getResponse()->getContent());
@@ -84,9 +66,12 @@ class OrderControllerTest extends ApiWebTestCase
         ];
     }
 
-    /** @dataProvider partialExtractionProvider
+    /**
+     * @dataProvider partialExtractionProvider
+     *
      * @param string $orderType , the type of Order (HW or PF)
-     * @param string $fileName , the fixture filename to load
+     * @param string $fileName  , the fixture filename to load
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -95,16 +80,16 @@ class OrderControllerTest extends ApiWebTestCase
         $order = $this->createOrder($orderType);
 
         $file = FileTestHelper::createUploadedFile(
-            "/tests/TestData/${fileName}",
+            "/tests/TestData/$fileName",
             $fileName,
             'application/msword'
         );
 
-        /** @var Client $client */
+        /** @var HTTPClient $client */
         $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
-        /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+
+        $client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         self::assertJson($client->getResponse()->getContent());
@@ -115,15 +100,15 @@ class OrderControllerTest extends ApiWebTestCase
         return [
             'Missing SubType' => [
                 'HW',
-                'Missing sub type - 93559316.docx'
+                'Missing sub type - 93559316.docx',
             ],
             'Missing AppointmentType' => [
                 'HW',
-                'Missing appointment type - 93559316.docx'
+                'Missing appointment type - 93559316.docx',
             ],
             'Missing HasAssetsAboveThreshold' => [
                 'PF',
-                'Missing bond amount - 93559316.docx'
+                'Missing bond amount - 93559316.docx',
             ],
         ];
     }
@@ -135,7 +120,7 @@ class OrderControllerTest extends ApiWebTestCase
         $hasAssetsAboveThresholdValue,
         $missingElementIds,
         $visibleElementId,
-        $orderType
+        $orderType,
     ) {
         $order = $this->createOrder($orderType);
         $order->setSubType($subTypeValue);
@@ -143,15 +128,15 @@ class OrderControllerTest extends ApiWebTestCase
         $order->setHasAssetsAboveThreshold($hasAssetsAboveThresholdValue);
         $this->persistEntity($order);
 
-        /** @var Client $client */
+        /** @var HTTPClient $client */
         $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
-        /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+
+        $client->request(Request::METHOD_POST, "/order/$orderId/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
-        foreach($missingElementIds as $id) {
+        foreach ($missingElementIds as $id) {
             self::assertStringNotContainsString($id, $client->getResponse()->getContent());
         }
 
@@ -167,7 +152,7 @@ class OrderControllerTest extends ApiWebTestCase
                 null,
                 ['confirm_order_details_form_appointmentType'],
                 'confirm_order_details_form_subType',
-                'HW'
+                'HW',
             ],
             'appointmentType not extracted' => [
                 Order::SUBTYPE_NEW,
@@ -175,7 +160,7 @@ class OrderControllerTest extends ApiWebTestCase
                 null,
                 ['confirm_order_details_form_subType'],
                 'confirm_order_details_form_appointmentType',
-                'HW'
+                'HW',
             ],
             'hasAssetsAboveThreshold not extracted' => [
                 Order::SUBTYPE_NEW,
@@ -183,7 +168,7 @@ class OrderControllerTest extends ApiWebTestCase
                 null,
                 ['confirm_order_details_form_appointmentType, confirm_order_details_form_subType'],
                 'confirm_order_details_form_hasAssetsAboveThreshold',
-                'PF'
+                'PF',
             ],
         ];
     }
@@ -196,13 +181,13 @@ class OrderControllerTest extends ApiWebTestCase
         $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
         $this->persistEntity($order);
 
-        /** @var Client $client */
+        /** @var HTTPClient $client */
         $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
-        /** @var Crawler $crawler */
-        $crawler = $client->request(Request::METHOD_POST, "/order/${orderId}/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+
+        $client->request(Request::METHOD_POST, "/order/$orderId/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
-        self::assertEquals("/order/${orderId}/summary", $client->getResponse()->headers->get('location'));
+        self::assertEquals("/order/$orderId/summary", $client->getResponse()->headers->get('location'));
     }
 }
