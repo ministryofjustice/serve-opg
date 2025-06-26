@@ -1,6 +1,3 @@
-// why is this here?
-require('../css/app.scss');
-
 import dropzoneJS from "./Components/dropzoneJS";
 import forms from "./Components/forms";
 import { initAll } from "govuk-frontend";
