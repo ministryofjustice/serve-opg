@@ -1,12 +1,6 @@
 /* jshint unused: false */
 /* globals $, window, document */
 // SESSION TIMEOUT POPUP LOGIC
-/**
- * @param element
- * @param sessionExpiresMs
- * @param sessionPopupShowAfterMs
- * @param refreshUrl
- */
 var SessionTimeoutDialog = function (options) {
     var that = this;
     this.element = options.element;

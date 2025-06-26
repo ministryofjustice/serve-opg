@@ -16,8 +16,8 @@ class InlineUpload {
         }
     }
 
-    cacheEls() {
-        this.$documentMandatory = $('#documents-mandatory');
+    cacheEls(documentMandatoryElt) {
+        this.$documentMandatory = $(documentMandatoryElt);
         this.$documentOther = $('#documents-additional');
         this.$dropZoneTemplate = $('#dropzone__template');
         this.$dropZoneFileTemplate = $('#dropzone__template__file');

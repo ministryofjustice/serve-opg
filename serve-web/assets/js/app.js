@@ -1,26 +1,75 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
-
-// any CSS you require will output into a single css file (app.css in this case)
+// why is this here?
 require('../css/app.scss');
-require('dropzone/dist/min/dropzone.min');
 
-import { preventDoubleClick } from './Components/buttons';
-import { initAll } from 'govuk-frontend'
+import dropzoneJS from "./Components/dropzoneJS";
+import forms from "./Components/forms";
+import { initAll } from "govuk-frontend";
+import InlineUpload from "./Components/inlineUpload";
+import PostcodeLookup from "./Components/postcodeLookup";
+import SessionTimeoutDialog from "./Components/sessionTimeoutDialog";
 
-initAll();
-
-// Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 const $ = require('jquery');
 
-// Example usage: Prevent double-click on all buttons with the class "prevent-double-click"
-$(document).ready(function() {
-    $('form').on('submit', function(e) {
-        const button = $(this).find('.prevent-double-click');
-        preventDoubleClick(button[0]);
+window.addEventListener('DOMContentLoaded', () => {
+    initAll();
+
+    // postcode lookup
+    const postcodeLookupElt = document.querySelector('.js-PostcodeLookup')
+
+    if (postcodeLookupElt !== null) {
+        let postcodeLookup = new PostcodeLookup();
+        postcodeLookup.cacheEls(postcodeLookupElt);
+        postcodeLookup.bindEvents();
+    }
+
+    // inline upload
+    const documentMandatoryElt = document.querySelector('#documents-mandatory');
+
+    if (documentMandatoryElt !== null) {
+        let inlineUpload = new InlineUpload();
+        inlineUpload.cacheEls(documentMandatoryElt);
+        inlineUpload.init();
+    }
+
+    // drag and drop files zone
+    const dropzoneEltId = 'div#court-order';
+
+    if (document.querySelector(dropzoneEltId) !== null) {
+        dropzoneJS.setup(
+            dropzoneEltId,
+            `/order/{orderId}/process-order-doc`,
+            1,
+            'court-order',
+            'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,application/pdf',
+            `/order/{orderId}/document/{documentId}`
+        );
+    }
+
+    // forms
+    forms.init('continue');
+
+    // disable double clicks on buttons
+    document.querySelectorAll('form').forEach((form) => {
+        form.addEventListener('submit', function () {
+            form.querySelectorAll('button.prevent-double-click').forEach((button) => {
+                button.setAttribute('disabled', 'disabled');
+            });
+        });
     });
+
+    // session timeout
+    let overlay = document.querySelector('.session-timeout-underlay');
+
+    if (overlay !== null) {
+        let sessionExpires = overlay.dataset.sessionExpires,
+            sessionShowPopupMs = overlay.dataset.sessionPopupShowAfter,
+            keepAliveUrl = overlay.dataset.keepAliveUrl;
+
+        new SessionTimeoutDialog({
+            'element': $('#timeoutPopup'),
+            'sessionExpiresMs': sessionExpires * 1000,
+            'sessionPopupShowAfterMs': sessionShowPopupMs * 1000,
+            'keepSessionAliveUrl': keepAliveUrl
+        }).startCountdown();
+    }
 });
