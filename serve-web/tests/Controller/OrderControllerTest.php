@@ -7,17 +7,24 @@ namespace App\Tests\Controller;
 use App\Entity\Order;
 use App\TestHelpers\FileTestHelper;
 use App\Tests\ApiWebTestCase;
-use Behat\Mink\Driver\Goutte\Client as HTTPClient;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderControllerTest extends ApiWebTestCase
 {
+    private KernelBrowser $client;
+
     public function setUp(): void
     {
         parent::setUp();
+
+        /** @var KernelBrowser $client */
+        $client = $this->getService('test.client');
+
+        $this->client = $client;
     }
 
     public function testProcessOrderDocCaseNumberMismatch()
@@ -30,13 +37,11 @@ class OrderControllerTest extends ApiWebTestCase
             'application/msword'
         );
 
-        /** @var HTTPClient $client */
-        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
 
-        $client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $this->client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
-        self::assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
+        self::assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
     }
 
     /** @dataProvider acceptedDocTypesProvider */
@@ -46,14 +51,12 @@ class OrderControllerTest extends ApiWebTestCase
 
         $file = FileTestHelper::createUploadedFile($fileLocation, $originalName, $mimeType);
 
-        /** @var HTTPClient $client */
-        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
 
-        $client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $this->client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
-        self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertJson($client->getResponse()->getContent());
+        self::assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 
     public function acceptedDocTypesProvider()
@@ -85,14 +88,12 @@ class OrderControllerTest extends ApiWebTestCase
             'application/msword'
         );
 
-        /** @var HTTPClient $client */
-        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
 
-        $client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
+        $this->client->request(Request::METHOD_POST, "/order/$orderId/process-order-doc", [], ['court-order' => $file], self::BASIC_AUTH_CREDS);
 
-        self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        self::assertJson($client->getResponse()->getContent());
+        self::assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 
     public function partialExtractionProvider()
@@ -128,19 +129,17 @@ class OrderControllerTest extends ApiWebTestCase
         $order->setHasAssetsAboveThreshold($hasAssetsAboveThresholdValue);
         $this->persistEntity($order);
 
-        /** @var HTTPClient $client */
-        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
 
-        $client->request(Request::METHOD_POST, "/order/$orderId/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+        $this->client->request(Request::METHOD_POST, "/order/$orderId/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
 
-        self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        self::assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         foreach ($missingElementIds as $id) {
-            self::assertStringNotContainsString($id, $client->getResponse()->getContent());
+            self::assertStringNotContainsString($id, $this->client->getResponse()->getContent());
         }
 
-        self::assertStringContainsString($visibleElementId, $client->getResponse()->getContent());
+        self::assertStringContainsString($visibleElementId, $this->client->getResponse()->getContent());
     }
 
     public function dataExtractionResultsProvider()
@@ -181,13 +180,11 @@ class OrderControllerTest extends ApiWebTestCase
         $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_YES);
         $this->persistEntity($order);
 
-        /** @var HTTPClient $client */
-        $client = ApiWebTestCase::getService('test.client');
         $orderId = $order->getId();
 
-        $client->request(Request::METHOD_POST, "/order/$orderId/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
+        $this->client->request(Request::METHOD_POST, "/order/$orderId/confirm-order-details", [], [], self::BASIC_AUTH_CREDS);
 
-        self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
-        self::assertEquals("/order/$orderId/summary", $client->getResponse()->headers->get('location'));
+        self::assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertEquals("/order/$orderId/summary", $this->client->getResponse()->headers->get('location'));
     }
 }
