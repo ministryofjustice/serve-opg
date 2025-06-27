@@ -63,3 +63,6 @@ rector.php
 tools/php-cs-fixer/
 .php-cs-fixer.cache
 .php-cs-fixer.php
+
+node_modules
+serve-web/public/build
