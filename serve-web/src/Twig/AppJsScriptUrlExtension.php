@@ -18,7 +18,7 @@ class AppJsScriptUrlExtension extends AbstractExtension
 
             foreach ($json['outputs'] as $name => $_) {
                 if (preg_match('/app-.+\.js/', $name)) {
-                    $this->appJsPath = '/build/'.basename($name);
+                    $this->appJsPath = '/build/javascripts/'.basename($name);
                 }
             }
         }

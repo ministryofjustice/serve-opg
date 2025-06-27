@@ -6,12 +6,15 @@ import * as sass from 'sass'
 
 const isProductionBuild = (process.argv[2] === 'production')
 
+fs.mkdirSync('./public/build/javascripts', {recursive: true})
+fs.mkdirSync('./public/build/stylesheets/govuk-frontend/dist/govuk/assets/images', {recursive: true})
+
 // JS
 let jsBuildConfig = {
     entryPoints: ['./assets/js/app.js'],
     entryNames: '[name]-[hash]',
     bundle: true,
-    outdir: './public/build/',
+    outdir: './public/build/javascripts/',
     treeShaking: true,
     metafile: true,
     minify: false,
@@ -45,9 +48,9 @@ if (isProductionBuild) {
     css = minifyResult.code
 }
 
-fs.writeFileSync('./public/build/app.css', css)
+fs.writeFileSync('./public/build/stylesheets/app.css', css)
 
 // COPY FILES
-fs.cpSync('./node_modules/govuk-frontend/dist/govuk/assets/images', './public/build/images/', {recursive: true})
+fs.cpSync('./node_modules/govuk-frontend/dist/govuk/assets/images', './public/build/stylesheets/govuk-frontend/dist/govuk/assets/images', {recursive: true})
 fs.cpSync('./node_modules/govuk-frontend/dist/govuk/assets/fonts', './public/build/fonts/', {recursive: true})
 fs.cpSync('./assets/images/icons', './public/build/icons/', {recursive: true})

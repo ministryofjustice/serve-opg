@@ -3,9 +3,9 @@ Dropzone.autoDiscover = false;
 
 class DropzoneJS {
      static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes, removeUrl) {
-        const previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
+        let previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
 
-        let dz =  new Dropzone(elementID, {
+        let dz = new Dropzone(elementID, {
             url: targetURL,
             removeUrl: removeUrl,
             maxFilesCustom: maxFiles,
