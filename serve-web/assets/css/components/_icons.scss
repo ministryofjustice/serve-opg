@@ -12,10 +12,10 @@
     height: #{$icon-height}px;
 
     @if $icon-sub-folder {
-        background-image: url("../../images/#{$icon-sub-folder}/#{$icon-name}.png");
+        background-image: url("../../build/#{$icon-sub-folder}/#{$icon-name}.png");
 
         @include govuk-device-pixel-ratio() {
-            background-image: url("../../images/#{$icon-sub-folder}/#{$icon-name}-2x.png");
+            background-image: url("../../build/#{$icon-sub-folder}/#{$icon-name}-2x.png");
             background-size: 100%;
         }
 
