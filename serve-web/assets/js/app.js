@@ -19,15 +19,6 @@ window.addEventListener('DOMContentLoaded', () => {
         postcodeLookup.bindEvents();
     }
 
-    // inline upload
-    const documentMandatoryElt = document.querySelector('#documents-mandatory');
-
-    if (documentMandatoryElt !== null) {
-        let inlineUpload = new InlineUpload();
-        inlineUpload.cacheEls(documentMandatoryElt);
-        inlineUpload.init();
-    }
-
     // drag and drop files zone
     const dropzoneEltId = 'div#court-order';
 
@@ -40,6 +31,15 @@ window.addEventListener('DOMContentLoaded', () => {
             'image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,application/pdf',
             `/order/{orderId}/document/{documentId}`
         );
+    }
+
+    // inline upload; this has to happen after the above dropzone setup
+    const documentMandatoryElt = document.querySelector('#documents-mandatory');
+
+    if (documentMandatoryElt !== null) {
+        let inlineUpload = new InlineUpload();
+        inlineUpload.cacheEls(documentMandatoryElt);
+        inlineUpload.init();
     }
 
     // forms
