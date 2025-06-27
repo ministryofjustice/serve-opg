@@ -34,11 +34,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // inline upload; this has to happen after the above dropzone setup
-    const documentMandatoryElt = document.querySelector('#documents-mandatory');
+    const hasDocumentMandatoryElt = (document.querySelector('#documents-mandatory') !== null);
 
-    if (documentMandatoryElt !== null) {
+    if (hasDocumentMandatoryElt) {
         let inlineUpload = new InlineUpload();
-        inlineUpload.cacheEls(documentMandatoryElt);
+        inlineUpload.cacheEls('#documents-mandatory');
         inlineUpload.init();
     }
 

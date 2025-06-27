@@ -1,9 +1,13 @@
-import Dropzone from 'dropzone/dist/min/dropzone.min';
+import { Dropzone } from 'dropzone/dist/min/dropzone.min';
 Dropzone.autoDiscover = false;
 
 class DropzoneJS {
      static setup(elementID, targetURL, maxFiles, fileIdentifier, acceptedTypes, removeUrl) {
-        let previewTemplate = document.getElementById('dropzone__template__file').innerHTML;
+        let previewTemplate = document.getElementById('dropzone__template__file');
+
+        if (previewTemplate === null) {
+            return null;
+        }
 
         let dz = new Dropzone(elementID, {
             url: targetURL,
@@ -13,7 +17,7 @@ class DropzoneJS {
             acceptedFiles: acceptedTypes,
             autoDiscover: false,
             createImageThumbnails: false,
-            previewTemplate: previewTemplate,
+            previewTemplate: previewTemplate.innerHTML,
             addRemoveLinks: true,
             orderId: null
         });
