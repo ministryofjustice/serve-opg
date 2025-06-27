@@ -25,7 +25,7 @@ class ApiWebTestCase extends WebTestCase
         self::bootKernel();
         self::purgeDatabase();
         self::createTestUser(self::TEST_USER_EMAIL, self::TEST_USER_PASSWORD);
-        $this->behatPassword = self::$container->get('Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface')->get('behat_password');
+        $this->behatPassword = static::getContainer()->get('Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface')->get('behat_password');
     }
 
     protected function purgeDatabase()
@@ -36,7 +36,7 @@ class ApiWebTestCase extends WebTestCase
 
     protected static function getService($id)
     {
-        return self::$container->get($id);
+        return static::getContainer()->get($id);
     }
 
     /**

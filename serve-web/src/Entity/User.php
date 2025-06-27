@@ -6,11 +6,12 @@ use Serializable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Table(name: 'dc_user')]
 #[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
 #[ORM\HasLifecycleCallbacks]
-class User implements UserInterface, EquatableInterface
+class User implements UserInterface, EquatableInterface,PasswordAuthenticatedUserInterface
 {
     /**
      * @var string
@@ -107,7 +108,7 @@ class User implements UserInterface, EquatableInterface
         return '';
     }
 
-    public function getUsername(): ?string
+    public function getUserIdentifier(): ?string
     {
         return $this->email;
     }
@@ -231,5 +232,10 @@ class User implements UserInterface, EquatableInterface
         $this->id = $data['id'];
         $this->email = $data['email'];
         $this->password = $data['password'];
+    }
+
+    public function getUsername() : void
+    {
+        // TODO: Implement getUsername() method.
     }
 }

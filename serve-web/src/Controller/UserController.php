@@ -43,7 +43,7 @@ class UserController extends AbstractController
 
         return $this->render('User/login.html.twig', array(
             'error' => $error,
-            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
+            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUserIdentifier())
                 ? $up->usernameLockedForSeconds($username)
                 : false
         ));
