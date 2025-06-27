@@ -2,8 +2,6 @@
 
 [![Path to Live](https://github.com/ministryofjustice/serve-opg/actions/workflows/workflow-live-path.yml/badge.svg)](https://github.com/ministryofjustice/serve-opg/actions/workflows/workflow-live-path.yml)
 
- PHP 8.1 & Symfony 5.4
-
 ## Prerequisites
 Software to download and install
 

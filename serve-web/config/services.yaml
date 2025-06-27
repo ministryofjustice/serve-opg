@@ -100,6 +100,12 @@ services:
         tags:
             - { name: twig.extension }
 
+    App\Twig\AppJsScriptUrlExtension:
+        arguments:
+            $metafilePath: "build/meta.json"
+        tags:
+            - { name: twig.extension }
+
     # Adds 'help' var to form component
     App\Form\Extension\FormTypeExtension:
         tags:

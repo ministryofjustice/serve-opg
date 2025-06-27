@@ -8,14 +8,8 @@
     <h1 class="govuk-heading-l">{{ ('order.' ~ order.type) | trans }}: deputy details</h1>
 {% endblock %}
 
-
 {% block validationSummary %}
     {{ macro.errorSummary(form) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent('app') }}
-    {{ encore_entry_script_tags('addDeputy') }}
 {% endblock %}
 
 {% block content %}

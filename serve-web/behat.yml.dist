@@ -27,3 +27,7 @@ default:
         pretty: true
         junit:
             output_path: "%paths.base%/tests/artifacts/behat"
+
+    calls:
+        # E_ALL & ~E_DEPRECATED
+        error_reporting: 24575

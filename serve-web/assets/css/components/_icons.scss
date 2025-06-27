@@ -1,9 +1,9 @@
 // Icons
 // ==========================================================================
 
-@import "~govuk-frontend/dist/govuk/settings/index";
-@import "~govuk-frontend/dist/govuk/tools/index";
-@import "~govuk-frontend/dist/govuk/helpers/index";
+@import "govuk-frontend/dist/govuk/settings/index";
+@import "govuk-frontend/dist/govuk/tools/index";
+@import "govuk-frontend/dist/govuk/helpers/index";
 
 // Icon mixin
 @mixin icon($icon-name, $icon-width, $icon-height, $icon-sub-folder:false) {
@@ -12,10 +12,10 @@
     height: #{$icon-height}px;
 
     @if $icon-sub-folder {
-        background-image: url("../../images/#{$icon-sub-folder}/#{$icon-name}.png");
+        background-image: url("../../build/#{$icon-sub-folder}/#{$icon-name}.png");
 
         @include govuk-device-pixel-ratio() {
-            background-image: url("../../images/#{$icon-sub-folder}/#{$icon-name}-2x.png");
+            background-image: url("../../build/#{$icon-sub-folder}/#{$icon-name}-2x.png");
             background-size: 100%;
         }
 

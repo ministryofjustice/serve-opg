@@ -1,9 +1,9 @@
 // Alerts
 // ==========================================================================
 
-@import "~govuk-frontend/dist/govuk/settings/index";
-@import "~govuk-frontend/dist/govuk/tools/index";
-@import "~govuk-frontend/dist/govuk/helpers/index";
+@import "govuk-frontend/dist/govuk/settings/index";
+@import "govuk-frontend/dist/govuk/tools/index";
+@import "govuk-frontend/dist/govuk/helpers/index";
 
 @include govuk-exports("govuk/component/alert") {
     .govuk-alert {

@@ -4,14 +4,15 @@
   "description": "OPG Digital Court of Protection Order Serving Service",
   "repository": "https://github.com/ministryofjustice/serve-opg",
   "license": "MIT",
+  "type": "module",
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
-    "@symfony/webpack-encore": "^5.0.0",
     "babel-jest": "^29.7.0",
     "core-js": "^3.0.0",
     "del": "^3.0.0",
     "dropzone": "5.9.3",
+    "esbuild": "^0.25.5",
     "fetch-mock": "^10.1.1",
     "file-loader": "^6.0.0",
     "govuk-frontend": "^5.7.0",
@@ -19,19 +20,13 @@
     "jquery": "^3.5.0",
     "node-fetch": "^2.6.7",
     "sass": "^1.86.1",
-    "sass-loader": "^16.0.5",
-    "tar": "6.2.1",
-    "webpack": "^5.0.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-notifier": "^1.6.0"
+    "tar": "6.2.1"
   },
   "scripts": {
-    "build": "encore production --progress",
-    "dev-server": "encore dev-server",
-    "build-dev": "encore dev",
     "jest": "jest assets/js/__tests__ --verbose",
-    "watch": "encore dev --watch",
-    "clear-jest-cache": "jest --clearCache"
+    "clear-jest-cache": "jest --clearCache",
+    "build-dev": "node deps-builder.js",
+    "build": "node deps-builder.js production"
   },
   "babel": {
     "presets": [

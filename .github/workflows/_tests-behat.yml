@@ -41,10 +41,10 @@ jobs:
 
       - uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1
 
-      - name: Install PHP 8.1
+      - name: Install PHP 8.4
         uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0
         with:
-          php-version: "8.1.18"
+          php-version: "8.4.8"
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0

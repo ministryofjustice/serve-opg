@@ -2,24 +2,32 @@
 
 namespace tests\Service;
 
-use App\Entity\User;
-use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
-use App\Service\Security\LoginAttempts\MockAttemptsStorage;
 use App\Common\BruteForceChecker;
-use Doctrine\ORM\EntityRepository;
-use Mockery as m;
+use App\Entity\User;
 use App\Service\Security\LoginAttempts\AttemptsStorageInterface;
+use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery as m;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 
 class UserProviderTest extends MockeryTestCase
 {
     use ProphecyTrait;
+
+    private EntityRepository $userRepo;
+    private EntityManager $em;
+    private AttemptsStorageInterface $storage;
+    private BruteForceChecker $bruteForceChecker;
+    private string $userName;
+    private User $user;
+    private AuthenticationEvent $authenticationFailureEvent;
+    private TokenInterface $successAuthenticationEvent;
 
     public function setUp(): void
     {
@@ -44,7 +52,6 @@ class UserProviderTest extends MockeryTestCase
             ->shouldReceive('getCredentials')
             ->andReturn(['email' => $this->userName, 'password' => 'fakepass'])
             ->getMock();
-
 
         $failureEvent = $this->prophesize(AuthenticationEvent::class);
         $failureEvent->getAuthenticationToken()->willReturn($token);
@@ -79,8 +86,8 @@ class UserProviderTest extends MockeryTestCase
 
     public function testBruteForceLockNotReached()
     {
-        $this->storage->shouldReceive('getAttempts')->with($this->userName)->andReturn([1,2,3]);
-        $this->bruteForceChecker->shouldReceive('hasToWait')->with([1,2,3], 5, 100, 200, m::any())->andReturn(false);
+        $this->storage->shouldReceive('getAttempts')->with($this->userName)->andReturn([1, 2, 3]);
+        $this->bruteForceChecker->shouldReceive('hasToWait')->with([1, 2, 3], 5, 100, 200, m::any())->andReturn(false);
 
         $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, [[5, 100, 200]]);
 
@@ -91,8 +98,8 @@ class UserProviderTest extends MockeryTestCase
 
     public function testBruteForceLockReached()
     {
-        $this->storage->shouldReceive('getAttempts')->with($this->userName)->andReturn([1,2,3]);
-        $this->bruteForceChecker->shouldReceive('hasToWait')->with([1,2,3], 5, 100, 200, m::any())->andReturn(200);
+        $this->storage->shouldReceive('getAttempts')->with($this->userName)->andReturn([1, 2, 3]);
+        $this->bruteForceChecker->shouldReceive('hasToWait')->with([1, 2, 3], 5, 100, 200, m::any())->andReturn(200);
 
         $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker, [[5, 100, 200]]);
 
