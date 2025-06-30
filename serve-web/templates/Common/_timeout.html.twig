@@ -1,10 +1,6 @@
 {% set translationDomain = "popup-timeout" %}
 {% trans_default_domain translationDomain %}
 
-{% block javascripts %}
-    {{ encore_entry_script_tags('timeout') }}
-{% endblock %}
-
 {#Using data attributes to pass twig vars to javascript#}
 <div class="session-timeout-underlay"
      data-session-expires="{{ session_expires_seconds|default(1500) }}"

@@ -9,14 +9,23 @@ trait DebugTrait
 {
     private $behatDebugDir = '/tmp/behat/';
 
+    private function ensureDebugDir()
+    {
+        if (!is_dir($this->behatDebugDir)) {
+            mkdir($this->behatDebugDir, recursive: true);
+        }
+    }
+
     /**
      * @Then /^debug$/
      *
-     * @param null|mixed $feature
-     * @param null|mixed $line
+     * @param mixed|null $feature
+     * @param mixed|null $line
      */
     public function debug($feature = null, $line = null): void
     {
+        $this->ensureDebugDir();
+
         $filename = $feature.time().'.html';
 
         $session = $this->getSession();
@@ -31,6 +40,8 @@ trait DebugTrait
      */
     public function iSaveThePageAs(string $name): void
     {
+        $this->ensureDebugDir();
+
         $filename = $this->behatDebugDir.'/screenshot-'.$name.'.html';
 
         $data = $this->getSession()->getPage()->getContent();
@@ -59,8 +70,6 @@ trait DebugTrait
     /**
      * @Then die :code
      * @Then exit :code
-     *
-     * @param mixed $code
      */
     public function interrupt($code): never
     {

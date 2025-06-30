@@ -1,13 +1,9 @@
-/* jshint unused: false */
-/* globals $, window, document */
+import jquery from 'jquery'
+
+const $ = jquery;
+
 // SESSION TIMEOUT POPUP LOGIC
-/**
- * @param element
- * @param sessionExpiresMs
- * @param sessionPopupShowAfterMs
- * @param refreshUrl
- */
-var SessionTimeoutDialog = function (options) {
+const SessionTimeoutDialog = function (options) {
     var that = this;
     this.element = options.element;
     this.sessionExpiresMs = options.sessionExpiresMs;
