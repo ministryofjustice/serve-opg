@@ -1,4 +1,4 @@
-FROM php:8.1.29-fpm-alpine3.20
+FROM php:8.4-fpm-alpine3.22
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
@@ -33,7 +33,7 @@ RUN apk update && apk upgrade
 
 #COMPOSER
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --version=2.6.6
+RUN php composer-setup.php --version=2.8.9
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 

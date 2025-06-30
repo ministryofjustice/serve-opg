@@ -65,7 +65,7 @@
     .arrow-icon::before {
         //content: url('../images/icons/drag-drop-upload-ico.svg');
         content: ' ';
-        background-image: url('../../images/icons/drag-drop-upload-ico.svg');
+        background-image: url('../../build/icons/drag-drop-upload-ico.svg');
         float: right;
         width: 90px;
         height: 90px;
@@ -80,7 +80,7 @@
     &.dz-drag-hover {
         border-color: govuk-colour("yellow");
         .arrow-icon::before {
-            content: url('../../images/icons/drag-drop-upload-hover-ico.svg');
+            content: url('../../build/icons/drag-drop-upload-hover-ico.svg');
             float: right;
             width: 90px;
             height: 90px;
@@ -91,7 +91,7 @@
         text-align: center;
         display: inline-block;
         &::before {
-            content: url('../../images/icons/drag-drop-upload-ico.svg');
+            content: url('../../build/icons/drag-drop-upload-ico.svg');
             float: left;
             width: 90px;
             height: 90px;
