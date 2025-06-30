@@ -1,7 +1,7 @@
 import jquery from 'jquery'
-const $ = jquery;
-
 import { Dropzone } from 'dropzone/dist/min/dropzone.min';
+
+const $ = jquery;
 
 class InlineUpload {
     constructor() {
