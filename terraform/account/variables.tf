@@ -2,7 +2,12 @@ variable "accounts" {
   type = map(
     object({
       name       = string,
-      account_id = string
+      account_id = string,
+      dns_firewall = object({
+        enabled         = bool
+        domains_allowed = list(string)
+        domains_blocked = list(string)
+      })
     })
   )
 }
