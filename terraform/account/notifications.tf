@@ -11,8 +11,12 @@ resource "aws_sns_topic" "alert_us_east" {
   tags         = local.default_tags
 }
 
+data "aws_sns_topic" "alert_custom" {
+  name = "custom_cloudwatch_alarms"
+}
+
 module "notify_slack" {
-  source = "github.com/terraform-aws-modules/terraform-aws-notify-slack.git?ref=v6.6.0"
+  source = "github.com/terraform-aws-modules/terraform-aws-notify-slack.git?ref=v6.7.0"
 
   sns_topic_name   = aws_sns_topic.alert.name
   create_sns_topic = false
@@ -29,8 +33,22 @@ module "notify_slack" {
   tags = local.default_tags
 }
 
+resource "aws_sns_topic_subscription" "lambda_subscription" {
+  topic_arn = data.aws_sns_topic.alert_custom.arn
+  protocol  = "lambda"
+  endpoint  = module.notify_slack.notify_slack_lambda_function_arn
+}
+
+resource "aws_lambda_permission" "allow_custom_sns" {
+  statement_id  = "AllowExecutionFromCustomSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = module.notify_slack.notify_slack_lambda_function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = data.aws_sns_topic.alert_custom.arn
+}
+
 module "notify_slack_us-east-1" {
-  source = "github.com/terraform-aws-modules/terraform-aws-notify-slack.git?ref=v6.6.0"
+  source = "github.com/terraform-aws-modules/terraform-aws-notify-slack.git?ref=v6.7.0"
 
   providers = {
     aws = aws.us-east-1

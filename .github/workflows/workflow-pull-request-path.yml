@@ -54,7 +54,7 @@ jobs:
           echo "- Build Identifier: ${BUILD_IDENTIFIER}" >> $GITHUB_STEP_SUMMARY
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@c9c5dfb290b8f614df0884928c521165ba83d630 # v3.1.4
+        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@464975f6f9e628ffcece3db87ecb819d8d391ab6 # v3.1.6
         with:
           prerelease: true
           default_bump: "minor"

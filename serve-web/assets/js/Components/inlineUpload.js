@@ -1,5 +1,5 @@
 import jquery from 'jquery'
-import Dropzone from 'dropzone/dist/min/dropzone.min';
+import { Dropzone } from 'dropzone/dist/min/dropzone.min';
 
 const $ = jquery;
 
@@ -16,8 +16,8 @@ class InlineUpload {
         }
     }
 
-    cacheEls() {
-        this.$documentMandatory = $('#documents-mandatory');
+    cacheEls(documentsMandatorySelector) {
+        this.$documentMandatory = $(documentsMandatorySelector);
         this.$documentOther = $('#documents-additional');
         this.$dropZoneTemplate = $('#dropzone__template');
         this.$dropZoneFileTemplate = $('#dropzone__template__file');
@@ -44,7 +44,6 @@ class InlineUpload {
                 if (file.addRemoveButton) {
                     _this.options.handleRemoveAction(file, _this);
                 }
-
             });
 
             this.on('error', function(file, data) {
@@ -73,7 +72,7 @@ class InlineUpload {
 
     handleRemoveAction() {
         return function (file, _this){
-            var removeElement =  Dropzone.createElement(_this.options.removeElement);
+            var removeElement = Dropzone.createElement(_this.options.removeElement);
 
             removeElement.addEventListener("click", function (e) {
                 var button = $(this);
@@ -132,13 +131,15 @@ class InlineUpload {
 
     processExistingDocument(dropZone, existingDocument) {
         existingDocument.addRemoveButton = true;
-        dropZone[0].dropzone.files.push(existingDocument);
-        dropZone[0].dropzone.emit("addedfile", existingDocument);
-        //dropZone[0].dropzone.emit("thumbnail", existingDocument, "/image/url");
-        dropZone[0].dropzone.emit("complete", existingDocument);
+        dropZone.files.push(existingDocument);
+        dropZone.emit("addedfile", existingDocument);
+        dropZone.emit("complete", existingDocument);
+
         // remove file size as unknown for existing documents
-        var file = dropZone[0].dropzone.files.slice().pop();
+        var file = dropZone.files.slice().pop();
+
         var $filePreviewTemplate = $(file.previewTemplate);
+
         $('.dz-size', $filePreviewTemplate).remove();
         // $('.dz-progress', $filePreviewTemplate).remove();
         $(file.previewElement).find('.dz-progress').hide();
@@ -174,7 +175,7 @@ class InlineUpload {
 
             context.$documentMandatory.before($dropZonePlaceholder);
 
-            var dropZone = $dropZonePlaceholder.dropzone(dropZoneSettings);
+            var dropZone = new Dropzone('#' + dropZoneId, dropZoneSettings);
 
             // handle existing file uploads
             documentName = documentName.replace(/\n/g, " ");
@@ -209,7 +210,7 @@ class InlineUpload {
 
         context.$documentOther.before($dropZonePlaceholder);
 
-        var dropZone = $dropZonePlaceholder.dropzone(dropZoneSettings);
+        var dropZone = new Dropzone('#' + dropZoneId, dropZoneSettings);
 
         $('tbody tr', context.$documentOther).each( function(){
             var docId = $(this).data('doc-id');
