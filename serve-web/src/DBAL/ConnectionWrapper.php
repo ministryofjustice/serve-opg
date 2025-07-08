@@ -40,7 +40,6 @@ class ConnectionWrapper extends Connection
 
     public function connect()
     {
-        file_put_contents('php://stderr', print_r('USING THINGY', true));
         if (null !== $this->_conn) {
             return false;
         }
