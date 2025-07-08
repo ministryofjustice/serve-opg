@@ -6,7 +6,7 @@ import sys
 from botocore.config import Config
 import secrets
 
-db_password_suffix = "database_password"
+db_password = "database_password"
 
 db_secrets_list = ["database_password"]
 
@@ -63,6 +63,8 @@ def cycle_secrets(session, aws_config, secrets_list):
         )
         print(f"rotated secret: {secret['Name']}")
 
+    print('Finished Rotating Secrets')
+
 
 def wait_for_cluster_update(client, cluster_identifier):
     # takes a while for it to start the update!
@@ -92,8 +94,8 @@ def modify_db_instances_password(session, workspaces, aws_config):
     secrets_client = session.client("secretsmanager", config=aws_config)
 
     for workspace in workspaces:
-        secret_name = f"{workspace}/{db_password_suffix}"
-        cluster_identifier = f"api-{workspace}"
+        secret_name = db_password
+        cluster_identifier = f"serve-opg-{workspace}-cluster"
 
         try:
             # Fetch the secret value from AWS Secrets Manager
@@ -147,7 +149,7 @@ def restart_ecs_services(session, workspaces, aws_config):
 
 def main(environment, secret_type):
     accounts = {
-        "development": {"id": "705467933182", "workspaces": ["development"]},
+        "development": {"id": "705467933182", "workspaces": ["ddls783b741"]},
         "preproduction": {
             "id": "540070264006",
             "workspaces": ["preproduction"],
