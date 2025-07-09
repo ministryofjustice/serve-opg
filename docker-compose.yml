@@ -153,6 +153,7 @@ services:
       APP_ENV: 'test'
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
       BEHAT_PASSWORD: 'Abcd1234'
+      ENVIRONMENT_NAME: local
 
   qa:
     image: jakzal/phpqa:alpine
