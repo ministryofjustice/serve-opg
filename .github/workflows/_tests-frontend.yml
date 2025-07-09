@@ -9,11 +9,11 @@ jobs:
         - name: Build Dependencies
           run: make dependencies
 
+        - name: Run Integrations Tests
+          run: |
+            make behat-tests
+
         - name: Run Unit Tests
           run: |
             ./serve-web/generate_certs.sh
             make unit-tests
-
-        - name: Run Integrations Tests
-          run: |
-            make behat-tests
