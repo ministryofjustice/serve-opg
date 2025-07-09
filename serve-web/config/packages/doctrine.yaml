@@ -17,7 +17,7 @@ doctrine:
         sslmode: "%env(DC_DB_SSL)%"
         sslrootcert: "%kernel.project_dir%/certs/eu-west-1-bundle.pem"
         charset:  UTF8
-
+        wrapper_class: App\DBAL\ConnectionWrapper
         server_version: 13.14
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
