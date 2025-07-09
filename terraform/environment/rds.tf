@@ -211,7 +211,7 @@ data "aws_iam_policy_document" "database_readonly_assume" {
 resource "aws_iam_role" "database_readonly_access" {
   name               = "readonly-db-iam-${local.environment}"
   assume_role_policy = data.aws_iam_policy_document.database_readonly_assume.json
-  tags               = var.default_tags
+  tags               = local.default_tags
 }
 
 data "aws_iam_policy_document" "database_readonly_connect" {
