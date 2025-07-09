@@ -164,3 +164,148 @@ resource "aws_security_group_rule" "database_tcp_out" {
   source_security_group_id = aws_security_group.ecs_service.id
   type                     = "egress"
 }
+
+# Security Group Rules to allow access to the SSM instance
+
+data "aws_security_group" "ssm_ec2_operator" {
+  name = "operator-ssm-instance"
+}
+
+resource "aws_security_group_rule" "ssm_to_db_in" {
+  protocol                 = "tcp"
+  from_port                = aws_rds_cluster.cluster_serverless.port
+  to_port                  = aws_rds_cluster.cluster_serverless.port
+  security_group_id        = aws_security_group.database.id
+  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "db_to_ssm_out" {
+  protocol                 = "tcp"
+  from_port                = aws_rds_cluster.cluster_serverless.port
+  to_port                  = aws_rds_cluster.cluster_serverless.port
+  security_group_id        = aws_security_group.database.id
+  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
+  type                     = "egress"
+}
+
+# Database Connect via Proxy Role
+
+data "aws_iam_role" "operator" {
+  name = "operator"
+}
+
+data "aws_iam_policy_document" "database_readonly_assume" {
+  statement {
+    sid     = "AllowAssume"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_iam_role.operator.arn]
+    }
+  }
+}
+
+resource "aws_iam_role" "database_readonly_access" {
+  name               = "readonly-db-iam-${local.environment}"
+  assume_role_policy = data.aws_iam_policy_document.database_readonly_assume.json
+  tags               = var.default_tags
+}
+
+data "aws_iam_policy_document" "database_readonly_connect" {
+  statement {
+    sid     = "AllowRdsConnect"
+    effect  = "Allow"
+    actions = ["rds-db:connect"]
+
+    resources = [
+      "arn:aws:rds-db:eu-west-1:${data.aws_caller_identity.current.account_id}:dbuser:${aws_rds_cluster.cluster_serverless.cluster_resource_id}/readonly-db-iam-${local.environment}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "database_readonly_connect" {
+  name        = "database-readonly-access-${local.environment}"
+  description = "Allow database-readonly-access role to connect to RDS via IAM Auth."
+  policy      = data.aws_iam_policy_document.database_readonly_connect.json
+}
+
+resource "aws_iam_role_policy_attachment" "database_readonly_connect_attach" {
+  role       = aws_iam_role.database_readonly_access.name
+  policy_arn = aws_iam_policy.database_readonly_connect.arn
+}
+
+# Creating Read Only User on the Database
+
+locals {
+  create_readonly_user_container = jsonencode(
+    {
+      name  = "create-readonly-user"
+      image = local.images.api
+
+      command = ["sh", "scripts/database/create_readonly_user.sh"]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.serve.name
+          awslogs-region        = data.aws_region.current.name
+          awslogs-stream-prefix = "create-readonly-user"
+        }
+      }
+
+      secrets = [
+        {
+          name      = "DATABASE_PASSWORD"
+          valueFrom = data.aws_secretsmanager_secret.database_password.arn
+        }
+      ]
+
+      environment = [
+        {
+          name  = "WORKSPACE"
+          value = local.environment
+        },
+        {
+          name  = "DATABASE_HOSTNAME"
+          value = aws_rds_cluster.cluster_serverless.endpoint
+        },
+        {
+          name  = "DATABASE_USERNAME"
+          value = "serveopgadmin"
+        },
+        {
+          name  = "DATABASE_NAME"
+          value = "serve_opg"
+        },
+        {
+          name  = "DATABASE_PORT"
+          value = "5432"
+        }
+      ]
+    }
+  )
+}
+
+resource "aws_ecs_task_definition" "create_readonly_user" {
+  family                   = "create-readonly-user-${local.environment}"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = 256
+  memory                   = 512
+  container_definitions    = "[${local.create_readonly_user_container}]"
+  task_role_arn            = aws_iam_role.task_runner.arn
+  execution_role_arn       = aws_iam_role.execution_role_db.arn
+}
+
+# Output these values for the ECS Task
+
+output "private_subnet_ids" {
+  value = data.aws_subnet.private[*].id
+}
+
+output "ecs_db_access_sg_id" {
+  value = aws_security_group.database.id
+}

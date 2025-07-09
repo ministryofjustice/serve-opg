@@ -117,3 +117,18 @@ jobs:
         with:
           name: cluster_config_${{ inputs.workspace }}
           path: ./terraform/environment/cluster_config.json
+
+      - name: Get Terraform Outputs for ECS Task
+        if: inputs.apply == true && inputs.terraform_path == 'environment'
+        id: tf_outputs
+        run: |
+          subnets=$(terraform output -json private_subnet_ids | jq -r '.[]' | paste -sd "," -)
+          sg=$(terraform output -raw ecs_db_access_sg_id)
+          echo "subnets=$subnets" >> $GITHUB_OUTPUT
+          echo "sg=$sg" >> $GITHUB_OUTPUT
+        working-directory: terraform/${{ inputs.terraform_path }}
+        
+      - name: Run create-readonly-user ECS task
+        if: inputs.apply == true && inputs.terraform_path == 'environment'
+        run: aws ecs run-task --cluster serve-opg-${{ inputs.workspace }} --launch-type FARGATE --task-definition create-readonly-user-${{ inputs.workspace }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.tf_outputs.outputs.subnets }}],securityGroups=[${{ steps.tf_outputs.outputs.sg }}],assignPublicIp=DISABLED}"
+
