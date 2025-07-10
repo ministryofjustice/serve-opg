@@ -243,7 +243,7 @@ locals {
   create_readonly_user_container = jsonencode(
     {
       name  = "create-readonly-user"
-      image = local.images.api
+      image = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:${var.APP_VERSION}"
 
       command = ["sh", "scripts/database/create_readonly_user.sh"]
 
