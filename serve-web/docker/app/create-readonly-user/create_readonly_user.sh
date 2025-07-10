@@ -1,9 +1,10 @@
 #!/bin/sh
 
-SQL_FILE="./scripts/database/create_readonly_user.sql"
+SQL_FILE="/usr/local/bin/create_readonly_user.sql"
+
 
 # Export the database password for psql
-export PGPASSWORD="$DATABASE_PASSWORD"
+export PGPASSWORD="$DC_DB_PASS"
 
 # Create a temporary file for the modified SQL
 temp_file=$(mktemp)
@@ -13,7 +14,7 @@ sed "s/string-to-replace-with-local-environment/$WORKSPACE/g" "$SQL_FILE" > "$te
 echo "Executing SQL to create readonly user for workspace: $WORKSPACE"
 
 # Run the modified SQL file
-psql -h "$DATABASE_HOSTNAME" -U "$DATABASE_USERNAME" -d "$DATABASE_NAME" -p "$DATABASE_PORT" -f "$temp_file"
+psql -h "$DC_DB_HOST" -U "$DC_DB_USER" -d "$DATABASE_NAME" -p "$DC_DB_PORT" -f "$temp_file"
 
  # Check for errors
 if [ $? -ne 0 ]; then
