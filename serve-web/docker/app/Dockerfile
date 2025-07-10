@@ -53,6 +53,7 @@ COPY docker/waitforit/wait-for-it.sh /usr/bin/wait-for-it.sh
 RUN chmod +x /usr/bin/wait-for-it.sh
 
 # Create Read Only User Scripts.
+RUN apk add --no-cache postgresql-client
 COPY docker/app/create-readonly-user/create_readonly_user.sh /usr/local/bin/create_readonly_user.sh
 COPY docker/app/create-readonly-user/create_readonly_user.sql /usr/local/bin/create_readonly_user.sql
 RUN chmod +x /usr/local/bin/create_readonly_user.sh
