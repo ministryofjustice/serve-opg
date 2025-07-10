@@ -6,15 +6,12 @@ module "ssm_ec2_instance_operator" {
   name          = "operator"
   tags          = local.default_tags
   //kms_key_id    = module.logs_kms.eu_west_1_target_key_arn
-  instance_profile = aws_iam_instance_profile.operator.name
-
-
+  instance_profile = data.aws_iam_instance_profile.operator.name
   vpc_id = aws_default_vpc.default.id
 }
 
-resource "aws_iam_instance_profile" "operator" {
-  name = "operator"
-  role = data.aws_iam_role.operator.name
+data "aws_iam_instance_profile" "operator" {
+   name = "operator"
 }
 
 data "aws_iam_role" "operator" {

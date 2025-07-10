@@ -25,7 +25,7 @@ list_databases() {
   dbs=$(aws rds describe-db-clusters --query "DBClusters[?Engine=='aurora-postgresql'].[DBClusterIdentifier,Endpoint]" --output text)
 
   while read -r database endpoint; do
-    env=$(echo "$database" | awk -F'-' '{print $2}')
+    env=$(echo "$database" | awk -F'-' '{print $3}')
     printf "%-20s %-30s %-70s\n" "$env" "$database" "$endpoint"
   done <<< "$dbs"
 
@@ -43,13 +43,14 @@ connect_to_database() {
     exit 1
   fi
 
-  if [[ "$input" == api-* ]]; then
-    database="$input"
-    environment=$(echo "$input" | awk -F'-' '{print $2}')
+  if [[ "$input" == serve-opg-* ]]; then
+      database="$input"
+      environment=$(echo "$database" | awk -F'-' '{print $3}')
   else
-    database="api-$input"
-    environment="$input"
+      environment="$input"
+      database="serve-opg-$environment-cluster"
   fi
+
 
   exists=$(aws rds describe-db-clusters --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" --output text)
 
@@ -59,7 +60,7 @@ connect_to_database() {
   fi
 
   if [[ "$access" == "edit" ]]; then
-    user="digidepsmaster"
+    user="serveopgadmin"
     secret_name="${environment}/database-password"
 
     if ! secret_exists "$secret_name"; then
@@ -113,7 +114,7 @@ connect_to_database() {
     TOKEN=$(aws rds generate-db-auth-token --hostname "$HOST" --port 5432 --username readonly-db-iam-${environment} --region eu-west-1)
 
     echo "Connecting to $HOST as readonly-db-iam-${environment}"
-    PGPASSWORD="$TOKEN" psql "host=$HOST port=5432 dbname=api user=readonly-db-iam-${environment} sslmode=require sslrootcert=/tmp/rds-combined-ca-bundle.pem"
+    PGPASSWORD="$TOKEN" psql "host=$HOST port=5432 dbname=serve_opg user=readonly-db-iam-${environment} sslmode=require sslrootcert=/tmp/rds-combined-ca-bundle.pem"
 
   else
     echo "Invalid access level: must be 'read' or 'edit'"
