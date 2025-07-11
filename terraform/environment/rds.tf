@@ -164,3 +164,77 @@ resource "aws_security_group_rule" "database_tcp_out" {
   source_security_group_id = aws_security_group.ecs_service.id
   type                     = "egress"
 }
+
+# Security Group Rules to allow access to the SSM instance
+
+# Chicken and the egg, will enable after first merge.
+
+# data "aws_security_group" "ssm_ec2_operator" {
+#   name = "operator-ssm-instance"
+# }
+
+# resource "aws_security_group_rule" "ssm_to_db_in" {
+#   protocol                 = "tcp"
+#   from_port                = aws_rds_cluster.cluster_serverless.port
+#   to_port                  = aws_rds_cluster.cluster_serverless.port
+#   security_group_id        = aws_security_group.database.id
+#   source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
+#   type                     = "ingress"
+# }
+
+# resource "aws_security_group_rule" "db_to_ssm_out" {
+#   protocol                 = "tcp"
+#   from_port                = aws_rds_cluster.cluster_serverless.port
+#   to_port                  = aws_rds_cluster.cluster_serverless.port
+#   security_group_id        = aws_security_group.database.id
+#   source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
+#   type                     = "egress"
+# }
+
+# Database Connect via Proxy Role
+
+data "aws_iam_role" "operator" {
+  name = "operator"
+}
+
+data "aws_iam_policy_document" "database_readonly_assume" {
+  statement {
+    sid     = "AllowAssume"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_iam_role.operator.arn]
+    }
+  }
+}
+
+resource "aws_iam_role" "database_readonly_access" {
+  name               = "readonly-db-iam-${local.environment}"
+  assume_role_policy = data.aws_iam_policy_document.database_readonly_assume.json
+  tags               = local.default_tags
+}
+
+data "aws_iam_policy_document" "database_readonly_connect" {
+  statement {
+    sid     = "AllowRdsConnect"
+    effect  = "Allow"
+    actions = ["rds-db:connect"]
+
+    resources = [
+      "arn:aws:rds-db:eu-west-1:${data.aws_caller_identity.current.account_id}:dbuser:${aws_rds_cluster.cluster_serverless.cluster_resource_id}/readonly-db-iam-${local.environment}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "database_readonly_connect" {
+  name        = "database-readonly-access-${local.environment}"
+  description = "Allow database-readonly-access role to connect to RDS via IAM Auth."
+  policy      = data.aws_iam_policy_document.database_readonly_connect.json
+}
+
+resource "aws_iam_role_policy_attachment" "database_readonly_connect_attach" {
+  role       = aws_iam_role.database_readonly_access.name
+  policy_arn = aws_iam_policy.database_readonly_connect.arn
+}
