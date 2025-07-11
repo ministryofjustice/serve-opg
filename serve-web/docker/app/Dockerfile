@@ -52,16 +52,9 @@ RUN mkdir certs && chmod 755 certs && wget -O certs/eu-west-1-bundle.pem https:/
 COPY docker/waitforit/wait-for-it.sh /usr/bin/wait-for-it.sh
 RUN chmod +x /usr/bin/wait-for-it.sh
 
-# Create Read Only User Scripts.
-RUN apk add --no-cache postgresql-client
-COPY docker/app/create-readonly-user/create_readonly_user.sh /usr/local/bin/create_readonly_user.sh
-COPY docker/app/create-readonly-user/create_readonly_user.sql /usr/local/bin/create_readonly_user.sql
-RUN chmod +x /usr/local/bin/create_readonly_user.sh
-
 ENV TIMEOUT=30
 
 CMD ["/bin/ash", "-c", "/usr/bin/wait-for-it.sh -h $DC_DB_HOST -p $DC_DB_PORT -t $TIMEOUT && \
-  sh /usr/local/bin/create_readonly_user.sh && \
   php bin/console doctrine:migrations:migrate --no-interaction && \
   php bin/console doctrine:migrations:up-to-date && \
   chown -R www-data var && \

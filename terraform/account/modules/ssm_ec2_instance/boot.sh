@@ -61,10 +61,10 @@ connect_to_database() {
 
   if [[ "$access" == "edit" ]]; then
     user="serveopgadmin"
-    secret_name="${environment}/database-password"
+    secret_name="database_password"
 
     if ! secret_exists "$secret_name"; then
-      fallback="default/database-password"
+      fallback="database_password"
       if secret_exists "$fallback"; then
         secret_name="$fallback"
       else
@@ -79,7 +79,8 @@ connect_to_database() {
       exit 1
     fi
 
-    HOST=$(aws rds describe-db-instances --region eu-west-1 --db-instance-identifier "${database}-0" --query 'DBInstances[0].Endpoint.Address' --output text)
+    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "${database}" --query 'DBClusters[0].Endpoint' --output text)
+
 
     if [[ -z "$HOST" || "$HOST" == "None" ]]; then
       echo "Error: Could not resolve DB instance for '${database}-0'"
@@ -91,7 +92,7 @@ connect_to_database() {
 
   elif [[ "$access" == "read" ]]; then
     ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-    HOST=$(aws rds describe-db-instances --region eu-west-1 --db-instance-identifier "${database}-0" --query 'DBInstances[0].Endpoint.Address' --output text)
+    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "${database}" --query 'DBClusters[0].Endpoint' --output text)
 
     if [[ -z "$HOST" || "$HOST" == "None" ]]; then
       echo "Error: Could not resolve DB instance for '${database}-0'"
