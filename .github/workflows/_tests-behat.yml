@@ -108,6 +108,7 @@ jobs:
         env:
           BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://${{ inputs.base_url }}"}}}'
           SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
+          ENVIRONMENT_NAME: development
         run: |
           vendor/bin/behat --stop-on-failure -c behat.yml.dist ${{ inputs.suite }}
         working-directory: ./serve-web
@@ -120,6 +121,7 @@ jobs:
           path: /tmp/behat
 
       - name: Remove CI ingress
+        if: ${{ always() }}
         run: |
           echo $TF_WORKSPACE
           python scripts/ci_ingress/ci_ingress.py cluster_config.json
