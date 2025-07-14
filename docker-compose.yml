@@ -106,7 +106,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:13.20
+    image: postgres:14.18
     ports:
       - 5432:5432
     environment:
