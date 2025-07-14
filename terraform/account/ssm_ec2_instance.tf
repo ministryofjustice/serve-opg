@@ -25,8 +25,8 @@ resource "aws_iam_role_policy_attachment" "ssm_core_role_policy_document" {
 # Policy Document for EC2 Start/Stop
 data "aws_iam_policy_document" "start_ec2" {
   statement {
-    sid     = "AllowStartStopSpecificInstance"
-    effect  = "Allow"
+    sid    = "AllowStartStopSpecificInstance"
+    effect = "Allow"
     actions = [
       "ec2:StartInstances",
       "ec2:StopInstances",
