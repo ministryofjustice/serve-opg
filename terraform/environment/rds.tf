@@ -168,7 +168,7 @@ resource "aws_security_group_rule" "database_tcp_out" {
 # Security Group Rules to allow access to the SSM instance
 
 data "aws_security_group" "ssm_ec2_operator" {
-  name = "operator-ssm-instance"
+  name = "ssm-operator-instance"
 }
 
 resource "aws_security_group_rule" "ssm_to_db_in" {
