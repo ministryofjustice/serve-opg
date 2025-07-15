@@ -168,25 +168,16 @@ resource "aws_security_group_rule" "database_tcp_out" {
 # Security Group Rules to allow access to the SSM instance
 
 data "aws_security_group" "ssm_ec2_operator" {
-  name = "ssm-operator-instance"
+  name = "operator-ssm-instance"
 }
 
-resource "aws_security_group_rule" "ssm_to_db_in" {
-  protocol                 = "tcp"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
-  security_group_id        = aws_security_group.database.id
-  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
+resource "aws_security_group_rule" "allow_ssm_to_db_inbound" {
   type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "db_to_ssm_out" {
-  protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
+  protocol                 = "tcp"
   security_group_id        = aws_security_group.database.id
   source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
-  type                     = "egress"
 }
 
 # Database Connect via Proxy Role
