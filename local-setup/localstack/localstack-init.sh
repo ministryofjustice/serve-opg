@@ -20,3 +20,5 @@ awslocal s3api get-bucket-encryption --region eu-west-1 --bucket $bucket
 
 awslocal dynamodb create-table --region eu-west-1 --cli-input-json file:///tmp/attempts_table.json
 awslocal dynamodb create-table --region eu-west-1 --cli-input-json file:///tmp/sessions_table.json
+
+awslocal secretsmanager create-secret --name "database-password" --secret-string "dcdb2018!"
