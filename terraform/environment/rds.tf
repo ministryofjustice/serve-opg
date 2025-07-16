@@ -81,7 +81,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   skip_final_snapshot                 = local.account.deletion_protection ? false : true
   vpc_security_group_ids              = [aws_security_group.database.id]
   tags                                = local.default_tags
-  iam_database_authentication_enabled = false
+  iam_database_authentication_enabled = true
 
   serverlessv2_scaling_configuration {
     min_capacity = 0
@@ -171,22 +171,22 @@ data "aws_security_group" "ssm_ec2_operator" {
   name = "operator-ssm-instance"
 }
 
-resource "aws_security_group_rule" "ssm_to_db_in" {
-  protocol                 = "tcp"
+resource "aws_security_group_rule" "allow_ssm_to_db_inbound" {
+  type                     = "ingress"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
+  protocol                 = "tcp"
   security_group_id        = aws_security_group.database.id
   source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
-  type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "db_to_ssm_out" {
-  protocol                 = "tcp"
+resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
+  type                     = "egress"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
-  security_group_id        = aws_security_group.database.id
-  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
-  type                     = "egress"
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.ssm_ec2_operator.id
+  source_security_group_id = aws_security_group.database.id
 }
 
 # Database Connect via Proxy Role
