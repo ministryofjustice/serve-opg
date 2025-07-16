@@ -88,7 +88,7 @@ connect_to_database() {
     fi
 
     echo "Connecting to $HOST as $user"
-    PGPASSWORD="$password" psql -h "$HOST" -U "$user" -d api -p 5432
+    PGPASSWORD="$password" psql -h "$HOST" -U "$user" -d serve_opg -p 5432
 
   elif [[ "$access" == "read" ]]; then
     ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
