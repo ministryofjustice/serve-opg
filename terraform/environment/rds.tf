@@ -180,6 +180,15 @@ resource "aws_security_group_rule" "allow_ssm_to_db_inbound" {
   source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
 }
 
+resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
+  type                     = "egress"
+  from_port                = aws_rds_cluster.cluster_serverless.port
+  to_port                  = aws_rds_cluster.cluster_serverless.port
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.ssm_ec2_operator.id
+  source_security_group_id = aws_security_group.database.id
+}
+
 # Database Connect via Proxy Role
 
 data "aws_iam_role" "operator" {
