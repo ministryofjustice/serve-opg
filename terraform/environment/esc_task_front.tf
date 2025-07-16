@@ -177,6 +177,10 @@ locals {
           value = local.account.fixtures_enabled
         },
         {
+          name  = "ENVIRONMENT_NAME",
+          value = local.account.account_name
+        },
+        {
           name  = "WORKSPACE",
           value = local.environment
         }

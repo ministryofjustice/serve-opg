@@ -63,6 +63,7 @@ services:
       - FIXTURES_ENABLED=true
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
+      - ENVIRONMENT_NAME=local
     depends_on:
       postgres:
         condition: service_healthy
@@ -92,7 +93,7 @@ services:
     ports:
       - "4566-4583:4566-4583"
     environment:
-      - SERVICES=s3,dynamodb,kms
+      - SERVICES=s3,dynamodb,kms,secretsmanager
       - DATA_DIR=/tmp/localstack/data
       - DEFAULT_REGION=eu-west-1
       - S3_SKIP_KMS_KEY_VALIDATION=1
@@ -152,6 +153,7 @@ services:
       APP_ENV: 'test'
       BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://loadbalancer"}}}'
       BEHAT_PASSWORD: 'Abcd1234'
+      ENVIRONMENT_NAME: local
 
   qa:
     image: jakzal/phpqa:alpine
