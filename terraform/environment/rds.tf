@@ -81,7 +81,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   skip_final_snapshot                 = local.account.deletion_protection ? false : true
   vpc_security_group_ids              = [aws_security_group.database.id]
   tags                                = local.default_tags
-  iam_database_authentication_enabled = false
+  iam_database_authentication_enabled = true
 
   serverlessv2_scaling_configuration {
     min_capacity = 0
