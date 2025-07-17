@@ -31,7 +31,7 @@ list_databases() {
 
   echo
   echo "To connect: database connect <environment|database> <read|edit>"
-  echo "Example:    database connect production02 read"
+  echo "Example:    database connect development read"
 }
 
 connect_to_database() {
