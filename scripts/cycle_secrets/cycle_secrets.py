@@ -150,11 +150,8 @@ def restart_ecs_services(session, workspaces, aws_config):
 def main(environment, secret_type):
     accounts = {
         "development": {"id": "705467933182", "workspaces": ["development"]},
-        "preproduction": {
-            "id": "540070264006",
-            "workspaces": ["preproduction"],
-        },
-        "production": {"id": "933639921819", "workspaces": ["production02"]},
+        "preproduction": {"id": "540070264006", "workspaces": ["preproduction"]},
+        "production": {"id": "933639921819", "workspaces": ["production"]}
     }
     region_name = os.environ.get("AWS_REGION", "eu-west-1")
     aws_config = Config(region_name=region_name)
