@@ -1,2 +1,4 @@
 serve-web/src
-.github/workflows
+serve-web/config
+serve-web/templates
+serve-web/translations
