@@ -1,0 +1,4 @@
+serve-web/src
+serve-web/config
+serve-web/templates
+serve-web/translations
