@@ -57,9 +57,8 @@ jobs:
       - name: Get Default Bump
         id: semver_bump
         run: |
-          pwd
-          ls -alt
           export bump=$(./scripts/default_bump/bump.sh)
+          echo "Default Bump: ${bump}"
           echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
       - name: generate semver tag and release
         id: semver_tag
@@ -74,74 +73,74 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           sync-labels: true
 
-#  unit_test_frontend:
-#    name: Unit tests on Frontend app
-#    uses: ./.github/workflows/_tests-frontend.yml
-#
-#  build_scan_push_containers:
-#    name: Docker Build, Scan and Push
-#    uses: ./.github/workflows/_build-push.yml
-#    needs: [workflow_variables]
-#    with:
-#      tag: ${{ needs.workflow_variables.outputs.version_tag }}
-#      branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
-#    secrets: inherit
-#
-#  deploy_to_branch_environment:
-#    name: Deploy to Branch Environment
-#    needs: [
-#      workflow_variables,
-#      build_scan_push_containers,
-#      unit_test_frontend
-#    ]
-#    uses: ./.github/workflows/_deploy-infrastructure.yml
-#    with:
-#      workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
-#      account_name: development
-#      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
-#      terraform_path: environment
-#      apply: true
-#    secrets: inherit
-#
-#  plan_development_account:
-#    name: Plan against development account
-#    needs: [
-#      workflow_variables,
-#      build_scan_push_containers,
-#    ]
-#    uses: ./.github/workflows/_deploy-infrastructure.yml
-#    with:
-#      workspace: development
-#      account_name: development
-#      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
-#      terraform_path: account
-#      apply: false
-#    secrets: inherit
-#
-#  behat_branch_environment:
-#    name: Branch Environment Behat
-#    uses: ./.github/workflows/_tests-behat.yml
-#    needs: [workflow_variables,deploy_to_branch_environment]
-#    with:
-#      workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
-#      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-#      base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
-#      sirius_api_bucket: opg-backoffice-public-api-integration
-#      suite: --suite=local
-#      account_name: development
-#      account_id: 705467933182
-#    secrets: inherit
-#
-#  end_of_pr_workflow:
-#    name: End of PR Workflow
-#    runs-on: ubuntu-latest
-#    needs: [workflow_variables,behat_branch_environment]
-#    if: ${{ always() }}
-#    steps:
-#      - name: Check workflow result
-#        if: ${{ failure() }}
-#        run: |
-#            echo "A job failed. Marking end-workflow as failed."
-#            exit 1
-#      - name: End of PR Workflow
-#        run: echo "${{ needs.workflow_variables.outputs.version_tag }} tested, built and deployed to Development"
+  unit_test_frontend:
+    name: Unit tests on Frontend app
+    uses: ./.github/workflows/_tests-frontend.yml
+
+  build_scan_push_containers:
+    name: Docker Build, Scan and Push
+    uses: ./.github/workflows/_build-push.yml
+    needs: [workflow_variables]
+    with:
+      tag: ${{ needs.workflow_variables.outputs.version_tag }}
+      branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
+    secrets: inherit
+
+  deploy_to_branch_environment:
+    name: Deploy to Branch Environment
+    needs: [
+      workflow_variables,
+      build_scan_push_containers,
+      unit_test_frontend
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
+      account_name: development
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: environment
+      apply: true
+    secrets: inherit
+
+  plan_development_account:
+    name: Plan against development account
+    needs: [
+      workflow_variables,
+      build_scan_push_containers,
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: development
+      account_name: development
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: account
+      apply: false
+    secrets: inherit
+
+  behat_branch_environment:
+    name: Branch Environment Behat
+    uses: ./.github/workflows/_tests-behat.yml
+    needs: [workflow_variables,deploy_to_branch_environment]
+    with:
+      workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
+      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+      base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
+      sirius_api_bucket: opg-backoffice-public-api-integration
+      suite: --suite=local
+      account_name: development
+      account_id: 705467933182
+    secrets: inherit
+
+  end_of_pr_workflow:
+    name: End of PR Workflow
+    runs-on: ubuntu-latest
+    needs: [workflow_variables,behat_branch_environment]
+    if: ${{ always() }}
+    steps:
+      - name: Check workflow result
+        if: ${{ failure() }}
+        run: |
+            echo "A job failed. Marking end-workflow as failed."
+            exit 1
+      - name: End of PR Workflow
+        run: echo "${{ needs.workflow_variables.outputs.version_tag }} tested, built and deployed to Development"
