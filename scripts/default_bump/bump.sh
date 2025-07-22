@@ -1,22 +1,23 @@
 #!/bin/sh
 
-# Usage: ./bump-decider.sh "src,config,routes"
+# Get the directory of the script
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
-FOLDER_LIST="$1"
-IFS=','
+# Full path to the folder list file
+FOLDER_FILE="$SCRIPT_DIR/folders-to-check.txt"
 
-# Convert to space-separated list
-for folder in $FOLDER_LIST; do
-  FOLDERS="$FOLDERS $folder"
-done
+if [ ! -f "$FOLDER_FILE" ]; then
+  echo "Folder list file '$FOLDER_FILE' not found."
+  exit 1
+fi
 
-# Get changed files between HEAD and base (adjust `origin/main` if needed)
+# Get the list of changed files
 CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
 
-for file in $CHANGED_FILES; do
-  for folder in $FOLDERS; do
-    echo $folder
-    echo $file
+# Check if any changed file is in the listed folders
+while IFS= read -r folder || [ -n "$folder" ]; do
+  [ -z "$folder" ] && continue  # skip empty lines
+  for file in $CHANGED_FILES; do
     case "$file" in
       "$folder"/*)
         echo "minor"
@@ -24,6 +25,6 @@ for file in $CHANGED_FILES; do
         ;;
     esac
   done
-done
+done < "$FOLDER_FILE"
 
 echo "patch"
