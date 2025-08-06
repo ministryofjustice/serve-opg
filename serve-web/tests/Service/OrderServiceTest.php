@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Service;
 
@@ -11,13 +13,14 @@ use App\Service\SiriusService;
 use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
 use Doctrine\ORM\EntityManager;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
+
 class OrderServiceTest extends WebTestCase
 {
     use ProphecyTrait;
-    
+
     /**
      * @var EntityManager|ObjectProphecy
      */
@@ -33,7 +36,6 @@ class OrderServiceTest extends WebTestCase
      */
     private $documentReader;
 
-
     public function setUp(): void
     {
         $this->em = $this->prophesize(EntityManager::class);
@@ -44,14 +46,14 @@ class OrderServiceTest extends WebTestCase
     public function testAvailabilitySuccess()
     {
         $this->siriusService->ping()->shouldBeCalled()->willReturn(true);
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         self::assertEquals(true, $sut->isAvailable());
     }
 
     public function testAvailabilityFailure()
     {
         $this->siriusService->ping()->shouldBeCalled()->willReturn(false);
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         self::assertEquals(false, $sut->isAvailable());
     }
 
@@ -59,12 +61,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testJointAndSeveralNewHw() {
+    public function testJointAndSeveralNewHw()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
@@ -75,12 +78,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testJointAndSeveralReplacementHw() {
+    public function testJointAndSeveralReplacementHw()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
 
         $file = 'No. 93559316 ORDER APPOINTING NEW JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
@@ -91,12 +95,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testJointNewHw() {
+    public function testJointNewHw()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
 
         $file = 'No. 93559316 ORDER APPOINTING NEW JOINT DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT', $hydratedOrder->getAppointmentType());
@@ -107,12 +112,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testJointReplacementHw() {
+    public function testJointReplacementHw()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT', $hydratedOrder->getAppointmentType());
@@ -123,12 +129,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testANewDeputyHw() {
+    public function testANewDeputyHw()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
 
         $file = 'No. 93559316 ORDER APPOINTING A DEPUTY security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('SOLE', $hydratedOrder->getAppointmentType());
@@ -139,12 +146,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testAReplacementDeputyHw() {
+    public function testAReplacementDeputyHw()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
 
         $file = 'No. 93559316 ORDER APPOINTING A NEW DEPUTY security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('SOLE', $hydratedOrder->getAppointmentType());
@@ -161,7 +169,7 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
@@ -173,12 +181,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testBondLevelBelowThreshold() {
+    public function testBondLevelBelowThreshold()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £15,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('no', $hydratedOrder->getHasAssetsAboveThreshold());
@@ -188,12 +197,13 @@ class OrderServiceTest extends WebTestCase
      * @throws NoMatchesFoundException
      * @throws WrongCaseNumberException
      */
-    public function testBondLevelBlank() {
+    public function testBondLevelBlank()
+    {
         $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'PF');
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £ in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false, 'false');
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals(null, $hydratedOrder->getHasAssetsAboveThreshold());
@@ -209,7 +219,7 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316  RTY AND AFFAIRS';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
         self::assertNull($dehydratedOrder->getSubType());
         self::assertNull($dehydratedOrder->getAppointmentType());
@@ -229,35 +239,35 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316  RTY AND AFFAIRS';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
     }
 
-// Removing due to: https://bugs.php.net/bug.php?id=77784
-//    /**
-//     * @throws NoMatchesFoundException
-//     * @throws WrongCaseNumberException
-//     * @throws \Doctrine\ORM\ORMException
-//     * @throws \Doctrine\ORM\OptimisticLockException
-//     */
-//    public function testHydrateOrderFromDocument()
-//    {
-//        /** @var EntityManager|ObjectProphecy $em */
-//        $em = $this->prophesize(EntityManager::class);
-//        /** @var SiriusService|ObjectProphecy $siriusService */
-//        $siriusService = $this->prophesize(SiriusService::class);
-//        $documentReader = new DocumentReaderService();
-//
-//        $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
-//
-//        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-//
-//        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
-//        $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
-//
-//        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
-//        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
-//    }
+    // Removing due to: https://bugs.php.net/bug.php?id=77784
+    //    /**
+    //     * @throws NoMatchesFoundException
+    //     * @throws WrongCaseNumberException
+    //     * @throws \Doctrine\ORM\ORMException
+    //     * @throws \Doctrine\ORM\OptimisticLockException
+    //     */
+    //    public function testHydrateOrderFromDocument()
+    //    {
+    //        /** @var EntityManager|ObjectProphecy $em */
+    //        $em = $this->prophesize(EntityManager::class);
+    //        /** @var SiriusService|ObjectProphecy $siriusService */
+    //        $siriusService = $this->prophesize(SiriusService::class);
+    //        $documentReader = new DocumentReaderService();
+    //
+    //        $sut = new OrderService($em->reveal(), $siriusService->reveal(), $documentReader);
+    //
+    //        $file = FileTestHelper::createUploadedFile('/tests/TestData/validCO - 93559316.docx', 'validCO - 93559316.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    //
+    //        $dehydratedOrder = OrderTestHelper::generateOrder('2018-08-01', '2018-08-10', '93559316', 'HW');
+    //        $hydratedOrder = $sut->hydrateOrderFromDocument($file, $dehydratedOrder);
+    //
+    //        self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
+    //        self::assertEquals('NEW_APPLICATION', $hydratedOrder->getSubType());
+    //    }
 
     public function testWontServeIfNotReady()
     {
@@ -265,7 +275,7 @@ class OrderServiceTest extends WebTestCase
         $order = $this->prophesize(Order::class);
         $order->readyToServe()->shouldBeCalled()->willReturn(false);
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Order not ready to be served');
@@ -281,7 +291,7 @@ class OrderServiceTest extends WebTestCase
 
         $this->siriusService->ping()->shouldBeCalled()->willReturn(false);
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Sirius is currently unavilable');

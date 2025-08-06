@@ -9,18 +9,19 @@ use App\Entity\Order;
 use App\Entity\OrderPf;
 use App\Service\File\Storage\S3Storage;
 use App\Service\SiriusService;
+use Aws\EventBridge\EventBridgeClient;
+use Aws\Result;
 use Aws\SecretsManager\SecretsManagerClient;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
-use Prophecy\PhpUnit\ProphecyTrait;
 
 class SiriusServiceTest extends MockeryTestCase
 {
@@ -41,8 +42,9 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockEntityManager = $this->prophesize(EntityManager::class);
         $this->mockHttpClient = $this->prophesize(GuzzleHttpClient::class);
         $this->mockS3Storage = $this->prophesize(S3Storage::class);
-        $this->mockLogger =  $this->prophesize(LoggerInterface::class);
+        $this->mockLogger = $this->prophesize(LoggerInterface::class);
         $this->mockSecretsManager = $this->prophesize(SecretsManagerClient::class);
+        $this->mockEventBridge = $this->prophesize(EventBridgeClient::class);
     }
 
     public function testPingSuccess()
@@ -50,13 +52,14 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockHttpClient->get('health-check/service-status', Argument::cetera())->shouldBeCalled()->willReturn(new Response());
 
         $this->sut = new SiriusService(
-            $this->mockEntityManager->reveal(),
             $this->mockHttpClient->reveal(),
-            $this->mockS3Storage->reveal(),
-            $this->mockLogger->reveal(),
-            $this->mockSecretsManager->reveal(),
             null,
-            null
+            null,
+            $this->mockEventBridge->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockEntityManager->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockSecretsManager->reveal(),
         );
 
         $this->assertEquals($this->sut->ping(), true);
@@ -67,13 +70,14 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockHttpClient->get('health-check/service-status', Argument::cetera())->shouldBeCalled()->willThrow(new \RuntimeException());
 
         $this->sut = new SiriusService(
-            $this->mockEntityManager->reveal(),
             $this->mockHttpClient->reveal(),
-            $this->mockS3Storage->reveal(),
-            $this->mockLogger->reveal(),
-            $this->mockSecretsManager->reveal(),
             null,
-            null
+            null,
+            $this->mockEventBridge->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockEntityManager->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockSecretsManager->reveal(),
         );
 
         $this->assertEquals($this->sut->ping(), false);
@@ -83,39 +87,39 @@ class SiriusServiceTest extends MockeryTestCase
     {
         $expectedCourtReference = '1234512345';
         $expectedType = Order::TYPE_PF;
-        $expectedOrderStartDate = new DateTime('2018-08-01');
-        $expectedOrderIssuedDate = new DateTime('2018-08-10');
+        $expectedOrderStartDate = new \DateTime('2018-08-01');
+        $expectedOrderIssuedDate = new \DateTime('2018-08-10');
         $expectedClientFirstName = 'AClient';
         $expectedClientLastName = 'Fullname';
         $expectedAssetLevel = SiriusService::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS;
         $expectedClient = ['firstName' => $expectedClientFirstName, 'lastName' => $expectedClientLastName];
         $expectedDeputies = [
             [
-                "type" => Deputy::DEPUTY_TYPE_LAY,
-                "firstName" => "forename10",
-                "lastName" => "surname10",
-                "dob" => "1949-03-19",
-                "email" => "email10",
-                "daytimeNumber" => "DCN10",
-                "eveningNumber" => "ECN10",
-                "mobileNumber" => "MCN10",
-                "addressLine1" => "add1-10",
-                "addressLine2" => "add2-10",
-                "addressLine3" => "add3-10",
-                "town" => "town-10",
-                "county" => "county-10",
-                "postcode" => "pc-10"
-            ]
+                'type' => Deputy::DEPUTY_TYPE_LAY,
+                'firstName' => 'forename10',
+                'lastName' => 'surname10',
+                'dob' => '1949-03-19',
+                'email' => 'email10',
+                'daytimeNumber' => 'DCN10',
+                'eveningNumber' => 'ECN10',
+                'mobileNumber' => 'MCN10',
+                'addressLine1' => 'add1-10',
+                'addressLine2' => 'add2-10',
+                'addressLine3' => 'add3-10',
+                'town' => 'town-10',
+                'county' => 'county-10',
+                'postcode' => 'pc-10',
+            ],
         ];
         $expectedDocuments = [
-            ["type" => "a type", "filename" => "LOCALFILENAME20"],
-            ["type" => "a type", "filename" => "LOCALFILENAME21"]
+            ['type' => 'a type', 'filename' => 'LOCALFILENAME20'],
+            ['type' => 'a type', 'filename' => 'LOCALFILENAME21'],
         ];
 
         $client = new Client(
             $expectedCourtReference,
             sprintf('%s %s', $expectedClientFirstName, $expectedClientLastName),
-            new DateTime()
+            new \DateTime()
         );
 
         /** @var OrderPf $order */
@@ -129,11 +133,11 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockEntityManager->flush()->shouldBeCalled();
 
         $expectedPayload = [
-            "courtReference" => $expectedCourtReference,
-            "type" => $expectedType,
-            "date" => $expectedOrderStartDate->format('Y-m-d'),
-            "issueDate" => $expectedOrderIssuedDate->format('Y-m-d'),
-            "assetLevel" => $expectedAssetLevel,
+            'courtReference' => $expectedCourtReference,
+            'type' => $expectedType,
+            'date' => $expectedOrderStartDate->format('Y-m-d'),
+            'issueDate' => $expectedOrderIssuedDate->format('Y-m-d'),
+            'assetLevel' => $expectedAssetLevel,
             'client' => $expectedClient,
             'deputies' => $expectedDeputies,
             'documents' => $expectedDocuments,
@@ -147,8 +151,8 @@ class SiriusServiceTest extends MockeryTestCase
             'json' => $expectedPayload,
             'cookies' => new CookieJar(),
             'headers' => [
-                'X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA=='
-            ]
+                'X-XSRF-TOKEN' => 'pKxFAyMS+YXhuDuXB7TlhA==',
+            ],
         ];
 
         $this->mockHttpClient->post('api/public/v1/orders', $expectedPost)->shouldBeCalled()->willReturn(new Response());
@@ -157,20 +161,114 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockHttpClient->getConfig('base_uri')->shouldBeCalled()->willReturn('FAKE-SIRIUS-URL');
 
         $this->sut = new SiriusService(
-            $this->mockEntityManager->reveal(),
             $this->mockHttpClient->reveal(),
-            $this->mockS3Storage->reveal(),
-            $this->mockLogger->reveal(),
-            $this->mockSecretsManager->reveal(),
             null,
-            null
+            null,
+            $this->mockEventBridge->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockEntityManager->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockSecretsManager->reveal()
         );
 
         $this->sut->serveOrder($order);
     }
 
+    public function testServeOrderViaEventBusSuccessfully(): void
+    {
+        $expectedCourtReference = '1234512345';
+        $expectedName = 'AClient';
+        $expectedOrderStartDate = new \DateTime('2018-08-01');
+        $expectedOrderIssuedDate = new \DateTime('2018-08-10');
+        $client = $this->prophesize(Client::class);
+        $client->getClientName()->willReturn($expectedName);
+        $client->getCaseNumber()->willReturn($expectedCourtReference);
+        $client->getId()->willReturn(12345);
+        $client->addOrder(Argument::type(Order::class))->will(function () {
+            // no return needed for void method
+        });
+
+        $order = $this->generateOrder($client->reveal(), $expectedOrderStartDate, $expectedOrderIssuedDate);
+        $order->setId(12345);
+        $order->setHasAssetsAboveThreshold('yes');
+
+        // Mock EventBridge results
+        $eventBridgeResult = $this->prophesize(Result::class);
+        $eventBridgeResult->toArray()->willReturn(['EventId' => 'abc']);
+
+        $this->mockLogger->info(Argument::containingString('Sending PF Order 12345 via EventBridge'))->shouldBeCalled();
+        $this->mockLogger->info(Argument::containingString('Event sent to EventBridge'))->shouldBeCalled();
+
+        $this->mockEntityManager->persist($order)->shouldBeCalled();
+        $this->mockEntityManager->flush()->shouldBeCalled();
+
+        $this->mockEventBridge->putEvents(Argument::type('array'))->willReturn($eventBridgeResult->reveal());
+
+        // Act
+        $this->sut = new SiriusService(
+            $this->mockHttpClient->reveal(),
+            null,
+            null,
+            $this->mockEventBridge->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockEntityManager->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockSecretsManager->reveal()
+        );
+
+        $this->sut->serveOrderViaEventBus($order);
+    }
+
+    //    public function testServeOrderViaEventBusThrowsAwsException(): void
+    //    {
+    //        $expectedCourtReference = '1234512345';
+    //        $expectedName = 'AClient';
+    //        $expectedOrderStartDate = new \DateTime('2018-08-01');
+    //        $expectedOrderIssuedDate = new \DateTime('2018-08-10');
+    //        $client = $this->prophesize(Client::class);
+    //        $client->getClientName()->willReturn($expectedName);
+    //        $client->getCaseNumber()->willReturn($expectedCourtReference);
+    //        $client->getId()->willReturn(12345);
+    //        $client->addOrder(Argument::type(Order::class))->will(function () {
+    //            // no return needed for void method
+    //        });
+    //
+    //        $order = $this->generateOrder($client->reveal(), $expectedOrderStartDate, $expectedOrderIssuedDate);
+    //        $order->setId(12345);
+    //        $order->setHasAssetsAboveThreshold('yes');
+    //
+    //        $awsException = $this->getMockBuilder(\Aws\Exception\AwsException::class)
+    //            ->disableOriginalConstructor()
+    //            ->onlyMethods(['getAwsErrorMessage'])
+    //            ->getMock();
+    //
+    //        $awsException->method('getAwsErrorMessage')->willReturn('AWS error');
+    //
+    //        $this->mockEventBridge->putEvents(Argument::type('array'))->willThrow($awsException);
+    //
+    //        $this->mockLogger->info(Argument::containingString('Sending PF Order 12345 via EventBridge'))->shouldBeCalled();
+    //        $this->mockLogger->error(Argument::containingString('EventBridge exception: AWS error'))->shouldBeCalled();
+    //
+    //        $this->mockEntityManager->persist($order)->shouldBeCalled();
+    //        $this->mockEntityManager->flush()->shouldBeCalled();
+    //
+    //        // Act
+    //        $this->sut = new SiriusService(
+    //            $this->mockHttpClient->reveal(),
+    //            null,
+    //            null,
+    //            $this->mockEventBridge->reveal(),
+    //            $this->mockLogger->reveal(),
+    //            $this->mockEntityManager->reveal(),
+    //            $this->mockS3Storage->reveal(),
+    //            $this->mockSecretsManager->reveal()
+    //        );
+    //
+    //        $this->sut->serveOrderViaEventBus($order);
+    //    }
+
     /**
-     * Generate mock Order
+     * Generate mock Order.
      *
      * @return Order
      */
@@ -186,9 +284,9 @@ class SiriusServiceTest extends MockeryTestCase
                 $this->generateMockDeputy(
                     [
                         'id' => 10,
-                        'deputyType' => Deputy::DEPUTY_TYPE_LAY
+                        'deputyType' => Deputy::DEPUTY_TYPE_LAY,
                     ]
-                )
+                ),
             ]
         );
         $order->setDeputies($mockDeputies);
@@ -199,9 +297,8 @@ class SiriusServiceTest extends MockeryTestCase
     }
 
     /**
-     * Generates a mock Deputy object
+     * Generates a mock Deputy object.
      *
-     * @param $options
      * @return ObjectProphecy|Deputy
      */
     private function generateMockDeputy($options)
@@ -210,19 +307,19 @@ class SiriusServiceTest extends MockeryTestCase
         $mockDeputy = $this->prophesize(Deputy::class);
 
         $mockDeputy->getDeputyType()->shouldBeCalled()->willReturn($options['deputyType']);
-        $mockDeputy->getForename()->shouldBeCalled()->willReturn('forename' . $options['id']);
-        $mockDeputy->getSurname()->shouldBeCalled()->willReturn('surname' . $options['id']);
+        $mockDeputy->getForename()->shouldBeCalled()->willReturn('forename'.$options['id']);
+        $mockDeputy->getSurname()->shouldBeCalled()->willReturn('surname'.$options['id']);
         $mockDeputy->getDateOfBirth()->shouldBeCalled()->willReturn(new \DateTime('1949-03-19'));
-        $mockDeputy->getEmailAddress()->shouldBeCalled()->willReturn('email' . $options['id']);
-        $mockDeputy->getDaytimeContactNumber()->shouldBeCalled()->willReturn('DCN' . $options['id']);
-        $mockDeputy->getEveningContactNumber()->shouldBeCalled()->willReturn('ECN' . $options['id']);
-        $mockDeputy->getMobileContactNumber()->shouldBeCalled()->willReturn('MCN' . $options['id']);
-        $mockDeputy->getAddressLine1()->shouldBeCalled()->willReturn('add1-' . $options['id']);
-        $mockDeputy->getAddressLine2()->shouldBeCalled()->willReturn('add2-' . $options['id']);
-        $mockDeputy->getAddressLine3()->shouldBeCalled()->willReturn('add3-' . $options['id']);
-        $mockDeputy->getAddressTown()->shouldBeCalled()->willReturn('town-' . $options['id']);
-        $mockDeputy->getAddressCounty()->shouldBeCalled()->willReturn('county-' . $options['id']);
-        $mockDeputy->getAddressPostcode()->shouldBeCalled()->willReturn('pc-' . $options['id']);
+        $mockDeputy->getEmailAddress()->shouldBeCalled()->willReturn('email'.$options['id']);
+        $mockDeputy->getDaytimeContactNumber()->shouldBeCalled()->willReturn('DCN'.$options['id']);
+        $mockDeputy->getEveningContactNumber()->shouldBeCalled()->willReturn('ECN'.$options['id']);
+        $mockDeputy->getMobileContactNumber()->shouldBeCalled()->willReturn('MCN'.$options['id']);
+        $mockDeputy->getAddressLine1()->shouldBeCalled()->willReturn('add1-'.$options['id']);
+        $mockDeputy->getAddressLine2()->shouldBeCalled()->willReturn('add2-'.$options['id']);
+        $mockDeputy->getAddressLine3()->shouldBeCalled()->willReturn('add3-'.$options['id']);
+        $mockDeputy->getAddressTown()->shouldBeCalled()->willReturn('town-'.$options['id']);
+        $mockDeputy->getAddressCounty()->shouldBeCalled()->willReturn('county-'.$options['id']);
+        $mockDeputy->getAddressPostcode()->shouldBeCalled()->willReturn('pc-'.$options['id']);
 
         return $mockDeputy->reveal();
     }
@@ -238,9 +335,8 @@ class SiriusServiceTest extends MockeryTestCase
     }
 
     /**
-     * Generates a mock Document object
+     * Generates a mock Document object.
      *
-     * @param $options
      * @return Document|ObjectProphecy
      */
     private function generateMockDocument($options)
@@ -250,9 +346,9 @@ class SiriusServiceTest extends MockeryTestCase
         $mockDoc->getType()->shouldBeCalled()->willReturn('a type');
 
         if ($options['transferred']) {
-            $mockDoc->getStorageReference()->shouldBeCalled()->willReturn('SIRIUSFILENAME' . $options['id']);
+            $mockDoc->getStorageReference()->shouldBeCalled()->willReturn('SIRIUSFILENAME'.$options['id']);
         } else {
-            $mockDoc->getStorageReference()->shouldBeCalled()->willReturn('LOCALFILENAME' . $options['id']);
+            $mockDoc->getStorageReference()->shouldBeCalled()->willReturn('LOCALFILENAME'.$options['id']);
         }
 
         return $mockDoc->reveal();
