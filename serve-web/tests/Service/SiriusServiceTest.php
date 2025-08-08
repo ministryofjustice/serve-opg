@@ -9,13 +9,16 @@ use App\Entity\Order;
 use App\Entity\OrderPf;
 use App\Service\File\Storage\S3Storage;
 use App\Service\SiriusService;
+use Aws\CommandInterface;
 use Aws\EventBridge\EventBridgeClient;
+use Aws\Exception\AwsException;
 use Aws\Result;
 use Aws\SecretsManager\SecretsManagerClient;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Prophecy\Argument;
@@ -219,53 +222,59 @@ class SiriusServiceTest extends MockeryTestCase
         $this->sut->serveOrderViaEventBus($order);
     }
 
-    //    public function testServeOrderViaEventBusThrowsAwsException(): void
-    //    {
-    //        $expectedCourtReference = '1234512345';
-    //        $expectedName = 'AClient';
-    //        $expectedOrderStartDate = new \DateTime('2018-08-01');
-    //        $expectedOrderIssuedDate = new \DateTime('2018-08-10');
-    //        $client = $this->prophesize(Client::class);
-    //        $client->getClientName()->willReturn($expectedName);
-    //        $client->getCaseNumber()->willReturn($expectedCourtReference);
-    //        $client->getId()->willReturn(12345);
-    //        $client->addOrder(Argument::type(Order::class))->will(function () {
-    //            // no return needed for void method
-    //        });
-    //
-    //        $order = $this->generateOrder($client->reveal(), $expectedOrderStartDate, $expectedOrderIssuedDate);
-    //        $order->setId(12345);
-    //        $order->setHasAssetsAboveThreshold('yes');
-    //
-    //        $awsException = $this->getMockBuilder(\Aws\Exception\AwsException::class)
-    //            ->disableOriginalConstructor()
-    //            ->onlyMethods(['getAwsErrorMessage'])
-    //            ->getMock();
-    //
-    //        $awsException->method('getAwsErrorMessage')->willReturn('AWS error');
-    //
-    //        $this->mockEventBridge->putEvents(Argument::type('array'))->willThrow($awsException);
-    //
-    //        $this->mockLogger->info(Argument::containingString('Sending PF Order 12345 via EventBridge'))->shouldBeCalled();
-    //        $this->mockLogger->error(Argument::containingString('EventBridge exception: AWS error'))->shouldBeCalled();
-    //
-    //        $this->mockEntityManager->persist($order)->shouldBeCalled();
-    //        $this->mockEntityManager->flush()->shouldBeCalled();
-    //
-    //        // Act
-    //        $this->sut = new SiriusService(
-    //            $this->mockHttpClient->reveal(),
-    //            null,
-    //            null,
-    //            $this->mockEventBridge->reveal(),
-    //            $this->mockLogger->reveal(),
-    //            $this->mockEntityManager->reveal(),
-    //            $this->mockS3Storage->reveal(),
-    //            $this->mockSecretsManager->reveal()
-    //        );
-    //
-    //        $this->sut->serveOrderViaEventBus($order);
-    //    }
+    public function testServeOrderViaEventBusThrowsAwsException(): void
+    {
+        $expectedCourtReference = '1234512345';
+        $expectedName = 'AClient';
+        $expectedOrderStartDate = new \DateTime('2018-08-01');
+        $expectedOrderIssuedDate = new \DateTime('2018-08-10');
+        $client = $this->prophesize(Client::class);
+        $client->getClientName()->willReturn($expectedName);
+        $client->getCaseNumber()->willReturn($expectedCourtReference);
+        $client->getId()->willReturn(12345);
+        $client->addOrder(Argument::type(Order::class))->will(function () {
+            // no return needed for void method
+        });
+
+        $order = $this->generateOrder($client->reveal(), $expectedOrderStartDate, $expectedOrderIssuedDate);
+        $order->setId(12345);
+        $order->setHasAssetsAboveThreshold('yes');
+
+        $command = $this->createMock(CommandInterface::class);
+        $request = new Request('POST', 'https://example.com');
+
+        $awsException = new AwsException('AWS error', $command, [
+            'request' => $request,
+            'response' => null,
+            'code' => 500,
+            'message' => 'AWS error',
+        ]);
+
+        $this->mockEventBridge->putEvents(Argument::type('array'))->willThrow($awsException);
+
+        $this->mockLogger->info(Argument::containingString('Sending PF Order 12345 via EventBridge'))->shouldBeCalled();
+        $this->mockLogger->error(Argument::containingString('EventBridge exception: AWS error'))->shouldBeCalled();
+
+        $this->mockEntityManager->persist($order)->shouldBeCalled();
+        $this->mockEntityManager->flush()->shouldBeCalled();
+
+        // Act
+        $this->sut = new SiriusService(
+            $this->mockHttpClient->reveal(),
+            null,
+            null,
+            $this->mockEventBridge->reveal(),
+            $this->mockLogger->reveal(),
+            $this->mockEntityManager->reveal(),
+            $this->mockS3Storage->reveal(),
+            $this->mockSecretsManager->reveal()
+        );
+
+        $this->expectException(AwsException::class);
+        $this->expectExceptionMessage('AWS error');
+
+        $this->sut->serveOrderViaEventBus($order);
+    }
 
     /**
      * Generate mock Order.

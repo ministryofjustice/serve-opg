@@ -23,7 +23,6 @@ class SecurityController extends AbstractController
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        file_put_contents('php://stderr', print_r($error, true));
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
