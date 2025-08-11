@@ -9,7 +9,7 @@ use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Service\ClientService;
 use App\Service\OrderService;
-use App\Service\SpreadsheetImporterService;
+use App\Service\SpreadsheetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\LoggerInterface;
@@ -99,7 +99,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         )->shouldBeCalled()
             ->willReturn($row3Order);
 
-        $sut = new SpreadsheetImporterService(
+        $sut = new SpreadsheetService(
             $clientService->reveal(),
             $orderService->reveal(),
             $em->reveal(),
@@ -170,7 +170,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         )->shouldBeCalled()
         ->willReturn($row2Order);
 
-        $sut = new SpreadsheetImporterService(
+        $sut = new SpreadsheetService(
             $clientService->reveal(),
             $orderService->reveal(),
             $em->reveal(),
