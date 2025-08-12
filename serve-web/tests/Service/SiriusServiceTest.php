@@ -207,7 +207,6 @@ class SiriusServiceTest extends MockeryTestCase
 
         $this->mockEventBridge->putEvents(Argument::type('array'))->willReturn($eventBridgeResult->reveal());
 
-        // Act
         $this->sut = new SiriusService(
             $this->mockHttpClient->reveal(),
             null,
@@ -258,7 +257,6 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockEntityManager->persist($order)->shouldBeCalled();
         $this->mockEntityManager->flush()->shouldBeCalled();
 
-        // Act
         $this->sut = new SiriusService(
             $this->mockHttpClient->reveal(),
             null,

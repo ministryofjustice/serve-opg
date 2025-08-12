@@ -10,7 +10,7 @@ response = eventbridge.put_events(
             'DetailType': 'court-order-submitted',
             'Detail': json.dumps({
                 'clientId': 1,
-                'variousDetailsTBC': 2345
+                'Payload': "Whatever_we_want_in_payload"
             }),
             'EventBusName': 'serve-bus'
         }
