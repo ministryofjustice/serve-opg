@@ -81,11 +81,14 @@ jobs:
     name: Unit tests on Frontend app
     uses: ./.github/workflows/_tests-frontend.yml
     needs: [trivy_secret_scanning]
-    
+
   build_scan_push_containers:
     name: Docker Build, Scan and Push
     uses: ./.github/workflows/_build-push.yml
-    needs: [workflow_variables]
+    needs: [
+      trivy_secret_scanning
+      workflow_variables
+      ]
     with:
       tag: ${{ needs.workflow_variables.outputs.version_tag }}
       branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
