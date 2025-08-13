@@ -86,7 +86,7 @@ jobs:
     name: Docker Build, Scan and Push
     uses: ./.github/workflows/_build-push.yml
     needs: [
-      trivy_secret_scanning
+      trivy_secret_scanning,
       workflow_variables
       ]
     with:
