@@ -57,13 +57,16 @@ services:
       - APP_SECRET=aFakeSecret
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_REGION=eu-west-1
       - BEHAT_PASSWORD=Abcd1234
       - DC_S3_ENDPOINT=http://localstack:4566
       - DYNAMODB_ENDPOINT=http://localstack:4566
+      - AWS_EVENTBRIDGE_ENDPOINT=http://localstack:4566
       - FIXTURES_ENABLED=true
       - OS_PLACES_API_KEY=DUMMY_KEY
       - SIRIUS_PUBLIC_API_PASSWORD=FAKE_API_PASSWORD
       - ENVIRONMENT_NAME=local
+      - USE_EVENT_BUS=false
     depends_on:
       postgres:
         condition: service_healthy
@@ -93,9 +96,8 @@ services:
     ports:
       - "4566-4583:4566-4583"
     environment:
-      - SERVICES=s3,dynamodb,kms,secretsmanager
+      - SERVICES=s3,dynamodb,kms,secretsmanager,events,sqs
       - DATA_DIR=/tmp/localstack/data
-      - DEFAULT_REGION=eu-west-1
       - S3_SKIP_KMS_KEY_VALIDATION=1
       - KMS_PROVIDER=local-kms
       - LAMBDA_REMOTE_DOCKER=0

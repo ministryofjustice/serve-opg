@@ -177,6 +177,10 @@ locals {
           value = local.account.fixtures_enabled
         },
         {
+          name  = "USE_EVENT_BUS",
+          value = local.account.use_event_bus
+        },
+        {
           name  = "ENVIRONMENT_NAME",
           value = local.account.account_name
         },

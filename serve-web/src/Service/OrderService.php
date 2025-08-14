@@ -25,14 +25,18 @@ REGEX;
 
     private DocumentReaderService $documentReader;
 
+    private bool $useEventBus;
+
     public function __construct(
         EntityManager $em,
         SiriusService $siriusService,
-        DocumentReaderService $documentReader
+        DocumentReaderService $documentReader,
+        bool $useEventBus,
     ) {
         $this->em = $em;
         $this->siriusService = $siriusService;
         $this->documentReader = $documentReader;
+        $this->useEventBus = $useEventBus;
     }
 
     public function isAvailable(): bool
@@ -52,7 +56,11 @@ REGEX;
 
         // Make API call to Sirius
         try {
-            $this->siriusService->serveOrder($order);
+            if ($this->useEventBus) {
+                $this->siriusService->serveOrderViaEventBus($order);
+            } else {
+                $this->siriusService->serveOrder($order);
+            }
 
             $order->setServedAt(new \DateTime());
             $this->em->persist($order);
@@ -82,7 +90,7 @@ REGEX;
         string $orderClass,
         \DateTime $madeAt,
         \DateTime $issuedAt,
-        string $orderNumber
+        string $orderNumber,
     ): Order {
         /* @var $order Order */
         $order = $this->em->getRepository($orderClass)->findOneBy([
