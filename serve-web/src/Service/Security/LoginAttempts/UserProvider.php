@@ -2,14 +2,17 @@
 
 namespace App\Service\Security\LoginAttempts;
 
-use App\Common\BruteForceChecker;
 use App\Entity\User;
 use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
+use App\Common\BruteForceChecker;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -33,7 +36,7 @@ class UserProvider implements UserProviderInterface
 
     /**
      * Return the highest timestamp when the user can be unlocked,
-     * based on the rules and previous attempts from the same username, stored in the storage (e.g. dynamoDb).
+     * based on the rules and previous attempts from the same username, stored in the storage (e.g. dynamoDb)
      */
     public function usernameLockedForSeconds(string $username): bool|int
     {
@@ -85,11 +88,11 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass($class): bool
     {
-        return User::class === $class || is_subclass_of($class, User::class);
+        return $class === User::class || is_subclass_of($class, User::class);
     }
 
     /**
-     * Store failing attempt.
+     * Store failing attempt
      *
      * @param AuthenticationFailureEvent|AuthenticationEvent $event
      *
@@ -110,7 +113,7 @@ class UserProvider implements UserProviderInterface
     }
 
     /**
-     * Reset attempts after a successful login.
+     * Reset attempts after a successful login
      */
     public function onAuthenticationSuccess(AuthenticationEvent $e): void
     {

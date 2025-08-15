@@ -21,7 +21,6 @@ variable "accounts" {
       postgres_version    = string
       rds_instance_count  = number
       cloud9_env_id       = string
-      use_event_bus       = string
     })
   )
 }
