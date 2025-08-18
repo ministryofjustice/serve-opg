@@ -39,14 +39,16 @@ paths:
     description: >
       **NOTE** this endpoint is not guaranteed in the upstream contract, but is
       added locally as it's essential functionality
-    post:
+    get:
       responses:
         "401":
           headers:
             X-XSRF-TOKEN:
               schema:
                 type: string
-          description: CSRF token that is required for subsequent requests to Sirius
+          description: >
+            Returned on logout to invalidate the session. Also provides a fresh
+            CSRF token that is required for subsequent requests to Sirius.
   /api/public/v1/orders:
     post:
       description: Creates a new Client, order and deputies in Sirius and attaches a set of

@@ -196,7 +196,7 @@ class SiriusService
      */
     private function logout(): Psr7\Response
     {
-        return $this->httpClient->post(
+        return $this->httpClient->get(
             'auth/logout'
         );
     }
