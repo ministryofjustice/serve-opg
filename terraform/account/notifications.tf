@@ -71,3 +71,51 @@ module "notify_slack_us-east-1" {
 
   tags = local.default_tags
 }
+
+# Notify Slack for GitHub Actions
+
+resource "aws_iam_role" "serve_opg_lambda_exec" {
+  name = "serve-opg-slack-exec"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "serve_opg_lambda_basic_exec" {
+  role       = aws_iam_role.serve_opg_lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+data "archive_file" "slack_notify" {
+  type        = "zip"
+  source_file = "${path.module}/../../scripts/slack_notify/slack_notify.py"
+  output_path = "${path.module}/../../scripts/slack_notify/slack_notify.zip"
+}
+
+resource "aws_lambda_function" "serve_opg_notify_slack" {
+  function_name    = "serve-opg-slack"
+  role             = aws_iam_role.serve_opg_lambda_exec.arn
+  handler          = "slack_notify.handler"
+  runtime          = "python3.12"
+
+  filename         = data.archive_file.slack_notify.output_path
+  source_code_hash = data.archive_file.slack_notify.output_base64sha256
+
+  environment {
+    variables = {
+      SLACK_WEBHOOK_URL = data.aws_secretsmanager_secret_version.slack_url.secret_string
+      SLACK_CHANNEL     = "#serve-opg" #The default channel for GitHub Actions notifications
+      SECRETS_CHANNEL   = "#opg-digideps-team" #The channel where uploaded secret alerts will be sent
+    }
+  }
+}
