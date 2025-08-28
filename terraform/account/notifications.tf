@@ -91,9 +91,32 @@ resource "aws_iam_role" "serve_opg_lambda_exec" {
   })
 }
 
+resource "aws_iam_policy" "serve_opg_lambda_secret_access" {
+  name        = "serve-opg-slack-secret-access"
+  description = "Allow Lambda to read Slack webhooks secret"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = aws_secretsmanager_secret.slack_webhooks.arn
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "serve_opg_lambda_basic_exec" {
   role       = aws_iam_role.serve_opg_lambda_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "serve_opg_lambda_secret_access_attach" {
+  role       = aws_iam_role.serve_opg_lambda_exec.name
+  policy_arn = aws_iam_policy.serve_opg_lambda_secret_access.arn
 }
 
 data "archive_file" "slack_notify" {
@@ -110,12 +133,4 @@ resource "aws_lambda_function" "serve_opg_notify_slack" {
 
   filename         = data.archive_file.slack_notify.output_path
   source_code_hash = data.archive_file.slack_notify.output_base64sha256
-
-  environment {
-    variables = {
-      SLACK_WEBHOOK_URL = data.aws_secretsmanager_secret_version.slack_url.secret_string
-      SLACK_CHANNEL     = "#serve-opg" #The default channel for GitHub Actions notifications
-      SECRETS_CHANNEL   = "#opg-digideps-team" #The channel where uploaded secret alerts will be sent
-    }
-  }
 }

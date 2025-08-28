@@ -1,0 +1,63 @@
+name: "[Notify] Slack"
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        description: "Type of alert (workflow, secret_alert, etc)"
+        required: true
+        type: string
+      status:
+        description: "Status (success, failure, etc)"
+        required: false
+        type: string
+      branch:
+        description: "Branch name"
+        required: false
+        type: string
+      workflow:
+        description: "Workflow name"
+        required: false
+        type: string
+      user:
+        description: "GitHub user"
+        required: false
+        type: string
+      frontend_url:
+        description: "Frontend URL"
+        required: false
+        type: string
+      admin_url:
+        description: "Admin URL"
+        required: false
+        type: string
+      gh_url:
+        description: "GitHub Actions run URL"
+        required: false
+        type: string
+      commit_message:
+        description: "Commit message"
+        required: false
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Lambda to notify Slack
+        run: |
+          aws lambda invoke \
+            --function-name serve-opg-slack \
+            --cli-binary-format raw-in-base64-out \
+            --payload '{
+              "type": "${{ inputs.type }}",
+              "status": "${{ inputs.status }}",
+              "branch": "${{ inputs.branch }}",
+              "workflow": "${{ inputs.workflow }}",
+              "user": "${{ inputs.user }}",
+              "frontend_url": "${{ inputs.frontend_url }}",
+              "admin_url": "${{ inputs.admin_url }}",
+              "gh_url": "${{ inputs.gh_url }}",
+              "commit_message": "${{ inputs.commit_message }}"
+            }' \
+            response.json
