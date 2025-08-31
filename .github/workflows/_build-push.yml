@@ -59,7 +59,7 @@ jobs:
 
       - name: trivy image scanning
         id: trivy_scan_app
-        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
+        uses: aquasecurity/trivy-action@f9424c10c36e288d5fa79bd3dfd1aeb2d6eae808 # 0.33.0
         with:
           image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/${{ matrix.svc_name }}:latest
           severity: "HIGH,CRITICAL"
@@ -73,7 +73,7 @@ jobs:
 
       - name: upload trivy scan results to security tab
         id: trivy_upload_sarif_app
-        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22 # v2.20.7
+        uses: github/codeql-action/upload-sarif@b8d3b6e8af63cde30bdc382c0bc28114f4346c88 # v2.28.1
         with:
           sarif_file: "trivy-results.sarif"
 
