@@ -1,4 +1,4 @@
-FROM localstack/localstack:4.7 as localstack
+FROM localstack/localstack:4.6 as localstack
 # Can't upgrade to 4.7 because of dynamodb changes that require types being set
 # This is handled by dependencies that need upgrading
 
