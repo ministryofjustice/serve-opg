@@ -125,7 +125,7 @@ services:
     restart: always
 
   yarn:
-    image: node:20-alpine
+    image: node:22-alpine
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
