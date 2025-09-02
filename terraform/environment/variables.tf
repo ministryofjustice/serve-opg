@@ -15,6 +15,7 @@ variable "accounts" {
       fixtures_enabled    = string
       sirius_key_alias    = string
       sirius_account      = string
+      sirius_account_name = string
       waf_enabled         = string
       ip_whitelist        = string
       deletion_protection = string

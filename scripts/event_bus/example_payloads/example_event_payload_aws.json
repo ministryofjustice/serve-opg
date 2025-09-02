@@ -1,0 +1,61 @@
+{
+  'version': '0',
+  'id': 'redacted',
+  'detail-type': 'court-order-submitted',
+  'source': 'opg.supervision.serve',
+  'account': '123456789',
+  'time': '2025-09-02T14:07:10Z',
+  'region': 'eu-west-1',
+  'resources': [],
+  'detail': {
+    'clientId': 15,
+    'orderId': 19,
+    'payload': {
+      'courtReference': '98765432',
+      'type': 'PF',
+      'subType': 'NEW_APPLICATION',
+      'date': '2018-08-01',
+      'issueDate': '2018-08-22',
+      'appointmentType': 'SOLE',
+      'assetLevel': 'HIGH',
+      'client': {
+        'firstName': 'Fake',
+        'lastName': 'User'
+      },
+      'deputies': [
+        {
+          'type': 'LAY',
+          'firstName': 'Foo',
+          'lastName': 'Blah',
+          'dob': '1987-01-01',
+          'email': 'foo@blah.com',
+          'daytimeNumber': '07412345678',
+          'eveningNumber': '07412345678',
+          'mobileNumber': '07412345678'
+        }
+      ],
+      'documents': [
+        {
+          'type': 'COURT_ORDER',
+          'filename': 'dc_doc_19_1756822003544.jpg'
+        },
+        {
+          'type': 'COP1A',
+          'filename': 'dc_doc_19_17568220080267.jpg'
+        },
+        {
+          'type': 'COP3',
+          'filename': 'dc_doc_19_17568220134957.jpg'
+        },
+        {
+          'type': 'COP4',
+          'filename': 'dc_doc_19_17568220194197.jpg'
+        },
+        {
+          'type': 'OTHER',
+          'filename': 'dc_doc_19_17568220261369.jpg'
+        }
+      ]
+    }
+  }
+}
