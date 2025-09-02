@@ -6,22 +6,23 @@ variable "APP_VERSION" {
 variable "accounts" {
   type = map(
     object({
-      account_id          = string
-      account_name        = string
-      behat_controller    = number
-      sirius_api          = string
-      sirius_bucket       = string
-      is_production       = string
-      fixtures_enabled    = string
-      sirius_key_alias    = string
-      sirius_account      = string
-      waf_enabled         = string
-      ip_whitelist        = string
-      deletion_protection = string
-      postgres_version    = string
-      rds_instance_count  = number
-      cloud9_env_id       = string
-      use_event_bus       = string
+      account_id                = string
+      account_name              = string
+      behat_controller          = number
+      sirius_api                = string
+      sirius_bucket             = string
+      is_production             = string
+      fixtures_enabled          = string
+      sirius_key_alias          = string
+      sirius_account            = string
+      sirius_target_environment = string
+      waf_enabled               = string
+      ip_whitelist              = string
+      deletion_protection       = string
+      postgres_version          = string
+      rds_instance_count        = number
+      cloud9_env_id             = string
+      use_event_bus             = string
     })
   )
 }

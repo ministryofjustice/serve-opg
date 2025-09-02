@@ -1,13 +1,13 @@
 locals {
-  sirius_event_bus_arn = "arn:aws:events:eu-west-1:${local.account.sirius_account}:event-bus/ddls-856-supervision"
+  sirius_event_bus_arn = "arn:aws:events:eu-west-1:${local.account.sirius_account}:event-bus/${local.account.sirius_target_environment}-supervision"
 }
 
 resource "aws_cloudwatch_event_bus" "serve" {
-  name = "serve-bus"
+  name = "${local.environment}-serve-bus"
 }
 
 resource "aws_cloudwatch_event_rule" "forward_to_sirius" {
-  name           = "forward-to-sirius"
+  name           = "forward-to-sirius-${local.environment}"
   description    = "Forward serve events to sirius supervision bus"
   event_bus_name = aws_cloudwatch_event_bus.serve.name
 
