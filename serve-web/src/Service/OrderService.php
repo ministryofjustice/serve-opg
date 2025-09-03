@@ -51,7 +51,7 @@ REGEX;
         }
 
         if (!$this->isAvailable()) {
-            throw new \RuntimeException('Sirius is currently unavilable');
+            throw new \RuntimeException('Sirius is currently unavailable');
         }
 
         // Make API call to Sirius
