@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Form\CsvUploadForm;
+use App\Service\ClientService;
+use App\Service\OrderService;
 use App\Service\SpreadsheetService;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,8 @@ class CsvController extends AbstractController
 {
     public function __construct(
         private readonly SpreadsheetService $spreadsheetService,
-        private readonly LoggerInterface $logger,
+        private readonly OrderService $orderService,
+        private readonly ClientService $clientService,
     ) {}
 
     #[Route(path: '/upload-csv', name: 'upload-csv')]
@@ -33,7 +34,7 @@ class CsvController extends AbstractController
             return $this->redirectToRoute('case-list');
         }
 
-        return $this->render('Csv/upload.html.twig', [
+        return $this->render('Csv/upload-cases.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -46,7 +47,32 @@ class CsvController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $request->files->get('csv_upload_form')['file'];
-            $results = $this->spreadsheetService->processDeletionsFile($file);
+            $processedCases = $this->spreadsheetService->processDeletionsFile($file);
+
+            $displayResults = [];
+            $displayResults['skippedCases'] = $processedCases['skippedCases'];
+            foreach ($processedCases['removeCases'] as $caseNumber => $processedResults) {
+                $ordersRemoved = 0;
+                $this->clientService->deletionByClientId($processedResults['clientId']);
+
+                foreach ($processedResults['orders'] as $orderId) {
+                    $this->orderService->deletionByOrderId($orderId);
+                    ++$ordersRemoved;
+                }
+
+                $displayResults['ordersRemoved'] = [
+                    'caseNumber' => $caseNumber,
+                    'ordersRemovedCount' => $ordersRemoved
+                ];
+            }
+
+            return $this->render('Csv/multiple-case-removal.html.twig', [
+                'processedResults' => $displayResults
+            ]);
         }
+
+        return $this->render('Csv/multiple-case-removal.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }
