@@ -6,7 +6,10 @@ use App\Entity\Client;
 use App\Entity\Order;
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -19,20 +22,14 @@ REGEX;
     public const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
     public const BOND_REGEX = '/sum of (.*) in/';
 
-    private EntityManager $em;
-
-    private SiriusService $siriusService;
-
-    private DocumentReaderService $documentReader;
+    private readonly OrderRepository|EntityRepository $orderRepository;
 
     public function __construct(
-        EntityManager $em,
-        SiriusService $siriusService,
-        DocumentReaderService $documentReader
+        private readonly EntityManager $em,
+        private readonly SiriusService $siriusService,
+        private readonly LoggerInterface $logger,
     ) {
-        $this->em = $em;
-        $this->siriusService = $siriusService;
-        $this->documentReader = $documentReader;
+        $this->orderRepository = $this->em->getRepository(Order::class);
     }
 
     public function isAvailable(): bool
@@ -65,7 +62,7 @@ REGEX;
     public function getOrderByIdIfNotServed(int $orderId): Order
     {
         /** @var $order Order */
-        $order = $this->em->getRepository(Order::class)->find($orderId);
+        $order = $this->orderRepository->find($orderId);
 
         if (!$order) {
             throw new \RuntimeException('Order not existing');
@@ -104,7 +101,7 @@ REGEX;
     {
         $orderId = $order->getId();
         $this->em->clear();
-        $order = $this->em->getRepository(Order::class)->find($orderId);
+        $order = $this->orderRepository->find($orderId);
 
         foreach ($order->getDeputies() as $deputy) {
             $this->em->remove($deputy);
@@ -161,6 +158,15 @@ REGEX;
         }
 
         return $order;
+    }
+
+    public function deletionByOrderId(int $orderId): void
+    {
+        try {
+            $this->orderRepository->delete($orderId);
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('Unable to delete order due to error: %s', $e->getMessage()));
+        }
     }
 
     private function extractCaseNumber(string $text, Order $order): bool
