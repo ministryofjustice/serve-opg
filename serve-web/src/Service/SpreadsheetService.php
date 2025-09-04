@@ -83,45 +83,52 @@ class SpreadsheetService
         $rows = $this->buildRowsArray($fileType, $path, $csvColumns);
 
         $lastCaseNumber = 0;
+        $orderIds = [];
         foreach ($rows as $row) {
+            $caseNumber = $row['Case number'];
+
             // Skip over any duplicate rows within the spreadsheet, as they will have been found via previous rows
-            if ($lastCaseNumber === $row['Case number']) {
+            if ($lastCaseNumber === $caseNumber) {
                 continue;
-            } else {
-                $lastCaseNumber = 0;
             }
 
-            /** @var array<int, Client> **/
-            $clients = $this->em
+            /** @var Client $client **/
+            $client = $this->em
                 ->getRepository(Client::class)
-                ->findBy(['caseNumber' => $row['Case number']], ['id' => 'ASC']);
+                ->findOneBy(['caseNumber' => $caseNumber]);
 
-            if (count($clients) > 1) {
+            /** @var Order $orders */
+            $orders = $this->em
+                ->getRepository(Order::class)
+                ->findBy(['client' => $client, 'type'=> 'pending'], ['id' => 'ASC']);
+
+            if (count($orders) >= 2) {
                 // Start from 1, as to leave the earliest case intact.
-                for ($i = 1; $i < count($clients); $i++) {
-                    /** @var Client $client */
-                    $client = $clients[$i];
-
-                    $this->buildRemovalProcessedArrays($client);
+                for ($i = 1; $i < count($orders); $i++) {
+                    /** @var Order $order */
+                    $order = $orders[$i];
+                    $orderIds[] = $order->getId();
                 }
 
-                $lastCaseNumber = $row['Case number'];
-            } elseif (count($clients) === 1) {
-                /** @var Client $client */
-                $client = $clients[0];
+                $this->buildRemovalProcessedArrays($client, $orderIds);
+            } elseif (count($orders) === 1) {
+                /** @var Order $order */
+                $order = $orders[0];
+                $orderIds = [$order->getId()];
 
-                $this->buildRemovalProcessedArrays($client);
+                $this->buildRemovalProcessedArrays($client, $orderIds);
             } else {
-                $this->skippedCases[] = [
+                $this->skippedCases[$caseNumber] = [
                     'clientId' => null,
-                    'orderId' => null,
-                    'skippedReason' => sprintf(
-                        'Unable to find any clients associated with casenumber: %d',
-                        $row['Case number']
+                    'orders' => null,
+                    'reason' => sprintf(
+                        'Unable to find any clients/orders associated with casenumber: %d',
+                        $caseNumber
                     ),
                 ];
             }
 
+            $lastCaseNumber = $caseNumber;
         }
 
         return ['removeCases' => $this->removeCases, 'skippedCases' => $this->skippedCases];
@@ -178,23 +185,18 @@ class SpreadsheetService
         }
     }
 
-    private function buildRemovalProcessedArrays(Client $client): void
+    private function buildRemovalProcessedArrays(Client $client, array $orders): void
     {
-        /** @var Order $order */
-        $order = $this->em
-            ->getRepository(Order::class)
-            ->findOneBy(['client' => $client, 'type'=> 'pending']);
-
-        if (!is_null($order)) {
-            $this->removeCases[] = [
+        if (count($orders) >= 1) {
+            $this->removeCases[$client->getCaseNumber()] = [
                 'clientId' => $client->getId(),
-                'orderId' => $order->getId(),
+                'orders' => $orders,
             ];
         } else {
-            $this->skippedCases[] = [
+            $this->skippedCases[$client->getCaseNumber()] = [
                 'clientId' => $client->getId(),
-                'orderId' => $order->getId(),
-                'skippedReason' => sprintf('No order associated with client id: %d', $client->getId()),
+                'orders' => null,
+                'reason' => sprintf('No order(s)00 associated with client id: %d', $client->getId()),
             ];
         }
     }
