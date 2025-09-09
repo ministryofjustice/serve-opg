@@ -76,7 +76,7 @@ module "notify_slack_us-east-1" {
 
 data "aws_iam_policy_document" "serve_opg_lambda_assume" {
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
     principals {
@@ -148,10 +148,10 @@ data "archive_file" "slack_notify" {
 }
 
 resource "aws_lambda_function" "serve_opg_notify_slack" {
-  function_name    = "serve-opg-slack"
-  role             = aws_iam_role.serve_opg_lambda_exec.arn
-  handler          = "slack_notify.handler"
-  runtime          = "python3.12"
+  function_name = "serve-opg-slack"
+  role          = aws_iam_role.serve_opg_lambda_exec.arn
+  handler       = "slack_notify.handler"
+  runtime       = "python3.12"
 
   filename         = data.archive_file.slack_notify.output_path
   source_code_hash = data.archive_file.slack_notify.output_base64sha256
