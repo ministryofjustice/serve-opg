@@ -185,7 +185,6 @@ jobs:
       user: ${{ github.actor }}
       gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       commit_message: "Path to Live completed successfully ✅"
-      account: 933639921819
 
   slack_notify_failure:
     name: Notify Slack of failure
@@ -201,4 +200,3 @@ jobs:
       user: ${{ github.actor }}
       gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       commit_message: "Path to Live failed in one or more jobs ❌"
-      account: 933639921819
