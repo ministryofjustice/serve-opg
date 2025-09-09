@@ -9,9 +9,5 @@ terraform {
       source  = "hashicorp/local"
       version = ">= 2.5.3"
     }
-    archive = {
-      source  = "hashicorp/archive"
-      version = ">= 2.2.0"
-    }
   }
 }
