@@ -47,6 +47,7 @@ jobs:
       - name: Call Lambda to notify Slack
         run: |
           aws lambda invoke \
+            --region eu-west-1 \
             --function-name serve-opg-slack \
             --cli-binary-format raw-in-base64-out \
             --payload '{
