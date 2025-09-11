@@ -48,16 +48,16 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::705467933182:role/serve-opg-slack-invoker
-          role-session-name: github-actions-serve-opg-slack
+          role-to-assume: arn:aws:iam::705467933182:role/serve-gh-actions-slack-notifier
+          role-session-name: github-actions-slack-notifier
+          role-duration-seconds: 900
 
-      - name: Call Lambda to notify Slack
+      - name: Publish to SNS topic
         run: |
-          aws lambda invoke \
+          aws sns publish \
             --region eu-west-1 \
-            --function-name serve-opg-slack \
-            --cli-binary-format raw-in-base64-out \
-            --payload '{
+            --topic-arn arn:aws:sns:eu-west-1:705467933182:serve-slack-notifications \
+            --message '{
               "type": "${{ inputs.type }}",
               "status": "${{ inputs.status }}",
               "branch": "${{ inputs.branch }}",
@@ -67,5 +67,4 @@ jobs:
               "admin_url": "${{ inputs.admin_url }}",
               "gh_url": "${{ inputs.gh_url }}",
               "commit_message": "${{ inputs.commit_message }}"
-            }' \
-            response.json
+            }'
