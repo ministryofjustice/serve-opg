@@ -44,6 +44,13 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Configure AWS credentials for Slack notify
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::705467933182:role/serve-opg-slack-invoker
+          role-session-name: github-actions-serve-opg-slack
+
       - name: Call Lambda to notify Slack
         run: |
           aws lambda invoke \
