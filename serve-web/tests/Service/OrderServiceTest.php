@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Entity\Order;
 use App\exceptions\NoMatchesFoundException;
 use App\exceptions\WrongCaseNumberException;
+use App\Repository\OrderRepository;
 use App\Service\DocumentReaderService;
 use App\Service\OrderService;
 use App\Service\SiriusService;
@@ -12,46 +13,51 @@ use App\TestHelpers\FileTestHelper;
 use App\TestHelpers\OrderTestHelper;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 class OrderServiceTest extends WebTestCase
 {
     use ProphecyTrait;
-    
-    /**
-     * @var EntityManager|ObjectProphecy
-     */
-    private $em;
 
-    /**
-     * @var SiriusService|ObjectProphecy
-     */
-    private $siriusService;
-
-    /**
-     * @var DocumentReaderService
-     */
-    private $documentReader;
-
+    private EntityManager|ObjectProphecy $em;
+    private SiriusService|ObjectProphecy $siriusService;
+    private DocumentReaderService|ObjectProphecy $documentReader;
+    private LoggerInterface|ObjectProphecy $logger;
 
     public function setUp(): void
     {
+        $orderRepository = $this->prophesize(OrderRepository::class);
+
         $this->em = $this->prophesize(EntityManager::class);
+        $this->em->getRepository(Order::class)->willReturn($orderRepository->reveal());
+
         $this->siriusService = $this->prophesize(SiriusService::class);
-        $this->documentReader = new DocumentReaderService();
+        $this->documentReader = $this->prophesize(DocumentReaderService::class);
+        $this->logger = $this->prophesize(LoggerInterface::class);
     }
 
     public function testAvailabilitySuccess()
     {
         $this->siriusService->ping()->shouldBeCalled()->willReturn(true);
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         self::assertEquals(true, $sut->isAvailable());
     }
 
     public function testAvailabilityFailure()
     {
         $this->siriusService->ping()->shouldBeCalled()->willReturn(false);
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         self::assertEquals(false, $sut->isAvailable());
     }
 
@@ -64,7 +70,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
@@ -80,7 +91,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING NEW JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
@@ -96,7 +112,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING NEW JOINT DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT', $hydratedOrder->getAppointmentType());
@@ -112,7 +133,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT', $hydratedOrder->getAppointmentType());
@@ -128,7 +154,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING A DEPUTY security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('SOLE', $hydratedOrder->getAppointmentType());
@@ -144,7 +175,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING A NEW DEPUTY security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('SOLE', $hydratedOrder->getAppointmentType());
@@ -161,7 +197,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £180,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('JOINT_AND_SEVERAL', $hydratedOrder->getAppointmentType());
@@ -178,7 +219,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £15,000 in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals('no', $hydratedOrder->getHasAssetsAboveThreshold());
@@ -193,7 +239,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316 ORDER APPOINTING JOINT AND SEVERAL DEPUTIES security in the sum of £ in accordance';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
         self::assertEquals(null, $hydratedOrder->getHasAssetsAboveThreshold());
@@ -209,7 +260,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316  RTY AND AFFAIRS';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
         self::assertNull($dehydratedOrder->getSubType());
         self::assertNull($dehydratedOrder->getAppointmentType());
@@ -229,7 +285,12 @@ class OrderServiceTest extends WebTestCase
 
         $file = 'No. 93559316  RTY AND AFFAIRS';
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
     }
 
@@ -265,7 +326,12 @@ class OrderServiceTest extends WebTestCase
         $order = $this->prophesize(Order::class);
         $order->readyToServe()->shouldBeCalled()->willReturn(false);
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Order not ready to be served');
@@ -281,7 +347,12 @@ class OrderServiceTest extends WebTestCase
 
         $this->siriusService->ping()->shouldBeCalled()->willReturn(false);
 
-        $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader);
+        $sut = new OrderService(
+            $this->em->reveal(),
+            $this->siriusService->reveal(),
+            $this->documentReader->reveal(),
+            $this->logger->reveal()
+        );
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Sirius is currently unavilable');

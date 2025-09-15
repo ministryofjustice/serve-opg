@@ -92,15 +92,8 @@ class SpreadsheetService
                 continue;
             }
 
-            /** @var Client $client **/
-            $client = $this->em
-                ->getRepository(Client::class)
-                ->findOneBy(['caseNumber' => $caseNumber]);
-
-            /** @var Order $orders */
-            $orders = $this->em
-                ->getRepository(Order::class)
-                ->findBy(['client' => $client, 'type'=> 'pending'], ['id' => 'ASC']);
+            $client = $this->clientService->findClientByCaseNumber($caseNumber);
+            $orders = $this->orderService->findPendingOrdersByClient($client);
 
             if (count($orders) >= 2) {
                 // Start from 1, as to leave the earliest case intact.

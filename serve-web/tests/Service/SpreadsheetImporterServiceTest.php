@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Client;
+use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
+use App\Repository\ClientRepository;
+use App\Repository\OrderRepository;
 use App\Service\ClientService;
 use App\Service\OrderService;
 use App\Service\SpreadsheetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -20,23 +24,27 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
 {
     use ProphecyTrait;
     private string $projectDir;
+    private ClientService|ObjectProphecy $clientService;
+    private OrderService|ObjectProphecy $orderService;
+    private EntityManagerInterface|ObjectProphecy $em;
+    private LoggerInterface|ObjectProphecy $logger;
 
     public function setUp(): void
     {
         $this->projectDir = self::bootKernel()->getProjectDir();
+
+        $this->clientService = $this->prophesize(ClientService::class);
+        $this->orderService = $this->prophesize(OrderService::class);
+        $this->em = $this->prophesize(EntityManagerInterface::class);
+        $this->logger = $this->prophesize(LoggerInterface::class);
     }
 
     public function testCsvImportFile()
     {
-        $csvFilePath = 'tests/TestData/cases.csv';
+        $csvFilePath = 'tests/TestData/add_cases.csv';
 
         $filePath = sprintf('%s/%s', $this->projectDir, $csvFilePath);
-        $uploadedFile = new UploadedFile($filePath, 'cases.csv', 'text/csv');
-
-        $clientService = $this->prophesize(ClientService::class);
-        $orderService = $this->prophesize(OrderService::class);
-        $em = $this->prophesize(EntityManagerInterface::class);
-        $logger = $this->prophesize(LoggerInterface::class);
+        $uploadedFile = new UploadedFile($filePath, 'add_cases.csv', 'text/csv');
 
         $row1Client = new Client(
             '93559316',
@@ -50,9 +58,9 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime()
         );
 
-        $clientService->upsert('93559316', 'Joni Mitchell')->shouldBeCalled()->willReturn($row1Client);
-        $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
-        $clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
+        $this->clientService->upsert('93559316', 'Joni Mitchell')->shouldBeCalled()->willReturn($row1Client);
+        $this->clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
+        $this->clientService->upsert('93559317', 'Lorely Rodriguez')->shouldBeCalled()->willReturn($row2Client);
 
         $row1Order = new OrderPf(
             $row1Client,
@@ -60,7 +68,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime('15-Aug-2018'),
             '1'
         );
-        $orderService->upsert(
+        $this->orderService->upsert(
             $row1Client,
             OrderPf::class,
             new \DateTime('1-Aug-2018'),
@@ -75,7 +83,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime('17-Aug-2018'),
             '2'
         );
-        $orderService->upsert(
+        $this->orderService->upsert(
             $row2Client,
             OrderHw::class,
             new \DateTime('2-Aug-2018'),
@@ -90,7 +98,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime('18-Aug-2018'),
             '3'
         );
-        $orderService->upsert(
+        $this->orderService->upsert(
             $row2Client,
             OrderPf::class,
             new \DateTime('3-Aug-2018'),
@@ -100,10 +108,10 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             ->willReturn($row3Order);
 
         $sut = new SpreadsheetService(
-            $clientService->reveal(),
-            $orderService->reveal(),
-            $em->reveal(),
-            $logger->reveal()
+            $this->clientService->reveal(),
+            $this->orderService->reveal(),
+            $this->em->reveal(),
+            $this->logger->reveal()
         );
 
         $sut->importFile($uploadedFile);
@@ -111,19 +119,14 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
 
     public function testXlsxImportFile()
     {
-        $csvFilePath = 'tests/TestData/cases.xlsx';
+        $csvFilePath = 'tests/TestData/add_cases.xlsx';
 
         $filePath = sprintf('%s/%s', $this->projectDir, $csvFilePath);
         $uploadedFile = new UploadedFile(
             $filePath,
-            'cases.xlsx',
+            'add_cases.xlsx',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         );
-
-        $clientService = $this->prophesize(ClientService::class);
-        $orderService = $this->prophesize(OrderService::class);
-        $em = $this->prophesize(EntityManagerInterface::class);
-        $logger = $this->prophesize(LoggerInterface::class);
 
         $row1Client = new Client(
             '93559428',
@@ -137,8 +140,8 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime()
         );
 
-        $clientService->upsert('93559428', 'Johnny Depp')->shouldBeCalled()->willReturn($row1Client);
-        $clientService->upsert('93559429', 'Amber Heard')->shouldBeCalled()->willReturn($row2Client);
+        $this->clientService->upsert('93559428', 'Johnny Depp')->shouldBeCalled()->willReturn($row1Client);
+        $this->clientService->upsert('93559429', 'Amber Heard')->shouldBeCalled()->willReturn($row2Client);
 
         $row1Order = new OrderPf(
             $row1Client,
@@ -146,7 +149,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime('29-May-2022'),
             '1'
         );
-        $orderService->upsert(
+        $this->orderService->upsert(
             $row1Client,
             OrderPf::class,
             new \DateTime('31-May-2022'),
@@ -161,7 +164,7 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
             new \DateTime('29-May-2022'),
             '1'
         );
-        $orderService->upsert(
+        $this->orderService->upsert(
             $row2Client,
             OrderHw::class,
             new \DateTime('30-May-2022'),
@@ -171,12 +174,74 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         ->willReturn($row2Order);
 
         $sut = new SpreadsheetService(
-            $clientService->reveal(),
-            $orderService->reveal(),
-            $em->reveal(),
-            $logger->reveal()
+            $this->clientService->reveal(),
+            $this->orderService->reveal(),
+            $this->em->reveal(),
+            $this->logger->reveal()
         );
 
         $sut->importFile($uploadedFile);
+    }
+
+    public function testXlsxProcessingDeletionFile()
+    {
+
+        $clients = $this->prophesize(ClientService::class);
+        $csvFilePath = 'tests/TestData/remove_cases.xlsx';
+
+        $filePath = sprintf('%s/%s', $this->projectDir, $csvFilePath);
+        $uploadedFile = new UploadedFile(
+            $filePath,
+            'remove_cases.xlsx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+
+        $date = new \DateTime();
+        $client1 = new Client('10265617', 'BOBBY FISHER', $date);
+        $client1->setId(1);
+        $client2 = new Client('10328208', 'MATTHEW CLARKE', $date);
+        $client2->setId(2);
+        $client3 = new Client('11052088', 'SHERRIE MCARTHUR', $date);
+        $client3->setId(3);
+
+        $this->clientService->findClientByCaseNumber('10265617')
+            ->shouldBeCalled()
+            ->willReturn($client1);
+        $this->clientService->findClientByCaseNumber('10328208')
+            ->shouldBeCalled()
+            ->willReturn($client2);
+        $this->clientService->findClientByCaseNumber('11052088')
+            ->shouldBeCalled()
+            ->willReturn($client3);
+
+        $order1 = new OrderPf($client1, $date, $date, '40002001');
+        $order1->setId(1);
+        $order2 = new OrderPf($client2, $date, $date, '40002002');
+        $order2->setId(2);
+        $order3 = new OrderPf($client3, $date, $date, '40002003');
+        $order3->setId(3);
+        $order4 = new OrderPf($client3, $date, $date, '40002005');
+        $order4->setId(4);
+
+        $this->orderService->findPendingOrdersByClient($client1)
+            ->shouldBeCalled()
+            ->willReturn([$order1]);
+        $this->orderService->findPendingOrdersByClient($client2)
+            ->shouldBeCalled()
+            ->willReturn([$order2]);
+        $this->orderService->findPendingOrdersByClient($client3)
+            ->shouldBeCalled()
+            ->willReturn([$order3, $order4]);
+
+        $sut = new SpreadsheetService(
+            $this->clientService->reveal(),
+            $this->orderService->reveal(),
+            $this->em->reveal(),
+            $this->logger->reveal()
+        );
+
+        $results = $sut->processDeletionsFile($uploadedFile);
+        self::assertCount(3, $results['removeCases']);
+        self::assertCount(0, $results['skippedCases']);
     }
 }

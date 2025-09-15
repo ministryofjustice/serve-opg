@@ -38,4 +38,9 @@ class ClientService
             $this->logger->error(sprintf('Unable to delete client due to error: %s', $e->getMessage()));
         }
     }
+
+    public function findClientByCaseNumber(string $caseNumber): Client
+    {
+        return $this->clientRepository->findOneBy(['caseNumber' => $caseNumber]);
+    }
 }

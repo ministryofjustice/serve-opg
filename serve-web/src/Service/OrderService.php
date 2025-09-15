@@ -27,6 +27,7 @@ REGEX;
     public function __construct(
         private readonly EntityManager $em,
         private readonly SiriusService $siriusService,
+        private readonly DocumentReaderService $documentReader,
         private readonly LoggerInterface $logger,
     ) {
         $this->orderRepository = $this->em->getRepository(Order::class);
@@ -238,5 +239,10 @@ REGEX;
                 $order->setHasAssetsAboveThreshold(Order::HAS_ASSETS_ABOVE_THRESHOLD_NO);
                 break;
         }
+    }
+
+    public function findPendingOrdersByClient(Client $client): array
+    {
+        return $this->orderRepository->findBy(['client' => $client, 'type' => 'pending'], ['id' => 'ASC']);
     }
 }
