@@ -51,14 +51,22 @@ def send_to_slack(webhook_url: str, text: str, emoji: str):
 
 
 def handler(event, context):
-    event_type = event.get("type")
+    message = event
+    if "Records" in event:
+        for record in event["Records"]:
+            if "Sns" in record:
+                message = json.loads(record["Sns"]["Message"])
+
+    event_type = message.get("type")
     if event_type not in ROUTES:
         raise ValueError(f"Unknown event type: {event_type}")
 
     route = ROUTES[event_type]
-
-    text = route["template"](event)
-    emoji = route["emoji"] or ("✅" if event.get("status", "").lower() == "success" else "❌")
+    
+    text = route["template"](message)
+    emoji = route["emoji"] or ("✅" if message.get("status", "").lower() == "success" else "❌")
     webhook_url = get_secret_value(route["secret_key"])
 
+    print(f"Sending to Slack: {text}")
+    
     return send_to_slack(webhook_url, text, emoji)

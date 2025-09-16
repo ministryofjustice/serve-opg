@@ -74,6 +74,12 @@ module "notify_slack_us-east-1" {
 
 # Notify Slack for GitHub Actions
 
+resource "aws_iam_role" "serve_opg_lambda_exec" {
+  name               = "serve-opg-slack-exec"
+  assume_role_policy = data.aws_iam_policy_document.serve_opg_lambda_assume.json
+}
+
+
 data "aws_iam_policy_document" "serve_opg_lambda_assume" {
   statement {
     effect  = "Allow"
@@ -86,7 +92,7 @@ data "aws_iam_policy_document" "serve_opg_lambda_assume" {
   }
 }
 
-data "aws_iam_policy_document" "serve_opg_lambda_secret_access" {
+data "aws_iam_policy_document" "serve_opg_notify_lambda" {
   statement {
     effect = "Allow"
     actions = [
@@ -96,9 +102,7 @@ data "aws_iam_policy_document" "serve_opg_lambda_secret_access" {
       aws_secretsmanager_secret.slack_webhooks.arn,
     ]
   }
-}
 
-data "aws_iam_policy_document" "serve_opg_lambda_logging" {
   statement {
     sid    = "AllowLambdaLogging"
     effect = "Allow"
@@ -112,33 +116,52 @@ data "aws_iam_policy_document" "serve_opg_lambda_logging" {
       "${aws_cloudwatch_log_group.serve_opg_notify_slack.arn}:*",
     ]
   }
+
+  statement {
+    sid    = "SNS"
+    effect = "Allow"
+    actions = [
+      "SNS:Subscribe",
+      "SNS:Receive",
+    ]
+    resources = [
+      aws_sns_topic.serve_slack_notifications.arn
+    ]
+  }
+
+  statement {
+    sid    = "SnsDecryptKms"
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = [
+      aws_kms_key.serve_sns.arn
+    ]
+  }
+
+  statement {
+    sid    = "SecretDecryptKms"
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = [
+      aws_kms_key.serve_sns.arn
+    ]
+  }
+
 }
 
-resource "aws_iam_role" "serve_opg_lambda_exec" {
-  name               = "serve-opg-slack-exec"
-  assume_role_policy = data.aws_iam_policy_document.serve_opg_lambda_assume.json
-}
-
-resource "aws_iam_policy" "serve_opg_lambda_secret_access" {
+resource "aws_iam_policy" "serve_opg_notify_lambda" {
   name        = "serve-opg-slack-secret-access"
-  description = "Allow Lambda to read Slack webhooks secret"
-  policy      = data.aws_iam_policy_document.serve_opg_lambda_secret_access.json
+  description = "Policy for the Slack Notify Lambda"
+  policy      = data.aws_iam_policy_document.serve_opg_notify_lambda.json
 }
 
-resource "aws_iam_policy" "serve_opg_lambda_logging" {
-  name        = "serve-opg-slack-logging"
-  description = "Allow Lambda to write logs to its CloudWatch group"
-  policy      = data.aws_iam_policy_document.serve_opg_lambda_logging.json
-}
-
-resource "aws_iam_role_policy_attachment" "serve_opg_lambda_secret_access_attach" {
+resource "aws_iam_role_policy_attachment" "serve_opg_notify_lambda_attach" {
   role       = aws_iam_role.serve_opg_lambda_exec.name
-  policy_arn = aws_iam_policy.serve_opg_lambda_secret_access.arn
-}
-
-resource "aws_iam_role_policy_attachment" "serve_opg_lambda_logging_attach" {
-  role       = aws_iam_role.serve_opg_lambda_exec.name
-  policy_arn = aws_iam_policy.serve_opg_lambda_logging.arn
+  policy_arn = aws_iam_policy.serve_opg_notify_lambda.arn
 }
 
 data "archive_file" "slack_notify" {
