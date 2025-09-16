@@ -1,9 +1,4 @@
 # ===== Application Loadbalancer Alarms =====
-moved {
-  from = aws_cloudwatch_metric_alarm.response_time
-  to   = aws_cloudwatch_metric_alarm.loadbalancer_response_time
-}
-
 resource "aws_cloudwatch_metric_alarm" "loadbalancer_response_time" {
   alarm_name          = "[SERVE]-${local.environment}-response-time"
   alarm_description   = "Serve high response times recorded on the loadbalancer"
@@ -15,17 +10,12 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_response_time" {
   datapoints_to_alarm = 3
   evaluation_periods  = 3
   namespace           = "AWS/ApplicationELB"
-  alarm_actions       = [data.aws_sns_topic.alert.arn]
+  alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
 
   dimensions = {
     LoadBalancer = aws_lb.frontend.arn_suffix
     TargetGroup  = aws_lb_target_group.frontend.arn_suffix
   }
-}
-
-moved {
-  from = aws_cloudwatch_metric_alarm.errors_24h
-  to   = aws_cloudwatch_metric_alarm.loadbalancer_app_errors
 }
 
 resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
@@ -39,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
   datapoints_to_alarm = 1
   evaluation_periods  = 1
   namespace           = "AWS/ApplicationELB"
-  alarm_actions       = [data.aws_sns_topic.alert.arn]
+  alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
 
   dimensions = {
     LoadBalancer = aws_lb.frontend.arn_suffix
@@ -50,11 +40,6 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
 }
 
 #===== Healthcheck Alarms =====
-moved {
-  from = aws_route53_health_check.availability-front
-  to   = aws_route53_health_check.availability_frontend
-}
-
 resource "aws_route53_health_check" "availability_frontend" {
   fqdn              = aws_route53_record.serve.fqdn
   resource_path     = "/health-check"
@@ -65,11 +50,6 @@ resource "aws_route53_health_check" "availability_frontend" {
   measure_latency   = true
   regions           = ["us-east-1", "eu-west-1", "us-west-1"]
   tags              = merge(local.default_tags, { Name = "availability-front" }, )
-}
-
-moved {
-  from = aws_cloudwatch_metric_alarm.availability-front
-  to   = aws_cloudwatch_metric_alarm.availability_frontend
 }
 
 resource "aws_cloudwatch_metric_alarm" "availability_frontend" {
@@ -92,11 +72,6 @@ resource "aws_cloudwatch_metric_alarm" "availability_frontend" {
   }
 }
 
-moved {
-  from = aws_route53_health_check.availability-service
-  to   = aws_route53_health_check.availability_service
-}
-
 resource "aws_route53_health_check" "availability_service" {
   fqdn              = aws_route53_record.serve.fqdn
   resource_path     = "/health-check/service"
@@ -107,11 +82,6 @@ resource "aws_route53_health_check" "availability_service" {
   measure_latency   = true
   regions           = ["us-east-1", "eu-west-1", "us-west-1"]
   tags              = merge(local.default_tags, { Name = "availability-service" }, )
-}
-
-moved {
-  from = aws_cloudwatch_metric_alarm.availability-service
-  to   = aws_cloudwatch_metric_alarm.availability_service
 }
 
 resource "aws_cloudwatch_metric_alarm" "availability_service" {
@@ -202,7 +172,7 @@ resource "aws_cloudwatch_metric_alarm" "sirius_login_errors" {
   threshold           = 1
   period              = 60
   namespace           = aws_cloudwatch_log_metric_filter.sirius_login_errors.metric_transformation[0].namespace
-  alarm_actions       = [data.aws_sns_topic.alert.arn]
+  alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
   tags                = local.default_tags
 }
 
@@ -230,6 +200,6 @@ resource "aws_cloudwatch_metric_alarm" "sirius_unavailable_errors" {
   threshold           = 1
   period              = 60
   namespace           = aws_cloudwatch_log_metric_filter.sirius_unavailable_errors.metric_transformation[0].namespace
-  alarm_actions       = [data.aws_sns_topic.alert.arn]
+  alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
   tags                = local.default_tags
 }

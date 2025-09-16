@@ -9,6 +9,42 @@ resource "aws_sns_topic" "serve_slack_notifications" {
   )
 }
 
+resource "aws_sns_topic_policy" "serve_slack_notifications" {
+  arn    = aws_sns_topic.serve_slack_notifications.arn
+  policy = data.aws_iam_policy_document.serve_slack_notifications.json
+}
+
+data "aws_iam_policy_document" "serve_slack_notifications" {
+  statement {
+    sid    = "Publish SNS"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
+    }
+
+    actions   = ["sns:Publish"]
+    resources = [aws_sns_topic.serve_slack_notifications.arn]
+  }
+
+  statement {
+    sid    = "Decrypt KMS"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
+    }
+
+    actions = [
+      "kms:GenerateDataKey*",
+      "kms:Decrypt"
+    ]
+    resources = [aws_kms_key.serve_sns.arn]
+  }
+}
+
 # Add Lambda as a consumer to the SNS Topic
 resource "aws_sns_topic_subscription" "serve_slack_notifications_lambda" {
   topic_arn = aws_sns_topic.serve_slack_notifications.arn
