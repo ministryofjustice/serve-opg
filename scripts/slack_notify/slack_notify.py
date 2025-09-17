@@ -34,10 +34,11 @@ ROUTES = {
         ),
     },
     "alarm": {
-        "secret_key": "opg-digideps-devs",
+        "secret_key": "opg-default",
         "emoji": ":warning:",
         "template": lambda e: (
-            f":warning: *Serve OPG Alert - {e.get('AlarmName', 'Unknown').capitalize()} "
+            f":warning: *Serve OPG Alert* - {e.get('AlarmName', 'Unknown').capitalize()}\n\n "
+            f"Please check cloudwatch logs in the relevant Serve account\n"
         ),
     }
 }
@@ -63,6 +64,7 @@ def handler(event, context):
         for record in event["Records"]:
             if "Sns" in record:
                 message = json.loads(record["Sns"]["Message"])
+                print(message)
                 if "AlarmName" in message:
                     event_type = "alarm"
 
