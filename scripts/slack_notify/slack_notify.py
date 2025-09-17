@@ -34,10 +34,12 @@ ROUTES = {
         ),
     },
     "alarm": {
-        "secret_key": "opg-digideps-devs",
+        "secret_key": "opg-default",
         "emoji": ":warning:",
         "template": lambda e: (
-            f":warning: *Serve OPG Alert - {e.get('AlarmName', 'Unknown').capitalize()} "
+            f":warning: *Serve OPG Alert* - {e.get('AlarmName', 'Unknown').capitalize()}\n\n "
+            f"Description: {e.get('AlarmDescription', 'Unknown Description').capitalize()}\n\n "
+            f"Please check cloudwatch logs in the relevant Serve account\n"
         ),
     }
 }

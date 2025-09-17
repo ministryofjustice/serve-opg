@@ -1,6 +1,6 @@
 # ===== Application Loadbalancer Alarms =====
 resource "aws_cloudwatch_metric_alarm" "loadbalancer_response_time" {
-  alarm_name          = "[SERVE]-${local.environment}-response-time"
+  alarm_name          = "${local.environment}-response-time"
   alarm_description   = "Serve high response times recorded on the loadbalancer"
   statistic           = "Average"
   metric_name         = "TargetResponseTime"
@@ -19,7 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_response_time" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
-  alarm_name          = "[SERVE]-${local.environment}-5xx-errors"
+  alarm_name          = "${local.environment}-5xx-errors"
   alarm_description   = "Serve 5XX errors recorded on the loadbalancer"
   statistic           = "Sum"
   metric_name         = "HTTPCode_Target_5XX_Count"
@@ -54,7 +54,7 @@ resource "aws_route53_health_check" "availability_frontend" {
 
 resource "aws_cloudwatch_metric_alarm" "availability_frontend" {
   provider            = aws.us-east-1
-  alarm_name          = "[SERVE]-${local.environment}-availability-frontend"
+  alarm_name          = "${local.environment}-availability-frontend"
   alarm_description   = "Serve route53 health-checks for route /health-check have failed"
   statistic           = "Minimum"
   metric_name         = "HealthCheckStatus"
@@ -86,7 +86,7 @@ resource "aws_route53_health_check" "availability_service" {
 
 resource "aws_cloudwatch_metric_alarm" "availability_service" {
   provider            = aws.us-east-1
-  alarm_name          = "[SERVE]-${local.environment}-availability-service"
+  alarm_name          = "${local.environment}-availability-service"
   alarm_description   = "Serve route53 health-checks for route /health-check/service have failed"
   statistic           = "Minimum"
   metric_name         = "HealthCheckStatus"
@@ -129,7 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "availability_service" {
 #
 #resource "aws_cloudwatch_metric_alarm" "availability_dependencies" {
 #  provider            = aws.us-east-1
-#  alarm_name          = "[SERVE]-${local.environment}-availability-dependencies"
+#  alarm_name          = "${local.environment}-availability-dependencies"
 #  alarm_description   = "Serve route53 health-checks for route /health-check/dependencies have failed"
 #  statistic           = "Minimum"
 #  metric_name         = "HealthCheckStatus"
@@ -162,7 +162,7 @@ resource "aws_cloudwatch_log_metric_filter" "sirius_login_errors" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "sirius_login_errors" {
-  alarm_name          = "[SERVE]-${local.environment}-sirius-login-errors"
+  alarm_name          = "${local.environment}-sirius-login-errors"
   alarm_description   = "Serve unable to login to sirius! Check sirius authentication changes"
   statistic           = "Sum"
   metric_name         = aws_cloudwatch_log_metric_filter.sirius_login_errors.metric_transformation[0].name
@@ -190,7 +190,7 @@ resource "aws_cloudwatch_log_metric_filter" "sirius_unavailable_errors" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "sirius_unavailable_errors" {
-  alarm_name          = "[SERVE]-${local.environment}-serve-sirius-unavailable-errors"
+  alarm_name          = "${local.environment}-serve-sirius-unavailable-errors"
   alarm_description   = "Serve unable to contact sirius! Check sirius availability"
   statistic           = "Sum"
   metric_name         = aws_cloudwatch_log_metric_filter.sirius_unavailable_errors.metric_transformation[0].name
