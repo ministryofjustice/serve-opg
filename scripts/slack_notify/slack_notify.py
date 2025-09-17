@@ -1,4 +1,3 @@
-import os
 import json
 import urllib.request
 import urllib.parse
@@ -33,6 +32,13 @@ ROUTES = {
             f"  • *GH Actions build url:* {e.get('gh_url', 'N/A')}\n\n"
             f"*Commit message:* {e.get('commit_message', '')}"
         ),
+    },
+    "alarm": {
+        "secret_key": "opg-digideps-devs",
+        "emoji": ":warning:",
+        "template": lambda e: (
+            f":warning: *Serve OPG Alert - {e.get('AlarmName', 'Unknown').capitalize()} "
+        ),
     }
 }
 
@@ -52,21 +58,25 @@ def send_to_slack(webhook_url: str, text: str, emoji: str):
 
 def handler(event, context):
     message = event
+    event_type = ""
     if "Records" in event:
         for record in event["Records"]:
             if "Sns" in record:
                 message = json.loads(record["Sns"]["Message"])
+                if "AlarmName" in message:
+                    event_type = "alarm"
 
-    event_type = message.get("type")
+    if event_type == "":
+        event_type = message.get("type")
     if event_type not in ROUTES:
         raise ValueError(f"Unknown event type: {event_type}")
 
     route = ROUTES[event_type]
-    
+
     text = route["template"](message)
     emoji = route["emoji"] or ("✅" if message.get("status", "").lower() == "success" else "❌")
     webhook_url = get_secret_value(route["secret_key"])
 
     print(f"Sending to Slack: {text}")
-    
+
     return send_to_slack(webhook_url, text, emoji)

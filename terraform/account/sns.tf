@@ -1,7 +1,7 @@
 # Slack Alerts SNS Topic
 resource "aws_sns_topic" "serve_slack_notifications" {
   name              = "serve-slack-notifications"
-  kms_master_key_id = aws_kms_key.serve_sns.arn
+  kms_master_key_id = module.sns_kms.target_key_arn
 
   tags = merge(
     local.default_tags,
@@ -26,22 +26,6 @@ data "aws_iam_policy_document" "serve_slack_notifications" {
 
     actions   = ["sns:Publish"]
     resources = [aws_sns_topic.serve_slack_notifications.arn]
-  }
-
-  statement {
-    sid    = "Decrypt KMS"
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudwatch.amazonaws.com"]
-    }
-
-    actions = [
-      "kms:GenerateDataKey*",
-      "kms:Decrypt"
-    ]
-    resources = [aws_kms_key.serve_sns.arn]
   }
 }
 
