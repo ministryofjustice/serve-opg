@@ -170,3 +170,33 @@ jobs:
       account_name: production
       account_id: 933639921819
     secrets: inherit
+
+  slack_notify_success:
+    name: Notify Slack of success
+    uses: ./.github/workflows/_notify-slack.yml
+    if: ${{ success() }}
+    needs:
+      - behat_prod
+    with:
+      type: "workflow"
+      status: "success"
+      branch: ${{ needs.workflow_variables.outputs.build_identifier }}
+      workflow: ${{ github.workflow }}
+      user: ${{ github.actor }}
+      gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      commit_message: "Path to Live completed successfully ✅"
+
+  slack_notify_failure:
+    name: Notify Slack of failure
+    uses: ./.github/workflows/_notify-slack.yml
+    if: ${{ failure() }}
+    needs:
+      - behat_prod
+    with:
+      type: "workflow"
+      status: "failure"
+      branch: ${{ needs.workflow_variables.outputs.build_identifier }}
+      workflow: ${{ github.workflow }}
+      user: ${{ github.actor }}
+      gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      commit_message: "Path to Live failed in one or more jobs ❌"

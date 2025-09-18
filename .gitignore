@@ -58,3 +58,6 @@ tools/php-cs-fixer/
 
 node_modules
 serve-web/public/build
+
+###> slack_notify ###
+/scripts/slack_notify/slack_notify.zip
