@@ -96,7 +96,7 @@ resource "aws_cloudwatch_metric_alarm" "availability_service" {
   period              = 60
   evaluation_periods  = 5
   namespace           = "AWS/Route53"
-  alarm_actions       = [data.aws_sns_topic.alert_us_east.arn]
+  alarm_actions       = [data.aws_sns_topic.slack_notification_global.arn]
   tags                = local.default_tags
 
   dimensions = {
