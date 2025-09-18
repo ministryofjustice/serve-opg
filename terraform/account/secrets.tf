@@ -16,10 +16,6 @@ resource "aws_secretsmanager_secret" "slack_url" {
   tags        = local.default_tags
 }
 
-data "aws_secretsmanager_secret_version" "slack_url" {
-  secret_id = aws_secretsmanager_secret.slack_url.id
-}
-
 resource "aws_secretsmanager_secret" "cloud9_users" {
   name        = "cloud9-users"
   description = "Serve team Cloud9 users"
