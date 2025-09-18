@@ -294,7 +294,7 @@ class OrderServiceTest extends WebTestCase
         $sut = new OrderService($this->em->reveal(), $this->siriusService->reveal(), $this->documentReader, false);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Sirius is currently unavilable');
+        $this->expectExceptionMessage('Sirius is currently unavailable');
 
         $sut->serve($order->reveal());
     }
