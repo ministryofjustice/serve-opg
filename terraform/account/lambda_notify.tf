@@ -72,7 +72,8 @@ data "aws_iam_policy_document" "serve_opg_notify_lambda" {
       "SNS:Receive",
     ]
     resources = [
-      aws_sns_topic.serve_slack_notifications.arn
+      aws_sns_topic.serve_slack_notifications.arn,
+      aws_sns_topic.serve_slack_notifications_global.arn
     ]
   }
 

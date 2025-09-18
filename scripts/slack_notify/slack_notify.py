@@ -38,8 +38,8 @@ ROUTES = {
         "emoji": ":warning:",
         "template": lambda e: (
             f":warning: *Serve OPG Alert* - {e.get('AlarmName', 'Unknown').capitalize()}\n\n "
-            f"Description: {e.get('AlarmDescription', 'Unknown Description').capitalize()}\n\n "
-            f"Please check cloudwatch logs in the relevant Serve account\n"
+            f"*Description:* {e.get('AlarmDescription', 'Unknown Description').capitalize()}\n\n "
+            f"Please check cloudwatch logs in the relevant *Serve* account\n"
         ),
     }
 }
@@ -61,12 +61,29 @@ def send_to_slack(webhook_url: str, text: str, emoji: str):
 def handler(event, context):
     message = event
     event_type = ""
-    if "Records" in event:
-        for record in event["Records"]:
-            if "Sns" in record:
-                message = json.loads(record["Sns"]["Message"])
-                if "AlarmName" in message:
+
+    try:
+        if isinstance(event, dict) and "Records" in event:
+            for record in event.get("Records", []):
+                if not isinstance(record, dict):
+                    continue
+                sns = record.get("Sns")
+                if not isinstance(sns, dict):
+                    continue
+                raw_message = sns.get("Message")
+                if not isinstance(raw_message, str):
+                    continue
+                try:
+                    parsed = json.loads(raw_message)
+                except json.JSONDecodeError as e:
+                    print(f"Failed to parse SNS message as JSON: {e}")
+                    continue
+                if isinstance(parsed, dict) and "AlarmName" in parsed:
+                    message = parsed
                     event_type = "alarm"
+                    break
+    except Exception as e:
+        print(f"Unexpected error while processing event: {e}")
 
     if event_type == "":
         event_type = message.get("type")
