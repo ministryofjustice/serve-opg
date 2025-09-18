@@ -13,9 +13,9 @@ variable "accounts" {
 }
 
 locals {
-  environment             = terraform.workspace
-  account                 = var.accounts[local.environment]
-  is_production           = local.environment == "production" ? "true" : "false"
+  environment   = terraform.workspace
+  account       = var.accounts[local.environment]
+  is_production = local.environment == "production" ? "true" : "false"
 
   default_tags = {
     business-unit          = "OPG"
