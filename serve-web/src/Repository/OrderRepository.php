@@ -124,4 +124,15 @@ class OrderRepository extends EntityRepository
 
         return $pager->getRows(asArray: $asArray, limit: $limit);
     }
+
+    public function delete(int $orderId): void
+    {
+        $orderRepo = $this->_em->getRepository(Order::class);
+        $order = $orderRepo->findOneBy(['id' => $orderId]);
+
+        if ($order) {
+            $this->_em->remove($order);
+            $this->_em->flush();
+        }
+    }
 }
