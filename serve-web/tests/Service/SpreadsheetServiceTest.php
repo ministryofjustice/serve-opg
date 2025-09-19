@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Client;
-use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
-use App\Repository\ClientRepository;
-use App\Repository\OrderRepository;
 use App\Service\ClientService;
 use App\Service\OrderService;
 use App\Service\SpreadsheetService;
@@ -20,7 +17,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class SpreadsheetImporterServiceTest extends KernelTestCase
+class SpreadsheetServiceTest extends KernelTestCase
 {
     use ProphecyTrait;
     private string $projectDir;
@@ -185,8 +182,6 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
 
     public function testXlsxProcessingDeletionFile()
     {
-
-        $clients = $this->prophesize(ClientService::class);
         $csvFilePath = 'tests/TestData/remove_cases.xlsx';
 
         $filePath = sprintf('%s/%s', $this->projectDir, $csvFilePath);
@@ -203,6 +198,8 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $client2->setId(2);
         $client3 = new Client('11052088', 'SHERRIE MCARTHUR', $date);
         $client3->setId(3);
+        $client4 = new Client('', 'CHARLIE THOMPSON', $date);
+        $client4->setId(4);
 
         $this->clientService->findClientByCaseNumber('10265617')
             ->shouldBeCalled()
@@ -213,6 +210,12 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $this->clientService->findClientByCaseNumber('11052088')
             ->shouldBeCalled()
             ->willReturn($client3);
+        $this->clientService->findClientByCaseNumber('11052066')
+            ->shouldBeCalled()
+            ->willReturn($client4);
+        $this->clientService->findClientByCaseNumber('11052077')
+            ->shouldBeCalled()
+            ->willReturn(null);
 
         $order1 = new OrderPf($client1, $date, $date, '40002001');
         $order1->setId(1);
@@ -232,6 +235,9 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
         $this->orderService->findPendingOrdersByClient($client3)
             ->shouldBeCalled()
             ->willReturn([$order3, $order4]);
+        $this->orderService->findPendingOrdersByClient($client4)
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $sut = new SpreadsheetService(
             $this->clientService->reveal(),
@@ -242,6 +248,6 @@ class SpreadsheetImporterServiceTest extends KernelTestCase
 
         $results = $sut->processDeletionsFile($uploadedFile);
         self::assertCount(3, $results['removeCases']);
-        self::assertCount(0, $results['skippedCases']);
+        self::assertCount(2, $results['skippedCases']);
     }
 }

@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 #[ORM\Table(name: 'client')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: 'App\Repository\ClientRepository')]
 class Client
 {
     #[ORM\Id]

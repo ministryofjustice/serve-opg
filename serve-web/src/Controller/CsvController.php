@@ -45,13 +45,19 @@ class CsvController extends AbstractController
         $form = $this->createForm(CsvUploadForm::class);
         $form->handleRequest($request);
 
+        $displayItems = [
+            'form' => $form->createView()
+        ];
+
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $request->files->get('csv_upload_form')['file'];
             $processedCases = $this->spreadsheetService->processDeletionsFile($file);
 
-            $displayResults = [];
-            $displayResults['skippedCases'] = $processedCases['skippedCases'];
-            foreach ($processedCases['removeCases'] as $caseNumber => $processedResults) {
+            $displayResults = [
+                'ordersRemoved' => [],
+                'skippedCases' => $processedCases['skippedCases'],
+            ];
+            foreach ($processedCases['removeCases'] as $processedResults) {
                 $ordersRemoved = 0;
                 $this->clientService->deletionByClientId($processedResults['clientId']);
 
@@ -60,19 +66,14 @@ class CsvController extends AbstractController
                     ++$ordersRemoved;
                 }
 
-                $displayResults['ordersRemoved'] = [
-                    'caseNumber' => $caseNumber,
+                $displayResults['ordersRemoved'][] = [
+                    'caseNumber' => $processedResults['caseNumber'],
                     'ordersRemovedCount' => $ordersRemoved
                 ];
             }
-
-            return $this->render('Csv/multiple-case-removal.html.twig', [
-                'processedResults' => $displayResults
-            ]);
+            $displayItems['processedResults'] = $displayResults;
         }
 
-        return $this->render('Csv/multiple-case-removal.html.twig', [
-            'form' => $form->createView()
-        ]);
+        return $this->render('Csv/multiple-case-removal.html.twig', $displayItems);
     }
 }

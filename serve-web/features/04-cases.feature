@@ -162,3 +162,21 @@ Feature: cases
     Then I should see the "order-93559316-PF" region
     And I should see the "order-93559316-HW" region
 
+  Scenario: Removing cases
+    Given I log in as "behat@digital.justice.gov.uk" with correct password
+    When I go to "/upload-csv"
+    And I attach the file "behat-cases-to-import-for-removal.csv" to "csv_upload_form_file"
+    And I click on "submit"
+    Then the form should be valid
+    When I go to "/multiple-case-removal"
+    And I attach the file "behat-remove-case.xlsx" to "csv_upload_form_file"
+    And I click on "submit"
+    Then the form should be valid
+    And I should see the "case-10265617" region
+    And I should see the "case-93559987" region
+    And I should see the "case-93559986" region
+    When I go to "/case"
+    And I fill in "q" with "93559987"
+    And I press "search_submit"
+    And I click on "pending-tab"
+    Then I should not see the "order-93559987-HW" region

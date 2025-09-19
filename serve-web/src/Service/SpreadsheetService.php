@@ -83,40 +83,73 @@ class SpreadsheetService
         $rows = $this->buildRowsArray($fileType, $path, $csvColumns);
 
         $lastCaseNumber = 0;
+        $lastOrderNumber = 0;
         $orderIds = [];
         foreach ($rows as $row) {
             $caseNumber = $row['Case number'];
+            $orderNumber = (int) $row['Court order'];
 
             // Skip over any duplicate rows within the spreadsheet, as they will have been found via previous rows
-            if ($lastCaseNumber === $caseNumber) {
+            if ($lastCaseNumber === $caseNumber && $lastOrderNumber === $orderNumber) {
                 continue;
             }
 
             $client = $this->clientService->findClientByCaseNumber($caseNumber);
+            if (empty($client)) {
+                $this->skippedCases[] = [
+                    'caseNumber' => $caseNumber,
+                    'clientId' => null,
+                    'orders' => null,
+                    'reason' => 'Unable to find any clients associated with casenumber',
+                ];
+                continue;
+            }
             $orders = $this->orderService->findPendingOrdersByClient($client);
 
             if (count($orders) >= 2) {
-                // Start from 1, as to leave the earliest case intact.
-                for ($i = 1; $i < count($orders); $i++) {
+                for ($i = 0; $i < count($orders); $i++) {
                     /** @var Order $order */
                     $order = $orders[$i];
+                    if ((int) $order->getOrderNumber() !== $orderNumber) {
+                        $this->logger->warning(sprintf(
+                            'Retrieved Order: %d and Order to remove: %d, do not match skipping order',
+                            $order->getOrderNumber(),
+                            $orderNumber
+                        ));
+                        continue;
+                    }
+
+                    $lastOrderNumber = $order->getOrderNumber();
                     $orderIds[] = $order->getId();
                 }
 
-                $this->buildRemovalProcessedArrays($client, $orderIds);
+                if (count($orderIds) >= 1) {
+                    $this->buildRemovalProcessedArrays($client, $orderIds);
+                }
             } elseif (count($orders) === 1) {
                 /** @var Order $order */
                 $order = $orders[0];
+                if ((int) $order->getOrderNumber() !== $orderNumber) {
+                    $this->logger->warning(sprintf(
+                        'Retrieved Order: %d and Order to remove: %d, do not match skipping row',
+                        $order->getOrderNumber(),
+                        $orderNumber
+                    ));
+                    continue;
+                }
+
+                $lastOrderNumber = $order->getOrderNumber();
                 $orderIds = [$order->getId()];
 
                 $this->buildRemovalProcessedArrays($client, $orderIds);
             } else {
-                $this->skippedCases[$caseNumber] = [
+                $this->skippedCases[] = [
+                    'caseNumber' => $caseNumber,
                     'clientId' => null,
                     'orders' => null,
                     'reason' => sprintf(
-                        'Unable to find any clients/orders associated with casenumber: %d',
-                        $caseNumber
+                        'Unable to find any orders associated with client id: %d',
+                        $client->getId()
                     ),
                 ];
             }
@@ -180,16 +213,21 @@ class SpreadsheetService
 
     private function buildRemovalProcessedArrays(Client $client, array $orders): void
     {
+        $caseNumber = $client->getCaseNumber();
+        $clientId = $client->getId();
+
         if (count($orders) >= 1) {
-            $this->removeCases[$client->getCaseNumber()] = [
-                'clientId' => $client->getId(),
+            $this->removeCases[] = [
+                'caseNumber' => $caseNumber,
+                'clientId' => $clientId,
                 'orders' => $orders,
             ];
         } else {
-            $this->skippedCases[$client->getCaseNumber()] = [
-                'clientId' => $client->getId(),
+            $this->skippedCases[] = [
+                'caseNumber' => $caseNumber,
+                'clientId' => $clientId,
                 'orders' => null,
-                'reason' => sprintf('No order(s)00 associated with client id: %d', $client->getId()),
+                'reason' => sprintf('No order(s) associated with client id: %d', $client->getId()),
             ];
         }
     }

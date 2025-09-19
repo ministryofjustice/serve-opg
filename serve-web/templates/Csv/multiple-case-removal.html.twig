@@ -8,6 +8,64 @@
 
 {% block content %}
 
+    {% if processedResults %}
+        {% set removedCount = processedResults.ordersRemoved|length %}
+        {% set skippedCount = processedResults.skippedCases|length  %}
+
+        {% if removedCount >= 1 %}
+            <section id="successfully-removed">
+            <h2 class="govuk-heading-m">Orders successfully removed</h2>
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="col">Case number</th>
+                        <th class="govuk-table__header" scope="col">Number of orders removed</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    {% for ordersRemoved in processedResults.ordersRemoved %}
+                        <tr class="govuk-table__row behat-region-case-{{ ordersRemoved.caseNumber }}">
+                            <td class="govuk-table__cell">
+                                {{ ordersRemoved.caseNumber }}
+                            </td>
+                            <td class="govuk-table__cell ">{{ ordersRemoved.ordersRemovedCount }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </section>
+            </br>
+        {% endif %}
+
+        {% if skippedCount >= 1 %}
+            <section id="failed-removed">
+            <h2 class="govuk-heading-m">Orders unable to be removed</h2>
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="col">Case number</th>
+                        <th class="govuk-table__header" scope="col">Reason failed to remove</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    {% for skippedCases in processedResults.skippedCases %}
+                        <tr class="govuk-table__row  behat-region-case-{{ skippedCases.caseNumber }}">
+                            <td class="govuk-table__cell">
+                                {{ skippedCases.caseNumber }}
+                            </td>
+                            <td class="govuk-table__cell ">{{ skippedCases.reason }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </section>
+            </br>
+        {% endif %}
+
+    {% endif %}
+
     {% if form %}
         {{ form_start(form) }}
 
@@ -20,51 +78,6 @@
 
         {{ form_widget(form.submit, {'label': 'Upload CSV or XLSX', 'attr': {'class':'behat-link-submit'}} ) }}
         {{ form_end(form) }}
-    {% endif %}
-
-    {% if processedResults %}
-
-        <h2 class="govuk-heading-m">Orders successfully removed</h2>
-        <section class="govuk-tabs__panel" id="past-day">
-        <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">Case number</th>
-            <th class="govuk-table__header" scope="col">Number of orders removed</th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        {% for ordersRemoved in processedResults.ordersRemoved %}
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">ordersRemoved.caseNumber</td>
-                <td class="govuk-table__cell ">orderRemoved.ordersRemovedCount</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-        </table>
-
-        </section>
-        <h2 class="govuk-heading-m">Orders unable to be removed</h2>
-        <section class="govuk-tabs__panel" id="past-day">
-            <table class="govuk-table">
-                <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="col">Case number</th>
-                    <th class="govuk-table__header" scope="col">Reason failed to remove</th>
-                </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                {% for skippedCases in processedResults.skippedCases %}
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">skippedCases.caseNumber</td>
-                        <td class="govuk-table__cell ">skippedCases.reason</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-        </section>
-
     {% endif %}
 
 {% endblock %}

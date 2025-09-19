@@ -39,7 +39,7 @@ class ClientService
         }
     }
 
-    public function findClientByCaseNumber(string $caseNumber): Client
+    public function findClientByCaseNumber(string $caseNumber): ?Client
     {
         return $this->clientRepository->findOneBy(['caseNumber' => $caseNumber]);
     }

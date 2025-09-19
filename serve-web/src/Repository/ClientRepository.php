@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityRepository;
 
 class ClientRepository extends EntityRepository
 {
-    private function deleteClient(int $clientId): void
+    public function delete(int $clientId): void
     {
         $clientRepo = $this->_em->getRepository(Client::class);
         $client = $clientRepo->findOneBy(['id' => $clientId]);

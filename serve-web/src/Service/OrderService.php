@@ -243,6 +243,6 @@ REGEX;
 
     public function findPendingOrdersByClient(Client $client): array
     {
-        return $this->orderRepository->findBy(['client' => $client, 'type' => 'pending'], ['id' => 'ASC']);
+        return $this->orderRepository->findBy(['client' => $client, 'servedAt' => null], ['id' => 'ASC']);
     }
 }
