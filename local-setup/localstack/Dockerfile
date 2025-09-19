@@ -1,4 +1,6 @@
-FROM localstack/localstack:3.8 as localstack
+FROM localstack/localstack:4.6 as localstack
+# Can't upgrade to 4.7 because of dynamodb changes that require types being set
+# This is handled by dependencies that need upgrading
 
 COPY ./local-setup/localstack/localstack-init.sh /etc/localstack/init/ready.d/init-aws.sh
 COPY ./local-setup/localstack/healthcheck.sh /tmp/healthcheck.sh

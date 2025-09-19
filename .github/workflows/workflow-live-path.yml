@@ -30,7 +30,7 @@ jobs:
       build_identifier: "main"
       version_tag: ${{ steps.semver_tag.outputs.created_tag }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
       - name: Get Default Bump
         id: semver_bump
@@ -170,3 +170,33 @@ jobs:
       account_name: production
       account_id: 933639921819
     secrets: inherit
+
+  slack_notify_success:
+    name: Notify Slack of success
+    uses: ./.github/workflows/_notify-slack.yml
+    if: ${{ success() }}
+    needs:
+      - behat_prod
+    with:
+      type: "workflow"
+      status: "success"
+      branch: ${{ needs.workflow_variables.outputs.build_identifier }}
+      workflow: ${{ github.workflow }}
+      user: ${{ github.actor }}
+      gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      commit_message: "Path to Live completed successfully ✅"
+
+  slack_notify_failure:
+    name: Notify Slack of failure
+    uses: ./.github/workflows/_notify-slack.yml
+    if: ${{ failure() }}
+    needs:
+      - behat_prod
+    with:
+      type: "workflow"
+      status: "failure"
+      branch: ${{ needs.workflow_variables.outputs.build_identifier }}
+      workflow: ${{ github.workflow }}
+      user: ${{ github.actor }}
+      gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      commit_message: "Path to Live failed in one or more jobs ❌"

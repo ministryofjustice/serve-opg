@@ -15,6 +15,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $fixturesEnabled: "%env(bool:FIXTURES_ENABLED)%"
+            $useEventBus: "%env(bool:USE_EVENT_BUS)%"
             $projectDir: "%kernel.project_dir%"
             $yamlFixtureLocation: "%kernel.project_dir%/src/DataFixtures/"
             string $behatPassword: "%env(BEHAT_PASSWORD)%"
@@ -46,11 +47,19 @@ services:
 
     Doctrine\ORM\EntityManager: "@doctrine.orm.entity_manager"
 
+    eventBridge:
+        class: Aws\EventBridge\EventBridgeClient
+        arguments:
+            - version: 'latest'
+              region: '%env(AWS_REGION)%'
+              endpoint: '%env(default::AWS_EVENTBRIDGE_ENDPOINT)%'
+
     App\Service\SiriusService:
         arguments:
-            $httpClient: "@App\\Service\\SiriusClient"
-            $siriusApiEmail: "%env(SIRIUS_PUBLIC_API_EMAIL)%"
-            $siriusApiPassword: "%env(SIRIUS_PUBLIC_API_PASSWORD)%"
+            $httpClient: '@App\Service\SiriusClient'
+            $siriusApiEmail: '%env(SIRIUS_PUBLIC_API_EMAIL)%'
+            $siriusApiPassword: '%env(SIRIUS_PUBLIC_API_PASSWORD)%'
+            $eventBridge: '@eventBridge'
 
     App\Service\AddressLookup\OrdnanceSurvey:
         arguments:

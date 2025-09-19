@@ -130,11 +130,11 @@ resource "aws_cloudwatch_dashboard" "main" {
   })
 }
 
-data "aws_sns_topic" "alert" {
-  name = "serve-opg-${local.account.account_name}-app-alert"
+data "aws_sns_topic" "slack_notification" {
+  name = "serve-slack-notifications"
 }
 
-data "aws_sns_topic" "alert_us_east" {
+data "aws_sns_topic" "slack_notification_global" {
   provider = aws.us-east-1
-  name     = "serve-opg-${local.account.account_name}-alert"
+  name     = "serve-slack-notifications-global"
 }

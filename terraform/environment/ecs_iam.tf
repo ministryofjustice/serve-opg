@@ -82,6 +82,13 @@ data "aws_iam_policy_document" "task_role" {
       data.aws_secretsmanager_secret.os_places_api_key.arn,
     ]
   }
+
+  statement {
+    sid       = "EventBus"
+    effect    = "Allow"
+    actions   = ["events:PutEvents"]
+    resources = [aws_cloudwatch_event_bus.serve.arn]
+  }
 }
 
 # ===== Task Execution Role =====

@@ -24,6 +24,8 @@ REGEX;
 
     private readonly OrderRepository|EntityRepository $orderRepository;
 
+    private bool $useEventBus;
+
     public function __construct(
         private readonly EntityManager $em,
         private readonly SiriusService $siriusService,
@@ -45,12 +47,16 @@ REGEX;
         }
 
         if (!$this->isAvailable()) {
-            throw new \RuntimeException('Sirius is currently unavilable');
+            throw new \RuntimeException('Sirius is currently unavailable');
         }
 
         // Make API call to Sirius
         try {
-            $this->siriusService->serveOrder($order);
+            if ($this->useEventBus) {
+                $this->siriusService->serveOrderViaEventBus($order);
+            } else {
+                $this->siriusService->serveOrder($order);
+            }
 
             $order->setServedAt(new \DateTime());
             $this->em->persist($order);
@@ -80,7 +86,7 @@ REGEX;
         string $orderClass,
         \DateTime $madeAt,
         \DateTime $issuedAt,
-        string $orderNumber
+        string $orderNumber,
     ): Order {
         /* @var $order Order */
         $order = $this->em->getRepository($orderClass)->findOneBy([

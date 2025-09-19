@@ -6,72 +6,44 @@ use App\Entity\Client;
 use App\Entity\Deputy;
 use App\Entity\Document;
 use App\Entity\Order;
+use App\Service\File\Storage\StorageInterface;
+use Aws\EventBridge\EventBridgeClient;
+use Aws\Exception\AwsException;
+use Aws\SecretsManager\SecretsManagerClient;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\CookieJarInterface;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ClientException;
-use App\Service\File\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
-use Aws\SecretsManager\SecretsManagerClient;
-use Throwable;
 
 class SiriusService
 {
-    const SIRIUS_DATE_FORMAT = 'Y-m-d';
-    const HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS = 'HIGH';
-    const HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS = 'LOW';
+    public const SIRIUS_DATE_FORMAT = 'Y-m-d';
+    public const HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS = 'HIGH';
+    public const HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS = 'LOW';
 
-    private EntityManager $em;
-
-    private ClientInterface $httpClient;
-
-    private StorageInterface $S3Storage;
+    public function __construct(
+        private ClientInterface $httpClient,
+        private ?string $siriusApiEmail,
+        private ?string $siriusApiPassword,
+        private EventBridgeClient $eventBridge,
+        private LoggerInterface $logger,
+        private EntityManagerInterface $em,
+        private StorageInterface $S3Storage,
+        private SecretsManagerClient $secretsManagerClient,
+    ) {
+    }
 
     private ?CookieJarInterface $cookieJar = null;
 
-    private LoggerInterface $logger;
-
-    private SecretsManagerClient $secretsManagerClient;
-
-    private ?string $siriusApiEmail;
-
-    private ?string $siriusApiPassword;
-
-    /**
-     * SiriusService constructor.
-     *
-     * @param EntityManager $em
-     * @param ClientInterface $httpClient  Used for Sirius API call
-     * @param StorageInterface $S3storage
-     * @param LoggerInterface $logger
-     * @param SecretsManagerClient $secretsManagerClient
-     */
-    public function __construct(
-        EntityManager $em,
-        ClientInterface $httpClient,
-        StorageInterface $S3storage,
-        LoggerInterface $logger,
-        SecretsManagerClient $secretsManagerClient,
-        ?string $siriusApiEmail,
-        ?string $siriusApiPassword
-    ) {
-        $this->em = $em;
-        $this->httpClient = $httpClient;
-        $this->S3Storage = $S3storage;
-        $this->logger = $logger;
-        $this->secretsManagerClient = $secretsManagerClient;
-        $this->siriusApiEmail = $siriusApiEmail;
-        $this->siriusApiPassword = $siriusApiPassword;
-    }
-
     public function serveOrder(Order $order): void
     {
-        $this->logger->info('Sending ' . $order->getType() . ' Order ' . $order->getId() . ' to Sirius');
+        $this->logger->info('Sending '.$order->getType().' Order '.$order->getId().' to Sirius');
 
         $payload = [];
         $apiResponse = [];
@@ -81,7 +53,7 @@ class SiriusService
 
             // send DC docs to Sirius
             $documents = $order->getDocuments();
-            $this->logger->info('Sending ' . count($documents) . ' docs to Sirius S3 bucket');
+            $this->logger->info('Sending '.count($documents).' docs to Sirius S3 bucket');
             $documents = $this->sendDocuments($documents);
 
             $this->em->flush();
@@ -89,7 +61,7 @@ class SiriusService
             // Begin API call to Sirius
             $apiResponse = $this->login();
 
-            if ($apiResponse->getStatusCode() == 200) {
+            if (200 == $apiResponse->getStatusCode()) {
                 // generate JSON payload of order
                 $this->logger->info('Logged into sirius correctly');
                 $payload = $this->generateOrderPayload($order);
@@ -109,26 +81,25 @@ class SiriusService
                     $apiResponse = $this->sendOrderToSirius($payload, $csrfToken);
 
                     if ($apiResponse instanceof Psr7\Response) {
-                        $order->setApiResponse((array)Psr7\Message::toString($apiResponse));
+                        $order->setApiResponse((array) Psr7\Message::toString($apiResponse));
                     }
 
-                    if ($apiResponse->getStatusCode() !== 200) {
+                    if (200 !== $apiResponse->getStatusCode()) {
                         $this->logger->error(Psr7\Message::toString($apiResponse));
                     }
                 }
             }
-
         } catch (RequestException $e) {
-            $this->logger->error('RequestException: Request -> ' . Psr7\Message::toString($e->getRequest()));
+            $this->logger->error('RequestException: Request -> '.Psr7\Message::toString($e->getRequest()));
             $order->setPayloadServed($payload);
 
             if ($e->hasResponse()) {
-                $this->logger->error('RequestException: Reponse <- ' . Psr7\Message::toString($e->getResponse()));
+                $this->logger->error('RequestException: Reponse <- '.Psr7\Message::toString($e->getResponse()));
                 $order->setApiResponse(Psr7\Message::toString($e->getResponse()));
             }
             throw $e;
         } catch (\Exception $e) {
-            $this->logger->error('General Exception thrown: ' . $e->getMessage());
+            $this->logger->error('General Exception thrown: '.$e->getMessage());
 
             $order->setApiResponse($e->getTraceAsString());
             $this->em->persist($order);
@@ -139,18 +110,16 @@ class SiriusService
         try {
             $this->logout();
         } catch (RequestException $e) {
-            if ($e->getCode() != 401) {
-                $this->logger->error('RequestException: Reponse <- ' . Psr7\Message::toString($e->getResponse()));
+            if (401 != $e->getCode()) {
+                $this->logger->error('RequestException: Reponse <- '.Psr7\Message::toString($e->getResponse()));
                 throw $e;
             }
         }
-
     }
 
     /**
-     * Send documents to Sirius
+     * Send documents to Sirius.
      *
-     * @param Collection $documents
      * @return Collection
      */
     private function sendDocuments(Collection $documents)
@@ -161,21 +130,21 @@ class SiriusService
     }
 
     /**
-     * Login to Sirius
+     * Login to Sirius.
      */
     private function login()
     {
         $params = [
             'form_params' => [
-                'email'    => $this->siriusApiEmail,
+                'email' => $this->siriusApiEmail,
                 'password' => $this->siriusApiPassword,
             ],
-            'cookies' => $this->cookieJar
+            'cookies' => $this->cookieJar,
         ];
 
-        $this->logger->debug('Logging in to ' .
-            $this->httpClient->getConfig('base_uri') .
-            ', with params => ' . json_encode($params));
+        $this->logger->debug('Logging in to '.
+            $this->httpClient->getConfig('base_uri').
+            ', with params => '.json_encode($params));
 
         return $this->httpClient->post(
             'old-login',
@@ -184,30 +153,30 @@ class SiriusService
     }
 
     /**
-     * Ping Sirius
-     * @return bool
+     * Ping Sirius.
      */
     public function ping(): bool
     {
         try {
             $this->httpClient->get('health-check/service-status', ['connect_timeout' => 3.14]);
+
             return true;
         } catch (ClientException $e) {
-            $this->logger->error('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode() . ' trying to reach ' . $e->getRequest()->getUri());
+            $this->logger->error('Sirius has returned the status code: '.$e->getResponse()->getStatusCode().' trying to reach '.$e->getRequest()->getUri());
         } catch (ServerException $e) {
-            $this->logger->error('Sirius has returned the status code: ' . $e->getResponse()->getStatusCode() . ' trying to reach ' . $e->getRequest()->getUri());
-        } catch (Throwable $e) {
+            $this->logger->error('Sirius has returned the status code: '.$e->getResponse()->getStatusCode().' trying to reach '.$e->getRequest()->getUri());
+        } catch (\Throwable $e) {
             return false;
         }
 
         return false;
     }
 
-
     /**
-     * Send order payload to Sirius
+     * Send order payload to Sirius.
      *
      * @param string $payload NOT JSON encoded. Client does this with 'json' parameter.
+     *
      * @return mixed|\Psr\Http\Message\ResponseInterface
      */
     private function sendOrderToSirius($payload, string $csrfToken)
@@ -217,25 +186,23 @@ class SiriusService
             [
                 'json' => $payload,
                 'cookies' => $this->cookieJar,
-                'headers' => ['X-XSRF-TOKEN' => $csrfToken]
+                'headers' => ['X-XSRF-TOKEN' => $csrfToken],
             ]
         );
     }
 
     /**
-     * Logout from Sirius API
+     * Logout from Sirius API.
      */
     private function logout(): Psr7\Response
     {
-        return $this->httpClient->post(
+        return $this->httpClient->get(
             'auth/logout'
         );
     }
 
     /**
-     * Generates JSON payload for Sirius API call
-     *
-     * @param Order $order
+     * Generates JSON payload for Sirius API call.
      */
     private function generateOrderPayload(Order $order): array
     {
@@ -248,38 +215,34 @@ class SiriusService
     }
 
     /**
-     * Generates Order details for Sirius API call
-     *
-     * @param Order $order
+     * Generates Order details for Sirius API call.
      */
     private function generateOrderDetails(Order $order): array
     {
         return array_filter([
-            "courtReference" => $order->getClient()->getCaseNumber(),
-            "type" => $order->getType(),
-            "subType" => $order->getSubType(),
-            "date" => $order->getMadeAt()->format(self::SIRIUS_DATE_FORMAT),
-            "issueDate" => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
-            "appointmentType" => $order->getAppointmentType(),
-            "assetLevel" => $this->translateHasAssetsAboveThreshold($order->getHasAssetsAboveThreshold()),
+            'courtReference' => $order->getClient()->getCaseNumber(),
+            'type' => $order->getType(),
+            'subType' => $order->getSubType(),
+            'date' => $order->getMadeAt()->format(self::SIRIUS_DATE_FORMAT),
+            'issueDate' => $order->getIssuedAt()->format(self::SIRIUS_DATE_FORMAT),
+            'appointmentType' => $order->getAppointmentType(),
+            'assetLevel' => $this->translateHasAssetsAboveThreshold($order->getHasAssetsAboveThreshold()),
         ]);
     }
 
     /**
-     * Generates client details as array in preparation for Sirius API call
-     *
-     * @param Client $client
+     * Generates client details as array in preparation for Sirius API call.
      */
     private function generateClientDetails(Client $client): array
     {
         return array_filter([
-            "firstName" => self::extractFirstname($client->getClientName()),
-            "lastName" => self::extractLastname($client->getClientName())
+            'firstName' => self::extractFirstname($client->getClientName()),
+            'lastName' => self::extractLastname($client->getClientName()),
         ]);
     }
 
     /**
-     * Generates an array of deputy arrays for API call to Sirius
+     * Generates an array of deputy arrays for API call to Sirius.
      *
      * @param ArrayCollection $deputies
      */
@@ -295,55 +258,54 @@ class SiriusService
     }
 
     /**
-     * Generates data array for a single deputy
-     *
-     * @param Deputy $deputy
+     * Generates data array for a single deputy.
      */
     private function generateDeputyArray(Deputy $deputy): array
     {
         return array_filter([
-            "type" => $deputy->getDeputyType(),
-            "firstName" => $deputy->getForename(),
-            "lastName" => $deputy->getSurname(),
-            "dob" => ($deputy->getDateOfBirth() instanceof \DateTime ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
-            "email" => $deputy->getEmailAddress(),
-            "daytimeNumber" => $deputy->getDaytimeContactNumber(),
-            "eveningNumber" => $deputy->getEveningContactNumber(),
-            "mobileNumber" => $deputy->getMobileContactNumber() ,
-            "addressLine1" => $deputy->getAddressLine1(),
-            "addressLine2" => $deputy->getAddressLine2(),
-            "addressLine3" => $deputy->getAddressLine3(),
-            "town" => $deputy->getAddressTown(),
-            "county" => $deputy->getAddressCounty(),
-            "postcode" => $deputy->getAddressPostcode()
+            'type' => $deputy->getDeputyType(),
+            'firstName' => $deputy->getForename(),
+            'lastName' => $deputy->getSurname(),
+            'dob' => ($deputy->getDateOfBirth() instanceof \DateTime ? $deputy->getDateOfBirth()->format(self::SIRIUS_DATE_FORMAT) : ''),
+            'email' => $deputy->getEmailAddress(),
+            'daytimeNumber' => $deputy->getDaytimeContactNumber(),
+            'eveningNumber' => $deputy->getEveningContactNumber(),
+            'mobileNumber' => $deputy->getMobileContactNumber(),
+            'addressLine1' => $deputy->getAddressLine1(),
+            'addressLine2' => $deputy->getAddressLine2(),
+            'addressLine3' => $deputy->getAddressLine3(),
+            'town' => $deputy->getAddressTown(),
+            'county' => $deputy->getAddressCounty(),
+            'postcode' => $deputy->getAddressPostcode(),
         ]);
     }
 
     /**
-     * Extract first name from a full name string
+     * Extract first name from a full name string.
      *
      * @param string $fullName
      */
     protected static function extractFirstname($fullName): string
     {
         $name = explode(' ', $fullName, 2);
+
         return implode(' ', array_slice($name, 0, -1));
     }
 
-
     /**
-     * Extract first name from a full name string
+     * Extract first name from a full name string.
      *
      * @param string $fullName
      */
     protected static function extractLastname($fullName): string
     {
         $name = explode(' ', $fullName, 2);
+
         return implode(' ', array_slice($name, 1));
     }
 
     /**
-     * Generates an array of document arrays for API call to Sirius
+     * Generates an array of document arrays for API call to Sirius.
      *
      * @param ArrayCollection $documents
      */
@@ -359,20 +321,18 @@ class SiriusService
     }
 
     /**
-     * Generates data array for a single document
-     *
-     * @param Document $document
+     * Generates data array for a single document.
      */
     private function generateDocumentArray(Document $document): array
     {
         return [
-            "type" => $document->getType(),
-            "filename" => $document->getStorageReference()
+            'type' => $document->getType(),
+            'filename' => $document->getStorageReference(),
         ];
     }
 
     /**
-     * Generates a court reference accepted by the Sirius API
+     * Generates a court reference accepted by the Sirius API.
      */
     public static function generateCourtReference(): string
     {
@@ -388,20 +348,70 @@ class SiriusService
         }
 
         $checkbit = (11 - ($sum % 11)) % 11;
-        if ($checkbit === 10) {
+        if (10 === $checkbit) {
             $checkbit = 'T';
         }
 
-        return $ref . $checkbit;
+        return $ref.$checkbit;
     }
 
     private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): ?string
     {
-        if ($hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_NA || $hasAssetsAboveThreshold === null) {
+        if (Order::HAS_ASSETS_ABOVE_THRESHOLD_NA === $hasAssetsAboveThreshold || null === $hasAssetsAboveThreshold) {
             return $hasAssetsAboveThreshold;
         }
 
-        return $hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_YES ?
+        return Order::HAS_ASSETS_ABOVE_THRESHOLD_YES === $hasAssetsAboveThreshold ?
             self::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS : self::HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS;
+    }
+
+    public function serveOrderViaEventBus(Order $order): void
+    {
+        $this->logger->info('Sending '.$order->getType().' Order '.$order->getId().' via EventBridge');
+
+        try {
+            // Step 1: Generate the event payload (same as generateOrderPayload)
+            $payload = $this->generateOrderPayload($order);
+            if (!$payload) {
+                $this->logger->error('Payload generation failed for order ID '.$order->getId());
+
+                return;
+            }
+
+            $order->setPayloadServed($payload);
+
+            // Step 3: Put event
+            $result = $this->eventBridge->putEvents([
+                'Entries' => [
+                    [
+                        'Source' => 'opg.supervision.serve',
+                        'DetailType' => 'court-order-submitted',
+                        'Detail' => json_encode([
+                            'clientId' => $order->getClient()->getId(),
+                            'orderId' => $order->getId(),
+                            'payload' => $payload,
+                        ]),
+                        'EventBusName' => 'serve-bus',
+                    ],
+                ],
+            ]);
+            $this->logger->info('Event sent to EventBridge: '.json_encode($result->toArray()));
+
+            $order->setApiResponse($result->toArray());
+            $this->em->persist($order);
+            $this->em->flush();
+        } catch (AwsException $e) {
+            $this->logger->error('EventBridge exception: '.$e->getAwsErrorMessage());
+            $order->setApiResponse($e->getAwsErrorMessage());
+            $this->em->persist($order);
+            $this->em->flush();
+            throw $e;
+        } catch (\Exception $e) {
+            $this->logger->error('General Exception thrown: '.$e->getMessage());
+            $order->setApiResponse($e->getMessage());
+            $this->em->persist($order);
+            $this->em->flush();
+            throw $e;
+        }
     }
 }

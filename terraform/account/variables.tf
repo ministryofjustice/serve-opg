@@ -13,11 +13,9 @@ variable "accounts" {
 }
 
 locals {
-  environment             = terraform.workspace
-  account                 = var.accounts[local.environment]
-  service                 = "serve-opg"
-  capitalized_environment = "${upper(substr(terraform.workspace, 0, 1))}${substr(terraform.workspace, 1, -1)}"
-  is_production           = local.environment == "production" ? "true" : "false"
+  environment   = terraform.workspace
+  account       = var.accounts[local.environment]
+  is_production = local.environment == "production" ? "true" : "false"
 
   default_tags = {
     business-unit          = "OPG"

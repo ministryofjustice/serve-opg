@@ -34,7 +34,7 @@ jobs:
       build_identifier: ${{ steps.variables.outputs.build_identifier }}
       version_tag: ${{ steps.semver_tag.outputs.created_tag }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           fetch-depth: 0
       - name: extract variables for workflow
@@ -73,14 +73,22 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           sync-labels: true
 
+  trivy_secret_scanning:
+    name: trivy secret scanning
+    uses: ./.github/workflows/_secret-scan-on-pull.yml
+
   unit_test_frontend:
     name: Unit tests on Frontend app
     uses: ./.github/workflows/_tests-frontend.yml
+    needs: [trivy_secret_scanning]
 
   build_scan_push_containers:
     name: Docker Build, Scan and Push
     uses: ./.github/workflows/_build-push.yml
-    needs: [workflow_variables]
+    needs: [
+      trivy_secret_scanning,
+      workflow_variables
+      ]
     with:
       tag: ${{ needs.workflow_variables.outputs.version_tag }}
       branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
