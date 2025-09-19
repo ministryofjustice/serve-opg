@@ -169,7 +169,7 @@ Feature: cases
     And I click on "submit"
     Then the form should be valid
     When I go to "/multiple-case-removal"
-    And I attach the file "behat-remove-case.xlsx" to "csv_upload_form_file"
+    And I attach the file "behat-cases-to-remove.xlsx" to "csv_upload_form_file"
     And I click on "submit"
     Then the form should be valid
     And I should see the "case-10265617" region
