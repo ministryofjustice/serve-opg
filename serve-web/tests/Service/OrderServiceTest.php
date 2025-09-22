@@ -47,7 +47,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         self::assertEquals(true, $sut->isAvailable());
     }
@@ -59,7 +60,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         self::assertEquals(false, $sut->isAvailable());
     }
@@ -78,7 +80,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -100,7 +103,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -122,7 +126,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -144,7 +149,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -166,7 +172,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -188,7 +195,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -210,7 +218,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -233,7 +242,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -254,7 +264,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $hydratedOrder = $sut->answerQuestionsFromText($file, $dehydratedOrder);
 
@@ -275,7 +286,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
         self::assertNull($dehydratedOrder->getSubType());
@@ -300,7 +312,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
         $sut->answerQuestionsFromText($file, $dehydratedOrder);
     }
@@ -341,7 +354,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
 
         $this->expectException(\RuntimeException::class);
@@ -362,7 +376,8 @@ class OrderServiceTest extends WebTestCase
             $this->em->reveal(),
             $this->siriusService->reveal(),
             $this->documentReader->reveal(),
-            $this->logger->reveal()
+            $this->logger->reveal(),
+            false
         );
 
         $this->expectException(\RuntimeException::class);
