@@ -1,5 +1,5 @@
 Feature: serve order
-  
+
   Scenario: Serve PF order
     Given I log in as "behat@digital.justice.gov.uk" with correct password
     When I go to "/case"
@@ -10,7 +10,8 @@ Feature: serve order
     # declaration page
     Then the url should match "order/\d+/declaration"
     When I press "declaration_form_submit"
-    Then I should be on "/case"
+    Then the form should be valid
+    And I should be on "/case"
     And I should see "Order served to OPG" in the "flash" region
     And I should see "93559316" in the "flash" region
     # case list page: assert order is in "pending tab"
@@ -30,7 +31,8 @@ Feature: serve order
     # declaration page
     Then the url should match "order/\d+/declaration"
     When I press "declaration_form_submit"
-    Then I should be on "/case"
+    Then the form should be valid
+    And I should be on "/case"
     # case list page: assert order is in "pending tab"
     And I should not see the "order-93559316-HW" region
     And I should see "Order served to OPG" in the "flash" region
