@@ -24,13 +24,12 @@ REGEX;
 
     private readonly OrderRepository|EntityRepository $orderRepository;
 
-    private bool $useEventBus;
-
     public function __construct(
         private readonly EntityManager $em,
         private readonly SiriusService $siriusService,
         private readonly DocumentReaderService $documentReader,
         private readonly LoggerInterface $logger,
+        private readonly bool $useEventBus,
     ) {
         $this->orderRepository = $this->em->getRepository(Order::class);
     }
