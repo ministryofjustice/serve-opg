@@ -27,8 +27,6 @@ ROUTES = {
             f"*Workflow:* {e.get('workflow', 'unknown')}\n"
             f"*User:* {e.get('user', 'unknown')}\n\n"
             f"*Links*\n"
-            f"  • *Serve Frontend:* {e.get('frontend_url', 'N/A')}\n"
-            f"  • *Serve Admin:* {e.get('admin_url', 'N/A')}\n"
             f"  • *GH Actions build url:* {e.get('gh_url', 'N/A')}\n\n"
             f"*Commit message:* {e.get('commit_message', '')}"
         ),

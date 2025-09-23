@@ -23,14 +23,6 @@ on:
         description: "GitHub user"
         required: false
         type: string
-      frontend_url:
-        description: "Frontend URL"
-        required: false
-        type: string
-      admin_url:
-        description: "Admin URL"
-        required: false
-        type: string
       gh_url:
         description: "GitHub Actions run URL"
         required: false
@@ -61,8 +53,6 @@ jobs:
             "branch": "${{ inputs.branch }}",
             "workflow": "${{ inputs.workflow }}",
             "user": "${{ inputs.user }}",
-            "frontend_url": "${{ inputs.frontend_url }}",
-            "admin_url": "${{ inputs.admin_url }}",
             "gh_url": "${{ inputs.gh_url }}",
             "commit_message": "${{ inputs.commit_message }}"
           }

@@ -184,7 +184,7 @@ jobs:
       workflow: ${{ github.workflow }}
       user: ${{ github.actor }}
       gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-      commit_message: "Path to Live completed successfully ✅"
+      commit_message: ${{ github.event.head_commit.message }}
 
   slack_notify_failure:
     name: Notify Slack of failure
@@ -199,4 +199,4 @@ jobs:
       workflow: ${{ github.workflow }}
       user: ${{ github.actor }}
       gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-      commit_message: "Path to Live failed in one or more jobs ❌"
+      commit_message: ${{ github.event.head_commit.message }}
