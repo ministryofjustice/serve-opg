@@ -27,8 +27,6 @@ ROUTES = {
             f"*Workflow:* {e.get('workflow', 'unknown')}\n"
             f"*User:* {e.get('user', 'unknown')}\n\n"
             f"*Links*\n"
-            f"  • *Serve Frontend:* {e.get('frontend_url', 'N/A')}\n"
-            f"  • *Serve Admin:* {e.get('admin_url', 'N/A')}\n"
             f"  • *GH Actions build url:* {e.get('gh_url', 'N/A')}\n\n"
             f"*Commit message:* {e.get('commit_message', '')}"
         ),
@@ -73,22 +71,29 @@ def handler(event, context):
                 raw_message = sns.get("Message")
                 if not isinstance(raw_message, str):
                     continue
+
                 try:
                     parsed = json.loads(raw_message)
                 except json.JSONDecodeError as e:
-                    print(f"Failed to parse SNS message as JSON: {e}")
+                    print(f"Failed to parse SNS message as JSON: {e}, raw_message={raw_message}")
                     continue
-                if isinstance(parsed, dict) and "AlarmName" in parsed:
+
+                if isinstance(parsed, dict):
                     message = parsed
-                    event_type = "alarm"
+                    if "AlarmName" in parsed:
+                        event_type = "alarm"
+                    else: # If not an alarm, we will assume the type is in the message
+                        event_type = parsed.get("type", "")
                     break
     except Exception as e:
         print(f"Unexpected error while processing event: {e}")
 
-    if event_type == "":
+    if not event_type: 
         event_type = message.get("type")
-    if event_type not in ROUTES:
-        raise ValueError(f"Unknown event type: {event_type}")
+
+    if not event_type or event_type not in ROUTES:
+        raise ValueError(f"Unknown event type: {event_type}, message: {message}")
+
 
     route = ROUTES[event_type]
 
