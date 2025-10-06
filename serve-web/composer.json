@@ -12,7 +12,7 @@
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "3.4.1",
         "doctrine/inflector": "^2.0",
-        "doctrine/orm": "^2.9",
+        "doctrine/orm": "^3.0",
         "eightpoints/guzzle-bundle": "*",
         "lukemadhanga/php-document-parser": "^0.1",
         "guzzlehttp/guzzle": "^7.4",
