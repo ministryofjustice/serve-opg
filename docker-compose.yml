@@ -75,6 +75,12 @@ services:
       sirius-api:
         condition: service_started
 
+  backup:
+    build:
+      context: ./disaster-recovery/backup
+      dockerfile: Dockerfile
+    image: 311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/backup:latest
+
   # TODO - Work out why upgrades to prism break behat
   sirius-api:
     image: stoplight/prism:4.4.1
