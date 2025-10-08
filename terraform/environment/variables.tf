@@ -23,17 +23,20 @@ variable "accounts" {
       rds_instance_count        = number
       cloud9_env_id             = string
       use_event_bus             = string
+      dr_backup                 = string
     })
   )
 }
 
 locals {
-  environment          = terraform.workspace
-  account              = contains(keys(var.accounts), local.environment) ? var.accounts[local.environment] : var.accounts["default"]
-  management           = "311462405659"
-  dns_prefix           = local.environment == "production" ? "serve" : "${local.environment}.serve"
-  default_allow_list   = local.account.ip_whitelist ? concat(module.allow_list.palo_alto_prisma_access, module.allow_list.moj_sites) : tolist(["0.0.0.0/0"])
-  sirius_key_alias_arn = "arn:aws:kms:eu-west-1:${local.account.sirius_account}:alias/${local.account.sirius_key_alias}"
+  environment             = terraform.workspace
+  account                 = contains(keys(var.accounts), local.environment) ? var.accounts[local.environment] : var.accounts["default"]
+  management              = "311462405659"
+  dns_prefix              = local.environment == "production" ? "serve" : "${local.environment}.serve"
+  default_allow_list      = local.account.ip_whitelist ? concat(module.allow_list.palo_alto_prisma_access, module.allow_list.moj_sites) : tolist(["0.0.0.0/0"])
+  sirius_key_alias_arn    = "arn:aws:kms:eu-west-1:${local.account.sirius_account}:alias/${local.account.sirius_key_alias}"
+  backup_account_id       = "238302996107"
+  cross_account_role_name = local.account.account_name == "production" ? "cross-acc-db-backup.serve-production" : "cross-acc-db-backup.serve-preproduction"
 
   default_tags = {
     business-unit          = "OPG"
