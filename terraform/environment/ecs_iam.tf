@@ -132,10 +132,11 @@ data "aws_iam_policy_document" "execution_role" {
   }
 }
 
-#===== Runner Role =====
+#===== Runner Role (only created for cross account backup enabled environments) =====
 
 # Event Task Runner Role and Permissions
 resource "aws_iam_role" "events_task_runner" {
+  count              = local.account.dr_backup == "true" ? 1 : 0
   name               = "events-task-runner.${local.environment}"
   assume_role_policy = data.aws_iam_policy_document.events_task_runner.json
   tags               = local.default_tags
@@ -154,9 +155,10 @@ data "aws_iam_policy_document" "events_task_runner" {
 }
 
 resource "aws_iam_role_policy" "events_task_runner" {
+  count  = local.account.dr_backup == "true" ? 1 : 0
   name   = "events-task-runner.${local.environment}"
   policy = data.aws_iam_policy_document.events_task_runner_policy.json
-  role   = aws_iam_role.events_task_runner.id
+  role   = aws_iam_role.events_task_runner[0].id
 }
 
 data "aws_iam_policy_document" "events_task_runner_policy" {

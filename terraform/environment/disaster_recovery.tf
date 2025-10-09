@@ -8,7 +8,7 @@ module "disaster_recovery_backup" {
   count                   = local.account.dr_backup == "true" ? 1 : 0
   account_id              = local.account.account_id
   backup_account_id       = local.backup_account_id
-  task_runner_arn         = aws_iam_role.events_task_runner.arn
+  task_runner_arn         = aws_iam_role.events_task_runner[0].arn
   execution_role_arn      = aws_iam_role.execution.arn
   cross_account_role_name = local.cross_account_role_name
   image                   = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/backup:${var.APP_VERSION}"
