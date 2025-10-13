@@ -10,7 +10,7 @@
     "@babel/preset-env": "^7.4.5",
     "babel-jest": "^29.7.0",
     "core-js": "^3.0.0",
-    "del": "^3.0.0",
+    "del": "^8.0.0",
     "dropzone": "5.9.3",
     "esbuild": "^0.25.5",
     "fetch-mock": "^10.1.1",
