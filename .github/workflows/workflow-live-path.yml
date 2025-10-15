@@ -28,7 +28,7 @@ jobs:
     name: output workflow variables
     outputs:
       build_identifier: "main"
-      version_tag: ${{ steps.semver_tag.outputs.created_tag }}
+      version_tag: ${{ steps.semver_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
