@@ -35,7 +35,8 @@ jobs:
     outputs:
       parsed_branch: ${{ steps.variables.outputs.branch_formatted }}
       build_identifier: ${{ steps.variables.outputs.build_identifier }}
-      version_tag: ${{ steps.semver_tag.outputs.created_tag }}
+      version_tag: ${{ steps.semver_tag.outputs.tag }}
+
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
@@ -65,7 +66,7 @@ jobs:
           echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
+        uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.1.7
         with:
           prerelease: true
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
