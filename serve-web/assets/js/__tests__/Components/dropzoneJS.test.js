@@ -1,7 +1,6 @@
 import DropzoneJS from '../../Components/dropzoneJS';
 import Dropzone from 'dropzone/dist/min/dropzone.min';
-const fetchMock = require('fetch-mock');
-fetchMock.config.overwriteRoutes = true;
+import fetchMock from 'fetch-mock';
 
 let getMockFile = (fileType='image/tiff') => {
     return {
@@ -24,13 +23,13 @@ let previewFileHTML = `
             <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
             <div class="dz-error-message govuk-error-message"><span data-dz-errormessage=""></span></div>
         </div>
-    </div> 
-</div> 
+    </div>
+</div>
 `;
 
 let formHTML = `
 <form action="/order/1/summary" id="continue-form">
-    <button id="continue"></button>    
+    <button id="continue"></button>
 </form>
 `;
 
@@ -87,7 +86,18 @@ describe('dropzoneJS', () => {
             });
 
             it('previewTemplate', () => {
-                expect(dz.options.previewTemplate).toBe(document.getElementById('dropzone__template__file').innerHTML);
+                const parser = new DOMParser();
+
+                // normalise actual HTML
+                const actual = parser.parseFromString(
+                    document.getElementById('dropzone__template__file').innerHTML,
+                    'text/html'
+                );
+
+                // normalise expected HTML
+                const expected = parser.parseFromString(dz.options.previewTemplate, 'text/html');
+
+                expect(actual.getRootNode().innerHTML).toBe(expected.getRootNode().innerHTML);
             });
 
             it('addRemoveLinks', () => {
@@ -209,7 +219,7 @@ describe('dropzoneJS', () => {
 
                 const spy = jest.spyOn(dz, 'removeFile');
 
-                fetchMock.delete('/order/1/document/2', { success: 1 });
+                fetchMock.delete('/order/1/document/2', { success: 1 }, { overwriteRoutes: true });
 
                 let mockFileWord = getMockFile('application/msword');
                 let mockFileTiff = getMockFile('image/tiff');
@@ -242,7 +252,7 @@ describe('dropzoneJS', () => {
                         '/order/{orderId}/document/{documentId}',
                     );
 
-                    fetchMock.delete('/order/1/document/2', { success: 1 });
+                    fetchMock.delete('/order/1/document/2', { success: 1 }, { overwriteRoutes: true });
 
                     let mockFile = getMockFile('application/msword');
 
@@ -319,7 +329,7 @@ describe('dropzoneJS', () => {
                     }
                 );
 
-                fetchMock.delete('/order/1/document/3', { success: 1 });
+                fetchMock.delete('/order/1/document/3', { success: 1 }, { overwriteRoutes: true });
 
                 const mockFile = getMockFile('application/msword');
 
@@ -343,7 +353,7 @@ describe('dropzoneJS', () => {
                     '/order/{orderId}/document/{documentId}',
                 );
 
-                fetchMock.delete('/order/1/document/3', { success: 1 });
+                fetchMock.delete('/order/1/document/3', { success: 1 }, { overwriteRoutes: true });
 
                 const mockFile = getMockFile('application/msword');
 
@@ -368,7 +378,7 @@ describe('dropzoneJS', () => {
                 );
 
                 fetchMock.reset();
-                fetchMock.delete('/order/1/document/3', { success: 1 });
+                fetchMock.delete('/order/1/document/3', { success: 1 }, { overwriteRoutes: true });
 
                 const mockFile = getMockFile('application/msword');
 
@@ -391,7 +401,7 @@ describe('dropzoneJS', () => {
 
                 const spy = jest.spyOn(global.console, 'log');
 
-                fetchMock.delete('/order/1/document/3', { success: 0, error: 'connection error' });
+                fetchMock.delete('/order/1/document/3', { success: 0, error: 'connection error' }, { overwriteRoutes: true });
 
                 const mockFile = getMockFile('application/msword');
 
@@ -431,7 +441,7 @@ describe('dropzoneJS', () => {
                     }
                 );
 
-                fetchMock.delete('/order/1/document/3', { success: 1 });
+                fetchMock.delete('/order/1/document/3', { success: 1 }, { overwriteRoutes: true });
 
                 const mockFile = getMockFile('application/msword');
 

@@ -27,7 +27,6 @@ build: ##@application Builds all the docker containers
 
 up: ##@application Brings the app up in prod mode - requires deps to be built
 	docker compose up -d --remove-orphans loadbalancer
-	sleep 3
 
 initialise: dependencies build up reset-fixtures ##@application Initialise and bring up the application
 

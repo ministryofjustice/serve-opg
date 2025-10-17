@@ -69,13 +69,12 @@ Note - this will also enable xdebug which can make the test suite run slowly. If
 
 ## Front end assets
 
-Assets are compiled using Symfony Webpack Encore run via a yarn command.
+Assets are compiled using esbuild run via a yarn command.
 
-When running `make dependencies` then you will get the volume mounted assets created locally as well.
+When running `make dependencies` you will get the volume mounted assets created locally as well.
 
 ## Database Migrations
-Migrate is run as part of app start up but to manually run migrations
-you can run the following commands:
+Migrate is run as part of app start up but to manually run migrations you can run the following commands:
 
 ```bash
 # Database migrations
