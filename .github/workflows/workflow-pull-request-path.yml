@@ -94,6 +94,15 @@ jobs:
       branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
     secrets: inherit
 
+  create_tag_release:
+    name: Create release tag from releasable
+    needs: [workflow_variables,build_scan_push_containers]
+    uses: ./.github/workflows/tag-release.yml
+    with:
+      current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+      release_tag: test-tag
+    secrets: inherit
+
   deploy_to_branch_environment:
     name: Deploy to Branch Environment
     needs: [

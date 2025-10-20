@@ -51,8 +51,8 @@ jobs:
     needs: [workflow_variables]
     uses: ./.github/workflows/tag-release.yml
     with:
-      release_tag: ${{ needs.workflow_variables.outputs.version_tag }}
       current_tag: releasable
+      release_tag: ${{ needs.workflow_variables.outputs.version_tag }}
     secrets: inherit
 
   deploy_to_production_account:
