@@ -6,9 +6,20 @@ on:
       release_tag:
         required: true
         type: string
+      current_tag:
+        required: true
+        type: string
+      
 
 jobs:
   tag_releasable_image:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          -   svc_name: "app"
+          -   svc_name: "web"
+          -   svc_name: "backup"
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials for ECR tagging
@@ -22,15 +33,12 @@ jobs:
       - name: Tag "releasable" image with new release tag
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
+          REPOISTORY: "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/"
+          CURRENT_TAG: ${{ inputs.current_tag }}
         run: |
-          REPO="serve-opg/web"
-          echo "Finding image digest for tag 'releasable' in $REPO..."
-          DIGEST=$(aws ecr list-images --repository-name "$REPO" --filter tagStatus=TAGGED --query 'imageIds[?imageTag==`releasable`].imageDigest' --output text)
-          if [ -z "$DIGEST" ]; then
-            echo "No image found with tag 'releasable' in $REPO"
-            exit 1
-          fi
-          echo "Found digest: $DIGEST"
-          echo "Tagging digest as $RELEASE_TAG..."
-          aws ecr put-image --repository-name "$REPO" --image-tag "$RELEASE_TAG" --image-manifest "$(aws ecr batch-get-image --repository-name "$REPO" --image-ids imageDigest=$DIGEST --query 'images[0].imageManifest' --output text)"
-          echo "Image tagged as $RELEASE_TAG successfully."
+          IMAGE=${REPOISTORY}${{ matrix.svc_name }}
+          
+          aws ecr batch-get-image --repository-name ${IMAGE} --image-ids imageTag="${CURRENT_TAG}" --query 'images[0].imageManifest' --output text > manifest.json
+          
+          aws ecr put-image --repository-name ${IMAGE} --image-tag "${RELEASE_TAG}" --image-manifest file://manifest.json
+
