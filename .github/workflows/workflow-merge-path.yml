@@ -128,7 +128,7 @@ jobs:
   create_tag_release:
     name: Create release tag from releasable
     needs: [workflow_variables,behat_preproduction]
-    uses: ./.github/workflows/tag-release.yml
+    uses: ./.github/workflows/_tag-release.yml
     with:
       current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
       release_tag: releasable
