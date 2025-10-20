@@ -1,0 +1,36 @@
+name: "[Tag] Releasable Image as Release"
+
+on:
+  workflow_call:
+    inputs:
+      release_tag:
+        required: true
+        type: string
+
+jobs:
+  tag_releasable_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials for ECR tagging
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::311462405659:role/serve-gh-actions-ecr-push
+          role-session-name: github-actions-ecr-tagger
+          role-duration-seconds: 900
+
+      - name: Tag "releasable" image with new release tag
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          REPO="serve-opg/web"
+          echo "Finding image digest for tag 'releasable' in $REPO..."
+          DIGEST=$(aws ecr list-images --repository-name "$REPO" --filter tagStatus=TAGGED --query 'imageIds[?imageTag==`releasable`].imageDigest' --output text)
+          if [ -z "$DIGEST" ]; then
+            echo "No image found with tag 'releasable' in $REPO"
+            exit 1
+          fi
+          echo "Found digest: $DIGEST"
+          echo "Tagging digest as $RELEASE_TAG..."
+          aws ecr put-image --repository-name "$REPO" --image-tag "$RELEASE_TAG" --image-manifest "$(aws ecr batch-get-image --repository-name "$REPO" --image-ids imageDigest=$DIGEST --query 'images[0].imageManifest' --output text)"
+          echo "Image tagged as $RELEASE_TAG successfully."

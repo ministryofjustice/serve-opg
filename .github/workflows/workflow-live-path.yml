@@ -124,13 +124,39 @@ jobs:
       account_name: preproduction
       account_id: 540070264006
     secrets: inherit
+  
+  tag_releasable:
+    name: Tag image as releasable
+    runs-on: ubuntu-latest
+    needs: [behat_preproduction]
+    if: ${{ success() }}
+    steps:
+      - name: Configure AWS credentials for ECR tagging
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::311462405659:role/serve-gh-actions-ecr-push
+          role-session-name: github-actions-ecr-tagger
+          role-duration-seconds: 900
+      - name: Tag tested image as releasable
+        env:
+          VERSION_TAG: ${{ needs.workflow_variables.outputs.version_tag }}
+        run: |
+          REPO="serve-opg/web"
+          echo "Tagging $VERSION_TAG as releasable..."
+          aws ecr put-image --repository-name "$REPO" --image-tag "releasable" --image-manifest "$(aws ecr batch-get-image --repository-name "$REPO" --image-ids imageTag=$VERSION_TAG --query 'images[0].imageManifest' --output text)"
+
+  create_tag_release:
+    name: Create release tag from releasable
+    needs: [tag_releasable]
+    uses: ./.github/workflows/tag-release.yml
+    with:
+      release_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+    secrets: inherit
 
   deploy_to_production_account:
     name: Deploy to Production Account
-    needs: [
-      workflow_variables,
-      behat_preproduction
-    ]
+    needs: [create_tag_release]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
@@ -143,10 +169,7 @@ jobs:
 
   deploy_to_production_environment:
     name: Deploy to Production Environment
-    needs: [
-      workflow_variables,
-      deploy_to_production_account
-    ]
+    needs: [create_tag_release, deploy_to_production_account]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
@@ -159,8 +182,8 @@ jobs:
 
   behat_prod:
     name: Production Smoke Tests
+    needs: [create_tag_release, deploy_to_production_environment]
     uses: ./.github/workflows/_tests-behat.yml
-    needs: [workflow_variables,deploy_to_production_environment]
     with:
       workspace_name: production
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
@@ -200,3 +223,4 @@ jobs:
       user: ${{ github.actor }}
       gh_url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       commit_message: ${{ github.event.head_commit.message }}
+
