@@ -33,12 +33,12 @@ jobs:
       - name: Tag "releasable" image with new release tag
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
-          REPOSITORY: "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/"
+          REPOSITORY: "serve-opg"
           CURRENT_TAG: ${{ inputs.current_tag }}
         run: |
-          IMAGE=${REPOSITORY}${{ matrix.svc_name }}
+          REPO_NAME=${REPOSITORY}/${{ matrix.svc_name }}
           
-          aws ecr batch-get-image --repository-name ${IMAGE} --image-ids imageTag="${CURRENT_TAG}" --query 'images[0].imageManifest' --output text > manifest.json
+          aws ecr batch-get-image --repository-name "${REPO_NAME}" --image-ids imageTag="${CURRENT_TAG}" --query 'images[0].imageManifest' --output text > manifest.json
           
-          aws ecr put-image --repository-name ${IMAGE} --image-tag "${RELEASE_TAG}" --image-manifest file://manifest.json
+          aws ecr put-image --repository-name "${REPO_NAME}" --image-tag "${RELEASE_TAG}" --image-manifest file://manifest.json
 
