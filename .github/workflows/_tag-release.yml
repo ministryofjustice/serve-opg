@@ -30,15 +30,19 @@ jobs:
           role-session-name: github-actions-ecr-tagger
           role-duration-seconds: 900
 
-      - name: Tag "releasable" image with new release tag
+      - name: Tag existing image digest with new release tag
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
           REPOSITORY: "serve-opg"
           CURRENT_TAG: ${{ inputs.current_tag }}
         run: |
           REPO_NAME=${REPOSITORY}/${{ matrix.svc_name }}
-          
-          aws ecr batch-get-image --repository-name "${REPO_NAME}" --image-ids imageTag="${CURRENT_TAG}" --query 'images[0].imageManifest' --output text > manifest.json
-          
-          aws ecr put-image --repository-name "${REPO_NAME}" --image-tag "${RELEASE_TAG}" --image-manifest file://manifest.json
 
+          DIGEST=$(aws ecr describe-images --repository-name $REPO_NAME --query "imageDetails[?contains(imageTags, \`$CURRENT_TAG\`)].imageDigest" --output text)
+          echo "Digest for $CURRENT_TAG is $DIGEST"
+
+          MANIFEST=$(aws ecr batch-get-image --repository-name $REPO_NAME --image-ids imageDigest=$DIGEST --query 'images[0].imageManifest' --output text)
+          echo "Retrieved image manifest for digest $DIGEST"
+
+          aws ecr put-image --repository-name $REPO_NAME --image-tag $RELEASE_TAG --image-manifest "$MANIFEST"
+          echo "Tagged $REPO_NAME:$CURRENT_TAG as $REPO_NAME:$RELEASE_TAG"
