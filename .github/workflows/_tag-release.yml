@@ -41,7 +41,18 @@ jobs:
           DIGEST=$(aws ecr describe-images --repository-name $REPO_NAME --query "imageDetails[?contains(imageTags, \`$CURRENT_TAG\`)].imageDigest" --output text)
           echo "Digest for $CURRENT_TAG is $DIGEST"
 
+          if [ -z "$DIGEST" ]; then
+            echo "No image found with tag $CURRENT_TAG in repository $REPO_NAME"
+            exit 1
+          fi
+          echo "Found image digest $DIGEST for tag $CURRENT_TAG"
+
           MANIFEST=$(aws ecr batch-get-image --repository-name $REPO_NAME --image-ids imageDigest=$DIGEST --query 'images[0].imageManifest' --output text)
+
+          if [ -z "$MANIFEST" ]; then
+            echo "Failed to retrieve image manifest for digest $DIGEST"
+            exit 1
+          fi
           echo "Retrieved image manifest for digest $DIGEST"
 
           aws ecr put-image --repository-name $REPO_NAME --image-tag $RELEASE_TAG --image-manifest "$MANIFEST"
