@@ -31,14 +31,9 @@ jobs:
       version_tag: ${{ steps.semver_tag.outputs.created_tag }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-
-      - name: Get Default Bump
-        id: semver_bump
-        run: |
-          export bump=$(./scripts/default_bump/bump.sh)
-          echo "Default Bump: ${bump}"
-          echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
-
+        with:
+          fetch-depth: 0
+          
       - name: generate semver tag and release
         id: semver_tag
         uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.3.4
