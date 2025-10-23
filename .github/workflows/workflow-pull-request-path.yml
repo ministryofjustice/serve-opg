@@ -7,9 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  merge_group:
-    branches:
-      - main
 
 permissions:
   id-token: write
@@ -66,7 +63,7 @@ jobs:
           echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.1.7
+        uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.3.4
         with:
           prerelease: true
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
