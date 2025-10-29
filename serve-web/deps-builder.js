@@ -18,6 +18,7 @@ const isProductionBuild = (process.argv[2] === 'production')
 
 fs.mkdirSync('./public/build/javascripts', {recursive: true})
 fs.mkdirSync('./public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images', {recursive: true})
+fs.mkdirSync('./public/build/stylesheets/govuk-frontend/dist/govuk/assets/images', {recursive: true})
 
 // JS
 let jsBuildConfig = {
@@ -67,6 +68,13 @@ fs.cpSync(
     './public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images',
     {recursive: true}
 )
+
+// move the govuk crest image to the correct folder
+fs.renameSync(
+    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-crest.svg',
+    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/yimages/govuk-crest.svg',
+)
+
 fs.cpSync(
     './node_modules/govuk-frontend/dist/govuk/assets/fonts',
     './public/build/fonts/',
