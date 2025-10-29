@@ -72,7 +72,7 @@ fs.cpSync(
 // move the govuk crest image to the correct folder
 fs.renameSync(
     './public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-crest.svg',
-    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/yimages/govuk-crest.svg',
+    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/images/govuk-crest.svg',
 )
 
 fs.cpSync(
