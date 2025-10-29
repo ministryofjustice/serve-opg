@@ -17,6 +17,7 @@ import * as sass from 'sass'
 const isProductionBuild = (process.argv[2] === 'production')
 
 fs.mkdirSync('./public/build/javascripts', {recursive: true})
+fs.mkdirSync('./public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images', {recursive: true})
 fs.mkdirSync('./public/build/stylesheets/govuk-frontend/dist/govuk/assets/images', {recursive: true})
 
 // JS
@@ -63,10 +64,17 @@ fs.writeFileSync('./public/build/stylesheets/app.css', css)
 
 // COPY FILES FROM GOVUK, PLUS OUR OWN ICON FILES
 fs.cpSync(
-    './node_modules/govuk-frontend/dist/govuk/assets/images',
-    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/images',
+    './node_modules/govuk-frontend/dist/govuk/assets/rebrand/images',
+    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images',
     {recursive: true}
 )
+
+// move the govuk crest image to the correct folder
+fs.renameSync(
+    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-crest.svg',
+    './public/build/stylesheets/govuk-frontend/dist/govuk/assets/images/govuk-crest.svg',
+)
+
 fs.cpSync(
     './node_modules/govuk-frontend/dist/govuk/assets/fonts',
     './public/build/fonts/',
