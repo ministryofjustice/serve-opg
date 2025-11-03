@@ -40,6 +40,7 @@ jobs:
       account_id: ${{ steps.variables.outputs.account_id }}
       path_to_live: ${{ steps.variables.outputs.path_to_live }}
       sirius_api_bucket: ${{ steps.variables.outputs.sirius_api_bucket }}
+      suite: ${{ steps.variables.outputs.suite }}
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
@@ -60,12 +61,14 @@ jobs:
               echo "account_name=development" >> $GITHUB_OUTPUT
               echo "account_id=705467933182" >> $GITHUB_OUTPUT
               echo "sirius_api_bucket=opg-backoffice-public-api-integration" >> $GITHUB_OUTPUT
+              echo "suite=local" >> $GITHUB_OUTPUT
           else
               echo "build_identifier=preproduction" >> $GITHUB_OUTPUT
               echo "path_to_live=true" >> $GITHUB_OUTPUT
               echo "account_name=preproduction" >> $GITHUB_OUTPUT
               echo "account_id=540070264006" >> $GITHUB_OUTPUT
               echo "sirius_api_bucket=opg-backoffice-public-api-preprod" >> $GITHUB_OUTPUT
+              echo "suite=main" >> $GITHUB_OUTPUT
           fi
       - name: Generate build output using Markdown
         env:
@@ -158,7 +161,7 @@ jobs:
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
       base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
       sirius_api_bucket: ${{ needs.workflow_variables.outputs.sirius_api_bucket }}
-      suite: --suite=local
+      suite: --suite=${{ needs.workflow_variables.outputs.suite }}
       account_name: ${{ needs.workflow_variables.outputs.account_name }}
       account_id: ${{ needs.workflow_variables.outputs.account_id }}
     secrets: inherit
