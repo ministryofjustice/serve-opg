@@ -57,9 +57,41 @@ jobs:
       release_tag: ${{ needs.workflow_variables.outputs.version_tag }}
     secrets: inherit
 
+  deploy_to_development_account:
+    name: Deploy to Development Account
+    needs: [workflow_variables]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: development
+      account_name: development
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: account
+      apply: true
+      path_to_live: true
+    secrets: inherit
+
+  deploy_to_preproduction_account:
+    name: Deploy to Preproduction Account
+    needs: [
+      workflow_variables,
+      deploy_to_development_account
+    ]
+    uses: ./.github/workflows/_deploy-infrastructure.yml
+    with:
+      workspace: preproduction
+      account_name: preproduction
+      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+      terraform_path: account
+      apply: true
+      path_to_live: true
+    secrets: inherit
+
   deploy_to_production_account:
     name: Deploy to Production Account
-    needs: [create_tag_release]
+    needs: [
+      create_tag_release,
+      deploy_to_preproduction_account
+    ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
