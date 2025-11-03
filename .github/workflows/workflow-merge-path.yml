@@ -129,7 +129,7 @@ jobs:
       release_tag: releasable
     secrets: inherit
 
-  end_of_pr_workflow:
+  end_of_merge_workflow:
     name: End of PR Workflow
     runs-on: ubuntu-latest
     needs: [workflow_variables, create_tag_release]
