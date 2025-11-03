@@ -36,37 +36,37 @@ jobs:
       parsed_branch: ${{ steps.variables.outputs.branch_formatted }}
       build_identifier: ${{ steps.variables.outputs.build_identifier }}
       version_tag: ${{ steps.semver_tag.outputs.tag }}
+      account_name: ${{ steps.variables.outputs.account_name }}
+      account_id: ${{ steps.variables.outputs.account_id }}
+      path_to_live: ${{ steps.variables.outputs.path_to_live }}
+      sirius_api_bucket: ${{ steps.variables.outputs.sirius_api_bucket }}
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           fetch-depth: 0
       - name: extract variables for pr workflow
-        if: github.event_name == 'pull_request'
         id: variables
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          WORKFLOW_TYPE: ${{ github.event_name }}
         run: |
           export BRANCH=$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)
           echo "branch_formatted=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
-          echo "build_identifier=$(echo ${BRANCH}${PR_NUMBER})" >> $GITHUB_OUTPUT
-          echo "path_to_live=false" >> $GITHUB_OUTPUT
-          echo "account_name=development" >> $GITHUB_OUTPUT
-          echo "account_id=705467933182" >> $GITHUB_OUTPUT
-          echo "sirius_api_bucket=opg-backoffice-public-api-integration" >> $GITHUB_OUTPUT
-      - name: extract variables for merge workflow
-        if: github.event_name == 'merge_group'
-        id: variables
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          export BRANCH=$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)
-          echo "branch_formatted=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
-          echo "build_identifier=preproduction" >> $GITHUB_OUTPUT
-          echo "path_to_live=true" >> $GITHUB_OUTPUT
-          echo "account_name=preproduction" >> $GITHUB_OUTPUT
-          echo "account_id=540070264006" >> $GITHUB_OUTPUT
-          echo "sirius_api_bucket=opg-backoffice-public-api-preprod" >> $GITHUB_OUTPUT
+
+          if [ "${WORKFLOW_TYPE}" == "pull_request" ]; then
+              echo "build_identifier=$(echo ${BRANCH}${PR_NUMBER})" >> $GITHUB_OUTPUT
+              echo "path_to_live=false" >> $GITHUB_OUTPUT
+              echo "account_name=development" >> $GITHUB_OUTPUT
+              echo "account_id=705467933182" >> $GITHUB_OUTPUT
+              echo "sirius_api_bucket=opg-backoffice-public-api-integration" >> $GITHUB_OUTPUT
+          else
+              echo "build_identifier=preproduction" >> $GITHUB_OUTPUT
+              echo "path_to_live=true" >> $GITHUB_OUTPUT
+              echo "account_name=preproduction" >> $GITHUB_OUTPUT
+              echo "account_id=540070264006" >> $GITHUB_OUTPUT
+              echo "sirius_api_bucket=opg-backoffice-public-api-preprod" >> $GITHUB_OUTPUT
+          fi
       - name: Generate build output using Markdown
         env:
           PARSED_BRANCH: ${{ steps.variables.outputs.branch_formatted }}
@@ -166,7 +166,7 @@ jobs:
   create_tag_release:
     if: github.event_name == 'merge_group'
     name: Create release tag from releasable
-    needs: [workflow_variables,behat_preproduction]
+    needs: [workflow_variables,behat_branch_environment]
     uses: ./.github/workflows/_tag-release.yml
     with:
       current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
