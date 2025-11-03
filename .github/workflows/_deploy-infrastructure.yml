@@ -26,8 +26,8 @@ on:
       path_to_live:
         description: "If we are on path to live"
         required: false
-        type: boolean
-        default: false
+        type: string
+        default: "false"
 jobs:
   terraform_workflow_job:
     runs-on: ubuntu-latest
@@ -93,7 +93,7 @@ jobs:
 
       - name: Register Workspace
         id: terraform_workspace_manager
-        if: inputs.apply == true && inputs.terraform_path == 'environment' && inputs.path_to_live == false
+        if: inputs.apply == true && inputs.terraform_path == 'environment' && inputs.path_to_live == 'false'
         uses: ministryofjustice/opg-github-actions/.github/actions/terraform-workspace-manager@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
         with:
           aws_account_id: 705467933182
