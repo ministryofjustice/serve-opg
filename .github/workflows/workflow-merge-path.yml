@@ -1,4 +1,4 @@
-name: "[Workflow] Pull request to branch"
+name: "[Workflow] Merge Path"
 
 on:
   merge_group:
