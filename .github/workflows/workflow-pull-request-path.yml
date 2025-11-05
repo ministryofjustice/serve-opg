@@ -50,39 +50,46 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           WORKFLOW_TYPE: ${{ github.event_name }}
         run: |
-          export BRANCH=$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)
-          echo "branch_formatted=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
+          BRANCH=$(echo "${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}" | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)
+          export BRANCH
 
-          if [ "${WORKFLOW_TYPE}" == "pull_request" ]; then
-              echo "build_identifier=$(echo ${BRANCH}${PR_NUMBER})" >> $GITHUB_OUTPUT
-              echo "path_to_live=false" >> $GITHUB_OUTPUT
-              echo "account_name=development" >> $GITHUB_OUTPUT
-              echo "account_id=705467933182" >> $GITHUB_OUTPUT
-              echo "sirius_api_bucket=opg-backoffice-public-api-integration" >> $GITHUB_OUTPUT
-              echo "suite=local" >> $GITHUB_OUTPUT
-          else
-              echo "build_identifier=preproduction" >> $GITHUB_OUTPUT
-              echo "path_to_live=true" >> $GITHUB_OUTPUT
-              echo "account_name=preproduction" >> $GITHUB_OUTPUT
-              echo "account_id=540070264006" >> $GITHUB_OUTPUT
-              echo "sirius_api_bucket=opg-backoffice-public-api-preprod" >> $GITHUB_OUTPUT
-              echo "suite=main" >> $GITHUB_OUTPUT
-          fi
+          {
+            echo "branch_formatted=${BRANCH}"
+
+            if [ "${WORKFLOW_TYPE}" == "pull_request" ]; then
+              echo "build_identifier=${BRANCH}${PR_NUMBER}"
+              echo "path_to_live=false"
+              echo "account_name=development"
+              echo "account_id=705467933182"
+              echo "sirius_api_bucket=opg-backoffice-public-api-integration"
+              echo "suite=local"
+            else
+              echo "build_identifier=preproduction"
+              echo "path_to_live=true"
+              echo "account_name=preproduction"
+              echo "account_id=540070264006"
+              echo "sirius_api_bucket=opg-backoffice-public-api-preprod"
+              echo "suite=main"
+            fi
+          } >> "$GITHUB_OUTPUT"
       - name: Generate build output using Markdown
         env:
           PARSED_BRANCH: ${{ steps.variables.outputs.branch_formatted }}
           BUILD_IDENTIFIER: ${{ steps.variables.outputs.build_identifier }}
         run: |
-          echo "### Build Variables" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Branch: ${PARSED_BRANCH}" >> $GITHUB_STEP_SUMMARY
-          echo "- Build Identifier: ${BUILD_IDENTIFIER}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "### Build Variables"
+            echo ""
+            echo "- Branch: ${PARSED_BRANCH}"
+            echo "- Build Identifier: ${BUILD_IDENTIFIER}"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Get Default Bump
         id: semver_bump
         run: |
-          export bump=$(./scripts/default_bump/bump.sh)
+          bump=$(./scripts/default_bump/bump.sh)
+          export bump
           echo "Default Bump: ${bump}"
-          echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
+          echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
       - name: generate semver tag and release
         id: semver_tag
         uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.3.4
