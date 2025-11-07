@@ -1,21 +1,24 @@
 <?php
+
 namespace App\Entity;
 
-use DateTime;
-use Serializable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @method string getUserIdentifier()
+ */
 #[ORM\Table(name: 'dc_user')]
 #[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
 #[ORM\HasLifecycleCallbacks]
-class User implements UserInterface, EquatableInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     /**
      * @var string
      */
-    const TOKEN_EXPIRY = '48 hours ago';
+    public const TOKEN_EXPIRY = '48 hours ago';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,16 +32,16 @@ class User implements UserInterface, EquatableInterface
     private string $password;
 
     #[ORM\Column(name: 'activation_token_created_at', type: 'datetime', nullable: true)]
-    private ?DateTime $activationTokenCreatedAt = null;
+    private ?\DateTime $activationTokenCreatedAt = null;
 
     #[ORM\Column(name: 'activation_token', type: 'string', length: 40, nullable: true)]
     private ?string $activationToken = null;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: true)]
-    private ?DateTime $createdAt = null;
+    private ?\DateTime $createdAt = null;
 
     #[ORM\Column(name: 'last_login_at', type: 'datetime', nullable: true)]
-    private ?DateTime $lastLoginAt = null;
+    private ?\DateTime $lastLoginAt = null;
 
     #[ORM\Column(name: 'roles', type: 'array')]
     private array $roles = [];
@@ -130,7 +133,7 @@ class User implements UserInterface, EquatableInterface
         // TODO: Implement eraseCredentials() method.
     }
 
-    public function getActivationTokenCreatedAt(): ?DateTime
+    public function getActivationTokenCreatedAt(): ?\DateTime
     {
         return $this->activationTokenCreatedAt;
     }
@@ -143,7 +146,7 @@ class User implements UserInterface, EquatableInterface
     public function setActivationToken(?string $activationToken): void
     {
         $this->activationToken = $activationToken;
-        $this->activationTokenCreatedAt = new DateTime();
+        $this->activationTokenCreatedAt = new \DateTime();
     }
 
     /**
@@ -152,25 +155,25 @@ class User implements UserInterface, EquatableInterface
     public function isTokenValid(): bool
     {
         return $this->getActivationTokenCreatedAt()
-            && $this->getActivationTokenCreatedAt() >= new DateTime(self::TOKEN_EXPIRY);
+            && $this->getActivationTokenCreatedAt() >= new \DateTime(self::TOKEN_EXPIRY);
     }
 
-    public function getLastLoginAt(): ?DateTime
+    public function getLastLoginAt(): ?\DateTime
     {
         return $this->lastLoginAt;
     }
 
-    public function setLastLoginAt(?DateTime $lastLoginAt): void
+    public function setLastLoginAt(?\DateTime $lastLoginAt): void
     {
         $this->lastLoginAt = $lastLoginAt;
     }
 
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?DateTime $createdAt): void
+    public function setCreatedAt(?\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -197,7 +200,7 @@ class User implements UserInterface, EquatableInterface
 
     public function getFullName(): string
     {
-        return trim($this->firstName . ' ' . $this->lastName) ?: $this->email;
+        return trim($this->firstName.' '.$this->lastName) ?: $this->email;
     }
 
     public function getPhoneNumber(): ?string
@@ -213,7 +216,7 @@ class User implements UserInterface, EquatableInterface
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {
-        $this->setCreatedAt(new DateTime());
+        $this->setCreatedAt(new \DateTime());
     }
 
     public function __serialize(): array
