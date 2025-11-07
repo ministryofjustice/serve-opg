@@ -104,7 +104,7 @@ jobs:
 
   deploy_to_production_environment:
     name: Deploy to Production Environment
-    needs: [create_tag_release, deploy_to_production_account]
+    needs: [create_tag_release, workflow_variables, deploy_to_production_account]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
