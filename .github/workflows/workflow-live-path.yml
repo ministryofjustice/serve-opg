@@ -37,9 +37,10 @@ jobs:
       - name: Get Default Bump
         id: semver_bump
         run: |
-          export bump=$(./scripts/default_bump/bump.sh)
+          bump=$(./scripts/default_bump/bump.sh)
+          export bump
           echo "Default Bump: ${bump}"
-          echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
+          echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
 
       - name: generate semver tag and release
         id: semver_tag
@@ -67,7 +68,7 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
-      path_to_live: "true"
+      path_to_live: true
     secrets: inherit
 
   deploy_to_preproduction_account:
@@ -83,12 +84,13 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
-      path_to_live: "true"
+      path_to_live: true
     secrets: inherit
 
   deploy_to_production_account:
     name: Deploy to Production Account
     needs: [
+      workflow_variables,
       create_tag_release,
       deploy_to_preproduction_account
     ]
@@ -99,12 +101,16 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: true
-      path_to_live: "true"
+      path_to_live: true
     secrets: inherit
 
   deploy_to_production_environment:
     name: Deploy to Production Environment
-    needs: [create_tag_release, workflow_variables, deploy_to_production_account]
+    needs: [
+      workflow_variables,
+      create_tag_release,
+      deploy_to_production_account
+    ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
@@ -112,12 +118,16 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
       apply: true
-      path_to_live: "true"
+      path_to_live: true
     secrets: inherit
 
   behat_prod:
     name: Production Smoke Tests
-    needs: [workflow_variables, create_tag_release, deploy_to_production_environment]
+    needs: [
+      workflow_variables,
+      create_tag_release,
+      deploy_to_production_environment
+    ]
     uses: ./.github/workflows/_tests-behat.yml
     with:
       workspace_name: production
@@ -134,6 +144,7 @@ jobs:
     uses: ./.github/workflows/_notify-slack.yml
     if: ${{ success() }}
     needs:
+      - workflow_variables
       - behat_prod
     with:
       type: "workflow"
@@ -149,6 +160,7 @@ jobs:
     uses: ./.github/workflows/_notify-slack.yml
     if: ${{ failure() }}
     needs:
+      - workflow_variables
       - behat_prod
     with:
       type: "workflow"

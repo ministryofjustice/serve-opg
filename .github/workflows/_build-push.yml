@@ -42,7 +42,7 @@ jobs:
           docker compose run --rm yarn install --frozen-lockfile
           docker compose run --rm yarn build
           # Build all apps
-          docker compose build ${CONTAINER}
+          docker compose build "${CONTAINER}"
 
       - name: Configure OIDC AWS Credentials
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
@@ -101,14 +101,16 @@ jobs:
           TAG: ${{ inputs.tag }}
           CONTAINER: ${{ matrix.svc_name }}
         run: |
-          echo "Running on branch $BRANCH_NAME"
-          docker tag ${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest ${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}
+          echo "Running on branch ${BRANCH_NAME}"
 
-          if [ "$BRANCH_NAME" == "main" ]; then
-            docker tag ${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest ${ECR_REGISTRY}/serve-opg/${CONTAINER}:main-${TAG}
-            echo "Pushing all tags as on branch: $BRANCH_NAME"
-            docker push --all-tags ${ECR_REGISTRY}/serve-opg/${CONTAINER}
+          docker tag "${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest" "${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}"
+
+          if [ "${BRANCH_NAME}" == "main" ]; then
+            docker tag "${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest" "${ECR_REGISTRY}/serve-opg/${CONTAINER}:main-${TAG}"
+            echo "Pushing all tags as on branch: ${BRANCH_NAME}"
+            docker push --all-tags "${ECR_REGISTRY}/serve-opg/${CONTAINER}"
           else
-            echo "Pushing branch $BRANCH_NAME tags only"
-            docker push ${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}
+            echo "Pushing branch ${BRANCH_NAME} tags only"
+            docker push "${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}"
           fi
+
