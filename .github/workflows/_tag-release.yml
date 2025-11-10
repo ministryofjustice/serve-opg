@@ -9,7 +9,6 @@ on:
       current_tag:
         required: true
         type: string
-      
 
 jobs:
   tag_releasable_image:
@@ -17,9 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          -   svc_name: "app"
-          -   svc_name: "web"
-          -   svc_name: "backup"
+          - svc_name: "app"
+          - svc_name: "web"
+          - svc_name: "backup"
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials for ECR tagging
@@ -36,9 +35,9 @@ jobs:
           REPOSITORY: "serve-opg"
           CURRENT_TAG: ${{ inputs.current_tag }}
         run: |
-          REPO_NAME=${REPOSITORY}/${{ matrix.svc_name }}
+          REPO_NAME="${REPOSITORY}/${{ matrix.svc_name }}"
 
-          DIGEST=$(aws ecr describe-images --repository-name $REPO_NAME --query "imageDetails[?contains(imageTags, \`$CURRENT_TAG\`)].imageDigest" --output text)
+          DIGEST="$(aws ecr describe-images --repository-name "$REPO_NAME" --query "imageDetails[?contains(imageTags, \`$CURRENT_TAG\`)].imageDigest" --output text)"
           echo "Digest for $CURRENT_TAG is $DIGEST"
 
           if [ -z "$DIGEST" ]; then
@@ -47,7 +46,7 @@ jobs:
           fi
           echo "Found image digest $DIGEST for tag $CURRENT_TAG"
 
-          MANIFEST=$(aws ecr batch-get-image --repository-name $REPO_NAME --image-ids imageDigest=$DIGEST --query 'images[0].imageManifest' --output text)
+          MANIFEST="$(aws ecr batch-get-image --repository-name "$REPO_NAME" --image-ids imageDigest="$DIGEST" --query 'images[0].imageManifest' --output text)"
 
           if [ -z "$MANIFEST" ]; then
             echo "Failed to retrieve image manifest for digest $DIGEST"
@@ -55,6 +54,5 @@ jobs:
           fi
           echo "Retrieved image manifest for digest $DIGEST"
 
-          aws ecr put-image --repository-name $REPO_NAME --image-tag $RELEASE_TAG --image-manifest "$MANIFEST"
+          aws ecr put-image --repository-name "$REPO_NAME" --image-tag "$RELEASE_TAG" --image-manifest "$MANIFEST"
           echo "Tagged $REPO_NAME:$CURRENT_TAG as $REPO_NAME:$RELEASE_TAG"
-

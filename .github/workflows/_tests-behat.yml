@@ -58,7 +58,7 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
         working-directory: ./serve-web
 
       - name: Cache PHP Dependencies
@@ -97,13 +97,13 @@ jobs:
         env:
           ACCOUNT_ID: ${{ inputs.account_id }}
         run: |
-          export BEHAT_PASSWORD=$(python scripts/ci_ingress/get_behat_secret.py)
+          BEHAT_PASSWORD="$(python scripts/ci_ingress/get_behat_secret.py)"
           echo "::add-mask::$BEHAT_PASSWORD"
-          echo BEHAT_PASSWORD=$BEHAT_PASSWORD >> $GITHUB_ENV
+          echo "BEHAT_PASSWORD=$BEHAT_PASSWORD" >> "$GITHUB_ENV"
 
       - name: Allow CI ingress
         run: |
-          echo $TF_WORKSPACE
+          echo "$TF_WORKSPACE"
           python scripts/ci_ingress/ci_ingress.py cluster_config.json --add
 
       - name: Run Behat
@@ -112,7 +112,7 @@ jobs:
           SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
           ENVIRONMENT_NAME: development
         run: |
-          vendor/bin/behat --stop-on-failure -c behat.yml.dist ${{ inputs.suite }}
+          vendor/bin/behat --stop-on-failure -c behat.yml.dist "${{ inputs.suite }}"
         working-directory: ./serve-web
 
       - name: Archive Test Output
@@ -125,5 +125,5 @@ jobs:
       - name: Remove CI ingress
         if: ${{ always() }}
         run: |
-          echo $TF_WORKSPACE
+          echo "$TF_WORKSPACE"
           python scripts/ci_ingress/ci_ingress.py cluster_config.json

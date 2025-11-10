@@ -137,7 +137,7 @@ jobs:
       account_name: ${{ needs.workflow_variables.outputs.account_name }}
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: environment
-      path_to_live: ${{ needs.workflow_variables.outputs.path_to_live }}
+      path_to_live: ${{ fromJSON(needs.workflow_variables.outputs.path_to_live) }}
       apply: true
     secrets: inherit
 

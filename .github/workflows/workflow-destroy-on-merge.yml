@@ -32,14 +32,17 @@ jobs:
       build_identifier: ${{ steps.variables.outputs.build_identifier }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
       - name: extract variables for workflow
         id: variables
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          export BRANCH=$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF##*/}} | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)
-          echo "build_identifier=$(echo ${BRANCH}${PR_NUMBER})" >> $GITHUB_OUTPUT
-          echo ${build_identifier}
+          BRANCH="$(echo "${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}" | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)"
+          BUILD_IDENTIFIER="${BRANCH}${PR_NUMBER}"
+
+          echo "build_identifier=${BUILD_IDENTIFIER}" >> "$GITHUB_OUTPUT"
+          echo "${BUILD_IDENTIFIER}"
 
   cleanup_workspace:
     if: github.event.pull_request.merged == true
@@ -80,4 +83,4 @@ jobs:
           TF_VAR_APP_VERSION: foo
         run: |
           echo "Running script against ${WORKSPACE}"
-          ../../scripts/cleanup/destroy_workspace.sh ${WORKSPACE}
+          ../../scripts/cleanup/destroy_workspace.sh "${WORKSPACE}"
