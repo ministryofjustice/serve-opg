@@ -6,14 +6,18 @@ namespace App\TestHelpers;
 
 use App\Entity\User;
 use App\Tests\ApiWebTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserTestHelper extends ApiWebTestCase
 {
     public function createUser(string $email, string $password): User
     {
         $userModel = new User($email);
-        $encodedPassword = $this->getService('security.user_password_encoder.generic')->encodePassword($userModel, $password);
-        $userModel->setPassword($encodedPassword);
+
+        /** @var UserPasswordHasherInterface $hasher */
+        $hasher = $this->getService('security.password_hasher');
+
+        $userModel->setPassword($hasher->hashPassword($userModel, $password));
 
         return $userModel;
     }

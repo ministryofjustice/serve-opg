@@ -40,10 +40,10 @@ class FixtureTestHelper
     {
         $users = $this->parseYamlFixture($yamlFileName);
 
-        foreach ($users as $key => $user) {
+        foreach ($users as $user) {
             $userModel = new User($user['email']);
-            $password = $this->hasher->hashPassword($userModel, $this->behatPassword);
-            $userModel->setPassword($password);
+            $hashedPassword = $this->hasher->hashPassword($userModel, $this->behatPassword);
+            $userModel->setPassword($hashedPassword);
             $userModel->setRoles($user['roles']);
             $this->em->persist($userModel);
         }

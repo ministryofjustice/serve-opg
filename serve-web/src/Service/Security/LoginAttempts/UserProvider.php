@@ -139,9 +139,9 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      *
      * @throws ORMException
      */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newPasswordHashed): void
     {
-        $user->setPassword($newHashedPassword);
+        $user->setPassword($newPasswordHashed);
         $this->em->persist($user);
         $this->em->flush();
     }
