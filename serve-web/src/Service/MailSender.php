@@ -19,8 +19,6 @@ class MailSender
 {
     public const string FORGOTTEN_PASSWORD_TEMPLATE_ID = 'a7f37a11-d502-4dfa-b7ec-0f0de12e347a';
 
-    private mixed $lastEmailId = null;
-
     public function __construct(
         private readonly Client $notifyClient,
         private readonly RouterInterface $router,
@@ -36,10 +34,8 @@ class MailSender
 
         $activationLink = $this->router->generate('password-change', ['token' => $user->getActivationToken()], RouterInterface::ABSOLUTE_URL);
 
-        $this->lastEmailId = null;
-
         try {
-            $this->getNotifyClient()->sendEmail(
+            $this->notifyClient->sendEmail(
                 $user->getEmail(),
                 self::FORGOTTEN_PASSWORD_TEMPLATE_ID,
                 ['activationLink' => $activationLink]
@@ -47,18 +43,5 @@ class MailSender
         } catch (NotifyException $e) {
             $this->logger->error('Error while sending email to notify: '.$e->getMessage());
         }
-    }
-
-    private function getNotifyClient(): Client
-    {
-        return $this->notifyClient;
-    }
-
-    /**
-     * @return array|null [body, email_address, sent_at, status = delivered, subject, template=>[id]]
-     */
-    public function getLastEmailStatus(string $notificationId): ?array
-    {
-        return $this->notifyClient->getNotification($notificationId);
     }
 }
