@@ -42,6 +42,9 @@ class MailSender
             );
         } catch (NotifyException $e) {
             $this->logger->error('Error while sending password reset email to notify: '.$e->getMessage());
+
+            // throw the error so controller logic can show an error message to the user
+            throw $e;
         }
     }
 }
