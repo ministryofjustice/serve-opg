@@ -41,7 +41,7 @@ class MailSender
                 ['activationLink' => $activationLink]
             );
         } catch (NotifyException $e) {
-            $this->logger->error('Error while sending email to notify: '.$e->getMessage());
+            $this->logger->error('Error while sending password reset email to notify: '.$e->getMessage());
         }
     }
 }
