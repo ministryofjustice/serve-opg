@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 #[ORM\Table(name: 'client')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: 'App\Repository\ClientRepository')]
 class Client
 {
     #[ORM\Id]
@@ -36,6 +36,11 @@ class Client
         $this->clientName = $clientName;
         $this->createdAt = $createdAt;
         $this->orders = new ArrayCollection();
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getId(): int

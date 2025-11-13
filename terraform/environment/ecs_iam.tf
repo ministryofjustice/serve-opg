@@ -131,3 +131,53 @@ data "aws_iam_policy_document" "execution_role" {
     ]
   }
 }
+
+#===== Runner Role (only created for cross account backup enabled environments) =====
+
+# Event Task Runner Role and Permissions
+resource "aws_iam_role" "events_task_runner" {
+  count              = local.account.dr_backup == "true" ? 1 : 0
+  name               = "events-task-runner.${local.environment}"
+  assume_role_policy = data.aws_iam_policy_document.events_task_runner[0].json
+  tags               = local.default_tags
+}
+
+data "aws_iam_policy_document" "events_task_runner" {
+  count = local.account.dr_backup == "true" ? 1 : 0
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      identifiers = ["events.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "events_task_runner" {
+  count  = local.account.dr_backup == "true" ? 1 : 0
+  name   = "events-task-runner.${local.environment}"
+  policy = data.aws_iam_policy_document.events_task_runner_policy[0].json
+  role   = aws_iam_role.events_task_runner[0].id
+}
+
+data "aws_iam_policy_document" "events_task_runner_policy" {
+  count = local.account.dr_backup == "true" ? 1 : 0
+  statement {
+    effect = "Allow"
+    resources = [
+      module.disaster_recovery_backup[0].task_role_arn,
+      aws_iam_role.execution.arn
+    ]
+    actions = [
+      "iam:GetRole",
+      "iam:PassRole"
+    ]
+  }
+  statement {
+    effect    = "Allow"
+    resources = [module.disaster_recovery_backup[0].task_definition_arn]
+    actions   = ["ecs:RunTask"]
+  }
+}

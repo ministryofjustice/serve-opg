@@ -28,44 +28,39 @@ jobs:
     name: output workflow variables
     outputs:
       build_identifier: "main"
-      version_tag: ${{ steps.semver_tag.outputs.created_tag }}
+      version_tag: ${{ steps.semver_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: 0
 
       - name: Get Default Bump
         id: semver_bump
         run: |
-          export bump=$(./scripts/default_bump/bump.sh)
+          bump=$(./scripts/default_bump/bump.sh)
+          export bump
           echo "Default Bump: ${bump}"
-          echo "default_bump=$(echo ${bump})" >> $GITHUB_OUTPUT
+          echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
 
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
+        uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.3.4
         with:
           prerelease: false
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
 
-  unit_test_frontend:
-    name: Unit tests on Frontend app
-    uses: ./.github/workflows/_tests-frontend.yml
-
-  build_scan_push_containers:
-    name: Docker Build, Scan and Push
-    uses: ./.github/workflows/_build-push.yml
+  create_tag_release:
+    name: Create release tag from releasable
     needs: [workflow_variables]
+    uses: ./.github/workflows/_tag-release.yml
     with:
-      tag: ${{ needs.workflow_variables.outputs.version_tag }}
-      branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
+      current_tag: releasable
+      release_tag: ${{ needs.workflow_variables.outputs.version_tag }}
     secrets: inherit
 
   deploy_to_development_account:
-    name: Deploy to Development
-    needs: [
-      workflow_variables,
-      build_scan_push_containers,
-      unit_test_frontend
-    ]
+    name: Deploy to Development Account
+    needs: [workflow_variables]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: development
@@ -92,44 +87,12 @@ jobs:
       path_to_live: true
     secrets: inherit
 
-  deploy_to_preproduction_environment:
-    name: Deploy to Preproduction Environment
-    needs: [
-      workflow_variables,
-      deploy_to_preproduction_account
-    ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
-    with:
-      workspace: preproduction
-      account_name: preproduction
-      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
-      terraform_path: environment
-      apply: true
-      path_to_live: true
-    secrets: inherit
-
-  behat_preproduction:
-    name: Preproduction Behat Tests
-    uses: ./.github/workflows/_tests-behat.yml
-    needs: [
-      workflow_variables,
-      deploy_to_preproduction_environment,
-    ]
-    with:
-      workspace_name: preproduction
-      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-      base_url: preproduction.serve.opg.service.justice.gov.uk
-      sirius_api_bucket: opg-backoffice-public-api-preprod
-      suite: --suite=main
-      account_name: preproduction
-      account_id: 540070264006
-    secrets: inherit
-
   deploy_to_production_account:
     name: Deploy to Production Account
     needs: [
       workflow_variables,
-      behat_preproduction
+      create_tag_release,
+      deploy_to_preproduction_account
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
@@ -145,6 +108,7 @@ jobs:
     name: Deploy to Production Environment
     needs: [
       workflow_variables,
+      create_tag_release,
       deploy_to_production_account
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
@@ -159,8 +123,12 @@ jobs:
 
   behat_prod:
     name: Production Smoke Tests
+    needs: [
+      workflow_variables,
+      create_tag_release,
+      deploy_to_production_environment
+    ]
     uses: ./.github/workflows/_tests-behat.yml
-    needs: [workflow_variables,deploy_to_production_environment]
     with:
       workspace_name: production
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
@@ -176,6 +144,7 @@ jobs:
     uses: ./.github/workflows/_notify-slack.yml
     if: ${{ success() }}
     needs:
+      - workflow_variables
       - behat_prod
     with:
       type: "workflow"
@@ -191,6 +160,7 @@ jobs:
     uses: ./.github/workflows/_notify-slack.yml
     if: ${{ failure() }}
     needs:
+      - workflow_variables
       - behat_prod
     with:
       type: "workflow"
