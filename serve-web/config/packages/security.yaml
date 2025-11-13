@@ -3,10 +3,11 @@ security:
         app_user_provider:
             id: App\Service\Security\LoginAttempts\UserProvider
 
-    encoders:
-        App\Entity\User:
-            algorithm: auto
-            cost: 12
+    password_hashers:
+      # Use native password hasher, which auto-selects and migrates the best
+      # possible hashing algorithm (starting from Symfony 5.3 this is "bcrypt")
+      Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
@@ -31,10 +32,10 @@ security:
                     - App\Security\LoginFormAuthenticator
 
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/user/password-reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/behat/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/user/password-reset, roles: PUBLIC_ACCESS }
+        - { path: ^/behat/, roles: PUBLIC_ACCESS }
         - { path: ^/health-check/, roles: PUBLIC_ACCESS }
-        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
         # default: only ROLE_USER can access everything
         - { path: ^/, roles: ROLE_USER }
