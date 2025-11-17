@@ -44,9 +44,8 @@ ROUTES = {
         "secret_key": "opg-default",
         "emoji": ":rotating_light:",
         "template": lambda e: (
-            ":rotating_light: *BREAKGLASS ACCESS USED* :rotating_light:\n\n"
-            f"*User:* {e.get('user', 'unknown')}\n\n"
-            "A production breakglass role has been assumed. If you are this user, please ensure to reply under this message with the reason for access."
+            ":rotating_light: *BREAKGLASS ACCESS IN SERVE* :rotating_light:\n\n"
+            "A breakglass role has been assumed. If you are this user, please ensure to reply under this message with the reason for access."
         ),
     }
 }
@@ -80,7 +79,12 @@ def handler(event, context):
                 raw_message = sns.get("Message")
                 if not isinstance(raw_message, str):
                     continue
-
+                topic_arn = sns.get("TopicArn", "")
+                if not isinstance(topic_arn, str):
+                    continue
+                if "custom_cloudwatch_alarms" in topic_arn and "breakglass" not in raw_message:
+                    continue
+                
                 try:
                     parsed = json.loads(raw_message)
                 except json.JSONDecodeError as e:
@@ -91,6 +95,9 @@ def handler(event, context):
                     message = parsed
                     if "AlarmName" in parsed:
                         event_type = "alarm"
+                        alarm_name = parsed.get("AlarmName", "")
+                        if "breakglass" in alarm_name:
+                            event_type = "breakglass"
                     else: # If not an alarm, we will assume the type is in the message
                         event_type = parsed.get("type", "")
                     break

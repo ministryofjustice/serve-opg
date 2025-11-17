@@ -101,3 +101,28 @@ resource "aws_lambda_permission" "serve_slack_notifications_allow_global" {
     ]
   }
 }
+
+# Cloudwatch Alarms SNS Topic
+
+data "aws_sns_topic" "custom_cloudwatch_alarms" {
+  name = "custom_cloudwatch_alarms"
+}
+
+resource "aws_sns_topic_subscription" "custom_cloudwatch_alarms_lambda" {
+  topic_arn = data.aws_sns_topic.custom_cloudwatch_alarms.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.serve_opg_notify_slack.arn
+}
+
+resource "aws_lambda_permission" "custom_cloudwatch_alarms_allow" {
+  statement_id  = "AllowExecutionFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.serve_opg_notify_slack.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = data.aws_sns_topic.custom_cloudwatch_alarms.arn
+  lifecycle {
+    replace_triggered_by = [
+      aws_lambda_function.serve_opg_notify_slack
+    ]
+  }
+}
