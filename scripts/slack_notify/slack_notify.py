@@ -39,6 +39,15 @@ ROUTES = {
             f"*Description:* {e.get('AlarmDescription', 'Unknown Description').capitalize()}\n\n "
             f"Please check cloudwatch logs in the relevant *Serve* account\n"
         ),
+    },
+    "breakglass": {
+        "secret_key": "opg-default",
+        "emoji": ":rotating_light:",
+        "template": lambda e: (
+            ":rotating_light: *BREAKGLASS ACCESS USED* :rotating_light:\n\n"
+            f"*User:* {e.get('user', 'unknown')}\n\n"
+            "A production breakglass role has been assumed. If you are this user, please ensure to reply under this message with the reason for access."
+        ),
     }
 }
 
