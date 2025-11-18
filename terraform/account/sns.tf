@@ -115,7 +115,7 @@ resource "aws_sns_topic_subscription" "custom_cloudwatch_alarms_lambda" {
 }
 
 resource "aws_lambda_permission" "custom_cloudwatch_alarms_allow" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowCustomExecutionFromSNS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.serve_opg_notify_slack.function_name
   principal     = "sns.amazonaws.com"
