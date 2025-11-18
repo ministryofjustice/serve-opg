@@ -134,7 +134,7 @@ jobs:
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
       base_url: serve.opg.service.justice.gov.uk
       sirius_api_bucket: opg-backoffice-public-api-production
-      suite: --tags @smoke
+      suite: "--tags @smoke"
       account_name: production
       account_id: 933639921819
     secrets: inherit
