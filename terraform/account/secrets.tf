@@ -16,16 +16,6 @@ resource "aws_secretsmanager_secret" "slack_url" {
   tags        = local.default_tags
 }
 
-resource "aws_secretsmanager_secret" "cloud9_users" {
-  name        = "cloud9-users"
-  description = "Serve team Cloud9 users"
-  tags        = local.default_tags
-}
-
-data "aws_secretsmanager_secret_version" "cloud9_users" {
-  secret_id = aws_secretsmanager_secret.cloud9_users.id
-}
-
 resource "aws_secretsmanager_secret" "slack_webhooks" {
   name        = "slack-webhooks"
   description = "Slack webhooks for notifications"
