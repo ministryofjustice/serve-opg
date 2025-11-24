@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine3.22
+FROM php:8.5-fpm-alpine3.22
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
