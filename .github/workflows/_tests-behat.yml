@@ -112,7 +112,7 @@ jobs:
           SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
           ENVIRONMENT_NAME: development
         run: |
-          vendor/bin/behat --stop-on-failure -c behat.yml.dist "${{ inputs.suite }}"
+          vendor/bin/behat --stop-on-failure -c behat.yml.dist ${{ inputs.suite }}
         working-directory: ./serve-web
 
       - name: Archive Test Output
