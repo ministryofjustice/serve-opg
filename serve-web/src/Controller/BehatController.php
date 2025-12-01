@@ -7,7 +7,6 @@ use App\Entity\Order;
 use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Entity\User;
-use App\Service\ClientService;
 use App\Service\OrderService;
 use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
@@ -20,58 +19,38 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 #[Route(path: '/behat')]
 class BehatController extends AbstractController
 {
-    const BEHAT_USERS = [
-        [ 'email' => 'behat@digital.justice.gov.uk', 'admin' => false ],
-        [ 'email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false ],
-        [ 'email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
+    public const BEHAT_USERS = [
+        ['email' => 'behat@digital.justice.gov.uk', 'admin' => false],
+        ['email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false],
+        ['email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
     ];
 
     // keep in sync with behat-cases.csv
-    const BEHAT_CASE_NUMBER = '93559316';
-    const BEHAT_INTERIM_CASE_NUMBER = '93559317';
-
-    private EntityManager $em;
-
-    private ClientService $clientService;
-
-    private OrderService $orderService;
-
-    private UserPasswordEncoderInterface $encoder;
-
-    private UserProvider $userProvider;
+    public const BEHAT_CASE_NUMBER = '93559316';
+    public const BEHAT_INTERIM_CASE_NUMBER = '93559317';
 
     /**
      * @string behatPassword
      */
     private string $behatPassword;
 
-    /**
-     * BehatController constructor.
-     */
     public function __construct(
-        EntityManager $em,
-        ClientService $clientService,
-        OrderService $orderService,
-        UserPasswordEncoderInterface $encoder,
-        UserProvider $userProvider
-    )
-    {
-        $this->em = $em;
-        $this->clientService = $clientService;
-        $this->orderService = $orderService;
-        $this->encoder = $encoder;
-        $this->userProvider = $userProvider;
-        $this->behatPassword = getenv("BEHAT_PASSWORD");
+        private readonly EntityManager $em,
+        private readonly OrderService $orderService,
+        private readonly UserPasswordHasherInterface $hasher,
+        private readonly UserProvider $userProvider,
+    ) {
+        $this->behatPassword = getenv('BEHAT_PASSWORD');
     }
 
     /**
-     * throw a AccessDeniedException if DC_BEHAT_CONTROLLER_ENABLED is empty or false
+     * throw a AccessDeniedException if DC_BEHAT_CONTROLLER_ENABLED is empty or false.
      */
     private function securityChecks(): void
     {
@@ -98,16 +77,14 @@ class BehatController extends AbstractController
                     $user->setRoles(['ROLE_ADMIN']);
                 }
 
-                $this->em->persist($user);
-                $ret = "User " . $email . " created";
+                $ret = 'User '.$email.' created';
             } else {
-                $ret = "User " . $email . " already present, password reset";
+                $ret = 'User '.$email.' already present, password reset';
             }
 
+            $user->setPassword($this->hasher->hashPassword($user, $this->behatPassword));
 
-            $encodedPassword = $this->encoder->encodePassword($user, $this->behatPassword);
-            $user->setPassword($encodedPassword);
-
+            $this->em->persist($user);
             $this->em->flush();
         }
 
@@ -142,12 +119,12 @@ class BehatController extends AbstractController
         $behatCases = [self::BEHAT_CASE_NUMBER, self::BEHAT_INTERIM_CASE_NUMBER];
         $clients = $this->em->getRepository(Client::class)->findBy(['caseNumber' => $behatCases]);
         /** @var Client $client */
-        foreach($clients as $client) {
+        foreach ($clients as $client) {
             $clientOrders = $this->em->getRepository(Order::class)->findBy(['client' => $client]);
             /** @var Order $order */
             foreach ($clientOrders as $order) {
                 $this->orderService->emptyOrder($order);
-                $ret[] = get_class($order) . " for client " . $client->getCaseNumber() . " present and emptied (docs, deputies)";
+                $ret[] = get_class($order).' for client '.$client->getCaseNumber().' present and emptied (docs, deputies)';
             }
         }
 
@@ -163,7 +140,7 @@ class BehatController extends AbstractController
             $this->userProvider->resetUsernameAttempts($user['email']);
         }
 
-        return new Response("attempts reset done");
+        return new Response('attempts reset done');
     }
 
     #[Route(path: '/document-list/{orderIdentifier}')]
@@ -181,7 +158,7 @@ class BehatController extends AbstractController
             $ret[] = $document->getRemoteStorageReference();
         }
 
-        return new Response(implode("|", array_filter($ret)));
+        return new Response(implode('|', array_filter($ret)));
     }
 
     private function getOrderFromIdentifier(string $orderIdentifier)
@@ -190,7 +167,7 @@ class BehatController extends AbstractController
 
         $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
 
-        $repo = $orderType == 'PF' ? OrderPf::class : OrderHw::class;
+        $repo = 'PF' == $orderType ? OrderPf::class : OrderHw::class;
 
         return $this->em->getRepository($repo)->findOneBy(['client' => $client->getId()]);
     }

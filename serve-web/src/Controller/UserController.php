@@ -16,8 +16,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class UserController extends AbstractController
@@ -26,13 +26,13 @@ class UserController extends AbstractController
 
     private MailSender $mailerSender;
 
-    private UserPasswordEncoderInterface $encoder;
+    private UserPasswordHasherInterface $hasher;
 
-    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordEncoderInterface $encoder)
+    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordHasherInterface $hasher)
     {
         $this->em = $em;
         $this->mailerSender = $mailerSender;
-        $this->encoder = $encoder;
+        $this->hasher = $hasher;
     }
 
     #[Route(path: '/login', name: 'login')]
@@ -41,12 +41,12 @@ class UserController extends AbstractController
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        return $this->render('User/login.html.twig', array(
+        return $this->render('User/login.html.twig', [
             'error' => $error,
             'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
                 ? $up->usernameLockedForSeconds($username)
-                : false
-        ));
+                : false,
+        ]);
     }
 
     #[Route(path: '/user/password-reset/request', name: 'password-reset-request')]
@@ -66,11 +66,11 @@ class UserController extends AbstractController
                 $this->mailerSender->sendPasswordResetEmail($user);
             }
 
-            return $this->redirectToRoute('password-reset-sent', ['email'=>$email]);
+            return $this->redirectToRoute('password-reset-sent', ['email' => $email]);
         }
 
         return $this->render('User/password-reset-request.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -90,8 +90,8 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newPassordEncoded = $this->encoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($newPassordEncoded);
+            $newPasswordHashed = $this->hasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($newPasswordHashed);
             $user->setActivationToken(null);
             $this->em->flush();
 
@@ -106,12 +106,11 @@ class UserController extends AbstractController
         ]);
     }
 
-
     #[Route(path: '/user/password-reset/sent', name: 'password-reset-sent')]
     public function passwordResetSent(Request $request): Response
     {
         return $this->render('User/password-reset-sent.html.twig', [
-            'email' => $request->get('email')
+            'email' => $request->get('email'),
         ]);
     }
 
@@ -121,6 +120,7 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $users = $this->em->getRepository(User::class)->findAll();
+
         return $this->render('User/view-users.html.twig', ['users' => $users]);
     }
 
@@ -133,10 +133,11 @@ class UserController extends AbstractController
 
         if (null === $user) {
             $this->addFlash('error', 'The user does not exist');
+
             return $this->redirectToRoute('view-users');
         }
 
-        if ($user->getActivationToken() && $user->getLastLoginAt() == null) {
+        if ($user->getActivationToken() && null == $user->getLastLoginAt()) {
             $activationLink = $this->generateUrl('resend-activation-user', ['id' => $user->getId()]);
 
             $flashMessage = $this->renderView(
@@ -146,8 +147,9 @@ class UserController extends AbstractController
 
             $this->addFlash('warn', $flashMessage);
         }
+
         return $this->render('User/view.html.twig', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -160,6 +162,7 @@ class UserController extends AbstractController
 
         if (null === $user) {
             $this->addFlash('error', 'The user does not exist');
+
             return $this->redirectToRoute('view-users');
         }
 
@@ -171,12 +174,13 @@ class UserController extends AbstractController
             $this->em->flush();
 
             $this->addFlash('success', 'User saved');
+
             return $this->redirectToRoute('view-users');
         }
 
         return $this->render('User/edit.html.twig', [
             'user' => $user,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -204,7 +208,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('User/add.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -217,11 +221,12 @@ class UserController extends AbstractController
 
         if (null === $user) {
             $this->addFlash('error', 'The user does not exist');
+
             return $this->redirectToRoute('view-users');
         }
 
         return $this->render('User/add-confirmation.html.twig', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -239,10 +244,12 @@ class UserController extends AbstractController
             $this->mailerSender->sendPasswordResetEmail($user);
         } catch (ApiException $e) {
             $this->addFlash('error', 'Activation email could not be sent');
+
             return $this->redirectToRoute('view-user', ['id' => $user->getId()]);
         }
 
         $this->addFlash('success', 'Activation email resent');
+
         return $this->redirectToRoute('view-user', ['id' => $user->getId()]);
     }
 
@@ -255,6 +262,7 @@ class UserController extends AbstractController
 
         if ($id === $this->getUser()->getId()) {
             $this->addFlash('error', 'A user cannot delete their own account');
+
             return $this->redirect($originUrl);
         }
 
@@ -262,13 +270,15 @@ class UserController extends AbstractController
 
         if (null === $user) {
             $this->addFlash('error', 'The user does not exist');
+
             return $this->redirect($originUrl);
         }
 
-        try{
+        try {
             $this->em->getRepository(User::class)->delete($user);
-        } catch(Throwable $e) {
+        } catch (\Throwable $e) {
             $this->addFlash('error', 'There was an issue deleting the user. Contact the Serve-OPG dev team.');
+
             return $this->redirect($originUrl);
         }
 
