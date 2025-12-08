@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials for ECR tagging
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::311462405659:role/serve-gh-actions-ecr-push
