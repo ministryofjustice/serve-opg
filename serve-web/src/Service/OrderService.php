@@ -166,10 +166,10 @@ REGEX;
         return $order;
     }
 
-    public function deletionByOrderId(int $orderId): void
+    public function deletionOfPendingOrderByOrderId(int $orderId): void
     {
         try {
-            $this->orderRepository->delete($orderId);
+            $this->orderRepository->deletePendingOrder($orderId);
         } catch (\Exception $e) {
             $this->logger->error(sprintf('Unable to delete order due to error: %s', $e->getMessage()));
         }
@@ -249,5 +249,10 @@ REGEX;
     public function findPendingOrdersByClient(Client $client): array
     {
         return $this->orderRepository->findBy(['client' => $client, 'servedAt' => null], ['id' => 'ASC']);
+    }
+
+    public function findOrdersByClient(Client $client): array
+    {
+        return $this->orderRepository->findBy(['client' => $client], ['id' => 'ASC']);
     }
 }
