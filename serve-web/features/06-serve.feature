@@ -42,3 +42,17 @@ Feature: serve order
     And I should see "supported1.docx" in the "order-93559316-HW" region
     And I should see "supported3.tiff" in the "order-93559316-HW" region
     And the documents for order "93559316-HW" should be transferred
+
+  Scenario: Served case should not be removed
+    Given I log in as "behat@digital.justice.gov.uk" with correct password
+    When I go to "/multiple-case-removal"
+    And I attach the file "behat-served-cases-to-remove.xlsx" to "csv_upload_form_file"
+    And I click on "submit"
+    Then the form should be valid
+    And I should see the "case-93559316" region
+    When I go to "/case"
+    And I fill in "q" with "93559316"
+    And I press "search_submit"
+    And I click on "served-tab"
+    Then I should see the "order-93559316-HW" region
+    And I should see the "order-93559316-PF" region
