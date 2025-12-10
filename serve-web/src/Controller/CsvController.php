@@ -59,17 +59,25 @@ class CsvController extends AbstractController
             ];
             foreach ($processedCases['removeCases'] as $processedResults) {
                 $ordersRemoved = 0;
-                $this->clientService->deletionByClientId($processedResults['clientId']);
 
                 foreach ($processedResults['orders'] as $orderId) {
-                    $this->orderService->deletionByOrderId($orderId);
+                    $this->orderService->deletionOfPendingOrderByOrderId($orderId);
                     ++$ordersRemoved;
-                }
+                    $displayResults['ordersRemoved'][] = [
+                        'caseNumber' => $processedResults['caseNumber'],
+                        'ordersRemovedCount' => $ordersRemoved
+                    ];
 
-                $displayResults['ordersRemoved'][] = [
-                    'caseNumber' => $processedResults['caseNumber'],
-                    'ordersRemovedCount' => $ordersRemoved
-                ];
+                    $client = $this->clientService->findClientByCaseNumber($processedResults['caseNumber']);
+                    if (!$client) {
+                        continue;
+                    }
+
+                    $countOfAllOrders = count($this->orderService->findOrdersByClient($client));
+                    if ($countOfAllOrders === 0) {
+                        $this->clientService->deletionByClientId($processedResults['clientId']);
+                    }
+                }
             }
             $displayItems['processedResults'] = $displayResults;
         }
