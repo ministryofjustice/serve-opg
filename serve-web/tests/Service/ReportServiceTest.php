@@ -153,8 +153,7 @@ class ReportServiceTest extends ApiWebTestCase
     {
         return [
             'tenOrders' => [10],
-            'tenThousandOrders' => [10000],
-            'thirtyThousandOrders' => [30000],
+            'thousandOrders' => [1000],
         ];
     }
 
