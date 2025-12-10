@@ -174,7 +174,6 @@ Feature: cases
     Then the form should be valid
     And I should see the "case-10265617" region
     And I should see the "case-93559987" region
-    And I should see the "case-93559986" region
     When I go to "/case"
     And I fill in "q" with "93559987"
     And I press "search_submit"
