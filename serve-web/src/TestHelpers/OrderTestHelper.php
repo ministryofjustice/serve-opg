@@ -23,7 +23,7 @@ class OrderTestHelper
         $orderMadeDate = new \DateTime($madeAt);
         $orderIssuedDate = new \DateTime($issuedAt);
         $client = new Client($caseNumber, 'Bob Bobbins', $orderIssuedDate);
-        $orderNumber = $orderNumber ?: strval(time() + mt_rand(1, 1000000000));
+        $orderNumber = $orderNumber ?: strval(time() + random_int(1, 1000000000));
 
         if ('HW' === $orderType) {
             $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
@@ -41,20 +41,20 @@ class OrderTestHelper
      *
      * @throws \Exception
      */
-    public static function generateOrders(int $numberOfOrders, bool $setAsServed): array
+    public static function generateOrders(int $numberOfCases, bool $setAsServed): array
     {
         $orders = [];
-        $lastOrderNumber = 99900000 + $numberOfOrders;
+        $lastCaseNumber = 999 + $numberOfCases;
         $issuedAt = new \DateTime('2019-01-01');
 
-        for ($i = 99900000; $i < $lastOrderNumber; ++$i) {
-            $days = $lastOrderNumber - $i;
+        for ($i = 999; $i < $lastCaseNumber; ++$i) {
+            $days = $lastCaseNumber - $i;
             $dateString = $issuedAt->add(new \DateInterval("P{$days}D"))->format('Y-m-d');
 
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');
 
             if ($setAsServed) {
-                $order->setServedAt((new \DateTime())->modify('-1 week')->setTime(0, 0, 0));
+                $order->setServedAt((new \DateTime())->modify("-$days days")->setTime(0, 0, 0));
             }
 
             $orders[] = $order;

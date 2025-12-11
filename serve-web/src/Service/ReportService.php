@@ -111,12 +111,20 @@ class ReportService
         /** @var Order $order */
         foreach ($orders as $order) {
             $uniqueKey = $order['client']['caseNumber'].
+                '-'.
                 $order['orderNumber'].
+                '-'.
                 $order['type'].
+                '-'.
+                $order['issuedAt']?->format('Y-m-d').
+                '-'.
                 $order['servedAt']?->format('Y-m-d');
-            ;
+
             if (isset($uniqueOrders[$uniqueKey])) {
+//                error_log("Duplicate order found: $uniqueKey \n");
                 continue;
+            } else {
+//                error_log("Processing order: $uniqueKey \n");
             }
 
             $uniqueOrders[$uniqueKey] = true;
