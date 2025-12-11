@@ -104,37 +104,18 @@ class ReportService
 
         fputcsv($file, $headers, escape: '');
 
-        $orders = $this->getFilteredOrders('served', $startDate, $endDate);
-
-        $uniqueOrders = [];
+        $orders = $this->orderRepo->getServedOrders();
 
         /** @var Order $order */
         foreach ($orders as $order) {
-            $uniqueKey = $order['client']['caseNumber'].
-                '-'.
-                $order['orderNumber'].
-                '-'.
-                $order['type'].
-                '-'.
-                $order['issuedAt']?->format('Y-m-d').
-                '-'.
-                $order['servedAt']?->format('Y-m-d');
-
-            if (isset($uniqueOrders[$uniqueKey])) {
-//                error_log("Duplicate order found: $uniqueKey \n");
-                continue;
-            } else {
-//                error_log("Processing order: $uniqueKey \n");
-            }
-
-            $uniqueOrders[$uniqueKey] = true;
+            // How to get the order type?
             fputcsv($file, [
                 'DateIssued' => $order['issuedAt']?->format('Y-m-d H:i:s'),
                 'DateMade' => $order['madeAt']?->format('Y-m-d H:i:s'),
-                'CaseNumber' => $order['client']['caseNumber'],
-                'OrderType' => $order['type'],
+                'CaseNumber' => $order['caseNumber'],
+//                'OrderType' => $order['type'],
                 'OrderNumber' => $order['orderNumber'],
-                'ClientName' => $order['client']['clientName'],
+                'ClientName' => $order['clientName'],
                 'OrderServedDate' => $order['servedAt']?->format('Y-m-d'),
             ], escape: '');
         }

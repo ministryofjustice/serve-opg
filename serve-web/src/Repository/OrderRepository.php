@@ -135,4 +135,16 @@ class OrderRepository extends EntityRepository
             $this->_em->flush();
         }
     }
+
+    public function getServedOrders(): array
+    {
+        $qb = $this->_em->getRepository(Order::class)
+            ->createQueryBuilder('o')
+            ->select('DISTINCT c.caseNumber,o.orderNumber,o.issuedAt,o.servedAt,c.clientName,o.madeAt')
+            ->leftJoin('o.client', 'c')
+            ->where('o.servedAt IS NOT NULL')
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }

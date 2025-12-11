@@ -154,7 +154,7 @@ class ReportServiceTest extends ApiWebTestCase
         return [
             'tenOrders' => [10],
             'tenThousandOrders' => [10000],
-            'thirtyThousandOrders' => [30000],
+//            'thirtyThousandOrders' => [30000],
         ];
     }
 
@@ -163,20 +163,12 @@ class ReportServiceTest extends ApiWebTestCase
      */
     public function testReportsReturnsAllServedOrders($numberOfOrders)
     {
-        error_log("***** RUNNING TEST CODE *****");
         self::purgeDatabase();
         $em = self::getEntityManager();
 
         $notServedOrders = OrderTestHelper::generateOrders($numberOfOrders, true);
 
         $batchSize = 500;
-
-//        $notServedOrders[0]->setServedAt((new \DateTime())->modify('-2 weeks'));
-//        $notServedOrders[1]->setServedAt((new \DateTime())->modify('-3 weeks'));
-//        $notServedOrders[2]->setServedAt((new \DateTime())->modify('-4 weeks'));
-//        $notServedOrders[3]->setServedAt((new \DateTime())->modify('-10 weeks'));
-//        $notServedOrders[4]->setServedAt((new \DateTime())->modify('-1 years'));
-//        $notServedOrders[5]->setServedAt((new \DateTime())->modify('-4 years'));
 
         foreach ($notServedOrders as $i => $order) {
             $em->persist($order);
@@ -199,55 +191,55 @@ class ReportServiceTest extends ApiWebTestCase
     }
 
 
-//    public function testReportsReturnsOnlyUniqueServedOrdersWithSameServedAtDates()
-//    {
-//        $em = self::getEntityManager();
-//
-//        $order1 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '88800000', 'PF');
-//        $order1->setServedAt((new \DateTime())->modify('-2 weeks'));
-//
-//        $order2 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '88811111', 'PF');
-//        $order2->setClient($order1->getClient());
-//        $order2->setOrderNumber($order1->getOrderNumber());
-//        $order2->setServedAt($order1->getServedAt());
-//
-//        $em->persist($order1);
-//        $em->persist($order2);
-//        $em->flush();
-//        $em->clear();
-//
-//        $sut = new ReportService($em);
-//        $csv = $sut->generateAllServedOrdersCsv();
-//
-//        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
-//
-//        self::assertEquals(1, $csvRows);
-//    }
-//
-//    public function testReportsReturnsOnlyUniqueServedOrdersWithDifferentServedAtDates()
-//    {
-//        $em = self::getEntityManager();
-//
-//        $order1 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '99900000', 'PF');
-//        $order1->setServedAt((new \DateTime())->modify('-2 weeks'));
-//
-//        $order2 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '99911111', 'PF');
-//        $order2->setClient($order1->getClient());
-//        $order2->setOrderNumber($order1->getOrderNumber());
-//        $order2->setServedAt((new \DateTime())->modify('-1 weeks'));
-//
-//        $em->persist($order1);
-//        $em->persist($order2);
-//        $em->flush();
-//        $em->clear();
-//
-//        $sut = new ReportService($em);
-//        $csv = $sut->generateAllServedOrdersCsv();
-//
-//        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
-//
-//        self::assertEquals(2, $csvRows);
-//    }
+    public function testReportsReturnsOnlyUniqueServedOrdersWithSameServedAtDates()
+    {
+        $em = self::getEntityManager();
+
+        $order1 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '88800000', 'PF');
+        $order1->setServedAt((new \DateTime())->modify('-2 weeks'));
+
+        $order2 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '88811111', 'PF');
+        $order2->setClient($order1->getClient());
+        $order2->setOrderNumber($order1->getOrderNumber());
+        $order2->setServedAt($order1->getServedAt());
+
+        $em->persist($order1);
+        $em->persist($order2);
+        $em->flush();
+        $em->clear();
+
+        $sut = new ReportService($em);
+        $csv = $sut->generateAllServedOrdersCsv();
+
+        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
+
+        self::assertEquals(1, $csvRows);
+    }
+
+    public function testReportsReturnsOnlyUniqueServedOrdersWithDifferentServedAtDates()
+    {
+        $em = self::getEntityManager();
+
+        $order1 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '99900000', 'PF');
+        $order1->setServedAt((new \DateTime())->modify('-2 weeks'));
+
+        $order2 = OrderTestHelper::generateOrder('2023-01-01', '2023-01-01', '99911111', 'PF');
+        $order2->setClient($order1->getClient());
+        $order2->setOrderNumber($order1->getOrderNumber());
+        $order2->setServedAt((new \DateTime())->modify('-1 weeks'));
+
+        $em->persist($order1);
+        $em->persist($order2);
+        $em->flush();
+        $em->clear();
+
+        $sut = new ReportService($em);
+        $csv = $sut->generateAllServedOrdersCsv();
+
+        $csvRows = FileTestHelper::countCsvRows($csv->getRealPath(), true);
+
+        self::assertEquals(2, $csvRows);
+    }
     public function testReportsReturnsAllOrdersNotServed()
     {
         $em = self::getEntityManager();

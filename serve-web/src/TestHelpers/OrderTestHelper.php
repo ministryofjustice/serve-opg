@@ -54,7 +54,7 @@ class OrderTestHelper
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');
 
             if ($setAsServed) {
-                $order->setServedAt((new \DateTime())->modify("-$days days")->setTime(0, 0, 0));
+                $order->setServedAt((new \DateTime())->modify('-1 week')->setTime(0, 0, 0));
             }
 
             $orders[] = $order;
