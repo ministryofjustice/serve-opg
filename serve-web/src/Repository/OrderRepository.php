@@ -125,13 +125,13 @@ class OrderRepository extends EntityRepository
         return $pager->getRows(asArray: $asArray, limit: $limit);
     }
 
-    public function delete(int $orderId): void
+    public function deletePendingOrder(int $orderId): void
     {
         $orderRepo = $this->_em->getRepository(Order::class);
-        $order = $orderRepo->findOneBy(['id' => $orderId]);
+        $pendingOrder = $orderRepo->findOneBy(['id' => $orderId,'servedAt' => null]);
 
-        if ($order) {
-            $this->_em->remove($order);
+        if ($pendingOrder) {
+            $this->_em->remove($pendingOrder);
             $this->_em->flush();
         }
     }

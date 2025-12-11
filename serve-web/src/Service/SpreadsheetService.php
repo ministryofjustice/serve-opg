@@ -94,6 +94,11 @@ class SpreadsheetService
                 continue;
             }
 
+            if($lastCaseNumber !== $caseNumber || $lastOrderNumber !== $orderNumber) {
+                // reset order ids for new case number/order number
+                $orderIds = [];
+            }
+
             $client = $this->clientService->findClientByCaseNumber($caseNumber);
             if (empty($client)) {
                 $this->skippedCases[] = [
@@ -148,7 +153,7 @@ class SpreadsheetService
                     'clientId' => null,
                     'orders' => null,
                     'reason' => sprintf(
-                        'Unable to find any orders associated with client id: %d',
+                        'Unable to find any pending orders associated with client id: %d',
                         $client->getId()
                     ),
                 ];
