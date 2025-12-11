@@ -27,6 +27,6 @@ class DeputyTest extends TestCase
         $validator = Validation::createValidatorBuilder()->enableAnnotationMapping(true)->addDefaultDoctrineAnnotationReader()->getValidator();
         $errors = $validator->validate($deputy);
 
-        $this->assertEquals(5, count($errors));
+        $this->assertEquals(6, count($errors));
     }
 }

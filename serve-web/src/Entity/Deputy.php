@@ -28,6 +28,7 @@ class Deputy
 
     private Order $order;
 
+    #[Assert\NotBlank(message: 'deputy.deputyType.notBlank')]
     #[ORM\Column(name: 'deputy_type', type: 'string', length: 255)]
     private ?string $deputyType;
 

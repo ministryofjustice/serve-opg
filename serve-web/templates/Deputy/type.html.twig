@@ -20,7 +20,8 @@
                         {{ 'deputy.type.pleaseSelect' | trans({}, 'forms') }}
                     </label>
                     <select class="govuk-select" id="deputyType" name="deputyType">
-                        <option selected="" value="LAY">Lay</option>
+                        <option selected disabled value>{{ 'deputy.type.pleaseSelect' | trans({}, 'forms') }}</option>
+                        <option value="LAY">Lay</option>
                         <option value="PUBLIC_AUTHORITY">Public authority</option>
                         <option value="PROFESSIONAL">Professional</option>
                     </select>
