@@ -104,17 +104,18 @@ class ReportService
 
         fputcsv($file, $headers, escape: '');
 
-        $orders = $this->getFilteredOrders('served', $startDate, $endDate);
+        $orders = $this->orderRepo->getServedOrders();
 
         /** @var Order $order */
         foreach ($orders as $order) {
+            // How to get the order type?
             fputcsv($file, [
                 'DateIssued' => $order['issuedAt']?->format('Y-m-d H:i:s'),
                 'DateMade' => $order['madeAt']?->format('Y-m-d H:i:s'),
-                'CaseNumber' => $order['client']['caseNumber'],
-                'OrderType' => $order['type'],
+                'CaseNumber' => $order['caseNumber'],
+//                'OrderType' => $order['type'],
                 'OrderNumber' => $order['orderNumber'],
-                'ClientName' => $order['client']['clientName'],
+                'ClientName' => $order['clientName'],
                 'OrderServedDate' => $order['servedAt']?->format('Y-m-d'),
             ], escape: '');
         }
