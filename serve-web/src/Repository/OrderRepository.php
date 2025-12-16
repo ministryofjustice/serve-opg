@@ -36,7 +36,9 @@ class OrderRepository extends EntityRepository
             ) AS HIDDEN custom_ordering
         ")
         ->leftJoin('o.client', 'c')
-        ->orderBy('custom_ordering', 'ASC');
+        ->orderBy('custom_ordering', 'ASC')
+        ->orderBy('o.id', 'ASC')
+        ->orderBy('c.id', 'ASC');
 
         $this->applyFilters($qb, $filters);
 
@@ -88,8 +90,7 @@ class OrderRepository extends EntityRepository
         $qb = $this->_em->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select('COUNT(o)')
-            ->leftJoin('o.client', 'c')
-        ;
+            ->leftJoin('o.client', 'c');
 
         $this->applyFilters($qb, $filters);
 
@@ -128,7 +129,7 @@ class OrderRepository extends EntityRepository
     public function deletePendingOrder(int $orderId): void
     {
         $orderRepo = $this->_em->getRepository(Order::class);
-        $pendingOrder = $orderRepo->findOneBy(['id' => $orderId,'servedAt' => null]);
+        $pendingOrder = $orderRepo->findOneBy(['id' => $orderId, 'servedAt' => null]);
 
         if ($pendingOrder) {
             $this->_em->remove($pendingOrder);

@@ -106,8 +106,26 @@ class ReportService
 
         $orders = $this->getFilteredOrders('served', $startDate, $endDate);
 
+        $uniqueOrders = [];
+
         /** @var Order $order */
         foreach ($orders as $order) {
+            $uniqueKey = $order['client']['caseNumber'].
+                '-'.
+                $order['orderNumber'].
+                '-'.
+                $order['type'].
+                '-'.
+                $order['issuedAt']?->format('Y-m-d').
+                '-'.
+                $order['servedAt']?->format('Y-m-d');
+
+            if (isset($uniqueOrders[$uniqueKey])) {
+                continue;
+            }
+
+            $uniqueOrders[$uniqueKey] = true;
+
             fputcsv($file, [
                 'DateIssued' => $order['issuedAt']?->format('Y-m-d H:i:s'),
                 'DateMade' => $order['madeAt']?->format('Y-m-d H:i:s'),
