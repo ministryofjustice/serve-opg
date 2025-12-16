@@ -136,7 +136,7 @@ jobs:
       sirius_api_bucket: opg-backoffice-public-api-production
       suite: "--tags @smoke"
       account_name: production
-      account_id: 933639921819
+      account_id: ${{ vars.PRODUCTION_ACCOUNT }}
     secrets: inherit
 
   slack_notify_success:

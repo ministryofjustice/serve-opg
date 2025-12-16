@@ -60,14 +60,14 @@ jobs:
               echo "build_identifier=${BRANCH}${PR_NUMBER}"
               echo "path_to_live=false"
               echo "account_name=development"
-              echo "account_id=705467933182"
+              echo "account_id=${{ vars.DEVELOPMENT_ACCOUNT }}"
               echo "sirius_api_bucket=opg-backoffice-public-api-integration"
               echo "suite=local"
             else
               echo "build_identifier=preproduction"
               echo "path_to_live=true"
               echo "account_name=preproduction"
-              echo "account_id=540070264006"
+              echo "account_id=${{ vars.PREPRODUCTION_ACCOUNT }}"
               echo "sirius_api_bucket=opg-backoffice-public-api-preprod"
               echo "suite=main"
             fi

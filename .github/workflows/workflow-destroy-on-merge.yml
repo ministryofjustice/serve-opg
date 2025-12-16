@@ -72,7 +72,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
           aws-region: eu-west-1
-          role-to-assume: "arn:aws:iam::631181914621:role/oidc-serve-development"
+          role-to-assume: "arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-development"
           role-duration-seconds: 3600
           role-session-name: terraform-oidc-serve-cleanup-on-merge
 
