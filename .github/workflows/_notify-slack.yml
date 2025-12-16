@@ -40,7 +40,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::705467933182:role/serve-gh-actions-slack-notifier
+          role-to-assume: arn:aws:iam::${{ vars.DEVELOPMENT_ACCOUNT }}:role/serve-gh-actions-slack-notifier
           role-session-name: github-actions-slack-notifier
           role-duration-seconds: 900
 
@@ -62,5 +62,5 @@ jobs:
         run: |
           aws sns publish \
             --region eu-west-1 \
-            --topic-arn arn:aws:sns:eu-west-1:705467933182:serve-slack-notifications \
+            --topic-arn arn:aws:sns:eu-west-1:${{ vars.DEVELOPMENT_ACCOUNT }}:serve-slack-notifications \
             --message file://payload.json
