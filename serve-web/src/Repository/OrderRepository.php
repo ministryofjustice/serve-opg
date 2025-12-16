@@ -36,9 +36,7 @@ class OrderRepository extends EntityRepository
             ) AS HIDDEN custom_ordering
         ")
         ->leftJoin('o.client', 'c')
-        ->orderBy('custom_ordering', 'ASC')
-        ->orderBy('o.id', 'ASC')
-        ->orderBy('c.id', 'ASC');
+        ->orderBy('custom_ordering', 'ASC');
 
         $this->applyFilters($qb, $filters);
 
@@ -120,7 +118,13 @@ class OrderRepository extends EntityRepository
     public function getOrders(array $filters, int $limit = 0, bool $asArray = true): \Traversable
     {
         $countQuery = $this->getOrdersCountQuery($filters);
-        $pageQuery = $this->createOrdersQueryBuilder($filters)->getQuery();
+
+        // additional ordering ensures we get a consistent order for paging purposes
+        $pageQuery = $this->createOrdersQueryBuilder($filters)
+            ->orderBy('o.id', 'ASC')
+            ->orderBy('c.id', 'ASC')
+            ->getQuery();
+
         $pager = new QueryPager($countQuery, $pageQuery);
 
         return $pager->getRows(asArray: $asArray, limit: $limit);
