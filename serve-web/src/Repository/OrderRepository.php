@@ -110,9 +110,8 @@ class OrderRepository extends EntityRepository
     /**
      * $filters will typically contain a "type" property specifying the type of orders to return, e.g. "pending", "served".
      *
-     * Only set $sortForPaging if the ordering of the results doesn't matter and we're only interested in getting a
-     * set of records to be paged. In this situation, the sorting by ID ensures that the records are returned without
-     * duplicates.
+     * Only set $sortForPaging if the ordering of the results matters. In this situation, 
+     * sorting by ID ensures that the records are returned without duplicates.
      *
      * @return \Traversable<array>
      *
