@@ -110,20 +110,27 @@ class OrderRepository extends EntityRepository
     /**
      * $filters will typically contain a "type" property specifying the type of orders to return, e.g. "pending", "served".
      *
+     * Only set $sortForPaging if the ordering of the results doesn't matter and we're only interested in getting a
+     * set of records to be paged. In this situation, the sorting by ID ensures that the records are returned without
+     * duplicates.
+     *
      * @return \Traversable<array>
      *
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function getOrders(array $filters, int $limit = 0, bool $asArray = true): \Traversable
+    public function getOrders(array $filters, int $limit = 0, bool $asArray = true, bool $sortForPaging = false): \Traversable
     {
         $countQuery = $this->getOrdersCountQuery($filters);
 
         // additional ordering ensures we get a consistent order for paging purposes
-        $pageQuery = $this->createOrdersQueryBuilder($filters)
-            ->orderBy('o.id', 'ASC')
-            ->orderBy('c.id', 'ASC')
-            ->getQuery();
+        $pageQueryBuilder = $this->createOrdersQueryBuilder($filters);
+
+        if ($sortForPaging) {
+            $pageQueryBuilder = $pageQueryBuilder->orderBy('o.id', 'ASC')->orderBy('c.id', 'ASC');
+        }
+
+        $pageQuery = $pageQueryBuilder->getQuery();
 
         $pager = new QueryPager($countQuery, $pageQuery);
 

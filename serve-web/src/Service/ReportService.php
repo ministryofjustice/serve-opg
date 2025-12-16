@@ -148,7 +148,7 @@ class ReportService
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getFilteredOrders(string $type, \DateTime $startDate, \DateTime $endDate, bool $asArray = true): \Traversable
+    private function getFilteredOrders(string $type, \DateTime $startDate, \DateTime $endDate, bool $asArray = true): \Traversable
     {
         $formattedEndDate = $endDate->format('Y-m-d');
         $formattedStartDate = $startDate->format('Y-m-d');
@@ -164,7 +164,7 @@ class ReportService
             'endDate' => $formattedEndDate,
         ];
 
-        return $this->orderRepo->getOrders($filters, asArray: $asArray);
+        return $this->orderRepo->getOrders($filters, asArray: $asArray, sortForPaging: true);
     }
 
     /**
