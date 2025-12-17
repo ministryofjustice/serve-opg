@@ -16,10 +16,12 @@ class QueryPager
 {
     public function __construct(
         // this should return a single row with a single column containing the count of rows in the resultset,
-        // amenable to being called with getSingleScalarResult()
+        // amenable to being called with getSingleScalarResult(); this doesn't have to include any ORDER BY
+        // clause, but should count all of the records which will eventually be returned by $pageQuery
         private readonly Query $countQuery,
 
-        // query to get a page from the resultset
+        // query to get a page from the resultset; this should always include an ORDER BY clause to ensure that
+        // results are returned in a consistent order, as we are going to be paging with this query
         private readonly Query $pageQuery,
     ) {
     }
@@ -51,7 +53,16 @@ class QueryPager
 
         $currentPage = 1;
         while ($numPages >= $currentPage) {
-            $pagedQuery = $this->pageQuery->setFirstResult(($currentPage - 1) * $pageSize)->setMaxResults($pageSize);
+            // ensure we don't fetch more records than we intend to
+            $currentPageSize = $pageSize;
+
+            if ($limit > 0) {
+                $rowsFetchedSoFar = ($currentPage - 1) * $pageSize;
+                $rowsRemaining = $limit - $rowsFetchedSoFar;
+                $currentPageSize = min($pageSize, $rowsRemaining);
+            }
+
+            $pagedQuery = $this->pageQuery->setFirstResult(($currentPage - 1) * $pageSize)->setMaxResults($currentPageSize);
 
             if ($asArray) {
                 /** @var iterable<array<string, mixed>> $rows */
