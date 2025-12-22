@@ -40,6 +40,7 @@ Serve OPG is dependent on the Sirius Case Management system, which it talks to v
 | Trivy | Security scanning of containers |
 | Slack | Alerting |
 | PagerDuty | Alerting |
+| GOV.UK Notify | Email handling |
 
 ### Software
 
