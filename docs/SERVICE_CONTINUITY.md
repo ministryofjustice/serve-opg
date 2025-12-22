@@ -1,6 +1,6 @@
 # Service Continuity for Serve OPG
 
-The Serve OPG Online product is a web-based service created to allow the Court of Protection (Part of HMCTS) to send Court Orders around the Supervision of Deputies to the OPG. This process is called “serving an order’, hence Serve OPG.
+The Serve OPG Online product is a web-based service created to allow the Court of Protection (Part of HMCTS) to send Court Orders around the Supervision of Deputies to the OPG. This process is called "serving an order", hence Serve OPG.
 
 
 ## Service Accountability (Accountable / Responsible)
@@ -36,7 +36,6 @@ Serve OPG is dependent on the Sirius Case Management system, which it talks to v
 | Amazon Web Services (AWS) | Cloud hosting platform |
 | GitHub | Source control and build system |
 | Court of Protection | Data ingestion via CSV upload |
-
 
 ### Software
 
