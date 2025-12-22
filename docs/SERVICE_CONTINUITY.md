@@ -102,7 +102,7 @@ Serve OPG mainly acts as a staging post for data into Sirius. As such it can be 
 
 Currently TBC.
 
-## Backup & Restore Plans (configuration and Testing)
+## Backup & Restore Plans (Configuration and Testing)
 
 Serve OPG has DB has rolling point in time backups and which are kept for 14 days.
 
