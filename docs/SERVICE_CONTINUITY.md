@@ -56,7 +56,7 @@ Serve OPG is dependent on the Sirius Case Management system, which it talks to v
 
 Diagram:
 
-<img src="">
+<img src="https://raw.githubusercontent.com/ministryofjustice/serve-opg/refs/heads/main/docs/architecture/architecture-design.svg">
 
 
 ## Incident Response Plans (Call Tree, Including Roles and Responsibilities)
