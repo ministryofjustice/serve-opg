@@ -36,6 +36,10 @@ Serve OPG is dependent on the Sirius Case Management system, which it talks to v
 | Amazon Web Services (AWS) | Cloud hosting platform |
 | GitHub | Source control and build system |
 | Court of Protection | Data ingestion via CSV upload |
+| Renovate | Automated dependency updates |
+| Trivy | Security scanning of containers |
+| Slack | Alerting |
+| PagerDuty | Alerting |
 
 ### Software
 
