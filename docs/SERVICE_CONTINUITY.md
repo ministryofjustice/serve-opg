@@ -2,7 +2,6 @@
 
 The Serve OPG Online product is a web-based service created to allow the Court of Protection (Part of HMCTS) to send Court Orders around the Supervision of Deputies to the OPG. This process is called "serving an order", hence Serve OPG.
 
-
 ## Service Accountability (Accountable / Responsible)
 
 The service is developed and operated by OPG Digital. A product team within OPG Digital owns the delivery and maintenance of the service. The multi-disciplinary team is responsible for the service. We follow an agile software development lifecycle as mandated by the GDS Service Standard. The team currently looks after Complete the Deputy Report and Serve OPG as they have similar codebases.
@@ -52,9 +51,15 @@ Serve OPG is dependent on the Sirius Case Management system, which it talks to v
 
 ## Architecture (HLD/LLD)
 
-**Description to be added**
+Serve OPG acts as a staging point for data from the Court of Protection (COP) before that data is moved into Sirius. Primarily the data is documents (application forms) and a minimal set of metadata used to create case information for new cases.
 
-Diagram:
+As such it is primarily a thin authentication and UI layer over a Sirius integration API.
+
+It is worth noting that unlike later integrations, Serve authenticates and sends data via the Sirius frontend api proxy, rather than via an API gateway. 
+
+The main app is two sub-containers, an nginx web server and a PHPFPM application server. Work was previously begun to rewrite in golang as a piece of L&D for developers, but has been shelved until more time is available for a rewrite. With the COP moving to a new case management system, it may be that a future direct integration will replace the need for Serve OPG.
+
+## C4 Diagram (containers):
 
 <img src="https://raw.githubusercontent.com/ministryofjustice/serve-opg/refs/heads/main/docs/architecture/architecture-design.svg">
 
