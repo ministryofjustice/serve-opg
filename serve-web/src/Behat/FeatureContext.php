@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Behat;
 
+use App\Common\BruteForceChecker;
+use App\Service\Security\LoginAttempts\AttemptsStorageInterface;
+use App\Service\Security\LoginAttempts\UserProvider;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Behat context class.
@@ -22,8 +27,33 @@ class FeatureContext extends MinkContext implements Context
     private string $behatPasswordNew;
     private string $behatPassword;
 
-    public function __construct()
+    private EntityManager $em;
+    private AttemptsStorageInterface $storage;
+    private BruteForceChecker $bruteForceChecker;
+    private UserProvider $userProvider;
+
+    public const BEHAT_USERS = [
+        ['email' => 'behat@digital.justice.gov.uk', 'admin' => false],
+        ['email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false],
+        ['email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
+    ];
+
+    public function __construct(protected readonly KernelInterface $kernel)
     {
+        $container = $this->kernel->getContainer();
+
+        $this->em = $container->get('doctrine')->getManager();
+
+        /** @var AttemptsStorageInterface $storage */
+        $storage = $container->get(AttemptsStorageInterface::class);
+        $this->storage = $storage;
+
+        /** @var BruteForceChecker $bruteForceChecker */
+        $bruteForceChecker = $container->get(BruteForceChecker::class);
+        $this->bruteForceChecker = $bruteForceChecker;
+
+        $this->userProvider = new UserProvider($this->em, $this->storage, $this->bruteForceChecker);
+
         $this->behatPassword = getenv('BEHAT_PASSWORD');
         $this->behatPasswordNew = $this->behatPassword.'9';
     }
@@ -149,6 +179,16 @@ class FeatureContext extends MinkContext implements Context
     {
         $this->assertValuesAreInCorrectColumns($table);
         $this->assertOrderDetailsDisplayed($table, $orderType, $caseNumber);
+    }
+
+    /**
+     * @Then I reset brute force attempts for behat users
+     */
+    public function resetBruteForceAction(): void
+    {
+        foreach (self::BEHAT_USERS as $user) {
+            $this->userProvider->resetUsernameAttempts($user['email']);
+        }
     }
 
     private function assertValuesAreInCorrectColumns(TableNode $table): void

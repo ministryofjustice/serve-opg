@@ -15,7 +15,10 @@ default:
                 tags: ~@excludeLocal
 
     extensions:
-        FriendsOfBehat\SymfonyExtension: ~
+        FriendsOfBehat\SymfonyExtension:
+            kernel:
+                path: "%paths.base%/src/Kernel.php"
+                class: App\Kernel
         Behat\MinkExtension\ServiceContainer\MinkExtension:
             goutte:
                 server_parameters:

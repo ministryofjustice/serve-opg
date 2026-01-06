@@ -55,7 +55,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.5",
         "egulias/email-validator": "^3.2",
         "friends-of-behat/mink-extension": "^2.5",
-        "friends-of-behat/symfony-extension": "^2.0",
+        "friends-of-behat/symfony-extension": "^2.6.2",
         "mockery/mockery": "^1.2",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^1.10",
