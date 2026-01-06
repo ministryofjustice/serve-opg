@@ -6,6 +6,11 @@ services:
     App\Behat\:
         resource: '../src/Behat/*'
 
+    App\Behat\FeatureContext:
+        public: true
+        arguments:
+            - "@kernel"
+
     App\Service\NotifyClientMock:
         arguments:
             $config: []

@@ -61,7 +61,7 @@ unit-tests: up-test ##@testing Requires the app to be built and up before runnin
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run app php ./vendor/bin/phpunit --testdox $(UNIT_TESTS) $(args)
 
 behat-tests: up-test ##@testing Requires the app to be built and up before running
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run behat --suite=local
+	docker compose -f docker-compose.yml -f docker-compose.test.yml run behat
 
 reset-fixtures: ##@application Reset the fixture data for the app
 	docker compose exec app php bin/console doctrine:fixtures:load --purge-with-truncate -n

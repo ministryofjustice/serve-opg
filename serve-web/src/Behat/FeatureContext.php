@@ -30,28 +30,34 @@ class FeatureContext extends MinkContext implements Context
     private EntityManager $em;
     private AttemptsStorageInterface $storage;
     private BruteForceChecker $bruteForceChecker;
+    private UserProvider $userProvider;
+
     public const BEHAT_USERS = [
         ['email' => 'behat@digital.justice.gov.uk', 'admin' => false],
         ['email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false],
         ['email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
     ];
-    private $userProvider;
-    public function __construct()
+
+    public function __construct(protected readonly KernelInterface $kernel)
     {
-        $this->em = $this->getContainer()->get('doctrine')->getManager();
-        $this->storage = $this->getContainer()->get(AttemptsStorageInterface::class);
-        $this->bruteForceChecker = $this->getContainer()->get(BruteForceChecker::class);
+        $container = $this->kernel->getContainer();
+
+        $this->em = $container->get('doctrine')->getManager();
+
+        /** @var AttemptsStorageInterface $storage */
+        $storage = $container->get(AttemptsStorageInterface::class);
+        $this->storage = $storage;
+
+        /** @var BruteForceChecker $bruteForceChecker */
+        $bruteForceChecker = $container->get(BruteForceChecker::class);
+        $this->bruteForceChecker = $bruteForceChecker;
+
         $this->userProvider = new UserProvider($this->em, $this->storage, $this->bruteForceChecker);
+
         $this->behatPassword = getenv('BEHAT_PASSWORD');
         $this->behatPasswordNew = $this->behatPassword.'9';
     }
-    private function getContainer()
-    {
-        /** @var KernelInterface $kernel */
-        $kernel = $this->getMinkParameter('kernel_instance');
 
-        return $kernel->getContainer();
-    }
     /**
      * @Then /^the (?P<name>(.*)) response header should be (?P<value>(.*))$/
      */
