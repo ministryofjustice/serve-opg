@@ -12,13 +12,9 @@ use Doctrine\DBAL\Driver;
 
 class ConnectionWrapper extends Connection
 {
-    public const DATABASE_PASSWORD = 'DC_DB_PASS';
-    public const ENVIRONMENT_NAME = 'ENVIRONMENT_NAME';
+    public const string DATABASE_PASSWORD = 'DC_DB_PASS';
+    public const string ENVIRONMENT_NAME = 'ENVIRONMENT_NAME';
     private bool $_isConnected = false;
-
-    /**
-     * @var array|mixed[]
-     */
     private array $params;
     private readonly bool $autoCommit;
     private PasswordProvider $passwordProvider;
@@ -32,6 +28,10 @@ class ConnectionWrapper extends Connection
         parent::__construct($params, $driver, $config, $eventManager);
 
         $environmentName = getenv(self::ENVIRONMENT_NAME);
+        if (!is_string($environmentName)) {
+            $environmentName = 'local';
+        }
+
         $this->params = $this->getParams();
         $this->autoCommit = $config->getAutoCommit();
         $this->passwordProvider = new PasswordProvider($environmentName);
