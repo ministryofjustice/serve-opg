@@ -53,7 +53,6 @@
         "behat/mink-browserkit-driver": "^2.3",
         "behat/mink-goutte-driver": "^2.0",
         "doctrine/doctrine-fixtures-bundle": "^3.7.3",
-        "egulias/email-validator": "^3.2.6",
         "friends-of-behat/mink-extension": "^2.7.5",
         "friends-of-behat/symfony-extension": "^2.4.2",
         "mockery/mockery": "^1.6.12",
