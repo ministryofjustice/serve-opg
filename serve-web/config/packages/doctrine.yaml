@@ -18,7 +18,7 @@ doctrine:
         sslrootcert: "%kernel.project_dir%/certs/eu-west-1-bundle.pem"
         charset:  UTF8
         wrapper_class: App\DBAL\ConnectionWrapper
-        server_version: 13.14
+        server_version: "13.14"
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         proxy_dir:   "%kernel.cache_dir%/doctrine/orm/Proxies"

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\DBAL;
 
 use App\Service\PasswordProvider;
-use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Driver\Connection as DriverConnection;
 
 class ConnectionWrapper extends Connection
 {
@@ -23,9 +23,8 @@ class ConnectionWrapper extends Connection
         array $params,
         Driver $driver,
         ?Configuration $config = null,
-        ?EventManager $eventManager = null,
     ) {
-        parent::__construct($params, $driver, $config, $eventManager);
+        parent::__construct($params, $driver, $config);
 
         $environmentName = getenv(self::ENVIRONMENT_NAME);
         if (!is_string($environmentName)) {
@@ -37,20 +36,20 @@ class ConnectionWrapper extends Connection
         $this->passwordProvider = new PasswordProvider($environmentName);
     }
 
-    public function connect()
+    public function connect(): DriverConnection
     {
         if (null !== $this->_conn) {
-            return false;
+            return $this->_conn;
         }
 
         $this->params['password'] = $this->passwordProvider->getEnvPassword(self::DATABASE_PASSWORD);
 
         try {
-            $this->_conn = $this->_driver->connect($this->params);
-        } catch (Driver\Exception $e) {
+            $this->_conn = $this->driver->connect($this->params);
+        } catch (Driver\Exception) {
             try {
                 $this->params['password'] = $this->passwordProvider->fetchFromSecretsManager();
-                $this->_conn = $this->_driver->connect($this->params);
+                $this->_conn = $this->driver->connect($this->params);
             } catch (Driver\Exception $e) {
                 throw $this->convertException($e);
             }
@@ -62,15 +61,15 @@ class ConnectionWrapper extends Connection
 
         $this->_isConnected = true;
 
-        return true;
+        return $this->_conn;
     }
 
-    public function isConnected()
+    public function isConnected(): bool
     {
         return $this->_isConnected;
     }
 
-    public function close()
+    public function close(): void
     {
         if ($this->isConnected()) {
             parent::close();
