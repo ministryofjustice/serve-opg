@@ -15,6 +15,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 
 class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
@@ -56,21 +58,21 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      * @throws BruteForceAttackDetectedException
      * @throws NotSupported
      */
-    public function loadUserByUsername(string $username): User
+    public function loadUserByIdentifier(string $identifier): User
     {
-        if (empty($username)) {
+        if (empty($identifier)) {
             throw new UserNotFoundException('Missing username');
         }
 
-        if ($this->usernameLockedForSeconds($username)) {
+        if ($this->usernameLockedForSeconds($identifier)) {
             // throw a generic exception in case of brute force is detected, prior to query the db. The view will query this service re-calling the method and detect if locked
             throw new BruteForceAttackDetectedException();
         }
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $username]);
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $identifier]);
 
         if (!$user instanceof User) {
-            throw new UserNotFoundException(sprintf('User "%s" not found.', $username));
+            throw new UserNotFoundException(sprintf('User "%s" not found.', $identifier));
         }
 
         return $user;
@@ -113,15 +115,22 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
     /**
      * Store failing attempt.
      */
-    public function onAuthenticationFailure(AuthenticationEvent $event): void
+    public function onAuthenticationFailure(LoginFailureEvent $event): void
     {
         if (empty($this->rules)) {
             return;
         }
 
-        $username = $event->getAuthenticationToken()->getCredentials()['email'];
-        if ($username) {
-            $this->storage->storeAttempt($username, time());
+        // Get the passport from the authentication exception
+        $passport = $event->getPassport();
+
+        // Extract the username/email from the UserBadge
+        if ($passport && $passport->hasBadge(UserBadge::class)) {
+            $username = $passport->getBadge(UserBadge::class)->getUserIdentifier();
+
+            if ($username) {
+                $this->storage->storeAttempt($username, time());
+            }
         }
     }
 
@@ -138,10 +147,15 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      * Upgrades the hashed password of a user, typically for using a better hash algorithm.
      *
      * @throws ORMException
+     * @throws \InvalidArgumentException
      */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newPasswordHashed): void
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        $user->setPassword($newPasswordHashed);
+        if (!$user instanceof User) {
+            throw new \InvalidArgumentException('Unexpected user type');
+        }
+
+        $user->setPassword($newHashedPassword);
         $this->em->persist($user);
         $this->em->flush();
     }

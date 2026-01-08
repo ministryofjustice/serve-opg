@@ -7,18 +7,12 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @method string getUserIdentifier()
- */
 #[ORM\Table(name: 'dc_user')]
 #[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
-    /**
-     * @var string
-     */
-    public const TOKEN_EXPIRY = '48 hours ago';
+    public const string TOKEN_EXPIRY = '48 hours ago';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -113,6 +107,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function getUsername(): ?string
     {
         return $this->email;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email ?? '';
     }
 
     public function isEqualTo(UserInterface $user): bool
