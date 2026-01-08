@@ -21,7 +21,7 @@
         "shuchkin/simplexlsx": "1.1.16",
         "squizlabs/php_codesniffer": "^3.13.5",
         "symfony/browser-kit": "^5.4.45",
-        "symfony/console": "^5.4.47",
+        "symfony/console": "^6.4.31",
         "symfony/css-selector": "^5.4.45",
         "symfony/debug-bundle": "^5.4.45",
         "symfony/doctrine-bridge": "^5.4.48",
