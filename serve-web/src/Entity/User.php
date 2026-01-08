@@ -37,7 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     #[ORM\Column(name: 'last_login_at', type: 'datetime', nullable: true)]
     private ?\DateTime $lastLoginAt = null;
 
-    #[ORM\Column(name: 'roles', type: 'array')]
+    #[ORM\Column(name: 'roles', type: 'json')]
     private array $roles = [];
 
     #[ORM\Column(name: 'first_name', type: 'string', length: 100, nullable: true)]
