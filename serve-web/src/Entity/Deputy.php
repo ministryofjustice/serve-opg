@@ -2,24 +2,16 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 #[ORM\Table(name: 'deputy')]
 #[ORM\Entity]
 class Deputy
 {
-    const DEPUTY_TYPE_LAY = 'LAY';
-    const DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
-    const DEPUTY_TYPE_PROF = 'PROFESSIONAL';
+    public const string DEPUTY_TYPE_LAY = 'LAY';
+    public const string DEPUTY_TYPE_PA = 'PUBLIC_AUTHORITY';
+    public const string DEPUTY_TYPE_PROF = 'PROFESSIONAL';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -40,7 +32,7 @@ class Deputy
 
     #[Assert\NotBlank(message: 'deputy.dateOfBirth.notBlank')]
     #[ORM\Column(name: 'dob', type: 'date', nullable: true)]
-    private ?DateTimeInterface $dateOfBirth;
+    private ?\DateTimeInterface $dateOfBirth;
 
     #[Assert\NotBlank(message: 'deputy.emailAddress.notBlank')]
     #[ORM\Column(name: 'email_address', type: 'string', length: 255, nullable: true)]
@@ -103,6 +95,7 @@ class Deputy
     public function setOrder(Order $order): static
     {
         $this->order = $order;
+
         return $this;
     }
 
@@ -114,6 +107,7 @@ class Deputy
     public function setDeputyType(?string $deputyType): static
     {
         $this->deputyType = $deputyType;
+
         return $this;
     }
 
@@ -125,6 +119,7 @@ class Deputy
     public function setForename(string $forename): static
     {
         $this->forename = $forename;
+
         return $this;
     }
 
@@ -136,20 +131,21 @@ class Deputy
     public function setSurname(string $surname): static
     {
         $this->surname = $surname;
+
         return $this;
     }
 
     public function getFullname(): string
     {
-        return $this->forename . ' ' . $this->surname;
+        return $this->forename.' '.$this->surname;
     }
 
-    public function getDateOfBirth(): ?DateTimeInterface
+    public function getDateOfBirth(): ?\DateTimeInterface
     {
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): static
+    public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
 
@@ -164,6 +160,7 @@ class Deputy
     public function setEmailAddress(?string $emailAddress): static
     {
         $this->emailAddress = $emailAddress;
+
         return $this;
     }
 
@@ -175,6 +172,7 @@ class Deputy
     public function setDaytimeContactNumber(?string $daytimeContactNumber): static
     {
         $this->daytimeContactNumber = $daytimeContactNumber;
+
         return $this;
     }
 
@@ -186,6 +184,7 @@ class Deputy
     public function setEveningContactNumber(?string $eveningContactNumber): static
     {
         $this->eveningContactNumber = $eveningContactNumber;
+
         return $this;
     }
 
@@ -197,6 +196,7 @@ class Deputy
     public function setMobileContactNumber(?string $mobileContactNumber): static
     {
         $this->mobileContactNumber = $mobileContactNumber;
+
         return $this;
     }
 
@@ -208,6 +208,7 @@ class Deputy
     public function setAddressLine1(?string $addressLine1): static
     {
         $this->addressLine1 = $addressLine1;
+
         return $this;
     }
 
@@ -219,6 +220,7 @@ class Deputy
     public function setAddressLine2(?string $addressLine2): static
     {
         $this->addressLine2 = $addressLine2;
+
         return $this;
     }
 
@@ -230,6 +232,7 @@ class Deputy
     public function setAddressLine3(?string $addressLine3): static
     {
         $this->addressLine3 = $addressLine3;
+
         return $this;
     }
 
@@ -241,6 +244,7 @@ class Deputy
     public function setAddressTown(?string $addressTown): static
     {
         $this->addressTown = $addressTown;
+
         return $this;
     }
 
@@ -252,6 +256,7 @@ class Deputy
     public function setAddressCounty(?string $addressCounty): static
     {
         $this->addressCounty = $addressCounty;
+
         return $this;
     }
 
@@ -263,6 +268,7 @@ class Deputy
     public function setAddressPostcode(?string $addressPostcode): static
     {
         $this->addressPostcode = $addressPostcode;
+
         return $this;
     }
 
@@ -274,6 +280,7 @@ class Deputy
     public function setAddressCountry(?string $addressCountry): static
     {
         $this->addressCountry = $addressCountry;
+
         return $this;
     }
 
@@ -286,7 +293,7 @@ class Deputy
             $this->getAddressTown(),
             $this->getAddressCounty(),
             $this->getAddressPostcode(),
-            $this->getAddressCountry()
+            $this->getAddressCountry(),
         ]));
     }
 }

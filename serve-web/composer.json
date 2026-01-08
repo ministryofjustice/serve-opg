@@ -8,7 +8,6 @@
         "alphagov/notifications-php-client": "^5.0",
         "aws/aws-sdk-php-symfony": "^2.9",
         "beberlei/doctrineextensions": "^1.5",
-        "doctrine/annotations": "^2.0.2",
         "doctrine/doctrine-bundle": "^2.13.3",
         "doctrine/doctrine-migrations-bundle": "3.4.1",
         "doctrine/inflector": "^2.1",
