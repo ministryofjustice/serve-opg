@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Service;
+namespace App\Tests\Service;
 
 use App\Common\BruteForceChecker;
 use App\Entity\User;
@@ -13,8 +13,10 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Event\AuthenticationEvent;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\BadgeInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 
 class UserProviderTest extends MockeryTestCase
 {
@@ -26,11 +28,14 @@ class UserProviderTest extends MockeryTestCase
     private BruteForceChecker $bruteForceChecker;
     private string $userName;
     private User $user;
-    private AuthenticationEvent $authenticationFailureEvent;
+    private LoginFailureEvent $authenticationFailureEvent;
     private TokenInterface $successAuthenticationEvent;
 
     public function setUp(): void
     {
+        $this->user = m::mock(User::class);
+        $this->userName = 'username@provider.com';
+
         $this->userRepo = m::mock(EntityRepository::class);
         $this->em = m::mock(EntityManager::class)
             ->shouldReceive('getRepository')
@@ -40,25 +45,20 @@ class UserProviderTest extends MockeryTestCase
         $this->storage = m::mock(AttemptsStorageInterface::class);
         $this->bruteForceChecker = m::mock(BruteForceChecker::class);
 
-        // user data
-        $this->userName = 'username@provider.com';
-        $this->user = m::mock(User::class)
-            ->shouldReceive('getEmail')
-            ->andReturn($this->userName)
-            ->getMock();
-
         // fail event
-        $token = m::mock(TokenInterface::class)
-            ->shouldReceive('getCredentials')
-            ->andReturn(['email' => $this->userName, 'password' => 'fakepass'])
-            ->getMock();
+        $badge = m::mock(BadgeInterface::class);
+        $badge->shouldReceive('getUserIdentifier')->andReturn($this->userName);
 
-        $failureEvent = $this->prophesize(AuthenticationEvent::class);
-        $failureEvent->getAuthenticationToken()->willReturn($token);
+        $passport = m::mock(Passport::class);
+        $passport->shouldReceive('hasBadge')->andReturn(true);
+        $passport->shouldReceive('getBadge')->andReturn($badge);
+
+        $failureEvent = $this->prophesize(LoginFailureEvent::class);
+        $failureEvent->getPassport()->willReturn($passport);
         $this->authenticationFailureEvent = $failureEvent->reveal();
 
         // success event
-        $token = m::mock(TokenInterface::class)->shouldReceive('getUser')->andReturn($this->user)->getMock();
+        $token = m::mock(TokenInterface::class)->shouldReceive('getUser')->andReturn($this->user);
         $this->successAuthenticationEvent = m::mock(TokenInterface::class)
             ->shouldReceive('getAuthenticationToken')
             ->andReturn($token)
@@ -78,9 +78,9 @@ class UserProviderTest extends MockeryTestCase
     {
         $sut = new UserProvider($this->em, $this->storage, $this->bruteForceChecker);
 
-        $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => 'nonExisting@provider.com'])->andReturn(false);
+        $this->userRepo->shouldReceive('findOneBy')->once()->with(['email' => 'nonExisting@provider.com'])->andReturn(null);
 
-        $this->expectException(UsernameNotFoundException::class);
+        $this->expectException(UserNotFoundException::class);
         $this->assertEquals($this->user, $sut->loadUserByIdentifier('nonExisting@provider.com'));
     }
 
@@ -107,11 +107,9 @@ class UserProviderTest extends MockeryTestCase
         $this->userRepo->shouldReceive('findOneBy')->never()->with(['email' => $this->userName]);
 
         $sut->loadUserByIdentifier($this->userName);
-
-        $this->assertEquals(200, $this->getExpectedException()->getHasToWaitForSeconds());
     }
 
-    public function testonAuthenticationFailureEmptyConfig()
+    public function testOnAuthenticationFailureEmptyConfig()
     {
         $this->storage->shouldReceive('storeAttempt')->never();
 
@@ -119,7 +117,7 @@ class UserProviderTest extends MockeryTestCase
         $sut->onAuthenticationFailure($this->authenticationFailureEvent);
     }
 
-    public function testonAuthenticationFailureStoresAttempt()
+    public function testOnAuthenticationFailureStoresAttempt()
     {
         $this->storage->shouldReceive('storeAttempt')
             ->with($this->userName, m::any())

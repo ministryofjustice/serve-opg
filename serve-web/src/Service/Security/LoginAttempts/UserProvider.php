@@ -20,20 +20,12 @@ use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 
 class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
-    private EntityManager $em;
-
-    private AttemptsStorageInterface $storage;
-
-    private BruteForceChecker $bruteForceChecker;
-
-    private array $rules;
-
-    public function __construct(EntityManager $em, AttemptsStorageInterface $storage, BruteForceChecker $bruteForceChecker, array $rules = [])
-    {
-        $this->em = $em;
-        $this->storage = $storage;
-        $this->bruteForceChecker = $bruteForceChecker;
-        $this->rules = $rules;
+    public function __construct(
+        private readonly EntityManager $em,
+        private readonly AttemptsStorageInterface $storage,
+        private readonly BruteForceChecker $bruteForceChecker,
+        private readonly array $rules = [],
+    ) {
     }
 
     /**
@@ -99,6 +91,8 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 
     /**
      * Reset attempts after a successful login.
+     *
+     * @throws \Exception
      */
     public function onAuthenticationSuccess(AuthenticationEvent $e): void
     {
