@@ -35,7 +35,7 @@ BEGIN
   IF EXISTS (SELECT * FROM pg_roles WHERE rolname = 'pg_read_all_data') THEN
      GRANT pg_read_all_data TO "$username";
   END IF;
-  
+
   ALTER USER "$username" SET log_statement = 'all';
 
 END

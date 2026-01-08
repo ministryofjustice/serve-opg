@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
@@ -10,11 +12,8 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20181023133502 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SEQUENCE client_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE deputy_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE document_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -40,11 +39,8 @@ final class Version20181023133502 extends AbstractMigration
         $this->addSql('ALTER TABLE ordertype_deputy ADD CONSTRAINT FK_DBBC0D8A333625D8 FOREIGN KEY (order_type_id) REFERENCES deputy (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE dc_order DROP CONSTRAINT FK_450EF9F719EB6921');
         $this->addSql('ALTER TABLE ordertype_deputy DROP CONSTRAINT FK_DBBC0D8A333625D8');
