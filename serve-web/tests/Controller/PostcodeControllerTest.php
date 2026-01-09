@@ -13,7 +13,7 @@ class PostcodeControllerTest extends ApiWebTestCase
     {
         $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
 
-        $client = $this->createAuthenticatedClient(
+        $client = $this->getAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => $this->behatPassword,

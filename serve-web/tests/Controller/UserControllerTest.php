@@ -15,16 +15,25 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserControllerTest extends ApiWebTestCase
 {
-    public function createAdminUserAndAuthenticate(): KernelBrowser
-    {
-        $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
+    private int $adminSuffix = 0;
 
-        return $this->createAuthenticatedClient(
+    public function createAdminUserAndAuthenticate(?string $email = null): KernelBrowser
+    {
+        if (is_null($email)) {
+            ++$this->adminSuffix;
+            $email = "admin$this->adminSuffix@digital.justice.gov.uk";
+        }
+
+        $this->persistEntity($this->getUserTestHelper()->createAdminUser($email, $this->behatPassword));
+
+        $client = $this->getAuthenticatedClient(
             [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_USER' => $email,
                 'PHP_AUTH_PW' => $this->behatPassword,
             ]
         );
+
+        return $client;
     }
 
     public function adminURLProvider(): array
@@ -42,12 +51,12 @@ class UserControllerTest extends ApiWebTestCase
     /**
      * @dataProvider adminURLProvider
      */
-    public function testAdminURLsRequireRole(string $url): void
+    public function testAdminUrlsRequireRole(string $url): void
     {
         $user = $this->persistEntity($this->createTestUser('user@digital.justice.gov.uk', $this->behatPassword));
         $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
 
-        $userClient = $this->createAuthenticatedClient(
+        $userClient = $this->getAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'user@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => $this->behatPassword,
@@ -55,12 +64,7 @@ class UserControllerTest extends ApiWebTestCase
         );
         $userClient->catchExceptions(false);
 
-        $adminClient = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => $this->behatPassword,
-            ]
-        );
+        $adminClient = $this->createAdminUserAndAuthenticate();
 
         $urlReplaced = str_replace('{id}', "{$user->getId()}", $url);
 
@@ -210,11 +214,12 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testCannotCreateUserWithExistingEmail(): void
     {
-        $client = $this->createAdminUserAndAuthenticate();
+        $email = 'bogun.vogun@digital.justice.gov.uk';
+        $client = $this->createAdminUserAndAuthenticate(email: $email);
 
         $client->request('GET', '/users/add');
         $crawler = $client->submitForm('Add user', [
-            'user_form[email]' => 'admin@digital.justice.gov.uk',
+            'user_form[email]' => $email,
             'user_form[firstName]' => 'Karol',
             'user_form[lastName]' => 'Gowey',
         ]);
@@ -308,7 +313,7 @@ class UserControllerTest extends ApiWebTestCase
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNull($this->getEntityManager()->getRepository(User::class)->find($userId));
-        self::assertEquals('User successfully deleted', $this->getService('session')->getFlashBag()->get('success')[0]);
+        self::assertEquals('User successfully deleted', $client->getRequest()->getSession()->getFlashBag()->get('success')[0]);
     }
 
     public function testUserCannotDeleteThemselves(): void
@@ -316,18 +321,13 @@ class UserControllerTest extends ApiWebTestCase
         $adminUser = $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
         $userId = $adminUser->getId();
 
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => $this->behatPassword,
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request(Request::METHOD_GET, "/users/$userId/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
         self::assertNotNull($this->getEntityManager()->getRepository(User::class)->find($userId));
-        self::assertEquals('A user cannot delete their own account', $this->getService('session')->getFlashBag()->get('error')[0]);
+        self::assertEquals('A user cannot delete their own account', $client->getRequest()->getSession()->getFlashBag()->get('error')[0]);
     }
 
     public function testUnknownUserIsHandled(): void
@@ -335,17 +335,12 @@ class UserControllerTest extends ApiWebTestCase
         $adminUser = $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
         $wrongUserId = $adminUser->getId() + 10;
 
-        $client = $this->createAuthenticatedClient(
-            [
-                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
-                'PHP_AUTH_PW' => $this->behatPassword,
-            ]
-        );
+        $client = $this->createAdminUserAndAuthenticate();
 
         $client->request(Request::METHOD_GET, "/users/$wrongUserId/delete", [], [], ['HTTP_REFERER' => '/users']);
 
         self::assertEquals(Response::HTTP_FOUND, $client->getResponse()->getStatusCode());
-        self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
+        self::assertEquals('The user does not exist', $client->getRequest()->getSession()->getFlashBag()->get('error')[0]);
     }
 
     public function testResendsActivationEmail(): void
@@ -370,8 +365,10 @@ class UserControllerTest extends ApiWebTestCase
         NotifyClientMock::$failNext = true;
         $client->request(Request::METHOD_GET, "/users/$userId/resend-activation");
 
-        self::assertCount(1, $this->getService('session')->getFlashBag()->peekAll());
-        self::assertEquals('Activation email could not be sent', $this->getService('session')->getFlashBag()->get('error')[0]);
+        $flashBag = $client->getRequest()->getSession()->getFlashBag();
+
+        self::assertCount(1, $flashBag->peekAll());
+        self::assertEquals('Activation email could not be sent', $flashBag->get('error')[0]);
     }
 
     public function passwordResetData(): array
@@ -479,7 +476,7 @@ class UserControllerTest extends ApiWebTestCase
 
         $this->assertMatchesRegularExpression(
             '^This user has not activated their account. To resend an activation email click <a href="/users/[0-9]*/resend-activation">here</a>\..*^',
-            $this->getService('session')->getFlashBag()->get('warn')[0]
+            $client->getRequest()->getSession()->getFlashBag()->get('warn')[0]
         );
     }
 }
