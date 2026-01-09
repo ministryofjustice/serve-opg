@@ -19,7 +19,7 @@ class OrderRepository extends EntityRepository
          * Negative dates as a integer result in a custom ordering field allow different ordering on the two order tabs,
          * (served and pending).
          */
-        $qb = $this->_em->getRepository(Order::class)
+        $qb = $this->getEntityManager()->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select('o, c')
             ->addSelect("
@@ -74,7 +74,7 @@ class OrderRepository extends EntityRepository
 
     public function getOrdersBeforeGoLive(): mixed
     {
-        $qb = $this->_em->getRepository(Order::class)
+        $qb = $this->getEntityManager()->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select('o')
             ->where("o.createdAt < '2019-03-11'")
@@ -85,7 +85,7 @@ class OrderRepository extends EntityRepository
 
     public function getOrdersCountQuery(array $filters): Query
     {
-        $qb = $this->_em->getRepository(Order::class)
+        $qb = $this->getEntityManager()->getRepository(Order::class)
             ->createQueryBuilder('o')
             ->select('COUNT(o)')
             ->leftJoin('o.client', 'c');
@@ -110,7 +110,7 @@ class OrderRepository extends EntityRepository
     /**
      * $filters will typically contain a "type" property specifying the type of orders to return, e.g. "pending", "served".
      *
-     * Only set $sortForPaging if the ordering of the results matters. In this situation, 
+     * Only set $sortForPaging if the ordering of the results matters. In this situation,
      * sorting by ID ensures that the records are returned without duplicates.
      *
      * @return \Traversable<array>
@@ -138,12 +138,12 @@ class OrderRepository extends EntityRepository
 
     public function deletePendingOrder(int $orderId): void
     {
-        $orderRepo = $this->_em->getRepository(Order::class);
+        $orderRepo = $this->getEntityManager()->getRepository(Order::class);
         $pendingOrder = $orderRepo->findOneBy(['id' => $orderId, 'servedAt' => null]);
 
         if ($pendingOrder) {
-            $this->_em->remove($pendingOrder);
-            $this->_em->flush();
+            $this->getEntityManager()->remove($pendingOrder);
+            $this->getEntityManager()->flush();
         }
     }
 }
