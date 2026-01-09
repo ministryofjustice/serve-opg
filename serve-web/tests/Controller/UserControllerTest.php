@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Service\NotifyClientMock;
 use App\Tests\ApiWebTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,21 +15,19 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserControllerTest extends ApiWebTestCase
 {
-    public function createAdminUserAndAuthenticate()
+    public function createAdminUserAndAuthenticate(): KernelBrowser
     {
         $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
 
-        $client = $this->createAuthenticatedClient(
+        return $this->createAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
                 'PHP_AUTH_PW' => $this->behatPassword,
             ]
         );
-
-        return $client;
     }
 
-    public function adminURLProvider()
+    public function adminURLProvider(): array
     {
         return [
             ['/users'],
@@ -41,7 +42,7 @@ class UserControllerTest extends ApiWebTestCase
     /**
      * @dataProvider adminURLProvider
      */
-    public function testAdminURLsRequireRole($url)
+    public function testAdminURLsRequireRole(string $url): void
     {
         $user = $this->persistEntity($this->createTestUser('user@digital.justice.gov.uk', $this->behatPassword));
         $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
@@ -71,7 +72,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertNotEquals(Response::HTTP_FORBIDDEN, $adminClient->getResponse()->getStatusCode());
     }
 
-    public function testListUsers()
+    public function testListUsers(): void
     {
         $user = $this->getUserTestHelper()->createAdminUser('testUser@digital.justice.gov.uk', $this->behatPassword);
 
@@ -91,7 +92,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('/users/add', $linkUrl);
     }
 
-    public function testUserLoginUpdatesLastLoginAt()
+    public function testUserLoginUpdatesLastLoginAt(): void
     {
         $user = $this->persistEntity($this->getUserTestHelper()->createAdminUser('test@digital.justice.gov.uk', 'password'));
 
@@ -113,7 +114,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals($today, $updatedUser->getLastLoginAt()->format('Y-m-d'));
     }
 
-    public function testViewUsersAccessibleByAdminUsersOnly()
+    public function testViewUsersAccessibleByAdminUsersOnly(): void
     {
         $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
         $this->persistEntity($this->createTestUser('user@digital.justice.gov.uk', $this->behatPassword));
@@ -137,7 +138,7 @@ class UserControllerTest extends ApiWebTestCase
         }
     }
 
-    public function testNewUserCreated()
+    public function testNewUserCreated(): void
     {
         $client = $this->createAdminUserAndAuthenticate();
 
@@ -157,7 +158,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals(['ROLE_USER', 'ROLE_ADMIN'], $newUser->getRoles());
     }
 
-    public function testNewUserFieldsRequired()
+    public function testNewUserFieldsRequired(): void
     {
         $client = $this->createAdminUserAndAuthenticate();
 
@@ -178,7 +179,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('Enter an email address', $submittedCrawler->filter('#form-group-email')->text(null, false));
     }
 
-    public function testNewUserRequiresEmailFormat()
+    public function testNewUserRequiresEmailFormat(): void
     {
         $client = $this->createAdminUserAndAuthenticate();
 
@@ -191,7 +192,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('The email "notanemail" is not a valid email', $crawler->filter('#form-group-email')->text(null, false));
     }
 
-    public function testCannotCreateUserWithMissingFields()
+    public function testCannotCreateUserWithMissingFields(): void
     {
         $client = $this->createAdminUserAndAuthenticate();
 
@@ -207,7 +208,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertNull($newUser);
     }
 
-    public function testCannotCreateUserWithExistingEmail()
+    public function testCannotCreateUserWithExistingEmail(): void
     {
         $client = $this->createAdminUserAndAuthenticate();
 
@@ -224,7 +225,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('Email address already in use', $emailFormGroup->text(null, false));
     }
 
-    public function testActivationEmailSentToNewUser()
+    public function testActivationEmailSentToNewUser(): void
     {
         $client = $this->createAdminUserAndAuthenticate();
 
@@ -241,7 +242,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals($email, NotifyClientMock::getLastEmail()['to']);
     }
 
-    public function testEditUser()
+    public function testEditUser(): void
     {
         $user = $this->persistEntity($this->createTestUser('test@digital.justice.gov.uk', $this->behatPassword));
         $userId = $user->getId();
@@ -264,7 +265,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals(['ROLE_USER', 'ROLE_ADMIN'], $user->getRoles());
     }
 
-    public function testCannotEditUserToExistingEmail()
+    public function testCannotEditUserToExistingEmail(): void
     {
         $this->persistEntity($this->createTestUser('existing-email@digital.justice.gov.uk', $this->behatPassword));
         $user = $this->persistEntity($this->createTestUser('test@digital.justice.gov.uk', $this->behatPassword));
@@ -283,7 +284,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('Email address already in use', $emailFormGroup->text(null, false));
     }
 
-    public function testUserEditDoesntWarnActivationEmail()
+    public function testUserEditDoesntWarnActivationEmail(): void
     {
         $user = $this->persistEntity($this->createTestUser('test@digital.justice.gov.uk', $this->behatPassword));
         $userId = $user->getId();
@@ -296,7 +297,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringNotContainsString('An activation email will be sent to the provided email address', $emailFormGroup->text(null, false));
     }
 
-    public function testDeleteUser()
+    public function testDeleteUser(): void
     {
         $user = $this->persistEntity($this->createTestUser('user@digital.justice.gov.uk', $this->behatPassword));
         $userId = $user->getId();
@@ -310,7 +311,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals('User successfully deleted', $this->getService('session')->getFlashBag()->get('success')[0]);
     }
 
-    public function testUserCannotDeleteThemselves()
+    public function testUserCannotDeleteThemselves(): void
     {
         $adminUser = $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
         $userId = $adminUser->getId();
@@ -329,7 +330,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals('A user cannot delete their own account', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 
-    public function testUnknownUserIsHandled()
+    public function testUnknownUserIsHandled(): void
     {
         $adminUser = $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
         $wrongUserId = $adminUser->getId() + 10;
@@ -347,7 +348,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals('The user does not exist', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 
-    public function testResendsActivationEmail()
+    public function testResendsActivationEmail(): void
     {
         $user = $this->persistEntity($this->createTestUser('test-activation@digital.justice.gov.uk', $this->behatPassword));
         $userId = $user->getId();
@@ -359,7 +360,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals($user->getEmail(), NotifyClientMock::getLastEmail()['to']);
     }
 
-    public function testUserInformedIfEmailFails()
+    public function testUserInformedIfEmailFails(): void
     {
         $user = $this->persistEntity($this->createTestUser('test-activation@digital.justice.gov.uk', $this->behatPassword));
         $userId = $user->getId();
@@ -373,7 +374,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertEquals('Activation email could not be sent', $this->getService('session')->getFlashBag()->get('error')[0]);
     }
 
-    public function passwordResetData()
+    public function passwordResetData(): array
     {
         return [
             [null, 'Set your password', 'To set your password,'],
@@ -384,7 +385,7 @@ class UserControllerTest extends ApiWebTestCase
     /**
      * @dataProvider passwordResetData
      */
-    public function testPasswordResetChangesContent($lastLoginAt, $expectedTitle, $expectedContent)
+    public function testPasswordResetChangesContent($lastLoginAt, $expectedTitle, $expectedContent): void
     {
         $token = uniqid();
 
@@ -402,7 +403,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString($expectedContent, $crawler->filter('body')->text(null, false));
     }
 
-    public function testAddConfirmationContainsEmail()
+    public function testAddConfirmationContainsEmail(): void
     {
         $addedUser = $this->persistEntity($this->createTestUser('addedUser@digital.justice.gov.uk', $this->behatPassword));
 
@@ -416,7 +417,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('addedUser@digital.justice.gov.uk', $client->getResponse()->getContent());
     }
 
-    public function testAddConfirmationLinksToDetails()
+    public function testAddConfirmationLinksToDetails(): void
     {
         $addedUser = $this->persistEntity($this->createTestUser('addedUser@digital.justice.gov.uk', $this->behatPassword));
 
@@ -430,7 +431,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString("/users/$addedUserId/view", $activationTextLink);
     }
 
-    public function testUserDetailsCorrect()
+    public function testUserDetailsCorrect(): void
     {
         $addedUser = $this->createTestUser('addedUser@digital.justice.gov.uk', $this->behatPassword);
         $addedUser->setFirstName('Added');
@@ -450,7 +451,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString('Case manager', $crawler->html());
     }
 
-    public function testUserDetailsLinkToEdit()
+    public function testUserDetailsLinkToEdit(): void
     {
         $addedUser = $this->persistEntity($this->createTestUser('addedUser@digital.justice.gov.uk', $this->behatPassword));
         $addedUserId = $addedUser->getId();
@@ -463,7 +464,7 @@ class UserControllerTest extends ApiWebTestCase
         self::assertStringContainsString("/users/$addedUserId/edit", $activationTextLink);
     }
 
-    public function testUserDetailsShowActivationReminder()
+    public function testUserDetailsShowActivationReminder(): void
     {
         /** @var User $addedUser */
         $addedUser = $this->persistEntity($this->createTestUser('addedUser@digital.justice.gov.uk', $this->behatPassword));
