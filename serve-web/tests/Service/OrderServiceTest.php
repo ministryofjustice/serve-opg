@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Order;
-use App\exceptions\NoMatchesFoundException;
-use App\exceptions\WrongCaseNumberException;
+use App\Exceptions\NoMatchesFoundException;
+use App\Exceptions\WrongCaseNumberException;
 use App\Repository\OrderRepository;
 use App\Service\DocumentReaderService;
 use App\Service\OrderService;
