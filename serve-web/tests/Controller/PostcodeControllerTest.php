@@ -1,15 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
-use App\Phpunit\Helpers\AbstractControllerTestCase;
+use App\Tests\ApiWebTestCase;
 
-class PostcodeControllerTest extends AbstractControllerTestCase
+class PostcodeControllerTest extends ApiWebTestCase
 {
+    // this test doesn't actually send a request to Ordnance Survey's API, as that could cause problems for us...
     public function testRequest()
     {
-        $this->client->request('GET', '/postcode-lookup');
+        $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
 
-        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+        $client = $this->createAuthenticatedClient(
+            [
+                'PHP_AUTH_USER' => 'admin@digital.justice.gov.uk',
+                'PHP_AUTH_PW' => $this->behatPassword,
+            ]
+        );
+
+        $client->request('GET', '/postcode-lookup');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 }
