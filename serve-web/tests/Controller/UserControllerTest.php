@@ -26,14 +26,12 @@ class UserControllerTest extends ApiWebTestCase
 
         $this->persistEntity($this->getUserTestHelper()->createAdminUser($email, $this->behatPassword));
 
-        $client = $this->getAuthenticatedClient(
+        return $this->getAuthenticatedClient(
             [
                 'PHP_AUTH_USER' => $email,
                 'PHP_AUTH_PW' => $this->behatPassword,
             ]
         );
-
-        return $client;
     }
 
     public function adminURLProvider(): array
@@ -318,10 +316,14 @@ class UserControllerTest extends ApiWebTestCase
 
     public function testUserCannotDeleteThemselves(): void
     {
-        $adminUser = $this->persistEntity($this->getUserTestHelper()->createAdminUser('admin@digital.justice.gov.uk', $this->behatPassword));
+        $email = 'nerp.blunk@digital.justice.gov.uk';
+        $adminUser = $this->persistEntity($this->getUserTestHelper()->createAdminUser($email, $this->behatPassword));
         $userId = $adminUser->getId();
 
-        $client = $this->createAdminUserAndAuthenticate();
+        $client = $this->getAuthenticatedClient([
+            'PHP_AUTH_USER' => $email,
+            'PHP_AUTH_PW' => $this->behatPassword,
+        ]);
 
         $client->request(Request::METHOD_GET, "/users/$userId/delete", [], [], ['HTTP_REFERER' => '/users']);
 
