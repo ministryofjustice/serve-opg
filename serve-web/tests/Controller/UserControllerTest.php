@@ -62,7 +62,7 @@ class UserControllerTest extends ApiWebTestCase
             ]
         );
 
-        $urlReplaced = str_replace('{id}', $user->getId(), $url);
+        $urlReplaced = str_replace('{id}', "{$user->getId()}", $url);
 
         $this->expectException(AccessDeniedException::class);
         $userClient->request(Request::METHOD_GET, $urlReplaced, [], [], ['HTTP_REFERER' => '/users']);
