@@ -15,20 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/health-check')]
 class HealthController extends AbstractController
 {
-    private EntityManager $em;
-
-    private string $appEnv;
-
-    private string $symfonyDebug = '';
-
     public function __construct(
         EntityManager $em,
-        private LoggerInterface $logger,
-        string $appEnv,
-        string $symfonyDebug
+        private readonly LoggerInterface $logger,
+        private readonly string $appEnv,
     ) {
-        $this->em = $em;
-        $this->appEnv = $appEnv;
     }
 
     #[Route(path: '', name: 'health-check', methods: ['GET'])]
@@ -52,7 +43,6 @@ class HealthController extends AbstractController
             'services' => $services,
             'errors' => $errors,
             'environment' => $this->appEnv,
-            'debug' => $this->symfonyDebug,
         ]);
 
         $response->setStatusCode($healthy ? 200 : 500);
@@ -63,7 +53,7 @@ class HealthController extends AbstractController
     #[Route(path: '/dependencies', methods: ['GET'])]
     public function dependencyHealthAction(
         NotifyAvailability $notifyAvailability,
-        SiriusApiAvailability $siriusAvailability
+        SiriusApiAvailability $siriusAvailability,
     ): ?Response {
         $services = [
             $siriusAvailability,
@@ -76,7 +66,6 @@ class HealthController extends AbstractController
             'services' => $services,
             'errors' => $errors,
             'environment' => $this->appEnv,
-            'debug' => $this->symfonyDebug,
         ]);
 
         $response->setStatusCode($healthy ? 200 : 500);
@@ -132,7 +121,7 @@ class HealthController extends AbstractController
         }
 
         if ($logResponses) {
-            $this->logger->warning(strval(rtrim($logObject, ',').']}'));
+            $this->logger->warning(rtrim($logObject, ',').']}');
         }
 
         return [$healthy, $services, $errors, microtime(true) - $start];

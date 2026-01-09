@@ -223,7 +223,6 @@ services:
     App\Controller\HealthController:
         arguments:
             $appEnv: "%env(APP_ENV)%"
-            $symfonyDebug: "%kernel.debug%"
 
     App\Service\Availability\NotifyAvailability:
         arguments:
