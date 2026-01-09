@@ -2,63 +2,27 @@
 
 namespace App\Service\Security\LoginAttempts;
 
-use App\Common\BruteForceChecker;
 use App\Entity\User;
-use App\Service\Security\LoginAttempts\Exception\BruteForceAttackDetectedException;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Exception\NotSupported;
 use Doctrine\ORM\Exception\ORMException;
-use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 
 class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
     public function __construct(
         private readonly EntityManager $em,
-        private readonly AttemptsStorageInterface $storage,
-        private readonly BruteForceChecker $bruteForceChecker,
-        private readonly array $rules = [],
     ) {
     }
 
-    /**
-     * Return the highest timestamp when the user can be unlocked,
-     * based on the rules and previous attempts from the same username, stored in the storage (e.g. dynamoDb).
-     */
-    public function usernameLockedForSeconds(string $username): bool|int
-    {
-        $waits = [];
-        foreach ($this->rules as $rule) {
-            // fetch all the rules and check if for any of those, the user has to wait
-            list($maxAttempts, $timeRange, $waitFor) = $rule;
-            if ($waitFor = $this->bruteForceChecker->hasToWait($this->storage->getAttempts($username), $maxAttempts, $timeRange, $waitFor, time())) {
-                $waits[] = $waitFor;
-            }
-        }
-
-        return $waits ? max($waits) : false;
-    }
-
-    /**
-     * @throws BruteForceAttackDetectedException
-     * @throws NotSupported
-     */
     public function loadUserByIdentifier(string $identifier): User
     {
         if (empty($identifier)) {
             throw new UserNotFoundException('Missing username');
-        }
-
-        if ($this->usernameLockedForSeconds($identifier)) {
-            // throw a generic exception in case of brute force is detected, prior to query the db. The view will query this service re-calling the method and detect if locked
-            throw new BruteForceAttackDetectedException();
         }
 
         $user = $this->em->getRepository(User::class)->findOneBy(['email' => $identifier]);
@@ -87,54 +51,6 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
     public function supportsClass($class): bool
     {
         return User::class === $class || is_subclass_of($class, User::class);
-    }
-
-    /**
-     * Reset attempts after a successful login.
-     *
-     * @throws \Exception
-     */
-    public function onAuthenticationSuccess(AuthenticationEvent $e): void
-    {
-        if (empty($this->rules)) {
-            return;
-        }
-
-        $user = $e->getAuthenticationToken()->getUser();
-        if ($user instanceof User) {
-            $this->resetUsernameAttempts($user->getEmail());
-        }
-    }
-
-    /**
-     * Store failing attempt.
-     */
-    public function onAuthenticationFailure(LoginFailureEvent $event): void
-    {
-        if (empty($this->rules)) {
-            return;
-        }
-
-        // Get the passport from the authentication exception
-        $passport = $event->getPassport();
-
-        // Extract the username/email from the UserBadge
-        if ($passport && $passport->hasBadge(UserBadge::class)) {
-            $username = $passport->getBadge(UserBadge::class)->getUserIdentifier();
-
-            if ($username) {
-                $this->storage->storeAttempt($username, time());
-            }
-        }
-    }
-
-    public function resetUsernameAttempts(string $userId): void
-    {
-        $this->storage->resetAttempts($userId);
-
-        if ($this->storage->getAttempts($userId)) {
-            throw new \Exception("Cannot wipe attempts for $userId");
-        }
     }
 
     /**

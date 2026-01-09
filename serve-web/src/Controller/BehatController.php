@@ -8,7 +8,7 @@ use App\Entity\OrderHw;
 use App\Entity\OrderPf;
 use App\Entity\User;
 use App\Service\OrderService;
-use App\Service\Security\LoginAttempts\UserProvider;
+use App\Service\Security\LoginAttempts\AttemptsStorageInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -25,26 +25,23 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/behat')]
 class BehatController extends AbstractController
 {
-    public const BEHAT_USERS = [
+    public const array BEHAT_USERS = [
         ['email' => 'behat@digital.justice.gov.uk', 'admin' => false],
         ['email' => 'behat+user-management@digital.justice.gov.uk', 'admin' => false],
         ['email' => 'behat+admin@digital.justice.gov.uk', 'admin' => true],
     ];
 
     // keep in sync with behat-cases.csv
-    public const BEHAT_CASE_NUMBER = '93559316';
-    public const BEHAT_INTERIM_CASE_NUMBER = '93559317';
+    public const string BEHAT_CASE_NUMBER = '93559316';
+    public const string BEHAT_INTERIM_CASE_NUMBER = '93559317';
 
-    /**
-     * @string behatPassword
-     */
     private string $behatPassword;
 
     public function __construct(
         private readonly EntityManager $em,
         private readonly OrderService $orderService,
         private readonly UserPasswordHasherInterface $hasher,
-        private readonly UserProvider $userProvider,
+        private readonly AttemptsStorageInterface $attemptsStorage,
     ) {
         $this->behatPassword = getenv('BEHAT_PASSWORD');
     }
@@ -137,7 +134,7 @@ class BehatController extends AbstractController
         $this->securityChecks();
 
         foreach (self::BEHAT_USERS as $user) {
-            $this->userProvider->resetUsernameAttempts($user['email']);
+            $this->attemptsStorage->resetAttempts($user['email']);
         }
 
         return new Response('attempts reset done');

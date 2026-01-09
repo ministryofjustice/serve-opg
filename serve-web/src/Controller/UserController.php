@@ -8,8 +8,8 @@ use App\Form\PasswordChangeForm;
 use App\Form\PasswordResetForm;
 use App\Form\UserForm;
 use App\Repository\UserRepository;
+use App\Security\LoginFormAuthenticator;
 use App\Service\MailSender;
-use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,40 +19,32 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 class UserController extends AbstractController
 {
-    private EntityManager $em;
-
-    private MailSender $mailerSender;
-
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordHasherInterface $hasher)
-    {
-        $this->em = $em;
-        $this->mailerSender = $mailerSender;
-        $this->hasher = $hasher;
+    public function __construct(
+        private readonly EntityManager $em,
+        private readonly MailSender $mailerSender,
+        private readonly UserPasswordHasherInterface $hasher,
+    ) {
     }
 
     #[Route(path: '/login', name: 'login')]
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up): Response
+    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, LoginFormAuthenticator $loginFormAuthenticator): Response
     {
         // get the login error if there is one
-        $token = null;
         $username = null;
 
-        $error = $authenticationUtils->getLastAuthenticationError();
+        $error = $request->getSession()->get(SecurityRequestAttributes::AUTHENTICATION_ERROR);
+
         if (!is_null($error)) {
-            $token = $error->getToken();
             $username = $authenticationUtils->getLastUsername();
         }
 
         return $this->render('User/login.html.twig', [
             'error' => $error,
-            'lockedForSeconds' => is_null($token) && is_null($username) ?
-                false :
-                $up->usernameLockedForSeconds($username),
+            'lockedForSeconds' => $loginFormAuthenticator->usernameLockedForSeconds($username),
         ]);
     }
 
