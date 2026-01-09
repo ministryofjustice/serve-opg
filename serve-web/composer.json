@@ -5,6 +5,7 @@
         "php": "^8.4.8",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-pdo": "*",
         "alphagov/notifications-php-client": "^5.0",
         "aws/aws-sdk-php-symfony": "^2.9",
         "beberlei/doctrineextensions": "^1.5",
