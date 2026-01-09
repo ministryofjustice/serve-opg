@@ -30,15 +30,14 @@ class SiriusServiceTest extends MockeryTestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var SiriusService
-     */
-    protected $sut;
+    private EntityManager|ObjectProphecy $mockEntityManager;
+    private GuzzleHttpClient|ObjectProphecy $mockHttpClient;
+    private S3Storage|ObjectProphecy $mockS3Storage;
+    private LoggerInterface|ObjectProphecy $mockLogger;
+    private SecretsManagerClient|ObjectProphecy $mockSecretsManager;
+    private EventBridgeClient|ObjectProphecy $mockEventBridge;
 
-    private $mockEntityManager;
-    private $mockHttpClient;
-    private $mockS3Storage;
-    private $mockSecretsManager;
+    protected SiriusService $sut;
 
     public function setUp(): void
     {
@@ -50,7 +49,7 @@ class SiriusServiceTest extends MockeryTestCase
         $this->mockEventBridge = $this->prophesize(EventBridgeClient::class);
     }
 
-    public function testPingSuccess()
+    public function testPingSuccess(): void
     {
         $this->mockHttpClient->get('health-check/service-status', Argument::cetera())->shouldBeCalled()->willReturn(new Response());
 
@@ -65,10 +64,10 @@ class SiriusServiceTest extends MockeryTestCase
             $this->mockSecretsManager->reveal(),
         );
 
-        $this->assertEquals($this->sut->ping(), true);
+        $this->assertTrue($this->sut->ping());
     }
 
-    public function testPingFailure()
+    public function testPingFailure(): void
     {
         $this->mockHttpClient->get('health-check/service-status', Argument::cetera())->shouldBeCalled()->willThrow(new \RuntimeException());
 
@@ -83,10 +82,10 @@ class SiriusServiceTest extends MockeryTestCase
             $this->mockSecretsManager->reveal(),
         );
 
-        $this->assertEquals($this->sut->ping(), false);
+        $this->assertFalse($this->sut->ping());
     }
 
-    public function testServeOrderOK()
+    public function testServeOrderOK(): void
     {
         $expectedCourtReference = '1234512345';
         $expectedType = Order::TYPE_PF;
@@ -275,10 +274,8 @@ class SiriusServiceTest extends MockeryTestCase
 
     /**
      * Generate mock Order.
-     *
-     * @return Order
      */
-    private function generateOrder($client, $madeAt, $issuedAt)
+    private function generateOrder($client, $madeAt, $issuedAt): Order
     {
         $orderId = rand(50000, 100000);
         $orderNumber = strval($orderId);
@@ -297,17 +294,15 @@ class SiriusServiceTest extends MockeryTestCase
         );
         $order->setDeputies($mockDeputies);
 
-        $order->setDocuments($this->generateMockDocuments(false));
+        $order->setDocuments($this->generateMockDocuments());
 
         return $order;
     }
 
     /**
      * Generates a mock Deputy object.
-     *
-     * @return ObjectProphecy|Deputy
      */
-    private function generateMockDeputy($options)
+    private function generateMockDeputy($options): ObjectProphecy|Deputy
     {
         /** @var Deputy|ObjectProphecy $mockDeputy */
         $mockDeputy = $this->prophesize(Deputy::class);
@@ -330,7 +325,7 @@ class SiriusServiceTest extends MockeryTestCase
         return $mockDeputy->reveal();
     }
 
-    private function generateMockDocuments($transferred = false)
+    private function generateMockDocuments($transferred = false): ArrayCollection
     {
         return new ArrayCollection(
             [
@@ -342,10 +337,8 @@ class SiriusServiceTest extends MockeryTestCase
 
     /**
      * Generates a mock Document object.
-     *
-     * @return Document|ObjectProphecy
      */
-    private function generateMockDocument($options)
+    private function generateMockDocument($options): Document|ObjectProphecy
     {
         /** @var Document|ObjectProphecy $mockDoc */
         $mockDoc = $this->prophesize(Document::class);
