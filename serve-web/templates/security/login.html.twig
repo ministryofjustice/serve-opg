@@ -34,7 +34,7 @@
       {% if app.user %}
         <p class="govuk-body">You are logged in as {{ app.user.username }}; <a href="{{ path('app_logout') }}">Sign out</a>.</p>
       {% else %}
-        <form id="login" action="{{ path('login') }}" method="post" autocomplete="off">
+        <form id="login" action="{{ path('app_login') }}" method="post" autocomplete="off">
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset" aria-describedby="" role="group">
               <div class="govuk-form-group">

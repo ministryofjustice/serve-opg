@@ -227,4 +227,4 @@ services:
 
     App\Controller\SecurityController:
         arguments:
-            $userProvider: '@App\Service\Security\LoginAttempts\UserProvider'
+            $loginFormAuthenticator: '@App\Security\LoginFormAuthenticator'

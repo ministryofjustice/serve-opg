@@ -34,7 +34,7 @@
           <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__logo">
               {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-                {% set homepage = path('login') %}
+                {% set homepage = path('app_login') %}
               {% else %}
                 {% set homepage = path('case-list') %}
               {% endif %}
