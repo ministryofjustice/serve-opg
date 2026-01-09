@@ -39,13 +39,20 @@ class UserController extends AbstractController
     public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up): Response
     {
         // get the login error if there is one
+        $token = null;
+        $username = null;
+
         $error = $authenticationUtils->getLastAuthenticationError();
+        if (!is_null($error)) {
+            $token = $error->getToken();
+            $username = $authenticationUtils->getLastUsername();
+        }
 
         return $this->render('User/login.html.twig', [
             'error' => $error,
-            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
-                ? $up->usernameLockedForSeconds($username)
-                : false,
+            'lockedForSeconds' => is_null($token) && is_null($username) ?
+                false :
+                $up->usernameLockedForSeconds($username),
         ]);
     }
 
