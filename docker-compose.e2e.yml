@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      args:
+        WITH_XDEBUG: 0
+    environment:
+      APP_ENV: 'prod'
+      DC_BEHAT_CONTROLLER_ENABLED: 1
+      SYMFONY_DEPRECATIONS_HELPER: disabled
