@@ -49,29 +49,31 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         // reset login attempts by this user
         if (!is_null($user)) {
-            $userId = $user->getId();
-            $this->storage->resetAttempts($userId);
+            $this->storage->resetAttempts($user->getUserIdentifier());
         }
 
-        // redirect to correct path
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
+        // redirect to correct path, or homepage if it's not available
+        $targetPath = $this->getTargetPath($request->getSession(), $firewallName);
+        if (is_null($targetPath)) {
+            $targetPath = $this->urlGenerator->generate('homepage');
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('homepage'));
+        return new RedirectResponse($targetPath);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         // store the failed login attempt
+        $session = $request->getSession();
+
         /** @var ?string $username */
-        $username = $request->getSession()->get(SecurityRequestAttributes::LAST_USERNAME);
+        $username = $session->get(SecurityRequestAttributes::LAST_USERNAME);
 
         if (!is_null($username)) {
             $this->storage->storeAttempt($username, time());
         }
 
-        $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
+        $session->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
 
         // redirect to login
         return new RedirectResponse($this->getLoginUrl($request));
@@ -109,10 +111,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     }
 
     /**
-     * Return the highest timestamp when the user can be unlocked,
-     * based on the rules and previous attempts from the same username, stored in the storage (e.g. dynamoDb).
+     * Return the latest timestamp when the user can be unlocked,
+     * based on the rules and previous attempts from the same username.
      */
-    public function usernameLockedForSeconds(string $username): bool|int
+    public function usernameLockedForSeconds(string $username): false|int
     {
         $waits = [];
         foreach ($this->rules as $rule) {
@@ -132,6 +134,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             }
         }
 
-        return $waits ? max($waits) : false;
+        return empty($waits) ? false : max($waits);
     }
 }
