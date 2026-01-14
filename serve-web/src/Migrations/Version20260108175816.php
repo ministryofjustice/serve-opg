@@ -20,6 +20,7 @@ final class Version20260108175816 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE dc_user ADD roles_json JSON DEFAULT NULL');
+        $this->addSql('COMMENT ON COLUMN dc_user.roles IS \'json\'');
     }
 
     public function postUp(Schema $schema): void
@@ -28,7 +29,7 @@ final class Version20260108175816 extends AbstractMigration
         $rows = $connection->fetchAllAssociative('SELECT id, roles FROM dc_user WHERE roles IS NOT NULL');
 
         foreach ($rows as $row) {
-            $unserializedData = @unserialize($row['data']);
+            $unserializedData = @unserialize($row['roles']);
 
             if (false !== $unserializedData) {
                 $jsonData = json_encode($unserializedData);
