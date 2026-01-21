@@ -49,6 +49,22 @@ jobs:
           prerelease: false
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
 
+      - name: Generate build output using Markdown
+        run: |
+          {
+          echo "### Build Variables"
+          echo ""
+          echo "- Branch: main"
+          echo "- Build Identifier: main"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          {
+          echo "### Environment Details"
+          echo ""
+          echo "- Service Frontend URL: https://serve.opg.service.justice.gov.uk"
+          echo "- Tag Used: ${{ steps.semver_tag.outputs.tag }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   create_tag_release:
     name: Create release tag from releasable
     needs: [workflow_variables]
