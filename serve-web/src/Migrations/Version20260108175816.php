@@ -29,7 +29,10 @@ final class Version20260108175816 extends AbstractMigration
         $rows = $connection->fetchAllAssociative('SELECT id, roles FROM dc_user WHERE roles IS NOT NULL');
 
         foreach ($rows as $row) {
-            $unserializedData = @unserialize($row['roles']);
+            $unserializedData = [];
+            if (!is_null()) {
+                $unserializedData = @unserialize($row['roles']);
+            }
 
             if (false !== $unserializedData) {
                 $jsonData = json_encode($unserializedData);
