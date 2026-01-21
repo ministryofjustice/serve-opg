@@ -7,6 +7,7 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
+// NB this class name is wrong (doesn't match filename), so trying to migrate down to this version won't work
 final class Version20250710153000 extends AbstractMigration
 {
     public function getDescription(): string
