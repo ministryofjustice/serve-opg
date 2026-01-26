@@ -56,8 +56,8 @@
         "friends-of-behat/symfony-extension": "^2.4.2",
         "mockery/mockery": "^1.6.12",
         "phpspec/prophecy-phpunit": "^2.4",
-        "phpstan/phpstan": "^1.12.32",
-        "phpstan/phpstan-symfony": "^1.4.16",
+        "phpstan/phpstan": "^2.0.0",
+        "phpstan/phpstan-symfony": "^2.0.0",
         "phpunit/phpunit": "^9.6.31",
         "symfony/phpunit-bridge": "^5.4.48",
         "symplify/easy-coding-standard": "^12.6.2"
