@@ -9,7 +9,6 @@ use App\Form\PasswordResetForm;
 use App\Form\UserForm;
 use App\Repository\UserRepository;
 use App\Service\MailSender;
-use App\Service\Security\LoginAttempts\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,35 +17,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class UserController extends AbstractController
 {
-    private EntityManager $em;
-
-    private MailSender $mailerSender;
-
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(EntityManager $em, MailSender $mailerSender, UserPasswordHasherInterface $hasher)
-    {
-        $this->em = $em;
-        $this->mailerSender = $mailerSender;
-        $this->hasher = $hasher;
-    }
-
-    #[Route(path: '/login', name: 'login')]
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, UserProvider $up): Response
-    {
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-
-        return $this->render('User/login.html.twig', [
-            'error' => $error,
-            'lockedForSeconds' => $error && ($token = $error->getToken()) && ($username = $token->getUsername())
-                ? $up->usernameLockedForSeconds($username)
-                : false,
-        ]);
+    public function __construct(
+        private readonly EntityManager $em,
+        private readonly MailSender $mailerSender,
+        private readonly UserPasswordHasherInterface $hasher,
+    ) {
     }
 
     #[Route(path: '/user/password-reset/request', name: 'password-reset-request')]

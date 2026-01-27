@@ -90,7 +90,7 @@ class ApiWebTestCase extends WebTestCase
         return $user;
     }
 
-    protected function createAuthenticatedClient(array $creds = self::BASIC_AUTH_CREDS): KernelBrowser
+    protected function getAuthenticatedClient(array $creds = self::BASIC_AUTH_CREDS): KernelBrowser
     {
         /** @var KernelBrowser $client */
         $client = $this->getService('test.client');

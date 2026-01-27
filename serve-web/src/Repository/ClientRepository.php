@@ -11,12 +11,12 @@ class ClientRepository extends EntityRepository
 {
     public function delete(int $clientId): void
     {
-        $clientRepo = $this->_em->getRepository(Client::class);
+        $clientRepo = $this->getEntityManager()->getRepository(Client::class);
         $client = $clientRepo->findOneBy(['id' => $clientId]);
 
-        if ($client) {
-            $this->_em->remove($client);
-            $this->_em->flush();
+        if (!is_null($client)) {
+            $this->getEntityManager()->remove($client);
+            $this->getEntityManager()->flush();
         }
     }
 }

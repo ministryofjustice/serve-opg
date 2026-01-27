@@ -4,39 +4,35 @@ namespace App\Tests\EventListener;
 
 use App\Entity\User;
 use App\EventListener\SuccessfulAuthenticationListener;
-use DateTime;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
 
 class SuccessfulAuthenticationListenerTest extends TestCase
 {
-    use ProphecyTrait;
-
     public function testGetSubscribedEvents()
     {
         self::assertEquals(
-            SuccessfulAuthenticationListener::getSubscribedEvents(),
-            ['security.authentication.success' => 'updateLastLoginAt']
+            ['security.authentication.success' => 'updateLastLoginAt'],
+            SuccessfulAuthenticationListener::getSubscribedEvents()
         );
     }
 
     public function testUpdateLastLoginAt()
     {
         $expectedUserModel = new User('some@email.adress.com');
-        $expectedUserModel->setLastLoginAt(new DateTime());
+        $expectedUserModel->setLastLoginAt(new \DateTime());
 
-        /** @var EntityManager|ObjectProphecy $entityManager */
-        $entityManager = $this->prophesize(EntityManager::class);
-        $entityManager->persist($expectedUserModel)->shouldBeCalled();
-        $entityManager->flush()->shouldBeCalled();
+        $entityManager = self::createMock(EntityManager::class);
+        $entityManager->expects(self::once())->method('persist')->with($expectedUserModel);
+        $entityManager->expects(self::once())->method('flush');
 
-        $dummyToken = new UsernamePasswordToken($expectedUserModel, 'bar', 'key');
+        $dummyToken = new UsernamePasswordToken($expectedUserModel, 'bar', ['key']);
         $authenticationEvent = new AuthenticationEvent($dummyToken);
 
-        $eventListener = new SuccessfulAuthenticationListener($entityManager->reveal());
+        $eventListener = new SuccessfulAuthenticationListener($entityManager);
+
         $eventListener->updateLastLoginAt($authenticationEvent);
     }
 }

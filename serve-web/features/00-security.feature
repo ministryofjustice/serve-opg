@@ -29,7 +29,7 @@ Feature: security checks
       Then I should see the "form-errors" region
       When I log in as "behat@digital.justice.gov.uk" with wrong password
       Then I should see the "form-locked-error" region
-      # reset attempts and confirm that the error is now due to erorrs
+      # reset attempts and confirm that the error is now due to errors
       When I go to "/logout"
       And I go to "/behat/reset-brute-force-attempts-logger"
       And the response status code should be 200

@@ -58,4 +58,6 @@ CMD ["/bin/ash", "-c", "/usr/bin/wait-for-it.sh -h $DC_DB_HOST -p $DC_DB_PORT -t
   php bin/console doctrine:migrations:migrate --no-interaction && \
   php bin/console doctrine:migrations:up-to-date && \
   chown -R www-data var && \
+  mkdir -p /tmp/app-logs && \
+  chown -R www-data /tmp/app-logs && \
   php-fpm"]

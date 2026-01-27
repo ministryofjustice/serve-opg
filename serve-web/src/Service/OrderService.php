@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Entity\Client;
 use App\Entity\Order;
-use App\exceptions\NoMatchesFoundException;
-use App\exceptions\WrongCaseNumberException;
+use App\Exceptions\NoMatchesFoundException;
+use App\Exceptions\WrongCaseNumberException;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -131,7 +131,7 @@ REGEX;
      */
     public function hydrateOrderFromDocument(UploadedFile $file, Order $dehydratedOrder)
     {
-        // @todo catch exceptions for:
+        // @todo catch Exceptions for:
         //     - unknown mime type
         //     - unreadable file
 

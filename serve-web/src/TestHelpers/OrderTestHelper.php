@@ -11,6 +11,8 @@ use App\Entity\OrderPf;
 
 class OrderTestHelper
 {
+    private static int $orderCounter = 0;
+
     /**
      * @param string $madeAt    , in format YYYY-MM-DD
      * @param string $issuedAt  , in format YYYY-MM-DD
@@ -23,7 +25,11 @@ class OrderTestHelper
         $orderMadeDate = new \DateTime($madeAt);
         $orderIssuedDate = new \DateTime($issuedAt);
         $client = new Client($caseNumber, 'Bob Bobbins', $orderIssuedDate);
-        $orderNumber = $orderNumber ?: strval(time() + mt_rand(1, 1000000000));
+
+        if (is_null($orderNumber)) {
+            ++self::$orderCounter;
+            $orderNumber = time().random_int(10000000, 1000000000).self::$orderCounter;
+        }
 
         if ('HW' === $orderType) {
             $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
@@ -44,11 +50,11 @@ class OrderTestHelper
     public static function generateOrders(int $numberOfOrders, bool $setAsServed): array
     {
         $orders = [];
-        $lastOrderNumber = 99900000 + $numberOfOrders;
+        $lastCaseNumber = 99900000 + $numberOfOrders;
         $issuedAt = new \DateTime('2019-01-01');
 
-        for ($i = 99900000; $i < $lastOrderNumber; ++$i) {
-            $days = $lastOrderNumber - $i;
+        for ($i = 99900000; $i < $lastCaseNumber; ++$i) {
+            $days = $lastCaseNumber - $i;
             $dateString = $issuedAt->add(new \DateInterval("P{$days}D"))->format('Y-m-d');
 
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');

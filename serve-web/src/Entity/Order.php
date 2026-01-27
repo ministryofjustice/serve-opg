@@ -92,8 +92,8 @@ abstract class Order
     #[ORM\Column(name: 'api_response', type: 'json', nullable: true)]
     private mixed $apiResponse;
 
-    #[ORM\Column(name: 'order_number', type: 'string', unique: true, nullable: true)]
-    private ?string $orderNumber = null;
+    #[ORM\Column(name: 'order_number', type: 'string', nullable: true)]
+    private ?string $orderNumber;
 
     /**
      * Order constructor.

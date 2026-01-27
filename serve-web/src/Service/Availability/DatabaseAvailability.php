@@ -16,14 +16,13 @@ class DatabaseAvailability extends ServiceAvailabilityAbstract
     public function ping(): void
     {
         try {
-            $this->em->getConnection()->query('select * from information_schema.tables LIMIT 1')->fetchAll();
-
+            $this->em->getConnection()->executeQuery('select * from information_schema.tables LIMIT 1')->rowCount();
             $this->isHealthy = true;
-            $this->errors = "";
-         } catch (\Throwable $e) {
+            $this->errors = '';
+        } catch (\Throwable $e) {
             // customise error message if possible
-            echo($e->getMessage());
-             $returnMessage = 'Database generic error';
+            echo $e->getMessage();
+            $returnMessage = 'Database generic error';
             if ($e instanceof \PDOException && 7 === $e->getCode()) {
                 $returnMessage = 'Database service not reachable ('.$e->getMessage().')';
             }

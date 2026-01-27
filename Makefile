@@ -60,8 +60,11 @@ UNIT_TESTS := tests
 unit-tests: up-test ##@testing Requires the app to be built and up before running
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run app php ./vendor/bin/phpunit --testdox $(UNIT_TESTS) $(args)
 
-behat-tests: up-test ##@testing Requires the app to be built and up before running
-	docker compose -f docker-compose.yml -f docker-compose.test.yml run behat --suite=local
+behat-tests: ##@testing Requires the app to be built and up before running
+	WITH_XDEBUG=0 docker compose -f docker-compose.yml -f docker-compose.e2e.yml build app web
+	docker compose -f docker-compose.yml -f docker-compose.e2e.yml up -d --remove-orphans loadbalancer
+	docker compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm app php bin/console cache:clear --env=prod
+	docker compose -f docker-compose.yml -f docker-compose.e2e.yml run behat --suite=local
 
 reset-fixtures: ##@application Reset the fixture data for the app
 	docker compose exec app php bin/console doctrine:fixtures:load --purge-with-truncate -n

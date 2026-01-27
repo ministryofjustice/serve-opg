@@ -4,13 +4,13 @@ security:
             id: App\Service\Security\LoginAttempts\UserProvider
 
     password_hashers:
-      # Use native password hasher, which auto-selects and migrates the best
-      # possible hashing algorithm (starting from Symfony 5.3 this is "bcrypt")
-      Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        # Use native password hasher, which auto-selects and migrates the best
+        # possible hashing algorithm (starting from Symfony 5.3 this is "bcrypt")
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
     firewalls:
         dev:
-            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
         health:
@@ -19,17 +19,11 @@ security:
 
         main:
             provider: app_user_provider
-            anonymous: ~
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                default_target_path: case-list
             logout:
-                path:   app_logout
+                path: app_logout
                 target: app_login
-            guard:
-                authenticators:
-                    - App\Security\LoginFormAuthenticator
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }

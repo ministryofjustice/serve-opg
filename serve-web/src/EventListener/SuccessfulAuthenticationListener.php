@@ -1,9 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\EventListener;
 
 use App\Entity\User;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Event\AuthenticationEvent;
@@ -32,7 +33,6 @@ class SuccessfulAuthenticationListener implements EventSubscriberInterface
      *  * ['eventName' => 'methodName']
      *  * ['eventName' => ['methodName', $priority]]
      *  * ['eventName' => [['methodName1', $priority], ['methodName2']]]
-     *
      */
     public static function getSubscribedEvents(): array
     {
@@ -41,16 +41,14 @@ class SuccessfulAuthenticationListener implements EventSubscriberInterface
 
     public function updateLastLoginAt(AuthenticationEvent $event): void
     {
-        /** @var User $user */
+        /** @var ?User $user */
         $user = $event->getAuthenticationToken()->getUser();
 
-        if (is_string($user) || get_class($user) !== User::class) {
-            return;
+        if (User::class === get_class($user)) {
+            $user->setLastLoginAt(new \DateTime());
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
         }
-
-        $user->setLastLoginAt(new DateTime());
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
     }
 }
