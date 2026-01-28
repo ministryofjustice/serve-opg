@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine@sha256:0afccca5b8bc55c29aaf23bef27c05bcc9c9126896ec6a8129f4d5007d56c9e2
+FROM nginx:stable-alpine@sha256:e35873a161d0a08cc31e55f160301ad1676eec6d0072d4feccf78b3e7469d3ae
 
 ARG APP_HOST_ARG=${APP_HOST_LOCAL_ENV:-app}
 ARG APP_PORT_ARG=${APP_PORT_LOCAL_ENV:-9000}
