@@ -52,7 +52,7 @@
         "behat/mink": "^1.13",
         "behat/mink-browserkit-driver": "^2.3",
         "behat/mink-goutte-driver": "^2.0",
-        "doctrine/doctrine-fixtures-bundle": "^3.7.3",
+        "doctrine/doctrine-fixtures-bundle": "^4.0.0",
         "friends-of-behat/mink-extension": "^2.7.5",
         "friends-of-behat/symfony-extension": "^2.6.2",
         "mockery/mockery": "^1.6.12",
