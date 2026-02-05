@@ -129,15 +129,14 @@ services:
       timeout: 10s
     restart: always
 
-  yarn:
-    image: node:20-alpine
+  npm:
+    image: node:25-alpine
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
     volumes:
       - ./serve-web/node_modules:/var/www/node_modules
       - ./serve-web:/var/www
-    entrypoint: [ "yarn" ]
 
   behat:
     build:

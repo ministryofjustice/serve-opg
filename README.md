@@ -69,7 +69,7 @@ Note - this will also enable xdebug which can make the test suite run slowly. If
 
 ## Front end assets
 
-Assets are compiled using esbuild run via a yarn command.
+Assets are compiled using esbuild, run via a npm command (see package.json).
 
 When running `make dependencies` you will get the volume mounted assets created locally as well.
 

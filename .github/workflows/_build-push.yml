@@ -39,8 +39,8 @@ jobs:
         run: |
           # Create composer and JS dependencies
           docker compose run --rm app composer install --no-interaction
-          docker compose run --rm yarn install --frozen-lockfile --ignore-scripts
-          docker compose run --rm yarn build
+          docker compose run --rm --entrypoint "npm ci --ignore-scripts" npm
+          docker compose run --rm --entrypoint "npm run build" npm
           # Build all apps
           docker compose build "${CONTAINER}"
 

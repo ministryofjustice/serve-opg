@@ -35,8 +35,8 @@ build-up: build up reset-fixtures ##@application Builds and brings the app up in
 dependencies:
 	# Install composer, css and javascript dependencies
 	docker compose run --rm app composer install
-	docker compose run --rm yarn
-	docker compose run --rm yarn build-dev
+	docker compose run --rm --entrypoint "npm install" npm
+	docker compose run --rm --entrypoint "npm run build-dev" npm
 
 clear-cache: ##@application Clears the cache of the app container
 	docker compose run --rm app php bin/console cache:clear --env=prod
