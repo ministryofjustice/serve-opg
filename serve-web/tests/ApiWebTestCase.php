@@ -34,7 +34,7 @@ class ApiWebTestCase extends WebTestCase
     protected function getUserTestHelper(): UserTestHelper
     {
         if (!$this->userTestHelper instanceof UserTestHelper) {
-            $this->userTestHelper = new UserTestHelper();
+            $this->userTestHelper = new UserTestHelper('helper');
         }
 
         return $this->userTestHelper;

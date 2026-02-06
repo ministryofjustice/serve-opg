@@ -56,9 +56,9 @@
         "friends-of-behat/mink-extension": "^2.7.5",
         "friends-of-behat/symfony-extension": "^2.6.2",
         "mockery/mockery": "^1.6.12",
-        "phpspec/prophecy-phpunit": "^2.4",
+        "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan-symfony": "^1.4.16",
-        "phpunit/phpunit": "9.6.31",
+        "phpunit/phpunit": "^10.0",
         "symfony/phpunit-bridge": "^6.4.26",
         "symplify/easy-coding-standard": "^12.6.2"
     },
