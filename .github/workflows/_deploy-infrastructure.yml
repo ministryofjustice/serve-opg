@@ -32,7 +32,7 @@ jobs:
   terraform_workflow_job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: '0'
 
@@ -40,7 +40,7 @@ jobs:
 
       - id: terraform_version
         name: get terraform version
-        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
+        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-version@b8868247a908f74fafe1905701391580575a6d35 # v4.3.10
         with:
           terraform_directory: terraform/${{ inputs.terraform_path }}
 
@@ -50,7 +50,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Configure Terraform OIDC AWS Credentials
-        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-${{ inputs.account_name }}"
@@ -94,7 +94,7 @@ jobs:
       - name: Register Workspace
         id: terraform_workspace_manager
         if: inputs.apply == true && inputs.terraform_path == 'environment' && inputs.path_to_live == false
-        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-workspace-manager@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
+        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-workspace-manager@b8868247a908f74fafe1905701391580575a6d35 # v4.3.10
         with:
           aws_account_id: ${{ vars.DEVELOPMENT_ACCOUNT }}
           aws_iam_role: serve-opg-ci
@@ -113,7 +113,7 @@ jobs:
         working-directory: terraform/${{ inputs.terraform_path }}
 
       - name: Upload Config
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: cluster_config_${{ inputs.workspace }}
           path: ./terraform/environment/cluster_config.json
