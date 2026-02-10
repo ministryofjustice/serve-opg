@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine@sha256:0afccca5b8bc55c29aaf23bef27c05bcc9c9126896ec6a8129f4d5007d56c9e2
+FROM nginx:stable-alpine@sha256:15e96e59aa3b0aada3a121296e3bce117721f42d88f5f64217ef4b18f458c6ab
 
 ARG APP_HOST_ARG=${APP_HOST_LOCAL_ENV:-app}
 ARG APP_PORT_ARG=${APP_PORT_LOCAL_ENV:-9000}
@@ -9,15 +9,12 @@ WORKDIR /var/www
 COPY public/build public/build
 COPY docker/web/nginx.conf /etc/nginx/nginx.conf
 COPY docker/web/default.conf.tmpl /etc/nginx/conf.d/default.conf.tmpl
-COPY docker/waitforit/wait-for-it.sh /var/www/wait-for-it.sh
-RUN chmod +x /var/www/wait-for-it.sh
 
 ENV APP_HOST=$APP_HOST_ARG
 ENV APP_PORT=$APP_PORT_ARG
 ENV LOG_LEVEL=warn
+ENV TIMEOUT=30
 
 RUN envsubst '$APP_HOST $APP_PORT $LOG_LEVEL' < /etc/nginx/conf.d/default.conf.tmpl > /etc/nginx/conf.d/default.conf
 
-ENV TIMEOUT=30
-
-CMD /bin/sh -c "/var/www/wait-for-it.sh -h $APP_HOST -p $APP_PORT -t $TIMEOUT && nginx -g 'daemon off;'"
+CMD /bin/sh -c "nginx -g 'daemon off;'"

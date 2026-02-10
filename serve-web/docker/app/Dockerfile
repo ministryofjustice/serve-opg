@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine3.22@sha256:05988975024ecd97e23a34607834a9f8ac5f8a7807e91320b84d594d5002e20a
+FROM php:8.4-fpm-alpine3.23@sha256:41cc31d474f8444ee260b5e8a73d2b00a1c3a437cfc57c2d2d0cbc22bc5a3925
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
@@ -49,13 +49,9 @@ COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
 RUN chmod +x /usr/local/bin/health-check.sh
 RUN mkdir certs && chmod 755 certs && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
 
-COPY docker/waitforit/wait-for-it.sh /usr/bin/wait-for-it.sh
-RUN chmod +x /usr/bin/wait-for-it.sh
-
 ENV TIMEOUT=30
 
-CMD ["/bin/ash", "-c", "/usr/bin/wait-for-it.sh -h $DC_DB_HOST -p $DC_DB_PORT -t $TIMEOUT && \
-  php bin/console doctrine:migrations:migrate --no-interaction && \
+CMD ["/bin/ash", "-c", "php bin/console doctrine:migrations:migrate --no-interaction && \
   php bin/console doctrine:migrations:up-to-date && \
   chown -R www-data var && \
   mkdir -p /tmp/app-logs && \

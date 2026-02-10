@@ -10,8 +10,6 @@ server {
 
     error_log /var/log/nginx/error.log ${LOG_LEVEL};
 
-    rewrite ^$ https://${APP_HOST}:${APP_PORT}/ permanent;
-
     location ~ ^/index\.php(/|$) {
         fastcgi_pass ${APP_HOST}:${APP_PORT};
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
