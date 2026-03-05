@@ -21,7 +21,6 @@ sudo security add-trusted-cert -d -r trustRoot \
 ```
 
 
-
 ## Build and Run Serve Locally
 
 #### M1 macOS Monterey ≥ 12.2 | Intel macOS Monterey ≥ 12.3 Docker settings

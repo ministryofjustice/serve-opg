@@ -40,6 +40,17 @@ ROUTES = {
             f"Please check cloudwatch logs in the relevant *Serve* account\n"
         ),
     },
+    "critical_alarm": {
+        "secret_key": "opg-default",
+        "emoji": ":alert_slow:",
+        "template": lambda e: (
+            ":alert_slow: *CRITICAL ALERT - SERVE* :alert_slow:\n\n"
+            f"*Alarm:* {e.get('AlarmName', 'Unknown')}\n"
+            f"*Description:* {e.get('AlarmDescription', 'Unknown Description').capitalize()}\n\n"
+            "*Status:* CRITICAL\n\n"
+            "Service may be degraded or unavailable. Actions should be taken immediately to investigate this alarm."
+        ),
+    },
     "breakglass": {
         "secret_key": "opg-default",
         "emoji": ":rotating_light:",
@@ -63,6 +74,14 @@ def send_to_slack(webhook_url: str, text: str, emoji: str):
     with urllib.request.urlopen(req) as resp:
         return {"status": resp.getcode()}
 
+REASONS_FOR_CRITICAL_ALARM = [
+    "Production-availability-service",
+    "production-5xx-errors",
+    "production-response-time",
+    "sirius-unavailable",
+    "sirius-login",
+    "availability"
+]
 
 def handler(event, context):
     message = event
@@ -73,46 +92,59 @@ def handler(event, context):
             for record in event.get("Records", []):
                 if not isinstance(record, dict):
                     continue
+
                 sns = record.get("Sns")
                 if not isinstance(sns, dict):
                     continue
+
                 raw_message = sns.get("Message")
                 if not isinstance(raw_message, str):
                     continue
+
                 topic_arn = sns.get("TopicArn", "")
                 if not isinstance(topic_arn, str):
                     continue
+
                 if "custom_cloudwatch_alarms" in topic_arn and "breakglass" not in raw_message:
                     continue
-                
+
                 try:
                     parsed = json.loads(raw_message)
                 except json.JSONDecodeError as e:
                     print(f"Failed to parse SNS message as JSON: {e}, raw_message={raw_message}")
                     continue
 
-                if isinstance(parsed, dict):
-                    message = parsed
-                    if "AlarmName" in parsed:
+                if not isinstance(parsed, dict):
+                    continue
+
+                message = parsed
+
+                if "AlarmName" in parsed:
+                    alarm_name = parsed.get("AlarmName", "")
+
+                    if "breakglass" in alarm_name:
+                        event_type = "breakglass"
+                    elif any(reason.lower() in alarm_name.lower() for reason in REASONS_FOR_CRITICAL_ALARM):
+                        event_type = "critical_alarm"
+                    else:
                         event_type = "alarm"
-                        alarm_name = parsed.get("AlarmName", "")
-                        if "breakglass" in alarm_name:
-                            event_type = "breakglass"
-                    else: # If not an alarm, we will assume the type is in the message
-                        event_type = parsed.get("type", "")
-                    break
+                else:
+                    event_type = parsed.get("type", "")
+
+                break
     except Exception as e:
         print(f"Unexpected error while processing event: {e}")
 
-    if not event_type: 
-        event_type = message.get("type")
+    if not event_type:
+        if isinstance(message, dict):
+            event_type = message.get("type")
+        else:
+            event_type = ""
 
     if not event_type or event_type not in ROUTES:
         raise ValueError(f"Unknown event type: {event_type}, message: {message}")
 
-
     route = ROUTES[event_type]
-
     text = route["template"](message)
     emoji = route["emoji"] or ("✅" if message.get("status", "").lower() == "success" else "❌")
     webhook_url = get_secret_value(route["secret_key"])
