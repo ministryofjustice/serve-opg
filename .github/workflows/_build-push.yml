@@ -58,33 +58,52 @@ jobs:
         with:
           registries: ${{ vars.MANAGEMENT_ACCOUNT }}
 
-      - name: trivy image scanning
-        id: trivy_scan_app
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # 0.33.1
-        with:
-          image-ref: ${{ steps.login-ecr.outputs.registry }}/serve-opg/${{ matrix.svc_name }}:latest
-          severity: "HIGH,CRITICAL"
-          format: "sarif"
-          scanners: "vuln"
-          output: "trivy-results.sarif"
-          timeout: 15m
+      - name: Trivy scan + SBOM generation
         env:
-          TRIVY_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-db
-          TRIVY_JAVA_DB_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/trivy-db-public-ecr/aquasecurity/trivy-java-db
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          SVC: ${{ matrix.svc_name }}
+          BRANCH_NAME: ${{ inputs.branch_name }}
+        run: |
+          mkdir -p trivy sboms .trivy-cache
+          
+          LOCAL_IMAGE="${ECR_REGISTRY}/serve-opg/${SVC}:latest"
+          
+          docker save "${LOCAL_IMAGE}" -o "trivy/${SVC}.tar"
+
+          docker run --rm \
+            -v "${PWD}:/work" \
+            -v "${PWD}/.trivy-cache:/root/.cache/" \
+            -w /work \
+            aquasec/trivy:latest \
+            image \
+            --input "trivy/${SVC}.tar" \
+            --scanners vuln \
+            --severity HIGH,CRITICAL \
+            --timeout 15m \
+            --format sarif \
+            --output "trivy/trivy-results-${SVC}.sarif"
+
+          if [ "${BRANCH_NAME}" = "main" ]; then
+            docker run --rm \
+              -v "${PWD}:/work" \
+              -v "${PWD}/.trivy-cache:/root/.cache/" \
+              -w /work \
+              aquasec/trivy:latest \
+              image \
+              --input "trivy/${SVC}.tar" \
+              --timeout 15m \
+              --format spdx-json \
+              --output "sboms/sbom-${SVC}.spdx.json"
+          fi
 
       - name: upload trivy scan results to security tab
-        id: trivy_upload_sarif_app
-        uses: github/codeql-action/upload-sarif@b8d3b6e8af63cde30bdc382c0bc28114f4346c88 # v2.28.1
+        uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: "trivy-results.sarif"
-
-      - name: Generate SBOM
-        if: inputs.branch_name == 'main'
-        run: mkdir -p sboms && trivy image --format spdx --output sboms/sbom-${{ matrix.svc_name }}.spdx.json ${{ vars.MANAGEMENT_ACCOUNT }}.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/${{ matrix.svc_name }}:latest
+          sarif_file: trivy/trivy-results-${{ matrix.svc_name }}.sarif
 
       - name: Upload SBOM
         if: inputs.branch_name == 'main'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@v4
         with:
           name: sbom-${{ matrix.svc_name }}
           path: sboms/sbom-${{ matrix.svc_name }}.spdx.json
