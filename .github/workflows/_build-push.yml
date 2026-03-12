@@ -68,14 +68,12 @@ jobs:
           
           LOCAL_IMAGE="${ECR_REGISTRY}/serve-opg/${SVC}:latest"
           
-          docker save "${LOCAL_IMAGE}" -o "trivy/${SVC}.tar" 
+          docker save "${LOCAL_IMAGE}" -o "trivy/${SVC}.tar"
 
           docker run --rm \
             -v "${PWD}:/work" \
             -v "${PWD}/.trivy-cache:/root/.cache/" \
             -w /work \
-            -e TRIVY_DB_REPOSITORY="${ECR_REGISTRY}/trivy-db-public-ecr/aquasecurity/trivy-db" \
-            -e TRIVY_JAVA_DB_REPOSITORY="${ECR_REGISTRY}/trivy-db-public-ecr/aquasecurity/trivy-java-db" \
             aquasec/trivy:0.57.1 \
             image \
             --input "trivy/${SVC}.tar" \
@@ -90,8 +88,6 @@ jobs:
               -v "${PWD}:/work" \
               -v "${PWD}/.trivy-cache:/root/.cache/" \
               -w /work \
-              -e TRIVY_DB_REPOSITORY="${ECR_REGISTRY}/trivy-db-public-ecr/aquasecurity/trivy-db" \
-              -e TRIVY_JAVA_DB_REPOSITORY="${ECR_REGISTRY}/trivy-db-public-ecr/aquasecurity/trivy-java-db" \
               aquasec/trivy:0.57.1 \
               image \
               --input "trivy/${SVC}.tar" \
