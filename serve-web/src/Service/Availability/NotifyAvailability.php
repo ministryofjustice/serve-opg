@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Service\Availability;
 
-use Alphagov\Notifications\Client as NotifyClient;
+use Alphagov\Notifications\Client;
 use Alphagov\Notifications\Exception\NotifyException;
 
 class NotifyAvailability extends ServiceAvailabilityAbstract
 {
-    private NotifyClient $notifyClient;
+    private Client $notifyClient;
 
-    public function __construct(NotifyClient $notifyClient)
+    public function __construct(Client $notifyClient)
     {
         $this->notifyClient = $notifyClient;
         $this->isHealthy = true;
@@ -21,7 +21,7 @@ class NotifyAvailability extends ServiceAvailabilityAbstract
     public function ping(): void
     {
         try {
-            $this->pingNotify();
+            $this->notifyClient->listTemplates();
         } catch (NotifyException $e) {
             $this->isHealthy = false;
             $this->errors = sprintf('Notify - %s', $e->getMessage());
@@ -31,10 +31,5 @@ class NotifyAvailability extends ServiceAvailabilityAbstract
     public function getName(): string
     {
         return 'Notify';
-    }
-
-    public function pingNotify(): ?array
-    {
-        return $this->notifyClient->listTemplates();
     }
 }

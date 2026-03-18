@@ -5,22 +5,21 @@ namespace App\Service;
 use Alphagov\Notifications\Client;
 use Alphagov\Notifications\Exception\ApiException;
 use GuzzleHttp\Psr7\Response;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class NotifyClientMock extends Client
 {
     public static bool $failNext = false;
 
-    public function __construct(array $config)
-    {
-        return true;
-    }
-
-    public function sendEmail($emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL): array
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function sendEmail($emailAddress, $templateId, array $personalisation = [], $reference = '', $emailReplyToId = null, $oneClickUnsubscribeURL = null): array
     {
         if (self::$failNext) {
-            throw new ApiException('Error sending email', 1, ['errors' => []], new Response());
             self::$failNext = false;
+            throw new ApiException('Error sending email', 1, ['errors' => []], new Response());
         }
 
         $cache = new FilesystemAdapter();
@@ -44,6 +43,9 @@ class NotifyClientMock extends Client
         return $emails;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public static function getLastEmail()
     {
         $cache = new FilesystemAdapter();
