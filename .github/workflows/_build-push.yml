@@ -97,13 +97,13 @@ jobs:
           fi
 
       - name: upload trivy scan results to security tab
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8 # v4.33.0
         with:
           sarif_file: trivy/trivy-results-${{ matrix.svc_name }}.sarif
 
       - name: Upload SBOM
         if: inputs.branch_name == 'main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: sbom-${{ matrix.svc_name }}
           path: sboms/sbom-${{ matrix.svc_name }}.spdx.json
