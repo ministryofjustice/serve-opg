@@ -54,7 +54,7 @@ module "ssm_ec2_instance_data_access" {
   name             = "data-access"
   tags             = local.default_tags
   instance_profile = data.aws_iam_instance_profile.data_access.name
-  vpc_id           = aws_default_vpc.default.id
+  vpc_id           = module.network.vpc.id
 }
 
 data "aws_iam_instance_profile" "data_access" {
