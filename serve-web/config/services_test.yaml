@@ -6,9 +6,14 @@ services:
     App\Behat\:
         resource: '../src/Behat/*'
 
+    notificationHttpClientTest:
+        class: Http\Adapter\Guzzle7\Client
+
     App\Service\NotifyClientMock:
         arguments:
-            $config: []
+            $config:
+                httpClient: "@notificationHttpClientTest"
+                apiKey: "mock-0b6deb72-13ec-45f5-b598-88c7be007000-0b6deb72-13ec-45f5-b598-88c7be007000"
 
     App\Service\MailSender:
         arguments:

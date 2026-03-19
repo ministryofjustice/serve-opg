@@ -16,11 +16,14 @@ default:
 
     extensions:
         FriendsOfBehat\SymfonyExtension: ~
-        Behat\MinkExtension\ServiceContainer\MinkExtension:
-            goutte:
-                server_parameters:
-                    verify_host: false
-                    verify_peer: false
+        Behat\MinkExtension:
+            default_session: browserkit
+            sessions:
+                browserkit:
+                    browserkit_http:
+                        http_client_parameters:
+                            verify_peer: false
+                            verify_host: false
             files_path: "%paths.base%/features/fixtures/"
 
     formatters:
