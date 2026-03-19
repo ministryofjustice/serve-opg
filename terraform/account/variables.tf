@@ -8,6 +8,11 @@ variable "accounts" {
         domains_allowed = list(string)
         domains_blocked = list(string)
       })
+      network = object({
+        enabled        = bool
+        cidr_eu_west_1 = string,
+        cidr_eu_west_2 = string
+      })
     })
   )
 }
