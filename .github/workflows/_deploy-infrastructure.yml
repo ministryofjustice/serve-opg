@@ -28,6 +28,9 @@ on:
         required: false
         type: boolean
         default: false
+    secrets:
+      ssh_private_key_allow_list_repository:
+        required: true
 jobs:
   terraform_workflow_job:
     runs-on: ubuntu-latest
@@ -91,17 +94,17 @@ jobs:
           terraform plan -input=false -parallelism=30
         working-directory: terraform/${{ inputs.terraform_path }}
 
-      - name: Register Workspace
-        id: terraform_workspace_manager
+      - id: terraform_workspace_manager
         if: inputs.apply == true && inputs.terraform_path == 'environment' && inputs.path_to_live == false
-        uses: ministryofjustice/opg-github-actions/.github/actions/terraform-workspace-manager@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
+        name: Register Workspace
+        uses: ministryofjustice/opg-github-actions/actions/terraform-workspace-manager@b8868247a908f74fafe1905701391580575a6d35 # v4.3.10
         with:
           aws_account_id: ${{ vars.DEVELOPMENT_ACCOUNT }}
           aws_iam_role: serve-opg-ci
           register_workspace: ${{ inputs.workspace }}
           time_to_protect: 3
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          oidc_role: "arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-${{ inputs.account_name }}"
+          assume_role: false
 
       - name: Terraform Apply
         if: inputs.apply == true

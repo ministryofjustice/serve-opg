@@ -122,7 +122,8 @@ jobs:
     with:
       tag: ${{ needs.workflow_variables.outputs.version_tag }}
       branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
-    secrets: inherit
+    secrets:
+      snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
 
   deploy_to_branch_environment:
     name: Deploy to Branch Environment
@@ -139,7 +140,9 @@ jobs:
       terraform_path: environment
       path_to_live: ${{ fromJSON(needs.workflow_variables.outputs.path_to_live) }}
       apply: true
-    secrets: inherit
+    secrets:
+      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
+
 
   plan_development_account:
     if: github.event_name == 'merge_group'
@@ -155,7 +158,8 @@ jobs:
       container_version: ${{ needs.workflow_variables.outputs.version_tag }}
       terraform_path: account
       apply: false
-    secrets: inherit
+    secrets:
+      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
   behat_branch_environment:
     name: Branch Environment Behat
@@ -169,7 +173,6 @@ jobs:
       suite: --suite=${{ needs.workflow_variables.outputs.suite }}
       account_name: ${{ needs.workflow_variables.outputs.account_name }}
       account_id: ${{ needs.workflow_variables.outputs.account_id }}
-    secrets: inherit
 
   create_tag_release:
     if: github.event_name == 'merge_group'
@@ -179,7 +182,6 @@ jobs:
     with:
       current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
       release_tag: releasable
-    secrets: inherit
 
   end_of_pr_workflow:
     name: End of PR Workflow
