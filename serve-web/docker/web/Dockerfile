@@ -1,4 +1,6 @@
-FROM nginx:stable-alpine-slim@sha256:b33eedfdf089be1f83759ced27b4deec5b6f1b6fc2a6819ebce0ae351a4406e5
+FROM nginx:stable-alpine@sha256:15e96e59aa3b0aada3a121296e3bce117721f42d88f5f64217ef4b18f458c6ab
+
+ARG APP_HOST_ARG=${APP_HOST_LOCAL_ENV:-app}
 ARG APP_PORT_ARG=${APP_PORT_LOCAL_ENV:-9000}
 
 RUN apk update && apk upgrade
