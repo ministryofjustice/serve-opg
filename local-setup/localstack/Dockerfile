@@ -1,4 +1,4 @@
-FROM localstack/localstack:4.6 as localstack
+FROM localstack/localstack:4.6@sha256:5a97e0f9917a3f0d9630bb13b9d8ccf10cbe52f33252807d3b4e21418cc21348 as localstack
 # Can't upgrade to 4.7 because of dynamodb changes that require types being set
 # This is handled by dependencies that need upgrading
 
