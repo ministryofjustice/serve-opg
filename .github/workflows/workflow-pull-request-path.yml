@@ -27,6 +27,16 @@ defaults:
     shell: bash
 
 jobs:
+  check_aws:
+    runs-on: ubuntu-slim
+    name: output workflow variables
+    steps:
+      - name: aws version
+        run: |
+            aws --version
+            which aws
+            ls /usr/local/bin
+
   workflow_variables:
     runs-on: ubuntu-latest
     name: output workflow variables
@@ -49,10 +59,12 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           WORKFLOW_TYPE: ${{ github.event_name }}
+          AWS_CLI_VERSION: 2.34.20
+          AWS_CLI_SHA256: "328b3ae0ea1e545c23a3ac9203142950e0006ef0118d85dcc8be6ec665d6ecd7"
         run: |
+          ./scripts/install-aws-cli.sh
           BRANCH=$(echo "${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}" | awk -F'_' '{print $1}' | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]' | cut -c1-8)
           export BRANCH
-
           {
             echo "branch_formatted=${BRANCH}"
 
