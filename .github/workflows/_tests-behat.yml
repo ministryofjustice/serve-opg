@@ -51,6 +51,11 @@ jobs:
         with:
           python-version: "3.13.7"
 
+      - name: SLSA
+        uses: ministryofjustice/devsecops-actions/sca/slsa@4cd163be7859cd130800d6719d925318826038ea
+        with:
+          requirements-file: ./serve-web/requirements.txt
+
       - name: Install Python packages
         run: |
           pip3 install -r scripts/ci_ingress/requirements.txt
