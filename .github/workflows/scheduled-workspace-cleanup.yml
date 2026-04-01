@@ -69,6 +69,11 @@ jobs:
           python-version: "3.13"
           cache: "pip"
 
+      - name: SLSA
+        uses: ministryofjustice/devsecops-actions/sca/slsa@4cd163be7859cd130800d6719d925318826038ea
+        with:
+          requirements-file: scripts/cleanup/requirements.txt
+
       - name: clean up old task definitions
         env:
           REGION: eu-west-1
