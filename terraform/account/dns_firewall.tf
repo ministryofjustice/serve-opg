@@ -128,3 +128,5 @@ fields @timestamp, query_name, firewall_rule_action
 | stats count() as frequency by query_name, firewall_rule_action
 EOF
 }
+
+# ==== Move to New VPC ====
