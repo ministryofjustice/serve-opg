@@ -7,6 +7,7 @@
     "helpers:pinGitHubActionDigests"
   ],
   "branchPrefix": "renovate-",
+  "minimumReleaseAge": "7 days",
   "commitMessageAction": "Renovate Update",
   "labels": [
     "Dependencies",
@@ -27,7 +28,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchCategories": [
         "php"
       ],
@@ -50,7 +50,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchCategories": [
         "node"
       ],
@@ -72,7 +71,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchCategories": [
         "docker"
       ],
@@ -94,7 +92,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchCategories": [
         "python"
       ],
@@ -116,7 +113,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchCategories": [
         "golang"
       ],
@@ -138,7 +134,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchPackageNames": [
         "*",
         "!php"
@@ -156,7 +151,6 @@
       "schedule": [
         "after 6am and before 9am on Monday"
       ],
-      "minimumReleaseAge": "3 days",
       "matchPackageNames": [
         "/actions/*/"
       ]
