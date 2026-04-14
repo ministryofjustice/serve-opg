@@ -1,0 +1,24 @@
+version: v1.25.1
+ignore:
+    SNYK-ALPINE323-NGINX-15805104:
+        - '*':
+            reason: Temp ignore for higher priority fix
+            expires: 2026-04-31T16:00:38.314Z
+            created: 2026-03-30T16:00:38.316Z
+    SNYK-ALPINE323-NGINX-15805105:
+        - '*':
+            reason: Temp ignore for higher priority fix
+            expires: 2026-04-31T16:00:38.314Z
+            created: 2026-03-30T16:00:38.316Z
+    SNYK-ALPINE323-NGINX-15805107:
+        - '*':
+            reason: Temp ignore for higher priority fix
+            expires: 2026-04-31T16:00:38.314Z
+            created: 2026-03-30T16:00:38.316Z
+    SNYK-ALPINE323-NGINX-15805108:
+        - '*':
+            reason: Temp ignore for higher priority fix
+            expires: 2026-04-31T16:00:38.314Z
+            created: 2026-03-30T16:00:38.316Z
+
+patch: {}
