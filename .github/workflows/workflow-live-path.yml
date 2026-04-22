@@ -153,6 +153,7 @@ jobs:
       suite: "--tags @smoke"
       account_name: production
       account_id: ${{ vars.PRODUCTION_ACCOUNT }}
+      vpc_scope: main
     secrets: inherit
 
   slack_notify_success:

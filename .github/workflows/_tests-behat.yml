@@ -29,7 +29,10 @@ on:
         description: "Account ID"
         required: true
         type: string
-
+      vpc_scope:
+        description: "VPC Scope"
+        required: true
+        type: string
 jobs:
   run_behat_tests:
     runs-on: ubuntu-latest
@@ -81,9 +84,11 @@ jobs:
           echo "BEHAT_PASSWORD=$BEHAT_PASSWORD" >> "$GITHUB_ENV"
 
       - name: Allow CI ingress
+        env:
+          VPC_SCOPE: ${{ inputs.vpc_scope }}
         run: |
           echo "$TF_WORKSPACE"
-          python scripts/ci_ingress/ci_ingress.py cluster_config.json --add
+          python scripts/ci_ingress/ci_ingress.py cluster_config.json --add --vpc-scope ${VPC_SCOPE}
 
       - name: Run Behat
         env:
@@ -104,6 +109,8 @@ jobs:
 
       - name: Remove CI ingress
         if: ${{ always() }}
+        env:
+          VPC_SCOPE: ${{ inputs.vpc_scope }}
         run: |
           echo "$TF_WORKSPACE"
-          python scripts/ci_ingress/ci_ingress.py cluster_config.json
+          python scripts/ci_ingress/ci_ingress.py cluster_config.json --vpc-scope ${VPC_SCOPE}
