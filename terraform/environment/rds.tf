@@ -117,13 +117,13 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  subnet_ids = data.aws_subnet.private[*].id
+  subnet_ids = local.account.use_new_network ? data.aws_subnet.data[*].id : data.aws_subnet.private[*].id
   tags       = local.default_tags
 }
 
 resource "aws_security_group" "database" {
   name   = "database-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   lifecycle {

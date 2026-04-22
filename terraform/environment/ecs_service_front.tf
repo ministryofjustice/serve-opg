@@ -12,7 +12,7 @@ resource "aws_ecs_service" "frontend" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_service.id]
-    subnets          = data.aws_subnet.private[*].id
+    subnets          = local.account.use_new_network ? data.aws_subnet.application[*].id : data.aws_subnet.private[*].id
     assign_public_ip = false
   }
 
@@ -30,7 +30,7 @@ resource "aws_cloudwatch_log_group" "serve" {
 
 resource "aws_security_group" "ecs_service" {
   name   = "frontend-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {

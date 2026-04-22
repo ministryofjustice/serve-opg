@@ -1,7 +1,7 @@
 resource "aws_lb" "frontend" {
   name               = "frontend-${local.environment}"
   load_balancer_type = "application"
-  subnets            = data.aws_subnet.public[*].id
+  subnets            = local.account.use_new_network ? data.aws_subnet.load_balancer[*].id : data.aws_subnet.public[*].id
   security_groups    = [aws_security_group.load_balancer.id, aws_security_group.load_balancer_hc.id]
   tags               = local.default_tags
 
@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "frontend" {
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
-  vpc_id               = data.aws_vpc.vpc.id
+  vpc_id               = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
   deregistration_delay = 0
   tags                 = local.default_tags
 
@@ -46,7 +46,7 @@ resource "aws_lb_listener" "frontend" {
 
 resource "aws_security_group" "load_balancer" {
   name   = "load-balancer-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {
@@ -80,7 +80,7 @@ locals {
 # New SG as large number of cidr ranges
 resource "aws_security_group" "load_balancer_hc" {
   name   = "load-balancer-hc-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
   tags   = local.default_tags
   lifecycle {
     create_before_destroy = true
