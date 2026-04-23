@@ -117,13 +117,13 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  subnet_ids = data.aws_subnet.private[*].id
+  subnet_ids = local.account.use_new_network ? data.aws_subnet.data[*].id : data.aws_subnet.private[*].id
   tags       = local.default_tags
 }
 
 resource "aws_security_group" "database" {
   name   = "database-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   lifecycle {
@@ -155,13 +155,17 @@ data "aws_security_group" "ssm_ec2_operator" {
   name = "operator-ssm-instance"
 }
 
+data "aws_security_group" "ssm_ec2_data_access" {
+  name = "data-access-ssm-instance"
+}
+
 resource "aws_security_group_rule" "allow_ssm_to_db_inbound" {
   type                     = "ingress"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
   protocol                 = "tcp"
   security_group_id        = aws_security_group.database.id
-  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
+  source_security_group_id = local.account.use_new_network ? data.aws_security_group.ssm_ec2_data_access.id : data.aws_security_group.ssm_ec2_operator.id
 }
 
 resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
@@ -169,7 +173,7 @@ resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
   protocol                 = "tcp"
-  security_group_id        = data.aws_security_group.ssm_ec2_operator.id
+  security_group_id        = local.account.use_new_network ? data.aws_security_group.ssm_ec2_data_access.id : data.aws_security_group.ssm_ec2_operator.id
   source_security_group_id = aws_security_group.database.id
 }
 

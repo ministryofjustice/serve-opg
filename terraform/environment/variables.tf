@@ -23,6 +23,7 @@ variable "accounts" {
       rds_instance_count        = number
       use_event_bus             = string
       dr_backup                 = string
+      use_new_network           = bool
     })
   )
 }

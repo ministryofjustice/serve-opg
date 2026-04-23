@@ -173,6 +173,7 @@ jobs:
       suite: --suite=${{ needs.workflow_variables.outputs.suite }}
       account_name: ${{ needs.workflow_variables.outputs.account_name }}
       account_id: ${{ needs.workflow_variables.outputs.account_id }}
+      vpc_scope: ${{ needs.workflow_variables.outputs.build_identifier == 'preproduction' && 'main' || 'serveopg' }}
 
   create_tag_release:
     if: github.event_name == 'merge_group'
