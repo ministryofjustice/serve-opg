@@ -59,6 +59,10 @@ data "aws_kms_key" "rds" {
   key_id = "alias/aws/rds"
 }
 
+data "aws_kms_alias" "rds_encryption_key" {
+  name = "alias/serve_rds_encryption_key"
+}
+
 resource "aws_rds_cluster" "cluster_serverless" {
   cluster_identifier                  = "serve-opg-${local.environment}-cluster"
   apply_immediately                   = local.account.deletion_protection ? false : true
@@ -72,7 +76,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   engine_version                      = local.account.postgres_version
   engine_mode                         = "provisioned"
   final_snapshot_identifier           = "serve-opg-${local.environment}-final-snapshot"
-  kms_key_id                          = data.aws_kms_key.rds.arn
+  kms_key_id                          = local.account.use_rds_cmk ? data.aws_kms_alias.rds_encryption_key.target_key_arn : data.aws_kms_key.rds.arn
   master_username                     = "serveopgadmin"
   master_password                     = data.aws_secretsmanager_secret_version.database_password.secret_string
   preferred_backup_window             = "05:15-05:45"
@@ -104,7 +108,7 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
   monitoring_interval             = 30
   monitoring_role_arn             = "arn:aws:iam::${local.account.account_id}:role/rds-enhanced-monitoring"
   performance_insights_enabled    = true
-  performance_insights_kms_key_id = data.aws_kms_key.rds.arn
+  performance_insights_kms_key_id = local.account.use_rds_cmk ? data.aws_kms_alias.rds_encryption_key.target_key_arn : data.aws_kms_key.rds.arn
   ca_cert_identifier              = "rds-ca-rsa2048-g1"
   publicly_accessible             = false
   tags                            = local.default_tags
