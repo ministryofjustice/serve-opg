@@ -24,6 +24,7 @@ variable "accounts" {
       use_event_bus             = string
       dr_backup                 = string
       use_new_network           = bool
+      use_rds_cmk               = bool
     })
   )
 }
