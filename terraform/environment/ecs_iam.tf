@@ -91,6 +91,8 @@ data "aws_iam_policy_document" "task_role" {
   }
 }
 
+
+
 # ===== Task Execution Role =====
 resource "aws_iam_role" "execution" {
   name               = "execution-role-${local.environment}"
@@ -179,5 +181,55 @@ data "aws_iam_policy_document" "events_task_runner_policy" {
     effect    = "Allow"
     resources = [module.disaster_recovery_backup[0].task_definition_arn]
     actions   = ["ecs:RunTask"]
+  }
+}
+
+
+
+# Orchestration Role (Backups, Restores and Other adhoc tasks)
+resource "aws_iam_role" "orchestration" {
+  name               = "orchestration-${local.environment}"
+  assume_role_policy = data.aws_iam_policy_document.orchestration_role_assume_policy.json
+}
+
+resource "aws_iam_role_policy" "orchestration" {
+  policy = data.aws_iam_policy_document.orchestration_role.json
+  role   = aws_iam_role.orchestration.name
+}
+
+data "aws_iam_policy_document" "orchestration_role_assume_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      identifiers = ["ecs-tasks.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+data "aws_iam_policy_document" "orchestration_role" {
+  statement {
+    sid    = "S3DocumentStorage"
+    effect = "Allow"
+
+    actions = [
+      "s3:List*",
+      "s3:AbortMultipartUpload",
+      "s3:DeleteObject",
+      "s3:DeleteObject*",
+      "s3:GetObject",
+      "s3:GetObject*",
+      "s3:PutObject",
+      "s3:PutObject*",
+      "s3:RestoreObject",
+      "s3:GetEncryptionConfiguration",
+    ]
+
+    resources = [
+      aws_s3_bucket.bucket.arn,
+      "${aws_s3_bucket.bucket.arn}/*"
+    ]
   }
 }
