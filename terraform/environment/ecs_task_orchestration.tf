@@ -103,6 +103,51 @@ resource "aws_security_group_rule" "orchestration_to_database" {
   type                     = "egress"
 }
 
+resource "aws_security_group_rule" "orchestration_egress_ecr" {
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  security_group_id        = aws_security_group.orchestration.id
+  source_security_group_id = data.aws_security_group.ecr_endpoint.id
+  type                     = "egress"
+}
+
+resource "aws_security_group_rule" "orchestration_egress_ecr_api" {
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  security_group_id        = aws_security_group.orchestration.id
+  source_security_group_id = data.aws_security_group.ecr_api_endpoint.id
+  type                     = "egress"
+}
+
+resource "aws_security_group_rule" "orchestration_egress_secrets" {
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  security_group_id        = aws_security_group.orchestration.id
+  source_security_group_id = data.aws_security_group.secrets_endpoint.id
+  type                     = "egress"
+}
+
+resource "aws_security_group_rule" "orchestration_egress_logs" {
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  security_group_id        = aws_security_group.orchestration.id
+  source_security_group_id = data.aws_security_group.logs_endpoint.id
+  type                     = "egress"
+}
+
+resource "aws_security_group_rule" "orchestration_egress_s3" {
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+  security_group_id = aws_security_group.orchestration.id
+  prefix_list_ids   = [data.aws_vpc_endpoint.s3_endpoint.prefix_list_id]
+  type              = "egress"
+}
+
 locals {
   orchestration_variables = [
     {
@@ -127,7 +172,33 @@ locals {
     },
     {
       name  = "S3_BUCKET",
-      value = local.account.sirius_bucket
+      value = aws_s3_bucket.orchestration.bucket
     }
   ]
+}
+
+# VPC Endpoints
+data "aws_security_group" "ecr_endpoint" {
+  tags   = { Name = "ecr_endpoint" }
+  vpc_id = data.aws_vpc.main.id
+}
+
+data "aws_security_group" "logs_endpoint" {
+  tags   = { Name = "logs_endpoint" }
+  vpc_id = data.aws_vpc.main.id
+}
+
+data "aws_vpc_endpoint" "s3_endpoint" {
+  service_name = "com.amazonaws.eu-west-1.s3"
+  vpc_id       = data.aws_vpc.main.id
+}
+
+data "aws_security_group" "secrets_endpoint" {
+  tags   = { Name = "secrets_endpoint" }
+  vpc_id = data.aws_vpc.main.id
+}
+
+data "aws_security_group" "ecr_api_endpoint" {
+  tags   = { Name = "ecr_api_endpoint" }
+  vpc_id = data.aws_vpc.main.id
 }

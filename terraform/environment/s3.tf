@@ -137,3 +137,58 @@ resource "aws_s3_bucket_public_access_block" "logs" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+# ===== Bucket for backups / restores / data work =====
+resource "aws_s3_bucket" "orchestration" {
+  bucket        = "${local.environment}.orchestration.serve.opg.digital"
+  force_destroy = true
+  tags          = local.default_tags
+}
+
+resource "aws_s3_bucket_logging" "orchestration" {
+  bucket = aws_s3_bucket.orchestration.id
+
+  target_bucket = data.aws_s3_bucket.access_logging.id
+  target_prefix = "log/${aws_s3_bucket.orchestration.id}/"
+}
+
+resource "aws_s3_bucket_ownership_controls" "orchestration" {
+  bucket = aws_s3_bucket.orchestration.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "orchestration" {
+  depends_on = [aws_s3_bucket_ownership_controls.orchestration]
+  bucket     = aws_s3_bucket.orchestration.id
+  acl        = "private"
+}
+
+resource "aws_s3_bucket_versioning" "orchestration" {
+  bucket = aws_s3_bucket.orchestration.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "orchestration" {
+  bucket = aws_s3_bucket.orchestration.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "orchestration" {
+  bucket = aws_s3_bucket.orchestration.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}

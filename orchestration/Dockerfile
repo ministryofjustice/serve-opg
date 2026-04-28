@@ -11,6 +11,11 @@ ENV S3_ENDPOINT=**None**
 ENV S3_PREFIX=**None**
 ENV S3_S3V4=yes
 
+# Install AWS CLI and wget
+RUN apk add --no-cache --update \
+    aws-cli \
+    wget
+
 # Use 14 as later versions can cause issues with our backup and restore
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/v3.17/main \
