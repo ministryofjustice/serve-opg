@@ -153,6 +153,15 @@ resource "aws_security_group_rule" "database_tcp_out" {
   type                     = "egress"
 }
 
+resource "aws_security_group_rule" "database_from_orchestration" {
+  protocol                 = "tcp"
+  from_port                = aws_rds_cluster.cluster_serverless.port
+  to_port                  = aws_rds_cluster.cluster_serverless.port
+  security_group_id        = aws_security_group.database.id
+  source_security_group_id = aws_security_group.orchestration.id
+  type                     = "ingress"
+}
+
 # Security Group Rules to allow access to the SSM instance
 
 data "aws_security_group" "ssm_ec2_operator" {
