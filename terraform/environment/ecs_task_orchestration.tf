@@ -95,6 +95,7 @@ resource "aws_security_group" "orchestration" {
 }
 
 resource "aws_security_group_rule" "orchestration_to_database" {
+  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
@@ -104,6 +105,7 @@ resource "aws_security_group_rule" "orchestration_to_database" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_ecr" {
+  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -113,6 +115,7 @@ resource "aws_security_group_rule" "orchestration_egress_ecr" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_ecr_api" {
+  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -122,6 +125,7 @@ resource "aws_security_group_rule" "orchestration_egress_ecr_api" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_secrets" {
+  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -131,6 +135,7 @@ resource "aws_security_group_rule" "orchestration_egress_secrets" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_logs" {
+  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -140,6 +145,7 @@ resource "aws_security_group_rule" "orchestration_egress_logs" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_s3" {
+  count             = local.account.use_new_network ? 1 : 0
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
