@@ -30,21 +30,21 @@ resource "aws_rds_cluster" "cluster" {
   iam_database_authentication_enabled = true
 
   serverlessv2_scaling_configuration {
-    min_capacity = 0
-    max_capacity = 16
+    min_capacity = local.environment == "production" ? 0.5 : 0
+    max_capacity = 8
   }
   depends_on = [aws_cloudwatch_log_group.rds]
 }
 
 resource "aws_rds_cluster_instance" "instances" {
   count                           = local.account.rds_instance_count
-  cluster_identifier              = aws_rds_cluster.cluster_serverless.cluster_identifier
+  cluster_identifier              = aws_rds_cluster.cluster.cluster_identifier
   apply_immediately               = local.account.deletion_protection ? false : true
   auto_minor_version_upgrade      = false
   db_subnet_group_name            = aws_db_subnet_group.database.name
-  depends_on                      = [aws_rds_cluster.cluster_serverless]
-  engine                          = aws_rds_cluster.cluster_serverless.engine
-  engine_version                  = aws_rds_cluster.cluster_serverless.engine_version
+  depends_on                      = [aws_rds_cluster.cluster]
+  engine                          = aws_rds_cluster.cluster.engine
+  engine_version                  = aws_rds_cluster.cluster.engine_version
   identifier                      = "serve-${local.environment}-${count.index}"
   instance_class                  = "db.serverless"
   monitoring_interval             = 30
