@@ -97,8 +97,8 @@ resource "aws_security_group" "orchestration" {
 resource "aws_security_group_rule" "orchestration_to_database" {
   count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
   security_group_id        = aws_security_group.orchestration.id
   source_security_group_id = aws_security_group.database.id
   type                     = "egress"
@@ -158,19 +158,19 @@ locals {
   orchestration_variables = [
     {
       name  = "POSTGRES_DATABASE",
-      value = aws_rds_cluster.cluster_serverless.database_name
+      value = aws_rds_cluster.cluster.database_name
     },
     {
       name  = "POSTGRES_HOST",
-      value = aws_rds_cluster.cluster_serverless.endpoint
+      value = aws_rds_cluster.cluster.endpoint
     },
     {
       name  = "POSTGRES_PORT",
-      value = tostring(aws_rds_cluster.cluster_serverless.port)
+      value = tostring(aws_rds_cluster.cluster.port)
     },
     {
       name  = "POSTGRES_USER",
-      value = aws_rds_cluster.cluster_serverless.master_username
+      value = aws_rds_cluster.cluster.master_username
     },
     {
       name  = "S3_PREFIX",
