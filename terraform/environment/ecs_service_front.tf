@@ -11,13 +11,13 @@ resource "aws_ecs_service" "frontend" {
   wait_for_steady_state = true
 
   network_configuration {
-    security_groups  = [aws_security_group.ecs_service.id]
+    security_groups  = local.account.use_new_network ? [aws_security_group.frontend.id] : [aws_security_group.ecs_service.id]
     subnets          = local.account.use_new_network ? data.aws_subnet.application[*].id : data.aws_subnet.private[*].id
     assign_public_ip = false
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.frontend.arn
+    target_group_arn = local.account.use_new_network ? aws_lb_target_group.frontend_tg.arn : aws_lb_target_group.frontend.arn
     container_name   = "web"
     container_port   = 80
   }
@@ -28,9 +28,10 @@ resource "aws_cloudwatch_log_group" "serve" {
   retention_in_days = 180
 }
 
+# Old network ECS Service SG
 resource "aws_security_group" "ecs_service" {
   name   = "frontend-${local.environment}"
-  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   ingress {
@@ -38,6 +39,31 @@ resource "aws_security_group" "ecs_service" {
     from_port       = 80
     to_port         = 80
     security_groups = [aws_security_group.load_balancer.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# New network ECS Service SG
+resource "aws_security_group" "frontend" {
+  name   = "frontend-${local.environment}"
+  vpc_id = data.aws_vpc.main.id
+  tags   = local.default_tags
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 80
+    to_port         = 80
+    security_groups = [aws_security_group.elastic_load_balancer.id]
   }
 
   egress {
