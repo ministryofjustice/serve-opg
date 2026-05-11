@@ -13,7 +13,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:1.9-alpine@sha256:8794eb7272e32201ae3ddc79d90950e9ac2afdaff5ca6ad1aac9336c921d49bf
+    image: jwilder/nginx-proxy:1.10-alpine@sha256:b8b215454139886b8d366663fbcc4e69bb0a807262a615f7e8491dbd7fb23a29
     ports:
       - 443:443
     volumes:
@@ -102,7 +102,7 @@ services:
 
   # TODO - Work out why upgrades to prism break behat
   sirius-api:
-    image: stoplight/prism:4.4.1
+    image: stoplight/prism:4.4.2@sha256:4b9ea68b46789a3d263953632a06a6ffab2fca6e72ee8e3c372fe7ec27edddb4
     ports:
       - 4010:4010
     volumes:
@@ -134,7 +134,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:14.19
+    image: postgres:14.20@sha256:062b02051873a101837543675b5b4601cba06b1972d22f4b7969adbde5a280e4
     ports:
       - 5432:5432
     environment:
