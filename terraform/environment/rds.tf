@@ -1,53 +1,3 @@
-locals {
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-}
-
-# See the following link for further information
-# https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
-data "aws_iam_policy_document" "cloudwatch_kms" {
-  statement {
-    sid       = "Enable Root account permissions on Key"
-    effect    = "Allow"
-    actions   = ["kms:*"]
-    resources = ["*"]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-      ]
-    }
-  }
-
-  statement {
-    sid       = "Allow Key to be used for Encryption"
-    effect    = "Allow"
-    resources = ["*"]
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey",
-    ]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "logs.${data.aws_region.current.name}.amazonaws.com",
-        "events.amazonaws.com"
-      ]
-    }
-  }
-}
-
-resource "aws_kms_key" "cloudwatch_logs" {
-  description             = "Serve cloudwatch logs for ${local.environment}"
-  deletion_window_in_days = 10
-  enable_key_rotation     = true
-  policy                  = data.aws_iam_policy_document.cloudwatch_kms.json
-}
-
 resource "aws_cloudwatch_log_group" "api_cluster" {
   name              = "/aws/rds/cluster/serve-opg-${local.environment}/postgresql"
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
@@ -76,7 +26,7 @@ resource "aws_rds_cluster" "cluster_serverless" {
   engine_version                      = local.account.postgres_version
   engine_mode                         = "provisioned"
   final_snapshot_identifier           = "serve-opg-${local.environment}-final-snapshot"
-  kms_key_id                          = local.account.use_rds_cmk ? data.aws_kms_alias.rds_encryption_key.target_key_arn : data.aws_kms_key.rds.arn
+  kms_key_id                          = data.aws_kms_key.rds.arn
   master_username                     = "serveopgadmin"
   master_password                     = data.aws_secretsmanager_secret_version.database_password.secret_string
   preferred_backup_window             = "05:15-05:45"
@@ -108,7 +58,7 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
   monitoring_interval             = 30
   monitoring_role_arn             = "arn:aws:iam::${local.account.account_id}:role/rds-enhanced-monitoring"
   performance_insights_enabled    = true
-  performance_insights_kms_key_id = local.account.use_rds_cmk ? data.aws_kms_alias.rds_encryption_key.target_key_arn : data.aws_kms_key.rds.arn
+  performance_insights_kms_key_id = data.aws_kms_key.rds.arn
   ca_cert_identifier              = "rds-ca-rsa2048-g1"
   publicly_accessible             = false
   tags                            = local.default_tags
@@ -121,13 +71,13 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
 }
 
 resource "aws_db_subnet_group" "database" {
-  subnet_ids = local.account.use_new_network ? data.aws_subnet.data[*].id : data.aws_subnet.private[*].id
+  subnet_ids = data.aws_subnet.private[*].id
   tags       = local.default_tags
 }
 
 resource "aws_security_group" "database" {
   name   = "database-${local.environment}"
-  vpc_id = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
+  vpc_id = data.aws_vpc.vpc.id
   tags   = local.default_tags
 
   lifecycle {
@@ -136,6 +86,7 @@ resource "aws_security_group" "database" {
 }
 
 resource "aws_security_group_rule" "database_tcp_in" {
+  count                    = local.account.use_new_network ? 0 : 1
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
@@ -145,6 +96,7 @@ resource "aws_security_group_rule" "database_tcp_in" {
 }
 
 resource "aws_security_group_rule" "database_tcp_out" {
+  count                    = local.account.use_new_network ? 0 : 1
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
@@ -154,6 +106,7 @@ resource "aws_security_group_rule" "database_tcp_out" {
 }
 
 resource "aws_security_group_rule" "database_from_orchestration" {
+  count                    = local.account.use_new_network ? 0 : 1
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
@@ -178,7 +131,7 @@ resource "aws_security_group_rule" "allow_ssm_to_db_inbound" {
   to_port                  = aws_rds_cluster.cluster_serverless.port
   protocol                 = "tcp"
   security_group_id        = aws_security_group.database.id
-  source_security_group_id = local.account.use_new_network ? data.aws_security_group.ssm_ec2_data_access.id : data.aws_security_group.ssm_ec2_operator.id
+  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
 }
 
 resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
@@ -186,7 +139,7 @@ resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
   protocol                 = "tcp"
-  security_group_id        = local.account.use_new_network ? data.aws_security_group.ssm_ec2_data_access.id : data.aws_security_group.ssm_ec2_operator.id
+  security_group_id        = data.aws_security_group.ssm_ec2_operator.id
   source_security_group_id = aws_security_group.database.id
 }
 
