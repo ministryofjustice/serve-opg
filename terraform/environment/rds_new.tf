@@ -12,7 +12,7 @@ resource "aws_rds_cluster" "cluster" {
   backup_retention_period             = 14
   copy_tags_to_snapshot               = true
   database_name                       = "serve_opg"
-  db_subnet_group_name                = aws_db_subnet_group.database.name
+  db_subnet_group_name                = aws_db_subnet_group.rds.name
   deletion_protection                 = local.account.deletion_protection ? true : false
   engine                              = "aurora-postgresql"
   engine_version                      = local.account.postgres_version
@@ -25,7 +25,7 @@ resource "aws_rds_cluster" "cluster" {
   preferred_maintenance_window        = "mon:05:50-mon:06:20"
   storage_encrypted                   = true
   skip_final_snapshot                 = local.account.deletion_protection ? false : true
-  vpc_security_group_ids              = [aws_security_group.database.id]
+  vpc_security_group_ids              = [aws_security_group.rds.id]
   tags                                = local.default_tags
   iam_database_authentication_enabled = true
 
@@ -41,7 +41,7 @@ resource "aws_rds_cluster_instance" "instances" {
   cluster_identifier              = aws_rds_cluster.cluster.cluster_identifier
   apply_immediately               = local.account.deletion_protection ? false : true
   auto_minor_version_upgrade      = false
-  db_subnet_group_name            = aws_db_subnet_group.database.name
+  db_subnet_group_name            = aws_db_subnet_group.rds.name
   depends_on                      = [aws_rds_cluster.cluster]
   engine                          = aws_rds_cluster.cluster.engine
   engine_version                  = aws_rds_cluster.cluster.engine_version
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "rds_tcp_in" {
   from_port                = aws_rds_cluster.cluster.port
   to_port                  = aws_rds_cluster.cluster.port
   security_group_id        = aws_security_group.rds.id
-  source_security_group_id = aws_security_group.ecs_service.id
+  source_security_group_id = aws_security_group.frontend.id
   type                     = "ingress"
 }
 
@@ -94,6 +94,25 @@ resource "aws_security_group_rule" "rds_tcp_out" {
   from_port                = aws_rds_cluster.cluster.port
   to_port                  = aws_rds_cluster.cluster.port
   security_group_id        = aws_security_group.rds.id
-  source_security_group_id = aws_security_group.ecs_service.id
+  source_security_group_id = aws_security_group.frontend.id
   type                     = "egress"
+}
+
+# New Rules
+resource "aws_security_group_rule" "allow_ssm_to_rds_inbound" {
+  type                     = "ingress"
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = data.aws_security_group.ssm_ec2_data_access.id
+}
+
+resource "aws_security_group_rule" "allow_ssm_to_rds_egress" {
+  type                     = "egress"
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.ssm_ec2_data_access.id
+  source_security_group_id = aws_security_group.rds.id
 }
