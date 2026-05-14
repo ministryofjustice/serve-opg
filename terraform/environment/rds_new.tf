@@ -79,7 +79,6 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_security_group_rule" "rds_tcp_in" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster.port
   to_port                  = aws_rds_cluster.cluster.port
@@ -89,7 +88,6 @@ resource "aws_security_group_rule" "rds_tcp_in" {
 }
 
 resource "aws_security_group_rule" "rds_tcp_out" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster.port
   to_port                  = aws_rds_cluster.cluster.port

@@ -85,7 +85,7 @@ locals {
 # Orchestration Tasks Security Group
 resource "aws_security_group" "orchestration" {
   name        = "orchestration-${local.environment}"
-  vpc_id      = local.account.use_new_network ? data.aws_vpc.main.id : data.aws_vpc.vpc.id
+  vpc_id      = data.aws_vpc.main.id
   tags        = local.default_tags
   description = "orchestration ${local.environment}"
 
@@ -95,7 +95,6 @@ resource "aws_security_group" "orchestration" {
 }
 
 resource "aws_security_group_rule" "orchestration_to_database" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster.port
   to_port                  = aws_rds_cluster.cluster.port
@@ -105,7 +104,6 @@ resource "aws_security_group_rule" "orchestration_to_database" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_ecr" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -115,7 +113,6 @@ resource "aws_security_group_rule" "orchestration_egress_ecr" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_ecr_api" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -125,7 +122,6 @@ resource "aws_security_group_rule" "orchestration_egress_ecr_api" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_secrets" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -135,7 +131,6 @@ resource "aws_security_group_rule" "orchestration_egress_secrets" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_logs" {
-  count                    = local.account.use_new_network ? 1 : 0
   protocol                 = "tcp"
   from_port                = 443
   to_port                  = 443
@@ -145,7 +140,6 @@ resource "aws_security_group_rule" "orchestration_egress_logs" {
 }
 
 resource "aws_security_group_rule" "orchestration_egress_s3" {
-  count             = local.account.use_new_network ? 1 : 0
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
@@ -158,19 +152,19 @@ locals {
   orchestration_variables = [
     {
       name  = "POSTGRES_DATABASE",
-      value = local.account.use_new_network ? aws_rds_cluster.cluster.database_name : aws_rds_cluster.cluster_serverless.database_name
+      value = aws_rds_cluster.cluster.database_name
     },
     {
       name  = "POSTGRES_HOST",
-      value = local.account.use_new_network ? aws_rds_cluster.cluster.endpoint : aws_rds_cluster.cluster_serverless.endpoint
+      value = aws_rds_cluster.cluster.endpoint
     },
     {
       name  = "POSTGRES_PORT",
-      value = local.account.use_new_network ? tostring(aws_rds_cluster.cluster.port) : tostring(aws_rds_cluster.cluster_serverless.port)
+      value = tostring(aws_rds_cluster.cluster.port)
     },
     {
       name  = "POSTGRES_USER",
-      value = local.account.use_new_network ? aws_rds_cluster.cluster.master_username : aws_rds_cluster.cluster_serverless.master_username
+      value = aws_rds_cluster.cluster.master_username
     },
     {
       name  = "S3_PREFIX",

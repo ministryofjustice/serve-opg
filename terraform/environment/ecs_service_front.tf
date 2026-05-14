@@ -11,13 +11,13 @@ resource "aws_ecs_service" "frontend" {
   wait_for_steady_state = true
 
   network_configuration {
-    security_groups  = local.account.use_new_network ? [aws_security_group.frontend.id] : [aws_security_group.ecs_service.id]
-    subnets          = local.account.use_new_network ? data.aws_subnet.application[*].id : data.aws_subnet.private[*].id
+    security_groups  = [aws_security_group.frontend.id]
+    subnets          = data.aws_subnet.application[*].id
     assign_public_ip = false
   }
 
   load_balancer {
-    target_group_arn = local.account.use_new_network ? aws_lb_target_group.frontend_tg.arn : aws_lb_target_group.frontend.arn
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
     container_name   = "web"
     container_port   = 80
   }

@@ -86,7 +86,6 @@ resource "aws_security_group" "database" {
 }
 
 resource "aws_security_group_rule" "database_tcp_in" {
-  count                    = local.account.use_new_network ? 0 : 1
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
@@ -96,7 +95,6 @@ resource "aws_security_group_rule" "database_tcp_in" {
 }
 
 resource "aws_security_group_rule" "database_tcp_out" {
-  count                    = local.account.use_new_network ? 0 : 1
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
@@ -106,7 +104,6 @@ resource "aws_security_group_rule" "database_tcp_out" {
 }
 
 resource "aws_security_group_rule" "database_from_orchestration" {
-  count                    = local.account.use_new_network ? 0 : 1
   protocol                 = "tcp"
   from_port                = aws_rds_cluster.cluster_serverless.port
   to_port                  = aws_rds_cluster.cluster_serverless.port
