@@ -3,6 +3,11 @@ variable "DEFAULT_ROLE" {
   type    = string
 }
 
+variable "MANAGEMENT_ROLE" {
+  default = "serve-opg-ci"
+  type    = string
+}
+
 terraform {
   backend "s3" {
     bucket  = "opg.terraform.state"
@@ -40,6 +45,6 @@ provider "aws" {
   region = "eu-west-1"
 
   assume_role {
-    role_arn = "arn:aws:iam::${local.management}:role/${var.DEFAULT_ROLE}"
+    role_arn = "arn:aws:iam::${local.management}:role/${var.MANAGEMENT_ROLE}"
   }
 }
