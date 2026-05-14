@@ -114,19 +114,19 @@ locals {
       environment = [
         {
           name  = "DC_DB_HOST",
-          value = local.account.use_new_network ? aws_rds_cluster.cluster.endpoint : aws_rds_cluster.cluster_serverless.endpoint
+          value = aws_rds_cluster.cluster.endpoint
         },
         {
           name  = "DC_DB_PORT",
-          value = local.account.use_new_network ? tostring(aws_rds_cluster.cluster.port) : tostring(aws_rds_cluster.cluster_serverless.port)
+          value = tostring(aws_rds_cluster.cluster.port)
         },
         {
           name  = "DC_DB_NAME",
-          value = local.account.use_new_network ? aws_rds_cluster.cluster.database_name : aws_rds_cluster.cluster_serverless.database_name
+          value = aws_rds_cluster.cluster.database_name
         },
         {
           name  = "DC_DB_USER",
-          value = local.account.use_new_network ? aws_rds_cluster.cluster.master_username : aws_rds_cluster.cluster_serverless.master_username
+          value = aws_rds_cluster.cluster.master_username
         },
         {
           name  = "DC_DB_SSL",

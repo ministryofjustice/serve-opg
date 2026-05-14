@@ -9,8 +9,8 @@ resource "aws_route53_record" "serve" {
   type    = "A"
 
   alias {
-    name                   = local.account.use_new_network ? aws_lb.frontend_lb.dns_name : aws_lb.frontend.dns_name
-    zone_id                = local.account.use_new_network ? aws_lb.frontend_lb.zone_id : aws_lb.frontend.zone_id
+    name                   = aws_lb.frontend_lb.dns_name
+    zone_id                = aws_lb.frontend_lb.zone_id
     evaluate_target_health = false
   }
 

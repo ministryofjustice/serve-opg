@@ -85,36 +85,6 @@ resource "aws_security_group" "database" {
   }
 }
 
-resource "aws_security_group_rule" "database_tcp_in" {
-  count                    = local.account.use_new_network ? 0 : 1
-  protocol                 = "tcp"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
-  security_group_id        = aws_security_group.database.id
-  source_security_group_id = aws_security_group.ecs_service.id
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "database_tcp_out" {
-  count                    = local.account.use_new_network ? 0 : 1
-  protocol                 = "tcp"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
-  security_group_id        = aws_security_group.database.id
-  source_security_group_id = aws_security_group.ecs_service.id
-  type                     = "egress"
-}
-
-resource "aws_security_group_rule" "database_from_orchestration" {
-  count                    = local.account.use_new_network ? 0 : 1
-  protocol                 = "tcp"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
-  security_group_id        = aws_security_group.database.id
-  source_security_group_id = aws_security_group.orchestration.id
-  type                     = "ingress"
-}
-
 # Security Group Rules to allow access to the SSM instance
 
 data "aws_security_group" "ssm_ec2_operator" {
