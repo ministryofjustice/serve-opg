@@ -13,8 +13,8 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_response_time" {
   alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
 
   dimensions = {
-    LoadBalancer = aws_lb.frontend.arn_suffix
-    TargetGroup  = aws_lb_target_group.frontend.arn_suffix
+    LoadBalancer = aws_lb.frontend_lb.arn_suffix
+    TargetGroup  = aws_lb_target_group.frontend_tg.arn_suffix
   }
 }
 
@@ -32,8 +32,8 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
   alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
 
   dimensions = {
-    LoadBalancer = aws_lb.frontend.arn_suffix
-    TargetGroup  = aws_lb_target_group.frontend.arn_suffix
+    LoadBalancer = aws_lb.frontend_lb.arn_suffix
+    TargetGroup  = aws_lb_target_group.frontend_tg.arn_suffix
   }
 
   treat_missing_data = "notBreaching"

@@ -28,32 +28,6 @@ resource "aws_cloudwatch_log_group" "serve" {
   retention_in_days = 180
 }
 
-# Old network ECS Service SG
-resource "aws_security_group" "ecs_service" {
-  name   = "frontend-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
-  tags   = local.default_tags
-
-  ingress {
-    protocol        = "tcp"
-    from_port       = 80
-    to_port         = 80
-    security_groups = [aws_security_group.load_balancer.id]
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# New network ECS Service SG
 resource "aws_security_group" "frontend" {
   name   = "frontend-${local.environment}"
   vpc_id = data.aws_vpc.main.id

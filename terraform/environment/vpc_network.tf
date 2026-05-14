@@ -18,18 +18,6 @@ data "aws_subnet" "private" {
   }
 }
 
-data "aws_subnet" "public" {
-  count             = 3
-  vpc_id            = data.aws_vpc.vpc.id
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-
-  filter {
-    name   = "tag:Name"
-    values = ["public*"]
-  }
-}
-
-# New VPC Subnets:
 data "aws_subnet" "application" {
   count             = 3
   vpc_id            = data.aws_vpc.main.id
