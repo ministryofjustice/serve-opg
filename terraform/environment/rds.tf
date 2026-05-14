@@ -1,64 +1,60 @@
-resource "aws_cloudwatch_log_group" "api_cluster" {
-  name              = "/aws/rds/cluster/serve-opg-${local.environment}/postgresql"
+data "aws_kms_alias" "rds_encryption_key" {
+  name = "alias/serve_rds_encryption_key"
+}
+
+resource "aws_cloudwatch_log_group" "rds" {
+  name              = "/aws/rds/cluster/serve-${local.environment}/postgresql"
   kms_key_id        = aws_kms_key.cloudwatch_logs.arn
   retention_in_days = 180
   tags              = local.default_tags
 }
 
-data "aws_kms_key" "rds" {
-  key_id = "alias/aws/rds"
-}
-
-data "aws_kms_alias" "rds_encryption_key" {
-  name = "alias/serve_rds_encryption_key"
-}
-
-resource "aws_rds_cluster" "cluster_serverless" {
-  cluster_identifier                  = "serve-opg-${local.environment}-cluster"
+resource "aws_rds_cluster" "cluster" {
+  cluster_identifier                  = "serve-${local.environment}-cluster"
   apply_immediately                   = local.account.deletion_protection ? false : true
   availability_zones                  = local.availability_zones
   backup_retention_period             = 14
   copy_tags_to_snapshot               = true
   database_name                       = "serve_opg"
-  db_subnet_group_name                = aws_db_subnet_group.database.name
+  db_subnet_group_name                = aws_db_subnet_group.rds.name
   deletion_protection                 = local.account.deletion_protection ? true : false
   engine                              = "aurora-postgresql"
   engine_version                      = local.account.postgres_version
   engine_mode                         = "provisioned"
-  final_snapshot_identifier           = "serve-opg-${local.environment}-final-snapshot"
-  kms_key_id                          = data.aws_kms_key.rds.arn
+  final_snapshot_identifier           = "serve-${local.environment}-final-snapshot"
+  kms_key_id                          = data.aws_kms_alias.rds_encryption_key.target_key_arn
   master_username                     = "serveopgadmin"
   master_password                     = data.aws_secretsmanager_secret_version.database_password.secret_string
   preferred_backup_window             = "05:15-05:45"
   preferred_maintenance_window        = "mon:05:50-mon:06:20"
   storage_encrypted                   = true
   skip_final_snapshot                 = local.account.deletion_protection ? false : true
-  vpc_security_group_ids              = [aws_security_group.database.id]
+  vpc_security_group_ids              = [aws_security_group.rds.id]
   tags                                = local.default_tags
   iam_database_authentication_enabled = true
 
   serverlessv2_scaling_configuration {
-    min_capacity = 0
-    max_capacity = 16
+    min_capacity = local.environment == "production" ? 0.5 : 0
+    max_capacity = 8
   }
-  depends_on = [aws_cloudwatch_log_group.api_cluster]
+  depends_on = [aws_cloudwatch_log_group.rds]
 }
 
-resource "aws_rds_cluster_instance" "serverless_instances" {
+resource "aws_rds_cluster_instance" "instances" {
   count                           = local.account.rds_instance_count
-  cluster_identifier              = aws_rds_cluster.cluster_serverless.cluster_identifier
+  cluster_identifier              = aws_rds_cluster.cluster.cluster_identifier
   apply_immediately               = local.account.deletion_protection ? false : true
   auto_minor_version_upgrade      = false
-  db_subnet_group_name            = aws_db_subnet_group.database.name
-  depends_on                      = [aws_rds_cluster.cluster_serverless]
-  engine                          = aws_rds_cluster.cluster_serverless.engine
-  engine_version                  = aws_rds_cluster.cluster_serverless.engine_version
-  identifier                      = "serve-opg-${local.environment}-${count.index}"
+  db_subnet_group_name            = aws_db_subnet_group.rds.name
+  depends_on                      = [aws_rds_cluster.cluster]
+  engine                          = aws_rds_cluster.cluster.engine
+  engine_version                  = aws_rds_cluster.cluster.engine_version
+  identifier                      = "serve-${local.environment}-${count.index}"
   instance_class                  = "db.serverless"
   monitoring_interval             = 30
   monitoring_role_arn             = "arn:aws:iam::${local.account.account_id}:role/rds-enhanced-monitoring"
   performance_insights_enabled    = true
-  performance_insights_kms_key_id = data.aws_kms_key.rds.arn
+  performance_insights_kms_key_id = data.aws_kms_alias.rds_encryption_key.target_key_arn
   ca_cert_identifier              = "rds-ca-rsa2048-g1"
   publicly_accessible             = false
   tags                            = local.default_tags
@@ -70,93 +66,55 @@ resource "aws_rds_cluster_instance" "serverless_instances" {
   }
 }
 
-resource "aws_db_subnet_group" "database" {
-  subnet_ids = data.aws_subnet.private[*].id
+resource "aws_db_subnet_group" "rds" {
+  subnet_ids = data.aws_subnet.data[*].id
   tags       = local.default_tags
 }
 
-resource "aws_security_group" "database" {
-  name   = "database-${local.environment}"
-  vpc_id = data.aws_vpc.vpc.id
-  tags   = local.default_tags
+resource "aws_security_group" "rds" {
+  name        = "database-sg-${local.environment}"
+  description = "database ${local.environment}"
+  vpc_id      = data.aws_vpc.main.id
+  tags        = local.default_tags
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-# Security Group Rules to allow access to the SSM instance
-
-data "aws_security_group" "ssm_ec2_operator" {
-  name = "operator-ssm-instance"
-}
-
-data "aws_security_group" "ssm_ec2_data_access" {
-  name = "data-access-ssm-instance"
-}
-
-resource "aws_security_group_rule" "allow_ssm_to_db_inbound" {
+resource "aws_security_group_rule" "rds_tcp_in" {
+  protocol                 = "tcp"
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = aws_security_group.frontend.id
   type                     = "ingress"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.database.id
-  source_security_group_id = data.aws_security_group.ssm_ec2_operator.id
 }
 
-resource "aws_security_group_rule" "allow_ssm_to_db_egress" {
+resource "aws_security_group_rule" "rds_tcp_out" {
+  protocol                 = "tcp"
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = aws_security_group.frontend.id
   type                     = "egress"
-  from_port                = aws_rds_cluster.cluster_serverless.port
-  to_port                  = aws_rds_cluster.cluster_serverless.port
+}
+
+# New Rules
+resource "aws_security_group_rule" "allow_ssm_to_rds_inbound" {
+  type                     = "ingress"
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
   protocol                 = "tcp"
-  security_group_id        = data.aws_security_group.ssm_ec2_operator.id
-  source_security_group_id = aws_security_group.database.id
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = data.aws_security_group.ssm_ec2_data_access.id
 }
 
-# Database Connect via Proxy Role
-
-data "aws_iam_role" "operator" {
-  name = "operator"
-}
-
-data "aws_iam_policy_document" "database_readonly_assume" {
-  statement {
-    sid     = "AllowAssume"
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_iam_role.operator.arn]
-    }
-  }
-}
-
-resource "aws_iam_role" "database_readonly_access" {
-  name               = "readonly-db-iam-${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.database_readonly_assume.json
-  tags               = local.default_tags
-}
-
-data "aws_iam_policy_document" "database_readonly_connect" {
-  statement {
-    sid     = "AllowRdsConnect"
-    effect  = "Allow"
-    actions = ["rds-db:connect"]
-
-    resources = [
-      "arn:aws:rds-db:eu-west-1:${data.aws_caller_identity.current.account_id}:dbuser:${aws_rds_cluster.cluster_serverless.cluster_resource_id}/readonly-db-iam-${local.environment}"
-    ]
-  }
-}
-
-resource "aws_iam_policy" "database_readonly_connect" {
-  name        = "database-readonly-access-${local.environment}"
-  description = "Allow database-readonly-access role to connect to RDS via IAM Auth."
-  policy      = data.aws_iam_policy_document.database_readonly_connect.json
-}
-
-resource "aws_iam_role_policy_attachment" "database_readonly_connect_attach" {
-  role       = aws_iam_role.database_readonly_access.name
-  policy_arn = aws_iam_policy.database_readonly_connect.arn
+resource "aws_security_group_rule" "allow_ssm_to_rds_egress" {
+  type                     = "egress"
+  from_port                = aws_rds_cluster.cluster.port
+  to_port                  = aws_rds_cluster.cluster.port
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.ssm_ec2_data_access.id
+  source_security_group_id = aws_security_group.rds.id
 }
