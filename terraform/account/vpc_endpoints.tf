@@ -69,6 +69,16 @@ module "ec2messages_endpoint_vpc" {
   tags                = local.default_tags
 }
 
+module "rds_endpoint_vpc" {
+  source              = "./modules/vpc_endpoint"
+  subnet_ids          = module.network.application_subnets[*].id
+  vpc                 = module.network.vpc
+  region              = data.aws_region.current.name
+  service             = "rds"
+  service_short_title = "rds"
+  tags                = local.default_tags
+}
+
 resource "aws_vpc_endpoint" "s3_endpoint_vpc" {
   service_name      = "com.amazonaws.eu-west-1.s3"
   vpc_id            = module.network.vpc.id
