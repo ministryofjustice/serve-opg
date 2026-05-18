@@ -12,14 +12,13 @@ locals {
     preproduction = {
       network_firewall_enabled     = true
       none_matching_traffic_action = "alert"
-      #      shared_firewall_configuration = null
       shared_firewall_configuration = {
         account_id   = "997462338508"
         account_name = "production"
       }
     }
     production = {
-      network_firewall_enabled      = false
+      network_firewall_enabled      = true
       none_matching_traffic_action  = "alert"
       shared_firewall_configuration = null
       #      shared_firewall_configuration = {
