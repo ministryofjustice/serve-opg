@@ -39,6 +39,16 @@ module "logs_endpoint_vpc" {
   tags                = local.default_tags
 }
 
+module "ssm_endpoint_vpc" {
+  source              = "./modules/vpc_endpoint"
+  subnet_ids          = module.network.application_subnets[*].id
+  vpc                 = module.network.vpc
+  region              = data.aws_region.current.name
+  service             = "ssm"
+  service_short_title = "ssm"
+  tags                = local.default_tags
+}
+
 resource "aws_vpc_endpoint" "s3_endpoint_vpc" {
   service_name      = "com.amazonaws.eu-west-1.s3"
   vpc_id            = module.network.vpc.id
