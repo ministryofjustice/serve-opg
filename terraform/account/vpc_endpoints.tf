@@ -49,6 +49,26 @@ module "ssm_endpoint_vpc" {
   tags                = local.default_tags
 }
 
+module "ssmmessages_endpoint_vpc" {
+  source              = "./modules/vpc_endpoint"
+  subnet_ids          = module.network.application_subnets[*].id
+  vpc                 = module.network.vpc
+  region              = data.aws_region.current.name
+  service             = "ssmmessages"
+  service_short_title = "ssmmessages"
+  tags                = local.default_tags
+}
+
+module "ec2messages_endpoint_vpc" {
+  source              = "./modules/vpc_endpoint"
+  subnet_ids          = module.network.application_subnets[*].id
+  vpc                 = module.network.vpc
+  region              = data.aws_region.current.name
+  service             = "ec2messages"
+  service_short_title = "ec2messages"
+  tags                = local.default_tags
+}
+
 resource "aws_vpc_endpoint" "s3_endpoint_vpc" {
   service_name      = "com.amazonaws.eu-west-1.s3"
   vpc_id            = module.network.vpc.id
