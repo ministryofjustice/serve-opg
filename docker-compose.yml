@@ -1,6 +1,6 @@
 services:
   aws:
-    image: infrastructureascode/aws-cli
+    image: infrastructureascode/aws-cli@sha256:891db48126b0f044f06263521acbd611dfa31aa9e549fed23b0b3ef890082b36
     environment:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
@@ -150,7 +150,7 @@ services:
     restart: always
 
   npm:
-    image: node:25-alpine
+    image: node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www
@@ -182,7 +182,7 @@ services:
       ENVIRONMENT_NAME: local
 
   qa:
-    image: jakzal/phpqa:alpine
+    image: jakzal/phpqa:alpine@sha256:f7b240f512ee0687176e89dd4674d6c5afbbd267e50a8d147025a14a2496b7dc
     volumes:
       - ./serve-web:/var/www:ro
     working_dir: /var/www
