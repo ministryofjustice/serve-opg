@@ -102,7 +102,7 @@ services:
 
   # TODO - Work out why upgrades to prism break behat
   sirius-api:
-    image: stoplight/prism:4.4.2@sha256:4b9ea68b46789a3d263953632a06a6ffab2fca6e72ee8e3c372fe7ec27edddb4
+    image: stoplight/prism:4.4.1@sha256:d6ea7736ee2edfd4c31ac03150e630ab1b38fbf7ec134c957e29a8fcf5067b5b
     ports:
       - 4010:4010
     volumes:
