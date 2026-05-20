@@ -125,12 +125,20 @@ jobs:
     secrets:
       snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
 
+  iac_scan:
+    name: Scan Infrastructure as Code
+    uses: ./.github/workflows/_snyk-iac-scan.yml
+    needs: [workflow_variables]
+    secrets:
+      snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
+
   deploy_to_branch_environment:
     name: Deploy to Branch Environment
     needs: [
       workflow_variables,
       build_scan_push_containers,
-      unit_test_frontend
+      unit_test_frontend,
+      iac_scan
     ]
     uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
@@ -142,7 +150,6 @@ jobs:
       apply: true
     secrets:
       ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
-
 
   plan_development_account:
     if: github.event_name == 'merge_group'
