@@ -49,3 +49,15 @@ resource "aws_iam_role_policy_attachment" "database_readonly_connect_attach" {
   role       = aws_iam_role.database_readonly_access.name
   policy_arn = aws_iam_policy.database_readonly_connect.arn
 }
+
+
+resource "aws_security_group" "bad" {
+  name = "bad-sg"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
