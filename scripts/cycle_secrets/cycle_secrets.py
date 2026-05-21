@@ -95,7 +95,7 @@ def modify_db_instances_password(session, workspaces, aws_config):
 
     for workspace in workspaces:
         secret_name = db_password
-        cluster_identifier = f"serve-opg-{workspace}-cluster"
+        cluster_identifier = f"serve-{workspace}-cluster"
 
         try:
             # Fetch the secret value from AWS Secrets Manager
