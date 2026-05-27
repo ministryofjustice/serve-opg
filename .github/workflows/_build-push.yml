@@ -58,7 +58,7 @@ jobs:
           role-duration-seconds: 900
           role-session-name: ga-ecr-pull-serve
 
-      - uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # v2.1.2
+      - uses: aws-actions/amazon-ecr-login@376925c9d111252e87ae59691e5a442dd100ef6a # v2.1.3
         id: login-ecr-pull
         with:
           registries: ${{ vars.MANAGEMENT_ACCOUNT }}
@@ -66,7 +66,7 @@ jobs:
 
       - name: Run Snyk Scan
         id: snyk_scan
-        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@9e8b7c2fb29c11e77b12913f74459fa48b11829f # v4.8.2
+        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@5fba2afe28b31b8c5eaf1fb4235e2d32aea24a1e # v4.8.3
         with:
           SNYK_TEST_IMAGE: ${{ vars.MANAGEMENT_ACCOUNT }}.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/${{ matrix.svc_name }}:latest
           SNYK_TOKEN: ${{ secrets.snyk_token }}
@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload SNYK scan results to GitHub Security tab
         if: steps.snyk_scan.outcome == 'success' && hashFiles('test-results/snyk-results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@c793b717bc78562f491db7b0e93a3a178b099162 # v4.32.5
+        uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
         with:
           sarif_file: test-results/snyk-results.sarif
           category: ${{ matrix.svc_name }}
@@ -90,7 +90,7 @@ jobs:
           role-duration-seconds: 900
           role-session-name: ga-ecr-push-serve
 
-      - uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # v2.1.2
+      - uses: aws-actions/amazon-ecr-login@376925c9d111252e87ae59691e5a442dd100ef6a # v2.1.3
         id: login-ecr
         with:
           registries: ${{ vars.MANAGEMENT_ACCOUNT }}
