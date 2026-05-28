@@ -13,7 +13,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:1.9-alpine@sha256:8794eb7272e32201ae3ddc79d90950e9ac2afdaff5ca6ad1aac9336c921d49bf
+    image: jwilder/nginx-proxy:1.10-alpine@sha256:b8b215454139886b8d366663fbcc4e69bb0a807262a615f7e8491dbd7fb23a29
     ports:
       - 443:443
     volumes:
@@ -134,7 +134,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:14.19@sha256:962ffbe9f6418387643411b127c1db27465e5a23b9a8849bfaf45fa6323963ce
+    image: postgres:14.20@sha256:062b02051873a101837543675b5b4601cba06b1972d22f4b7969adbde5a280e4
     ports:
       - 5432:5432
     environment:
