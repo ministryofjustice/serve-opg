@@ -102,7 +102,7 @@ services:
 
   # TODO - Work out why upgrades to prism break behat
   sirius-api:
-    image: stoplight/prism:4.4.1@sha256:d6ea7736ee2edfd4c31ac03150e630ab1b38fbf7ec134c957e29a8fcf5067b5b
+    image: stoplight/prism:4.4.2@sha256:4b9ea68b46789a3d263953632a06a6ffab2fca6e72ee8e3c372fe7ec27edddb4
     ports:
       - 4010:4010
     volumes:
@@ -134,7 +134,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:14.20@sha256:062b02051873a101837543675b5b4601cba06b1972d22f4b7969adbde5a280e4
+    image: postgres:14.21@sha256:b964c3211689ffe50cc65235ea338717520954dcf6ecd4d76bf887eba3cbc91f
     ports:
       - 5432:5432
     environment:
@@ -182,7 +182,7 @@ services:
       ENVIRONMENT_NAME: local
 
   qa:
-    image: jakzal/phpqa:alpine@sha256:f7b240f512ee0687176e89dd4674d6c5afbbd267e50a8d147025a14a2496b7dc
+    image: jakzal/phpqa:alpine@sha256:8cae3b854481296fa240ad9d40629969cf933004f51ae007cdde988bbf2abf66
     volumes:
       - ./serve-web:/var/www:ro
     working_dir: /var/www
