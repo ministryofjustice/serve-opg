@@ -1,4 +1,4 @@
-FROM php:8.5-fpm-alpine3.23@sha256:82dd8cfd2aa93a98b0357e4c810f894c4ca265b5034aef3be654faae5f579487
+FROM php:8.4-fpm-alpine3.23@sha256:38c3275e8d8fe1b395dd81dccdbdbec6b0fa1fa318e2391c4ad98eae3b6dc0e3
 
 ENV APP_DIR /var/www/app
 RUN mkdir -p $APP_DIR
