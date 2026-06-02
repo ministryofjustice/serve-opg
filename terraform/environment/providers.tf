@@ -4,7 +4,7 @@ variable "DEFAULT_ROLE" {
 }
 
 variable "MANAGEMENT_ROLE" {
-  default = "serve-opg-ci"
+  default = "serve-ci"
   type    = string
 }
 
@@ -15,7 +15,7 @@ terraform {
     encrypt = true
     region  = "eu-west-1"
     assume_role = {
-      role_arn = "arn:aws:iam::311462405659:role/serve-opg-ci"
+      role_arn = "arn:aws:iam::311462405659:role/serve-state-write"
     }
     use_lockfile = true
   }
