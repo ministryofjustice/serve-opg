@@ -1,108 +1,108 @@
 on:
-  workflow_call:
-    inputs:
-      terraform_path:
-        description: "The name of the terraform path"
-        required: true
-        type: string
-      workspace:
-        description: "Terraform workspace"
-        required: true
-        type: string
-      account_name:
-        description: "Account name"
-        required: true
-        type: string
-      container_version:
-        description: "Image tag to use"
-        required: false
-        type: string
-        default: ""
-      apply:
-        description: "Whether to apply terraform"
-        required: false
-        type: boolean
-        default: false
-      path_to_live:
-        description: "If we are on path to live"
-        required: false
-        type: boolean
-        default: false
-    secrets:
-      ssh_private_key_allow_list_repository:
-        required: true
+    workflow_call:
+        inputs:
+            terraform_path:
+                description: 'The name of the terraform path'
+                required: true
+                type: string
+            workspace:
+                description: 'Terraform workspace'
+                required: true
+                type: string
+            account_name:
+                description: 'Account name'
+                required: true
+                type: string
+            container_version:
+                description: 'Image tag to use'
+                required: false
+                type: string
+                default: ''
+            apply:
+                description: 'Whether to apply terraform'
+                required: false
+                type: boolean
+                default: false
+            path_to_live:
+                description: 'If we are on path to live'
+                required: false
+                type: boolean
+                default: false
+        secrets:
+            ssh_private_key_allow_list_repository:
+                required: true
 jobs:
-  terraform_workflow_job:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
-        with:
-          fetch-depth: '0'
+    terraform_workflow_job:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+              with:
+                  fetch-depth: '0'
 
-      - id: terraform_version
-        name: get terraform version
-        uses: ministryofjustice/opg-github-actions/actions/terraform-version@2186f4ee10b7f2839e0c795dcd01c729e6d1d4c0 # v4.8.1
-        with:
-          terraform_directory: terraform/${{ inputs.terraform_path }}
+            - id: terraform_version
+              name: get terraform version
+              uses: ministryofjustice/opg-github-actions/actions/terraform-version@2186f4ee10b7f2839e0c795dcd01c729e6d1d4c0 # v4.8.1
+              with:
+                  terraform_directory: terraform/${{ inputs.terraform_path }}
 
-      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
-        with:
-          terraform_version: ${{ steps.terraform_version.outputs.version }}
-          terraform_wrapper: false
+            - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+              with:
+                  terraform_version: ${{ steps.terraform_version.outputs.version }}
+                  terraform_wrapper: false
 
-      - name: Configure Terraform OIDC AWS Credentials
-        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
-        with:
-          aws-region: eu-west-1
-          role-to-assume: "arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-${{ inputs.account_name }}"
-          role-duration-seconds: 3600
-          role-session-name: terraform-oidc-serve
+            - name: Configure Terraform OIDC AWS Credentials
+              uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+              with:
+                  aws-region: eu-west-1
+                  role-to-assume: 'arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-${{ inputs.account_name }}'
+                  role-duration-seconds: 3600
+                  role-session-name: terraform-oidc-serve
 
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
+            - uses: ministryofjustice/opg-github-actions/actions/github-deploy-key@ceeda9d30ec7f6705c819d0b7664b9a79df99a3b # v4.8.7
+              with:
+                  deploy_key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
-      - uses: terraform-linters/setup-tflint@90f302c255ef959cbfb4bd10581afecdb7ece3e6 # v4.1.1
-        name: Setup TFLint
-        with:
-          tflint_version: v0.50.1
+            - uses: terraform-linters/setup-tflint@90f302c255ef959cbfb4bd10581afecdb7ece3e6 # v4.1.1
+              name: Setup TFLint
+              with:
+                  tflint_version: v0.50.1
 
-      - name: Lint Terraform
-        id: tf_lint
-        run: tflint --recursive
-        working-directory: terraform/${{ inputs.terraform_path }}
+            - name: Lint Terraform
+              id: tf_lint
+              run: tflint --recursive
+              working-directory: terraform/${{ inputs.terraform_path }}
 
-      - name: Check formatting
-        id: tf_fmt
-        run: terraform fmt -check -recursive
-        working-directory: terraform/${{ inputs.terraform_path }}
+            - name: Check formatting
+              id: tf_fmt
+              run: terraform fmt -check -recursive
+              working-directory: terraform/${{ inputs.terraform_path }}
 
-      - name: Terraform Init
-        run: |
-          terraform --version
-          terraform init -input=false
-        working-directory: terraform/${{ inputs.terraform_path }}
+            - name: Terraform Init
+              run: |
+                  terraform --version
+                  terraform init -input=false
+              working-directory: terraform/${{ inputs.terraform_path }}
 
-      - name: Terraform Plan
-        env:
-          TF_WORKSPACE: ${{ inputs.workspace }}
-          TF_VAR_APP_VERSION: ${{ inputs.container_version }}
-        run: |
-          terraform workspace show
-          terraform plan -input=false -parallelism=30
-        working-directory: terraform/${{ inputs.terraform_path }}
-        
-      - name: Terraform Apply
-        if: inputs.apply == true
-        env:
-          TF_WORKSPACE: ${{ inputs.workspace }}
-          TF_VAR_APP_VERSION: ${{ inputs.container_version }}
-        run: |
-          terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
-        working-directory: terraform/${{ inputs.terraform_path }}
+            - name: Terraform Plan
+              env:
+                  TF_WORKSPACE: ${{ inputs.workspace }}
+                  TF_VAR_APP_VERSION: ${{ inputs.container_version }}
+              run: |
+                  terraform workspace show
+                  terraform plan -input=false -parallelism=30
+              working-directory: terraform/${{ inputs.terraform_path }}
 
-      - name: Upload Config
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: cluster_config_${{ inputs.workspace }}
-          path: ./terraform/environment/cluster_config.json
+            - name: Terraform Apply
+              if: inputs.apply == true
+              env:
+                  TF_WORKSPACE: ${{ inputs.workspace }}
+                  TF_VAR_APP_VERSION: ${{ inputs.container_version }}
+              run: |
+                  terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
+              working-directory: terraform/${{ inputs.terraform_path }}
+
+            - name: Upload Config
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+              with:
+                  name: cluster_config_${{ inputs.workspace }}
+                  path: ./terraform/environment/cluster_config.json
