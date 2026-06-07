@@ -13,7 +13,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:1.10-alpine@sha256:b8b215454139886b8d366663fbcc4e69bb0a807262a615f7e8491dbd7fb23a29
+    image: jwilder/nginx-proxy:1.11-alpine@sha256:6e316dc74cd7327db6b10eef7ac9dbe1e07036826321ea98487f9ab4067c3f72
     ports:
       - 443:443
     volumes:
@@ -102,7 +102,7 @@ services:
 
   # TODO - Work out why upgrades to prism break behat
   sirius-api:
-    image: stoplight/prism:4.4.2@sha256:4b9ea68b46789a3d263953632a06a6ffab2fca6e72ee8e3c372fe7ec27edddb4
+    image: stoplight/prism:4.4.3@sha256:5f590fcfe55e0c4a97287465cbf84b31712ad439358d35b5b92b303fbe06e7a8
     ports:
       - 4010:4010
     volumes:
@@ -134,7 +134,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:14.21@sha256:b964c3211689ffe50cc65235ea338717520954dcf6ecd4d76bf887eba3cbc91f
+    image: postgres:14.22@sha256:eba8ddbdd837ecfbb6ca8a26d8deec68a2f9b076660102ae641dba0f371c099b
     ports:
       - 5432:5432
     environment:
@@ -182,7 +182,7 @@ services:
       ENVIRONMENT_NAME: local
 
   qa:
-    image: jakzal/phpqa:alpine@sha256:8cae3b854481296fa240ad9d40629969cf933004f51ae007cdde988bbf2abf66
+    image: jakzal/phpqa:alpine@sha256:5d18c660eca4c022aae6645da22b409e64d8a39faf7b51ed9838386bbf6868a2
     volumes:
       - ./serve-web:/var/www:ro
     working_dir: /var/www
