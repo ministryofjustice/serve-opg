@@ -1,7 +1,8 @@
 # ===== Task role =====
 resource "aws_iam_role" "task" {
-  name               = "frontend-${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.task_role_assume_policy.json
+  name                 = "frontend-${local.environment}"
+  assume_role_policy   = data.aws_iam_policy_document.task_role_assume_policy.json
+  permissions_boundary = data.aws_iam_policy.default_boundary.arn
 }
 
 resource "aws_iam_role_policy" "task" {
@@ -96,8 +97,9 @@ data "aws_iam_policy_document" "task_role" {
 
 # ===== Task Execution Role =====
 resource "aws_iam_role" "execution" {
-  name               = "execution-role-${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.execution_role_assume_policy.json
+  name                 = "execution-role-${local.environment}"
+  assume_role_policy   = data.aws_iam_policy_document.execution_role_assume_policy.json
+  permissions_boundary = data.aws_iam_policy.default_boundary.arn
 }
 
 resource "aws_iam_role_policy" "execution" {
@@ -139,10 +141,11 @@ data "aws_iam_policy_document" "execution_role" {
 
 # Event Task Runner Role and Permissions
 resource "aws_iam_role" "events_task_runner" {
-  count              = local.account.dr_backup == "true" ? 1 : 0
-  name               = "events-task-runner.${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.events_task_runner[0].json
-  tags               = local.default_tags
+  count                = local.account.dr_backup == "true" ? 1 : 0
+  name                 = "events-task-runner.${local.environment}"
+  assume_role_policy   = data.aws_iam_policy_document.events_task_runner[0].json
+  permissions_boundary = data.aws_iam_policy.default_boundary.arn
+  tags                 = local.default_tags
 }
 
 data "aws_iam_policy_document" "events_task_runner" {
@@ -189,8 +192,9 @@ data "aws_iam_policy_document" "events_task_runner_policy" {
 
 # Orchestration Role (Backups, Restores and Other adhoc tasks)
 resource "aws_iam_role" "orchestration" {
-  name               = "orchestration-${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.orchestration_role_assume_policy.json
+  name                 = "orchestration-${local.environment}"
+  assume_role_policy   = data.aws_iam_policy_document.orchestration_role_assume_policy.json
+  permissions_boundary = data.aws_iam_policy.default_boundary.arn
 }
 
 resource "aws_iam_role_policy" "orchestration" {
@@ -233,4 +237,8 @@ data "aws_iam_policy_document" "orchestration_role" {
       "${aws_s3_bucket.orchestration.arn}/*"
     ]
   }
+}
+
+data "aws_iam_policy" "default_boundary" {
+  name = "digideps-non-ci-boundary"
 }

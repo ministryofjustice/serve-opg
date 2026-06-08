@@ -71,9 +71,10 @@ resource "aws_cloudwatch_log_group" "dr_backup" {
 
 # TASK ROLE
 resource "aws_iam_role" "dr_backup" {
-  assume_role_policy = var.task_role_assume_policy.json
-  name               = "dr-backup.${var.environment}"
-  tags               = var.default_tags
+  assume_role_policy   = var.task_role_assume_policy.json
+  name                 = "dr-backup.${var.environment}"
+  permissions_boundary = var.default_boundary_arn
+  tags                 = var.default_tags
 }
 
 data "aws_iam_policy_document" "dr_backup" {
