@@ -27,8 +27,9 @@ resource "aws_cloudwatch_event_target" "to_sirius_bus" {
 
 # Cross account role
 resource "aws_iam_role" "cross_account_put" {
-  name               = "cross-account-put-${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  name                 = "cross-account-put-${local.environment}"
+  assume_role_policy   = data.aws_iam_policy_document.assume_role.json
+  permissions_boundary = data.aws_iam_policy.default_boundary.arn
 }
 
 resource "aws_iam_role_policy" "cross_account_put" {

@@ -19,5 +19,6 @@ module "disaster_recovery_backup" {
   log_retention           = 30
   task_role_assume_policy = data.aws_iam_policy_document.task_role_assume_policy
   environment             = local.environment
+  default_boundary_arn    = data.aws_iam_policy.default_boundary.arn
   default_tags            = local.default_tags
 }
