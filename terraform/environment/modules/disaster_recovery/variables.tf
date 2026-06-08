@@ -67,3 +67,8 @@ variable "logs_kms_key_arn" {
   description = "The ARN of the KMS key used for logs encryption."
   type        = string
 }
+
+variable "default_boundary_arn" {
+  description = "The ARN of the boundary role."
+  type        = string
+}
