@@ -28,6 +28,11 @@ on:
                 required: false
                 type: boolean
                 default: false
+            tf_role:
+                required: false
+                type: string
+                description: "Role to use for account resources"
+                default: "serve-opg-ci"
         secrets:
             ssh_private_key_allow_list_repository:
                 required: true
@@ -78,6 +83,8 @@ jobs:
               working-directory: terraform/${{ inputs.terraform_path }}
 
             - name: Terraform Init
+              env:
+                  TF_VAR_DEFAULT_ROLE_BOUNDARIED: ${{ inputs.tf_role }}
               run: |
                   terraform --version
                   terraform init -input=false
@@ -87,6 +94,7 @@ jobs:
               env:
                   TF_WORKSPACE: ${{ inputs.workspace }}
                   TF_VAR_APP_VERSION: ${{ inputs.container_version }}
+                  TF_VAR_DEFAULT_ROLE_BOUNDARIED: ${{ inputs.tf_role }}
               run: |
                   terraform workspace show
                   terraform plan -input=false -parallelism=30
@@ -97,6 +105,7 @@ jobs:
               env:
                   TF_WORKSPACE: ${{ inputs.workspace }}
                   TF_VAR_APP_VERSION: ${{ inputs.container_version }}
+                  TF_VAR_DEFAULT_ROLE_BOUNDARIED: ${{ inputs.tf_role }}
               run: |
                   terraform apply -lock-timeout=300s -input=false -auto-approve -parallelism=30
               working-directory: terraform/${{ inputs.terraform_path }}
