@@ -66,6 +66,7 @@ data "aws_iam_policy_document" "kms_base_permissions" {
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/breakglass",
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/serve-opg-ci",
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/serve-ci-boundary"
       ]
     }
   }

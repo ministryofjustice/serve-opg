@@ -24,7 +24,7 @@ def assume_role_and_get_secret_client(role_arn, session_name, region):
 
 if __name__ == "__main__":
     account_id = os.getenv('ACCOUNT_ID')
-    role_arn = f'arn:aws:iam::{account_id}:role/serve-opg-ci'
+    role_arn = f'arn:aws:iam::{account_id}:role/serve-ci-boundary'
     session_name = 'serve-ci-get-behat-user'
     secret_id = 'behat_password'
     region = 'eu-west-1'
