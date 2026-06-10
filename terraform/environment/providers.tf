@@ -1,5 +1,5 @@
 variable "DEFAULT_ROLE" {
-  default = "serve-opg-ci"
+  default = "serve-opg-ci-boundary"
   type    = string
 }
 
