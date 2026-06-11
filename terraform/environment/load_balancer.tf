@@ -13,6 +13,7 @@ resource "aws_lb" "frontend_lb" {
   subnets            = data.aws_subnet.load_balancer[*].id
   security_groups    = [aws_security_group.elastic_load_balancer.id, aws_security_group.load_balancer_health.id]
   tags               = local.default_tags
+  drop_invalid_header_fields = true
 
   access_logs {
     bucket  = aws_s3_bucket.logs.bucket
@@ -55,6 +56,7 @@ resource "aws_lb_listener" "frontend_listen" {
 
 resource "aws_security_group" "elastic_load_balancer" {
   name   = "load-balancer-${local.environment}"
+  description = "Allow inbound traffic from the internet and outbound traffic to the ECS services"
   vpc_id = data.aws_vpc.main.id
   tags   = local.default_tags
 
@@ -80,6 +82,7 @@ resource "aws_security_group" "elastic_load_balancer" {
 # New SG as large number of cidr ranges
 resource "aws_security_group" "load_balancer_health" {
   name   = "load-balancer-hc-${local.environment}"
+  description = "Allow inbound traffic from Route53 healthcheckers and outbound traffic to the ECS services"
   vpc_id = data.aws_vpc.main.id
   tags   = local.default_tags
   lifecycle {

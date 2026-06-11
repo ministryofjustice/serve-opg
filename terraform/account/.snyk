@@ -1,0 +1,23 @@
+ignore:
+  SNYK-CC-TF-72:
+    - '*':
+        reason: "Open HTTPS egress intentionally required for package installation and outbound dependency access from SSM EC2 instance"
+
+  SNYK-CC-AWS-417:
+    - '*':
+        reason: "Customer managed KMS key intentionally not used because DynamoDB tables only contain transient development data"
+  SNYK-CC-TF-125:
+    - '*':
+        reason: "Point-in-time recovery intentionally disabled because DynamoDB tables only contain transient development data"
+  SNYK-CC-AWS-421:
+    - '*':
+        reason: "AWS-managed KMS encryption for Secrets Manager is acceptable for these secrets"
+  SNYK-CC-AWS-422:
+    - '*':
+        reason: "AWS-managed SNS KMS encryption is acceptable"
+  SNYK-CC-AWS-428:
+    - '*':
+        reason: "Default VPC endpoint access model is acceptable for internal account usage"
+  SNYK-CC-TF-55:
+    - '*':
+        reason: "AWS-managed SNS encryption is acceptable"
