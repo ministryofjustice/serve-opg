@@ -34,7 +34,7 @@ class IngressManager:
 
     def set_iam_role_session(self):
         if os.getenv('CI'):
-            role_arn = 'arn:aws:iam::{}:role/serve-opg-ci'.format(
+            role_arn = 'arn:aws:iam::{}:role/serve-opg-ci-boundary'.format(
                 self.aws_account_id)
         else:
             role_arn = 'arn:aws:iam::{}:role/operator'.format(
