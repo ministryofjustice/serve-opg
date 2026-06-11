@@ -1,5 +1,6 @@
 resource "aws_security_group" "ecs_service" {
   name        = "backup-cross-account-${var.environment}"
+  description = "Allow inbound traffic from the backup service in the main account and outbound traffic to the internet"
   description = "Cross Account Backup Service"
   vpc_id      = var.aws_vpc_id
   tags        = var.default_tags
