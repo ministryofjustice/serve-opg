@@ -18,4 +18,6 @@ ignore:
   SNYK-CC-AWS-428:
     - '*':
         reason: "Default VPC endpoint access model is acceptable for internal account usage"
-
+  SNYK-CC-TF-55:
+    - '*':
+        reason: "AWS-managed SNS encryption is acceptable"
