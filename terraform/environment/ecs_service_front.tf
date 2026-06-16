@@ -29,9 +29,10 @@ resource "aws_cloudwatch_log_group" "serve" {
 }
 
 resource "aws_security_group" "frontend" {
-  name   = "frontend-${local.environment}"
-  vpc_id = data.aws_vpc.main.id
-  tags   = local.default_tags
+  name        = "frontend-${local.environment}"
+  description = "Allow inbound traffic from the load balancer and outbound traffic to the internet"
+  vpc_id      = data.aws_vpc.main.id
+  tags        = local.default_tags
 
   ingress {
     protocol        = "tcp"
