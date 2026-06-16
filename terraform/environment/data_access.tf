@@ -22,9 +22,10 @@ data "aws_iam_policy_document" "database_readonly_assume" {
 }
 
 resource "aws_iam_role" "database_readonly_access" {
-  name               = "readonly-db-iam-${local.environment}"
-  assume_role_policy = data.aws_iam_policy_document.database_readonly_assume.json
-  tags               = local.default_tags
+  name                 = "readonly-db-iam-${local.environment}"
+  assume_role_policy   = data.aws_iam_policy_document.database_readonly_assume.json
+  permissions_boundary = data.aws_iam_policy.default_boundary.arn
+  tags                 = local.default_tags
 }
 
 data "aws_iam_policy_document" "database_readonly_connect" {
