@@ -7,6 +7,10 @@ resource "aws_lambda_function" "serve_opg_notify_slack" {
 
   filename         = data.archive_file.slack_notify.output_path
   source_code_hash = data.archive_file.slack_notify.output_base64sha256
+
+  tracing_config {
+    mode = "Active"
+  }
 }
 
 data "archive_file" "slack_notify" {
@@ -18,6 +22,7 @@ data "archive_file" "slack_notify" {
 resource "aws_cloudwatch_log_group" "serve_opg_notify_slack" {
   name              = "/aws/lambda/${aws_lambda_function.serve_opg_notify_slack.function_name}"
   retention_in_days = 14
+  kms_key_id        = module.logs_kms.target_key_arn
 }
 
 
