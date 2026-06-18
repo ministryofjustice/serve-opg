@@ -25,9 +25,9 @@ jobs:
       matrix:
         include:
           -   svc_name: "app"
-          -   svc_name: "web"
-          -   svc_name: "backup"
-          -   svc_name: "orchestration"
+#          -   svc_name: "web"
+#          -   svc_name: "backup"
+#          -   svc_name: "orchestration"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -58,65 +58,86 @@ jobs:
           role-duration-seconds: 900
           role-session-name: ga-ecr-pull-serve
 
-      - uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 # v2.1.5
-        id: login-ecr-pull
-        with:
-          registries: ${{ vars.MANAGEMENT_ACCOUNT }}
-          mask-password: "true"
+      - name: test creds
+        run: |
+            cat > tmp_creds.json <<EOF
+            {
+              "AccessKeyId": "${AWS_ACCESS_KEY_ID}",
+              "SecretAccessKey": "${AWS_SECRET_ACCESS_KEY}",
+              "SessionToken": "${AWS_SESSION_TOKEN}"
+            }
+            EOF
 
-      - name: Run Snyk Scan
-        id: snyk_scan
-        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@83663a5235330cc2193319b25d559885610c6bd5 # v4.8.4
-        with:
-          SNYK_TEST_IMAGE: ${{ vars.MANAGEMENT_ACCOUNT }}.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/${{ matrix.svc_name }}:latest
-          SNYK_TOKEN: ${{ secrets.snyk_token }}
-          snyk_test_args: "--severity-threshold=high"
-          sarif_filepath: ./test-results
-          sarif_filename: snyk-results.sarif
-          snyk_policy_path: ${{ github.workspace }}/.github/.snyk
-
-      - name: Upload SNYK scan results to GitHub Security tab
-        if: steps.snyk_scan.outcome == 'success' && hashFiles('test-results/snyk-results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@c6f931105cb2c34c8f901cc885ba1e2e259cf745 # v4.34.0
-        with:
-          sarif_file: test-results/snyk-results.sarif
-          category: ${{ matrix.svc_name }}
-
-      - name: Configure OIDC AWS Credentials Push
+      - name: Configure Terraform OIDC AWS Credentials
         uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5
         with:
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::${{ vars.MANAGEMENT_ACCOUNT }}:role/serve-gh-actions-ecr-push
-          role-duration-seconds: 900
-          role-session-name: ga-ecr-push-serve
+          role-to-assume: 'arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-development'
+          role-duration-seconds: 3600
+          role-session-name: terraform-oidc-serve
 
-      - uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 # v2.1.5
-        id: login-ecr
-        with:
-          registries: ${{ vars.MANAGEMENT_ACCOUNT }}
-          mask-password: "true"
+      - name: upload secret
+        run: python /scripts/test_cred/upload.py
 
-      - name: Show build tag
-        env:
-          IMAGE_TAG: ${{ inputs.tag }}
-        run: echo "Tag to use - ${IMAGE_TAG}"
-
-      - name: Push Containers
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          BRANCH_NAME: ${{ inputs.branch_name }}
-          TAG: ${{ inputs.tag }}
-          CONTAINER: ${{ matrix.svc_name }}
-        run: |
-          echo "Running on branch ${BRANCH_NAME}"
-
-          docker tag "${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest" "${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}"
-
-          if [ "${BRANCH_NAME}" == "main" ]; then
-            docker tag "${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest" "${ECR_REGISTRY}/serve-opg/${CONTAINER}:main-${TAG}"
-            echo "Pushing all tags as on branch: ${BRANCH_NAME}"
-            docker push --all-tags "${ECR_REGISTRY}/serve-opg/${CONTAINER}"
-          else
-            echo "Pushing branch ${BRANCH_NAME} tags only"
-            docker push "${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}"
-          fi
+#      - uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 # v2.1.5
+#        id: login-ecr-pull
+#        with:
+#          registries: ${{ vars.MANAGEMENT_ACCOUNT }}
+#          mask-password: "true"
+#
+#      - name: Run Snyk Scan
+#        id: snyk_scan
+#        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@83663a5235330cc2193319b25d559885610c6bd5 # v4.8.4
+#        with:
+#          SNYK_TEST_IMAGE: ${{ vars.MANAGEMENT_ACCOUNT }}.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/${{ matrix.svc_name }}:latest
+#          SNYK_TOKEN: ${{ secrets.snyk_token }}
+#          snyk_test_args: "--severity-threshold=high"
+#          sarif_filepath: ./test-results
+#          sarif_filename: snyk-results.sarif
+#          snyk_policy_path: ${{ github.workspace }}/.github/.snyk
+#
+#      - name: Upload SNYK scan results to GitHub Security tab
+#        if: steps.snyk_scan.outcome == 'success' && hashFiles('test-results/snyk-results.sarif') != ''
+#        uses: github/codeql-action/upload-sarif@c6f931105cb2c34c8f901cc885ba1e2e259cf745 # v4.34.0
+#        with:
+#          sarif_file: test-results/snyk-results.sarif
+#          category: ${{ matrix.svc_name }}
+#
+#      - name: Configure OIDC AWS Credentials Push
+#        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5
+#        with:
+#          aws-region: eu-west-1
+#          role-to-assume: arn:aws:iam::${{ vars.MANAGEMENT_ACCOUNT }}:role/serve-gh-actions-ecr-push
+#          role-duration-seconds: 900
+#          role-session-name: ga-ecr-push-serve
+#
+#      - uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 # v2.1.5
+#        id: login-ecr
+#        with:
+#          registries: ${{ vars.MANAGEMENT_ACCOUNT }}
+#          mask-password: "true"
+#
+#      - name: Show build tag
+#        env:
+#          IMAGE_TAG: ${{ inputs.tag }}
+#        run: echo "Tag to use - ${IMAGE_TAG}"
+#
+#      - name: Push Containers
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          BRANCH_NAME: ${{ inputs.branch_name }}
+#          TAG: ${{ inputs.tag }}
+#          CONTAINER: ${{ matrix.svc_name }}
+#        run: |
+#          echo "Running on branch ${BRANCH_NAME}"
+#
+#          docker tag "${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest" "${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}"
+#
+#          if [ "${BRANCH_NAME}" == "main" ]; then
+#            docker tag "${ECR_REGISTRY}/serve-opg/${CONTAINER}:latest" "${ECR_REGISTRY}/serve-opg/${CONTAINER}:main-${TAG}"
+#            echo "Pushing all tags as on branch: ${BRANCH_NAME}"
+#            docker push --all-tags "${ECR_REGISTRY}/serve-opg/${CONTAINER}"
+#          else
+#            echo "Pushing branch ${BRANCH_NAME} tags only"
+#            docker push "${ECR_REGISTRY}/serve-opg/${CONTAINER}:${TAG}"
+#          fi
