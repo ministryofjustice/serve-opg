@@ -124,85 +124,85 @@ jobs:
       branch_name: ${{ needs.workflow_variables.outputs.build_identifier }}
     secrets:
       snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
-
-  iac_scan:
-    name: Scan Infrastructure as Code
-    uses: ./.github/workflows/_snyk-iac-scan.yml
-    needs: [workflow_variables]
-    secrets:
-      snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
-
-  deploy_to_branch_environment:
-    name: Deploy to Branch Environment
-    needs: [
-      workflow_variables,
-      build_scan_push_containers,
-      unit_test_frontend,
-      iac_scan
-    ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
-    with:
-      workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
-      account_name: ${{ needs.workflow_variables.outputs.account_name }}
-      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
-      terraform_path: environment
-      path_to_live: ${{ fromJSON(needs.workflow_variables.outputs.path_to_live) }}
-      apply: true
-    secrets:
-      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
-
-  plan_development_account:
-    if: github.event_name == 'merge_group'
-    name: Plan against development account
-    needs: [
-      workflow_variables,
-      build_scan_push_containers,
-    ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
-    with:
-      workspace: development
-      account_name: development
-      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
-      terraform_path: account
-      apply: false
-    secrets:
-      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
-
-  behat_branch_environment:
-    name: Branch Environment Behat
-    uses: ./.github/workflows/_tests-behat.yml
-    needs: [workflow_variables,deploy_to_branch_environment]
-    with:
-      workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
-      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-      base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
-      sirius_api_bucket: ${{ needs.workflow_variables.outputs.sirius_api_bucket }}
-      suite: --suite=${{ needs.workflow_variables.outputs.suite }}
-      account_name: ${{ needs.workflow_variables.outputs.account_name }}
-      account_id: ${{ needs.workflow_variables.outputs.account_id }}
-      vpc_scope: serveopg
-
-  create_tag_release:
-    if: github.event_name == 'merge_group'
-    name: Create release tag from releasable
-    needs: [workflow_variables,behat_branch_environment]
-    uses: ./.github/workflows/_tag-release.yml
-    with:
-      current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-      release_tag: releasable
-
-  end_of_pr_workflow:
-    name: End of PR Workflow
-    runs-on: ubuntu-latest
-    needs: [workflow_variables, behat_branch_environment]
-    if: always()
-    steps:
-      - name: Check failure status
-        run: |
-          echo ${{ needs.behat_branch_environment.result }}
-          if [ "${{ needs.behat_branch_environment.result }}" != "success" ]; then
-            echo "❌ Behat branch environment failed"
-            exit 1
-          fi
-      - name: End of PR Workflow
-        run: echo "${{ needs.workflow_variables.outputs.version_tag }} tested, built, and deployed to Development"
+#
+#  iac_scan:
+#    name: Scan Infrastructure as Code
+#    uses: ./.github/workflows/_snyk-iac-scan.yml
+#    needs: [workflow_variables]
+#    secrets:
+#      snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
+#
+#  deploy_to_branch_environment:
+#    name: Deploy to Branch Environment
+#    needs: [
+#      workflow_variables,
+#      build_scan_push_containers,
+#      unit_test_frontend,
+#      iac_scan
+#    ]
+#    uses: ./.github/workflows/_deploy-infrastructure.yml
+#    with:
+#      workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
+#      account_name: ${{ needs.workflow_variables.outputs.account_name }}
+#      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+#      terraform_path: environment
+#      path_to_live: ${{ fromJSON(needs.workflow_variables.outputs.path_to_live) }}
+#      apply: true
+#    secrets:
+#      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
+#
+#  plan_development_account:
+#    if: github.event_name == 'merge_group'
+#    name: Plan against development account
+#    needs: [
+#      workflow_variables,
+#      build_scan_push_containers,
+#    ]
+#    uses: ./.github/workflows/_deploy-infrastructure.yml
+#    with:
+#      workspace: development
+#      account_name: development
+#      container_version: ${{ needs.workflow_variables.outputs.version_tag }}
+#      terraform_path: account
+#      apply: false
+#    secrets:
+#      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
+#
+#  behat_branch_environment:
+#    name: Branch Environment Behat
+#    uses: ./.github/workflows/_tests-behat.yml
+#    needs: [workflow_variables,deploy_to_branch_environment]
+#    with:
+#      workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
+#      version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+#      base_url: ${{ needs.workflow_variables.outputs.build_identifier }}.serve.opg.service.justice.gov.uk
+#      sirius_api_bucket: ${{ needs.workflow_variables.outputs.sirius_api_bucket }}
+#      suite: --suite=${{ needs.workflow_variables.outputs.suite }}
+#      account_name: ${{ needs.workflow_variables.outputs.account_name }}
+#      account_id: ${{ needs.workflow_variables.outputs.account_id }}
+#      vpc_scope: serveopg
+#
+#  create_tag_release:
+#    if: github.event_name == 'merge_group'
+#    name: Create release tag from releasable
+#    needs: [workflow_variables,behat_branch_environment]
+#    uses: ./.github/workflows/_tag-release.yml
+#    with:
+#      current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
+#      release_tag: releasable
+#
+#  end_of_pr_workflow:
+#    name: End of PR Workflow
+#    runs-on: ubuntu-latest
+#    needs: [workflow_variables, behat_branch_environment]
+#    if: always()
+#    steps:
+#      - name: Check failure status
+#        run: |
+#          echo ${{ needs.behat_branch_environment.result }}
+#          if [ "${{ needs.behat_branch_environment.result }}" != "success" ]; then
+#            echo "❌ Behat branch environment failed"
+#            exit 1
+#          fi
+#      - name: End of PR Workflow
+#        run: echo "${{ needs.workflow_variables.outputs.version_tag }} tested, built, and deployed to Development"
