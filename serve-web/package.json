@@ -42,5 +42,8 @@
     "restoreMocks": true,
     "testEnvironment": "jest-fixed-jsdom",
     "testRegex": "\\.test\\.js$"
+  },
+  "dependencies": {
+    "ws": "8.21"
   }
 }
