@@ -55,9 +55,9 @@ resource "aws_lb_listener" "frontend_listen" {
 }
 
 resource "aws_security_group" "elastic_load_balancer" {
-  name        = "load-balancer-${local.environment}"
-  vpc_id      = data.aws_vpc.main.id
-  tags        = local.default_tags
+  name   = "load-balancer-${local.environment}"
+  vpc_id = data.aws_vpc.main.id
+  tags   = local.default_tags
 
   ingress {
     protocol    = "tcp"
@@ -80,9 +80,9 @@ resource "aws_security_group" "elastic_load_balancer" {
 
 # New SG as large number of cidr ranges
 resource "aws_security_group" "load_balancer_health" {
-  name        = "load-balancer-hc-${local.environment}"
-  vpc_id      = data.aws_vpc.main.id
-  tags        = local.default_tags
+  name   = "load-balancer-hc-${local.environment}"
+  vpc_id = data.aws_vpc.main.id
+  tags   = local.default_tags
   lifecycle {
     create_before_destroy = true
   }
