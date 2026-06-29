@@ -18,3 +18,6 @@ ignore:
   SNYK-CC-TF-48:
     - '*':
         reason: "Application load balancer is intentionally internet-facing"
+  SNYK-CC-TF-56:
+    - '*':
+        reason: "Security group descriptions intentionally omitted because adding descriptions would force replacement of existing security groups"
