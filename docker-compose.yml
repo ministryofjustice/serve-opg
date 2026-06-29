@@ -13,7 +13,7 @@ services:
       - localstack
 
   loadbalancer:
-    image: jwilder/nginx-proxy:1.11-alpine@sha256:6e316dc74cd7327db6b10eef7ac9dbe1e07036826321ea98487f9ab4067c3f72
+    image: jwilder/nginx-proxy:1.11-alpine@sha256:2649b448d45147cb8b35ecfcb5fc719dd601cba7bcb33cb12e547aeadb2d5273
     ports:
       - 443:443
     volumes:
@@ -134,7 +134,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgres:14.22@sha256:eba8ddbdd837ecfbb6ca8a26d8deec68a2f9b076660102ae641dba0f371c099b
+    image: postgres:14.23@sha256:d462928b1898dd74b749ef486797968828c1e7fc9befb5e5ca03a33bfbc32d64
     ports:
       - 5432:5432
     environment:
@@ -182,7 +182,7 @@ services:
       ENVIRONMENT_NAME: local
 
   qa:
-    image: jakzal/phpqa:alpine@sha256:5d18c660eca4c022aae6645da22b409e64d8a39faf7b51ed9838386bbf6868a2
+    image: jakzal/phpqa:alpine@sha256:aa5b47171c146a8b4071a8ca39d3939de428b6661795712fd928cabf105ce002
     volumes:
       - ./serve-web:/var/www:ro
     working_dir: /var/www

@@ -81,7 +81,7 @@ jobs:
           echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/actions/semver@6d94dbe07b6711d9d74064acf6400d25e1fb6ba2 # v4.3.9
+        uses: ministryofjustice/opg-github-actions/actions/semver@b8868247a908f74fafe1905701391580575a6d35 # v4.3.10
         with:
           prerelease: true
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
