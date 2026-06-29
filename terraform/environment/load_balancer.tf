@@ -56,7 +56,6 @@ resource "aws_lb_listener" "frontend_listen" {
 
 resource "aws_security_group" "elastic_load_balancer" {
   name        = "load-balancer-${local.environment}"
-  description = "Allow inbound traffic from the internet and outbound traffic to the ECS services"
   vpc_id      = data.aws_vpc.main.id
   tags        = local.default_tags
 
@@ -82,7 +81,6 @@ resource "aws_security_group" "elastic_load_balancer" {
 # New SG as large number of cidr ranges
 resource "aws_security_group" "load_balancer_health" {
   name        = "load-balancer-hc-${local.environment}"
-  description = "Allow inbound traffic from Route53 healthcheckers and outbound traffic to the ECS services"
   vpc_id      = data.aws_vpc.main.id
   tags        = local.default_tags
   lifecycle {
