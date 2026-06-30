@@ -1,0 +1,23 @@
+ignore:
+  SNYK-CC-AWS-415:
+    - '*':
+        reason: "AWS-managed encryption for CloudWatch log groups is acceptable"
+
+  SNYK-CC-TF-128:
+    - '*':
+        reason: "ContainerInsights intentionally disabled."
+
+  SNYK-CC-TF-73:
+    - '*':
+        reason: "Open egress intentionally required."
+
+  SNYK-CC-TF-127:
+    - '*':
+        reason: "MFA delete intentionally disabled because bucket recovery is handled through versioning and infrastructure controls"
+
+  SNYK-CC-TF-48:
+    - '*':
+        reason: "Application load balancer is intentionally internet-facing"
+  SNYK-CC-TF-56:
+    - '*':
+        reason: "Security group descriptions intentionally omitted because adding descriptions would force replacement of existing security groups"
