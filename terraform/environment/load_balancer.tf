@@ -8,11 +8,12 @@ locals {
 }
 
 resource "aws_lb" "frontend_lb" {
-  name               = "frontend-elb-${local.environment}"
-  load_balancer_type = "application"
-  subnets            = data.aws_subnet.load_balancer[*].id
-  security_groups    = [aws_security_group.elastic_load_balancer.id, aws_security_group.load_balancer_health.id]
-  tags               = local.default_tags
+  name                       = "frontend-elb-${local.environment}"
+  load_balancer_type         = "application"
+  subnets                    = data.aws_subnet.load_balancer[*].id
+  security_groups            = [aws_security_group.elastic_load_balancer.id, aws_security_group.load_balancer_health.id]
+  tags                       = local.default_tags
+  drop_invalid_header_fields = true
 
   access_logs {
     bucket  = aws_s3_bucket.logs.bucket
