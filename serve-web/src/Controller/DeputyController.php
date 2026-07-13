@@ -9,6 +9,8 @@ use App\Form\DeputyForm;
 use App\Service\DeputyService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,8 +112,13 @@ class DeputyController extends AbstractController
 
         $deputy = $order->getDeputyById($deputyId);
 
-        if (!$deputy instanceof Deputy) {
-            throw new \RuntimeException('Unknown Deputy');
+        try {
+            if (!$deputy instanceof Deputy) {
+                throw new \RuntimeException('Unknown Deputy');
+            }
+        } catch (\RuntimeException $e) {
+            $this->addFlash('error', 'Deputy has already been removed');
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
         $form = $this->createForm(ConfirmationForm::class);
