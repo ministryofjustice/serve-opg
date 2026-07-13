@@ -9,8 +9,6 @@ use App\Form\DeputyForm;
 use App\Service\DeputyService;
 use App\Service\OrderService;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
