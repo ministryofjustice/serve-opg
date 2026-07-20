@@ -53,8 +53,6 @@ RUN mkdir -p var /tmp/app-logs && chown -R www-data:www-data var /tmp/app-logs
 
 ENV TIMEOUT=30
 
-USER www-data
-
 CMD ["/bin/ash", "-c", "php bin/console doctrine:migrations:migrate --no-interaction && \
   php bin/console doctrine:migrations:up-to-date && \
   php-fpm"]
