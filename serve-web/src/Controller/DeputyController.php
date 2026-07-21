@@ -110,11 +110,7 @@ class DeputyController extends AbstractController
 
         $deputy = $order->getDeputyById($deputyId);
 
-        try {
-            if (!$deputy instanceof Deputy) {
-                throw new \RuntimeException('Unknown Deputy');
-            }
-        } catch (\RuntimeException $e) {
+        if ($deputy === null) {
             $this->addFlash('error', 'Deputy has already been removed');
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
