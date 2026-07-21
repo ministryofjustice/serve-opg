@@ -21,3 +21,6 @@ ignore:
   SNYK-CC-TF-55:
     - '*':
         reason: "AWS-managed SNS encryption is acceptable"
+  SNYK-CC-AWS-426:
+    - '*':
+        reason: "EC2 termination protection is intentionally disabled because the SSM instance is managed by Terraform"
