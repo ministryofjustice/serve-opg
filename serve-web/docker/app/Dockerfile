@@ -49,11 +49,10 @@ COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
 RUN chmod +x /usr/local/bin/health-check.sh
 RUN mkdir certs && chmod 755 certs && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
 
+RUN mkdir -p var /tmp/app-logs && chown -R www-data:www-data var /tmp/app-logs
+
 ENV TIMEOUT=30
 
 CMD ["/bin/ash", "-c", "php bin/console doctrine:migrations:migrate --no-interaction && \
   php bin/console doctrine:migrations:up-to-date && \
-  chown -R www-data var && \
-  mkdir -p /tmp/app-logs && \
-  chown -R www-data /tmp/app-logs && \
   php-fpm"]
