@@ -110,8 +110,9 @@ class DeputyController extends AbstractController
 
         $deputy = $order->getDeputyById($deputyId);
 
-        if (!$deputy instanceof Deputy) {
-            throw new \RuntimeException('Unknown Deputy');
+        if ($deputy === null) {
+            $this->addFlash('error', 'Deputy has already been removed');
+            return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
         $form = $this->createForm(ConfirmationForm::class);
