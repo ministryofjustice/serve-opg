@@ -10,12 +10,6 @@ resource "aws_secretsmanager_secret" "sirius_api_email" {
   tags        = local.default_tags
 }
 
-resource "aws_secretsmanager_secret" "slack_url" {
-  name        = "serve_slack_url"
-  description = "Slack url and token for notifications"
-  tags        = local.default_tags
-}
-
 resource "aws_secretsmanager_secret" "slack_webhooks" {
   name        = "slack-webhooks"
   description = "Slack webhooks for notifications"
