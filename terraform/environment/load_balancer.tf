@@ -23,7 +23,7 @@ resource "aws_lb" "frontend_lb" {
 }
 
 resource "aws_lb_target_group" "frontend_tg" {
-  port                 = 80
+  port                 = 8080
   protocol             = "HTTP"
   target_type          = "ip"
   vpc_id               = data.aws_vpc.main.id

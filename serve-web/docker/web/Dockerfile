@@ -17,4 +17,8 @@ ENV TIMEOUT=30
 
 RUN envsubst '$APP_HOST $APP_PORT $LOG_LEVEL' < /etc/nginx/conf.d/default.conf.tmpl > /etc/nginx/conf.d/default.conf
 
+EXPOSE 8080
+
+USER nginx
+
 CMD /bin/sh -c "nginx -g 'daemon off;'"

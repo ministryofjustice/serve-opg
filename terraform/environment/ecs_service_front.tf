@@ -19,7 +19,7 @@ resource "aws_ecs_service" "frontend" {
   load_balancer {
     target_group_arn = aws_lb_target_group.frontend_tg.arn
     container_name   = "web"
-    container_port   = 80
+    container_port   = 8080
   }
 }
 
@@ -35,8 +35,8 @@ resource "aws_security_group" "frontend" {
 
   ingress {
     protocol        = "tcp"
-    from_port       = 80
-    to_port         = 80
+    from_port       = 8080
+    to_port         = 8080
     security_groups = [aws_security_group.elastic_load_balancer.id]
   }
 
