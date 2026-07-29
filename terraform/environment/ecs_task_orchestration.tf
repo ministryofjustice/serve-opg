@@ -2,7 +2,7 @@
 module "restore" {
   source = "./modules/task"
   name   = "restore"
-  user = "orchestration"
+  user   = "orchestration"
 
   cluster_name          = aws_ecs_cluster.serve_opg.name
   cpu                   = 2048
@@ -46,7 +46,7 @@ module "backup" {
   source = "./modules/task"
   name   = "backup"
 
-  user = "orchestration"
+  user                  = "orchestration"
   cluster_name          = aws_ecs_cluster.serve_opg.name
   cpu                   = 2048
   memory                = 4096

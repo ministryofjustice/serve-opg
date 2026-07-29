@@ -18,7 +18,7 @@ locals {
     essential = true,
     image     = var.image,
     name      = "backup_cross_account",
-    user = "backup",
+    user      = "backup",
     healthCheck = {
       command     = ["CMD-SHELL", "echo healthy || exit 1"],
       startPeriod = 30,
