@@ -81,7 +81,7 @@ jobs:
           echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/actions/semver@b8868247a908f74fafe1905701391580575a6d35 # v4.3.10
+        uses: ministryofjustice/opg-github-actions/actions/semver@4daa651011e6595c5b9689c4ff634cd15221a206 # v4.3.11
         with:
           prerelease: true
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
@@ -103,7 +103,7 @@ jobs:
           echo "- Service Frontend URL: https://${BUILD_IDENTIFIER}.serve.opg.service.justice.gov.uk"
           echo "- Tag Used: ${{ steps.semver_tag.outputs.tag }}"
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6
+      - uses: actions/labeler@b8dd2d9be0f68b860e7dae5dae7d772984eacd6d # v6
         if: github.event_name == 'pull_request'
         with:
           configuration-path: .github/labeller.yml
