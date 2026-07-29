@@ -2,7 +2,6 @@
 module "restore" {
   source = "./modules/task"
   name   = "restore"
-  user   = "orchestration"
 
   cluster_name          = aws_ecs_cluster.serve_opg.name
   cpu                   = 2048
@@ -20,6 +19,7 @@ locals {
   restore = jsonencode(
     {
       name    = "restore",
+      user    = "orchestration",
       command = ["./restore.sh"],
       image   = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/orchestration:${var.APP_VERSION}",
       logConfiguration = {
@@ -46,7 +46,6 @@ module "backup" {
   source = "./modules/task"
   name   = "backup"
 
-  user                  = "orchestration"
   cluster_name          = aws_ecs_cluster.serve_opg.name
   cpu                   = 2048
   memory                = 4096
@@ -63,6 +62,7 @@ locals {
   backup = jsonencode(
     {
       name    = "backup",
+      user    = "orchestration",
       command = ["./backup.sh"],
       image   = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/orchestration:${var.APP_VERSION}",
       logConfiguration = {
