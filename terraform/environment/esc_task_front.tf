@@ -16,8 +16,8 @@ locals {
       essential   = true,
       image       = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:${var.APP_VERSION}",
       mountPoints = [],
-      name = "web",
-      user = "nginx",
+      name        = "web",
+      user        = "nginx",
       portMappings = [{
         containerPort = 8080,
         hostPort      = 8080,
