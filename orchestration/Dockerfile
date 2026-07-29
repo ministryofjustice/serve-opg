@@ -24,9 +24,16 @@ RUN apk add --no-cache \
 RUN mkdir certs && chmod 755 certs \
  && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
 
-COPY backup.sh /backup.sh
-COPY restore.sh /restore.sh
-COPY common.sh /common.sh
-COPY analyse-database.sh /analyse-database.sh
+RUN addgroup -S orchestration \
+ && adduser -S -G orchestration orchestration \
+ && mkdir /app \
+ && chown orchestration:orchestration /app
 
-WORKDIR /
+COPY --chown=orchestration:orchestration backup.sh /app/backup.sh
+COPY --chown=orchestration:orchestration restore.sh /app/restore.sh
+COPY --chown=orchestration:orchestration common.sh /app/common.sh
+COPY --chown=orchestration:orchestration analyse-database.sh /app/analyse-database.sh
+
+WORKDIR /app
+
+USER orchestration
