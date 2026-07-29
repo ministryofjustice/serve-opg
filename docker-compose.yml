@@ -52,7 +52,6 @@ services:
       - ./serve-web/public:/var/www/public
 
   app:
-    user: "www-data"
     build:
       context: ./serve-web
       dockerfile: docker/app/Dockerfile
