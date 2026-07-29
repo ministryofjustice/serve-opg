@@ -2,12 +2,8 @@ data "aws_secretsmanager_secret" "sirius_api_email" {
   name = "sirius_api_email_${local.account.account_name}"
 }
 
-data "aws_secretsmanager_secret_version" "sirius_api_email" {
-  secret_id = data.aws_secretsmanager_secret.sirius_api_email.id
-}
-
 data "aws_secretsmanager_secret" "public_api_password" {
-  name = data.aws_secretsmanager_secret_version.sirius_api_email.secret_string
+  name = "sirius_public_api_password"
 }
 
 data "aws_secretsmanager_secret" "notification_api_key" {
