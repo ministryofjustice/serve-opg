@@ -17,16 +17,17 @@ locals {
       image       = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/web:${var.APP_VERSION}",
       mountPoints = [],
       name        = "web",
+      user        = "nginx",
       portMappings = [{
-        containerPort = 80,
-        hostPort      = 80,
+        containerPort = 8080,
+        hostPort      = 8080,
         protocol      = "tcp"
       }],
       volumesFrom = [],
       healthCheck = {
         command = [
           "CMD-SHELL",
-          "curl -f http://localhost:80/health-check || exit 1"
+          "curl -f http://localhost:8080/health-check || exit 1"
         ],
         interval = 30,
         timeout  = 10,

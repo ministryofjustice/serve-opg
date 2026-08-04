@@ -19,6 +19,7 @@ locals {
   restore = jsonencode(
     {
       name    = "restore",
+      user    = "orchestration",
       command = ["./restore.sh"],
       image   = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/orchestration:${var.APP_VERSION}",
       logConfiguration = {
@@ -61,6 +62,7 @@ locals {
   backup = jsonencode(
     {
       name    = "backup",
+      user    = "orchestration",
       command = ["./backup.sh"],
       image   = "311462405659.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/orchestration:${var.APP_VERSION}",
       logConfiguration = {
