@@ -63,14 +63,21 @@ connect_to_database() {
     database="serve-${environment}-cluster"
   fi
 
-  exists=$(aws rds describe-db-clusters --region eu-west-1 --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" --output text)
+  exists=$(aws rds describe-db-clusters \
+    --region eu-west-1 \
+    --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" \
+    --output text)
 
   if [[ -z "$exists" ]]; then
     echo "Error: Database '${database}' does not exist."
     exit 1
   fi
 
-  HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "$database" --query 'DBClusters[0].Endpoint' --output text)
+  HOST=$(aws rds describe-db-clusters \
+    --region eu-west-1 \
+    --db-cluster-identifier "$database" \
+    --query 'DBClusters[0].Endpoint' \
+    --output text)
 
   if [[ -z "$HOST" || "$HOST" == "None" ]]; then
     echo "Error: Could not resolve database cluster '$database'"
@@ -108,28 +115,62 @@ connect_to_database() {
     fi
 
     echo "Connecting to $HOST as $user"
-    PGPASSWORD="$password" psql -h "$HOST" -U "$user" -d serve_opg -p 5432
+    PGPASSWORD="$password" psql "host=$HOST port=5432 dbname=serve_opg user=$user"
 
   elif [[ "$access" == "read" ]]; then
-    ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+    ACCOUNT_ID=$(AWS_STS_REGIONAL_ENDPOINTS=regional aws sts get-caller-identity \
+      --region eu-west-1 \
+      --query Account \
+      --output text \
+      --cli-connect-timeout 5 \
+      --cli-read-timeout 10)
 
-    CREDS=$(aws sts assume-role --role-arn "arn:aws:iam::$ACCOUNT_ID:role/readonly-db-iam-${environment}" --role-session-name db-readonly-session 2>/dev/null)
+    if [[ -z "$ACCOUNT_ID" || "$ACCOUNT_ID" == "None" ]]; then
+      echo "Error: Could not retrieve the AWS account ID"
+      exit 1
+    fi
+
+    CREDS=$(AWS_STS_REGIONAL_ENDPOINTS=regional aws sts assume-role \
+      --region eu-west-1 \
+      --role-arn "arn:aws:iam::$ACCOUNT_ID:role/readonly-db-iam-${environment}" \
+      --role-session-name db-readonly-session \
+      --cli-connect-timeout 5 \
+      --cli-read-timeout 10 \
+      2>/dev/null)
 
     if [[ -z "$CREDS" ]]; then
       echo "Error: Could not assume readonly role for environment '${environment}'"
       exit 1
     fi
 
-    export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r .Credentials.AccessKeyId)
-    export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r .Credentials.SecretAccessKey)
-    export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r .Credentials.SessionToken)
+    export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.Credentials.AccessKeyId')
+    export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.Credentials.SecretAccessKey')
+    export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.Credentials.SessionToken')
 
-    curl -s https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem -o /tmp/rds-combined-ca-bundle.pem
+    if ! curl --fail --silent --show-error \
+      --connect-timeout 10 \
+      --max-time 30 \
+      https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
+      -o /tmp/rds-combined-ca-bundle.pem; then
+      echo "Error: Failed to download the RDS certificate bundle"
+      exit 1
+    fi
 
-    TOKEN=$(aws rds generate-db-auth-token --hostname "$HOST" --port 5432 --username "readonly-db-iam-${environment}" --region eu-west-1)
+    user="readonly-db-iam-${environment}"
 
-    echo "Connecting to $HOST as readonly-db-iam-${environment}"
-    PGPASSWORD="$TOKEN" psql "host=$HOST port=5432 dbname=serve_opg user=readonly-db-iam-${environment} sslmode=require sslrootcert=/tmp/rds-combined-ca-bundle.pem"
+    TOKEN=$(aws rds generate-db-auth-token \
+      --hostname "$HOST" \
+      --port 5432 \
+      --username "$user" \
+      --region eu-west-1)
+
+    if [[ -z "$TOKEN" ]]; then
+      echo "Error: Could not generate the database authentication token"
+      exit 1
+    fi
+
+    echo "Connecting to $HOST as $user"
+    PGPASSWORD="$TOKEN" psql "host=$HOST port=5432 dbname=serve_opg user=$user sslmode=require sslrootcert=/tmp/rds-combined-ca-bundle.pem"
 
   else
     echo "Invalid access level: must be 'read' or 'edit'"
