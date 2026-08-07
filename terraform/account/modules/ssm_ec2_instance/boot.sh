@@ -22,100 +22,155 @@ list_databases() {
   printf "%-20s %-30s %-70s\n" "Environment" "Database" "Endpoint"
   printf "%-20s %-30s %-70s\n" "-----------" "---------" "---------"
 
-  dbs=$(aws rds describe-db-clusters --query "DBClusters[?Engine=='aurora-postgresql'].[DBClusterIdentifier,Endpoint]" --output text)
+  dbs=$(aws rds describe-db-clusters --region eu-west-1 --query "DBClusters[?Engine=='aurora-postgresql'].[DBClusterIdentifier,Endpoint]" --output text)
 
   while read -r database endpoint; do
-    env=$(echo "$database" | awk -F'-' '{print $3}')
-    printf "%-20s %-30s %-70s\n" "$env" "$database" "$endpoint"
+    if [[ "$database" != serve-*-cluster ]]; then
+      continue
+    fi
+
+    environment_name="${database#serve-}"
+    environment_name="${environment_name%-cluster}"
+
+    printf "%-20s %-30s %-70s\n" "$environment_name" "$database" "$endpoint"
   done <<< "$dbs"
 
   echo
   echo "To connect: database connect <environment|database> <read|edit>"
-  echo "Example:    database connect development read"
+  echo "Example:    database connect preproduction read"
 }
 
 connect_to_database() {
   input="$1"
   access="$2"
+  provided_password="${3:-}"
 
   if [[ -z "$input" || -z "$access" ]]; then
-    echo "Usage: database connect <environment|database> <read|edit>"
+    echo "Usage: database connect <environment|database> <read|edit> [password]"
     exit 1
   fi
 
-  if [[ "$input" == serve-opg-* ]]; then
-      database="$input"
-      environment=$(echo "$database" | awk -F'-' '{print $3}')
+  if [[ "$input" == *.rds.amazonaws.com ]]; then
+    database="${input%%.*}"
+    environment="${database#serve-}"
+    environment="${environment%-cluster}"
+  elif [[ "$input" == serve-*-cluster ]]; then
+    database="$input"
+    environment="${database#serve-}"
+    environment="${environment%-cluster}"
   else
-      environment="$input"
-      database="serve-opg-$environment-cluster"
+    environment="$input"
+    database="serve-${environment}-cluster"
   fi
 
-
-  exists=$(aws rds describe-db-clusters --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" --output text)
+  exists=$(aws rds describe-db-clusters \
+    --region eu-west-1 \
+    --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" \
+    --output text)
 
   if [[ -z "$exists" ]]; then
     echo "Error: Database '${database}' does not exist."
     exit 1
   fi
 
+  HOST=$(aws rds describe-db-clusters \
+    --region eu-west-1 \
+    --db-cluster-identifier "$database" \
+    --query 'DBClusters[0].Endpoint' \
+    --output text)
+
+  if [[ -z "$HOST" || "$HOST" == "None" ]]; then
+    echo "Error: Could not resolve database cluster '$database'"
+    exit 1
+  fi
+
   if [[ "$access" == "edit" ]]; then
     user="serveopgadmin"
-    secret_name="database_password"
 
-    if ! secret_exists "$secret_name"; then
-      fallback="database_password"
-      if secret_exists "$fallback"; then
-        secret_name="$fallback"
-      else
+    if [[ "$environment" == production* ]]; then
+      if [[ -z "$provided_password" ]]; then
+        echo "If you need access to edit production, please get the secret from:"
+        echo "https://eu-west-1.console.aws.amazon.com/secretsmanager/secret?name=database_password&region=eu-west-1"
+        echo
+        echo "Then run:"
+        echo "database connect $input edit '{PASSWORD}'"
+        exit 1
+      fi
+
+      password="$provided_password"
+    else
+      secret_name="database_password"
+
+      if ! secret_exists "$secret_name"; then
         echo "Access Denied"
+        exit 1
+      fi
+
+      password=$(get_secret_value "$secret_name")
+
+      if [[ -z "$password" ]]; then
+        echo "Failed to retrieve password"
         exit 1
       fi
     fi
 
-    password=$(get_secret_value "$secret_name")
-    if [[ -z "$password" ]]; then
-      echo "Failed to retrieve password"
-      exit 1
-    fi
-
-    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "${database}" --query 'DBClusters[0].Endpoint' --output text)
-
-
-    if [[ -z "$HOST" || "$HOST" == "None" ]]; then
-      echo "Error: Could not resolve DB instance for '${database}-0'"
-      exit 1
-    fi
-
     echo "Connecting to $HOST as $user"
-    PGPASSWORD="$password" psql -h "$HOST" -U "$user" -d serve_opg -p 5432
+    PGPASSWORD="$password" psql "host=$HOST port=5432 dbname=serve_opg user=$user"
 
   elif [[ "$access" == "read" ]]; then
-    ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "${database}" --query 'DBClusters[0].Endpoint' --output text)
+    ACCOUNT_ID=$(AWS_STS_REGIONAL_ENDPOINTS=regional aws sts get-caller-identity \
+      --region eu-west-1 \
+      --query Account \
+      --output text \
+      --cli-connect-timeout 5 \
+      --cli-read-timeout 10)
 
-    if [[ -z "$HOST" || "$HOST" == "None" ]]; then
-      echo "Error: Could not resolve DB instance for '${database}-0'"
+    if [[ -z "$ACCOUNT_ID" || "$ACCOUNT_ID" == "None" ]]; then
+      echo "Error: Could not retrieve the AWS account ID"
       exit 1
     fi
 
-    CREDS=$(aws sts assume-role --role-arn "arn:aws:iam::$ACCOUNT_ID:role/readonly-db-iam-${environment}" --role-session-name db-readonly-session 2>/dev/null)
+    CREDS=$(AWS_STS_REGIONAL_ENDPOINTS=regional aws sts assume-role \
+      --region eu-west-1 \
+      --role-arn "arn:aws:iam::$ACCOUNT_ID:role/readonly-db-iam-${environment}" \
+      --role-session-name db-readonly-session \
+      --cli-connect-timeout 5 \
+      --cli-read-timeout 10 \
+      2>/dev/null)
 
     if [[ -z "$CREDS" ]]; then
       echo "Error: Could not assume readonly role for environment '${environment}'"
       exit 1
     fi
 
-    export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r .Credentials.AccessKeyId)
-    export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r .Credentials.SecretAccessKey)
-    export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r .Credentials.SessionToken)
+    export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.Credentials.AccessKeyId')
+    export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.Credentials.SecretAccessKey')
+    export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.Credentials.SessionToken')
 
-    curl -s https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem -o /tmp/rds-combined-ca-bundle.pem
+    if ! curl --fail --silent --show-error \
+      --connect-timeout 10 \
+      --max-time 30 \
+      https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
+      -o /tmp/rds-combined-ca-bundle.pem; then
+      echo "Error: Failed to download the RDS certificate bundle"
+      exit 1
+    fi
 
-    TOKEN=$(aws rds generate-db-auth-token --hostname "$HOST" --port 5432 --username readonly-db-iam-${environment} --region eu-west-1)
+    user="readonly-db-iam-${environment}"
 
-    echo "Connecting to $HOST as readonly-db-iam-${environment}"
-    PGPASSWORD="$TOKEN" psql "host=$HOST port=5432 dbname=serve_opg user=readonly-db-iam-${environment} sslmode=require sslrootcert=/tmp/rds-combined-ca-bundle.pem"
+    TOKEN=$(aws rds generate-db-auth-token \
+      --hostname "$HOST" \
+      --port 5432 \
+      --username "$user" \
+      --region eu-west-1)
+
+    if [[ -z "$TOKEN" ]]; then
+      echo "Error: Could not generate the database authentication token"
+      exit 1
+    fi
+
+    echo "Connecting to $HOST as $user"
+    PGPASSWORD="$TOKEN" psql "host=$HOST port=5432 dbname=serve_opg user=$user sslmode=require sslrootcert=/tmp/rds-combined-ca-bundle.pem"
 
   else
     echo "Invalid access level: must be 'read' or 'edit'"
@@ -128,7 +183,7 @@ case "$command" in
     list_databases
     ;;
   connect)
-    connect_to_database "$2" "$3"
+    connect_to_database "$2" "$3" "$4"
     ;;
   *)
     echo "Usage:"
@@ -214,7 +269,7 @@ EOF
 
 sudo tee /etc/update-motd.d/50-digideps > /dev/null <<'EOF'
 cat << 'EOM'
-Welcome to the DigiDeps SSM Server
+Welcome to the Serve OPG SSM Server
 
 Available commands:
 
