@@ -37,6 +37,7 @@ list_databases() {
 connect_to_database() {
   input="$1"
   access="$2"
+  provided_password="${3:-}"
 
   if [[ -z "$input" || -z "$access" ]]; then
     echo "Usage: database connect <environment|database> <read|edit>"
@@ -60,35 +61,34 @@ connect_to_database() {
   fi
 
   if [[ "$access" == "edit" ]]; then
-    user="serveopgadmin"
-    secret_name="database_password"
+      user="serveopgadmin"
 
-    if ! secret_exists "$secret_name"; then
-      fallback="database_password"
-      if secret_exists "$fallback"; then
-        secret_name="$fallback"
+      if [[ "$environment" == production* ]]; then
+        if [[ -z "$provided_password" ]]; then
+          echo "If you need access to edit production, please get the secret from:"
+          echo "https://eu-west-1.console.aws.amazon.com/secretsmanager/secret?name=database_password&region=eu-west-1"
+          echo
+          echo "Then run:"
+          echo "database connect $input edit '{PASSWORD}'"
+          exit 1
+        fi
+
+        password="$provided_password"
       else
-        echo "Access Denied"
-        exit 1
+        secret_name="database_password"
+
+        if ! secret_exists "$secret_name"; then
+          echo "Access Denied"
+          exit 1
+        fi
+
+        password=$(get_secret_value "$secret_name")
+
+        if [[ -z "$password" ]]; then
+          echo "Failed to retrieve password"
+          exit 1
+        fi
       fi
-    fi
-
-    password=$(get_secret_value "$secret_name")
-    if [[ -z "$password" ]]; then
-      echo "Failed to retrieve password"
-      exit 1
-    fi
-
-    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "${database}" --query 'DBClusters[0].Endpoint' --output text)
-
-
-    if [[ -z "$HOST" || "$HOST" == "None" ]]; then
-      echo "Error: Could not resolve DB instance for '${database}-0'"
-      exit 1
-    fi
-
-    echo "Connecting to $HOST as $user"
-    PGPASSWORD="$password" psql -h "$HOST" -U "$user" -d serve_opg -p 5432
 
   elif [[ "$access" == "read" ]]; then
     ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
@@ -128,7 +128,7 @@ case "$command" in
     list_databases
     ;;
   connect)
-    connect_to_database "$2" "$3"
+    connect_to_database "$2" "$3" "$4"
     ;;
   *)
     echo "Usage:"
