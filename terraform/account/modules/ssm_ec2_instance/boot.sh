@@ -22,16 +22,22 @@ list_databases() {
   printf "%-20s %-30s %-70s\n" "Environment" "Database" "Endpoint"
   printf "%-20s %-30s %-70s\n" "-----------" "---------" "---------"
 
-  dbs=$(aws rds describe-db-clusters --query "DBClusters[?Engine=='aurora-postgresql'].[DBClusterIdentifier,Endpoint]" --output text)
+  dbs=$(aws rds describe-db-clusters --region eu-west-1 --query "DBClusters[?Engine=='aurora-postgresql'].[DBClusterIdentifier,Endpoint]" --output text)
 
   while read -r database endpoint; do
-    env=$(echo "$database" | awk -F'-' '{print $3}')
-    printf "%-20s %-30s %-70s\n" "$env" "$database" "$endpoint"
+    if [[ "$database" != serve-*-cluster ]]; then
+      continue
+    fi
+
+    environment_name="${database#serve-}"
+    environment_name="${environment_name%-cluster}"
+
+    printf "%-20s %-30s %-70s\n" "$environment_name" "$database" "$endpoint"
   done <<< "$dbs"
 
   echo
   echo "To connect: database connect <environment|database> <read|edit>"
-  echo "Example:    database connect development read"
+  echo "Example:    database connect preproduction read"
 }
 
 connect_to_database() {
@@ -44,18 +50,30 @@ connect_to_database() {
     exit 1
   fi
 
-  if [[ "$input" == serve-opg-* ]]; then
+  if [[ "$input" == *.rds.amazonaws.com ]]; then
+    database="${input%%.*}"
+    environment="${database#serve-}"
+    environment="${environment%-cluster}"
+  elif [[ "$input" == serve-*-cluster ]]; then
     database="$input"
-    environment=$(echo "$database" | awk -F'-' '{print $3}')
+    environment="${database#serve-}"
+    environment="${environment%-cluster}"
   else
     environment="$input"
-    database="serve-opg-$environment-cluster"
+    database="serve-${environment}-cluster"
   fi
 
-  exists=$(aws rds describe-db-clusters --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" --output text)
+  exists=$(aws rds describe-db-clusters --region eu-west-1 --query "DBClusters[?DBClusterIdentifier=='${database}'].DBClusterIdentifier" --output text)
 
   if [[ -z "$exists" ]]; then
     echo "Error: Database '${database}' does not exist."
+    exit 1
+  fi
+
+  HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "$database" --query 'DBClusters[0].Endpoint' --output text)
+
+  if [[ -z "$HOST" || "$HOST" == "None" ]]; then
+    echo "Error: Could not resolve database cluster '$database'"
     exit 1
   fi
 
@@ -89,24 +107,11 @@ connect_to_database() {
       fi
     fi
 
-    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "$database" --query 'DBClusters[0].Endpoint' --output text)
-
-    if [[ -z "$HOST" || "$HOST" == "None" ]]; then
-      echo "Error: Could not resolve database cluster '$database'"
-      exit 1
-    fi
-
     echo "Connecting to $HOST as $user"
     PGPASSWORD="$password" psql -h "$HOST" -U "$user" -d serve_opg -p 5432
 
   elif [[ "$access" == "read" ]]; then
     ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-    HOST=$(aws rds describe-db-clusters --region eu-west-1 --db-cluster-identifier "$database" --query 'DBClusters[0].Endpoint' --output text)
-
-    if [[ -z "$HOST" || "$HOST" == "None" ]]; then
-      echo "Error: Could not resolve database cluster '$database'"
-      exit 1
-    fi
 
     CREDS=$(aws sts assume-role --role-arn "arn:aws:iam::$ACCOUNT_ID:role/readonly-db-iam-${environment}" --role-session-name db-readonly-session 2>/dev/null)
 
