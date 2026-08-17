@@ -59,6 +59,16 @@ module "ssmmessages_endpoint_vpc" {
   tags                = local.default_tags
 }
 
+module "sts_endpoint_vpc" {
+  source              = "./modules/vpc_endpoint"
+  subnet_ids          = module.network.application_subnets[*].id
+  vpc                 = module.network.vpc
+  region              = data.aws_region.current.name
+  service             = "sts"
+  service_short_title = "sts"
+  tags                = local.default_tags
+}
+
 module "ec2messages_endpoint_vpc" {
   source              = "./modules/vpc_endpoint"
   subnet_ids          = module.network.application_subnets[*].id
