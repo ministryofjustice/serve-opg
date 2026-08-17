@@ -45,3 +45,33 @@ resource "aws_iam_role_policy_attachment" "start_ec2_instance" {
   role       = data.aws_iam_role.data_access.name
   policy_arn = aws_iam_policy.start_ec2_instance.arn
 }
+
+data "aws_iam_policy_document" "data_access_database_password" {
+  statement {
+    sid    = "ReadDatabasePassword"
+    effect = "Allow"
+
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
+    ]
+
+    resources = [
+      aws_secretsmanager_secret.database_password.arn,
+    ]
+  }
+}
+
+resource "aws_iam_policy" "data_access_database_password" {
+  count = local.environment == "production" ? 0 : 1
+
+  name   = "data-access-database-password"
+  policy = data.aws_iam_policy_document.data_access_database_password.json
+}
+
+resource "aws_iam_role_policy_attachment" "data_access_database_password" {
+  count = local.environment == "production" ? 0 : 1
+
+  role       = data.aws_iam_role.data_access.name
+  policy_arn = aws_iam_policy.data_access_database_password[0].arn
+}
