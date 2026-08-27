@@ -41,7 +41,7 @@ jobs:
       suite: ${{ steps.variables.outputs.suite }}
 
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0
       - name: extract variables for pr workflow
@@ -81,7 +81,7 @@ jobs:
           echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/actions/semver@4daa651011e6595c5b9689c4ff634cd15221a206 # v4.3.11
+        uses: ministryofjustice/opg-github-actions/actions/semver@a6ee7f30fbae7d1bc6cee8cb2699063ef4f0c7e3 # v4.4.0
         with:
           prerelease: true
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}

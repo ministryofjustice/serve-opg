@@ -31,7 +31,7 @@ jobs:
         outputs:
             build_identifier: ${{ steps.variables.outputs.build_identifier }}
         steps:
-            - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
             - name: extract variables for workflow
               id: variables
@@ -51,11 +51,11 @@ jobs:
             - workflow_variables
         steps:
             - name: Checkout
-              uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+              uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
             - id: terraform_version
               name: get terraform version
-              uses: ministryofjustice/opg-github-actions/actions/terraform-version@83663a5235330cc2193319b25d559885610c6bd5 # v4.8.4
+              uses: ministryofjustice/opg-github-actions/actions/terraform-version@f90a91695b7d02fe2b4133ba2f9ebc2c0f6b8f94 # v4.8.5
               with:
                   terraform_directory: terraform/environment
 
@@ -64,7 +64,7 @@ jobs:
                   terraform_version: ${{ steps.terraform_version.outputs.version }}
                   terraform_wrapper: false
 
-            - uses: ministryofjustice/opg-github-actions/actions/github-deploy-key@939ca6ddfc2bafefa48b0730ea0268bd75a25876 # v4.9.1
+            - uses: ministryofjustice/opg-github-actions/actions/github-deploy-key@69c6bcc3d42e3af5234f11b3a699216ac4396bf2 # v4.10.0
               with:
                   deploy_key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 

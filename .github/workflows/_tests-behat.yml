@@ -40,7 +40,7 @@ jobs:
       TF_WORKSPACE: ${{ inputs.workspace_name }}
       APP_VERSION: ${{ inputs.version_tag }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
