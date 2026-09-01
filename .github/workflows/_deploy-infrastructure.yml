@@ -35,7 +35,7 @@ jobs:
     terraform_workflow_job:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
               with:
                   fetch-depth: '0'
 
@@ -62,7 +62,7 @@ jobs:
               with:
                   deploy_key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
-            - uses: terraform-linters/setup-tflint@ae78205cfffec9e8d93fd2b3115c7e9d3166d4b6 # v5
+            - uses: terraform-linters/setup-tflint@6e1e0642c0289bd619021bf6b34e3c08ed1e005a # v6
               name: Setup TFLint
               with:
                   tflint_version: v0.50.1
@@ -102,7 +102,7 @@ jobs:
               working-directory: terraform/${{ inputs.terraform_path }}
 
             - name: Upload Config
-              uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
               with:
                   name: cluster_config_${{ inputs.workspace }}
                   path: ./terraform/environment/cluster_config.json
