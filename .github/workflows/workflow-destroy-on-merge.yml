@@ -31,7 +31,7 @@ jobs:
         outputs:
             build_identifier: ${{ steps.variables.outputs.build_identifier }}
         steps:
-            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
             - name: extract variables for workflow
               id: variables
@@ -51,7 +51,7 @@ jobs:
             - workflow_variables
         steps:
             - name: Checkout
-              uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+              uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
             - id: terraform_version
               name: get terraform version
