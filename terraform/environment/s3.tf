@@ -1,5 +1,11 @@
 locals {
   bucket_name = local.environment == "production" ? "serve-opg.opg.digital" : "${local.environment}.serve-opg.opg.digital"
+
+  s3_allowed_principal_arns = [
+    "arn:aws:iam::${local.account.account_id}:role/serve-opg-ci-boundary",
+    "arn:aws:iam::${local.account.account_id}:role/operator",
+    "arn:aws:iam::${local.account.account_id}:role/breakglass"
+  ]
 }
 
 data "aws_s3_bucket" "access_logging" {
@@ -61,6 +67,49 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
   restrict_public_buckets = true
 }
 
+resource "aws_s3_bucket_policy" "application" {
+  depends_on = [aws_s3_bucket_public_access_block.bucket]
+  bucket     = aws_s3_bucket.bucket.id
+  policy     = data.aws_iam_policy_document.application.json
+}
+
+data "aws_iam_policy_document" "application" {
+  statement {
+    sid    = "DenyUnlessViaVPCEndpointOrAllowedPrincipal"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+
+    resources = [
+      aws_s3_bucket.bucket.arn,
+      "${aws_s3_bucket.bucket.arn}/*"
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:SourceVpce"
+      values   = [data.aws_vpc_endpoint.s3_endpoint.id]
+    }
+
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalArn"
+      values   = local.s3_allowed_principal_arns
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:PrincipalIsAWSService"
+      values   = ["false"]
+    }
+  }
+}
+
 # ===== ELB bucket =====
 resource "aws_s3_bucket" "logs" {
   bucket        = "logs.${local.bucket_name}"
@@ -117,6 +166,43 @@ resource "aws_s3_bucket_policy" "bucket" {
 }
 
 data "aws_iam_policy_document" "logs" {
+  statement {
+    sid    = "DenyUnlessViaVPCEndpointOrAllowedPrincipal"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+
+    resources = [
+      aws_s3_bucket.logs.arn,
+      "${aws_s3_bucket.logs.arn}/*"
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:SourceVpce"
+      values   = [data.aws_vpc_endpoint.s3_endpoint.id]
+    }
+
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalArn"
+      values = concat(
+        local.s3_allowed_principal_arns,
+        [data.aws_elb_service_account.main.arn]
+      )
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:PrincipalIsAWSService"
+      values   = ["false"]
+    }
+  }
   statement {
     sid       = "allowLoadBalancerDelivery"
     actions   = ["s3:PutObject"]
@@ -191,4 +277,47 @@ resource "aws_s3_bucket_public_access_block" "orchestration" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "orchestration" {
+  depends_on = [aws_s3_bucket_public_access_block.orchestration]
+  bucket     = aws_s3_bucket.orchestration.id
+  policy     = data.aws_iam_policy_document.orchestration.json
+}
+
+data "aws_iam_policy_document" "orchestration" {
+  statement {
+    sid    = "DenyUnlessViaVPCEndpointOrAllowedPrincipal"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+
+    resources = [
+      aws_s3_bucket.orchestration.arn,
+      "${aws_s3_bucket.orchestration.arn}/*"
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:SourceVpce"
+      values   = [data.aws_vpc_endpoint.s3_endpoint.id]
+    }
+
+    condition {
+      test     = "ArnNotLike"
+      variable = "aws:PrincipalArn"
+      values   = local.s3_allowed_principal_arns
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:PrincipalIsAWSService"
+      values   = ["false"]
+    }
+  }
 }
