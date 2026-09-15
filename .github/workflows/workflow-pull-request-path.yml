@@ -41,7 +41,7 @@ jobs:
       suite: ${{ steps.variables.outputs.suite }}
 
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - name: extract variables for pr workflow
@@ -81,7 +81,7 @@ jobs:
           echo "default_bump=${bump}" >> "$GITHUB_OUTPUT"
       - name: generate semver tag and release
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/actions/semver@821b6f92327f0f195276860676aa8133d63f39dd # v4.5.1
+        uses: ministryofjustice/opg-github-actions/actions/semver@b605e1e2c94b399e8139c4c2be2c8730700e0004 # v4.5.2
         with:
           prerelease: true
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
@@ -103,7 +103,7 @@ jobs:
           echo "- Service Frontend URL: https://${BUILD_IDENTIFIER}.serve.opg.service.justice.gov.uk"
           echo "- Tag Used: ${{ steps.semver_tag.outputs.tag }}"
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/labeler@b8dd2d9be0f68b860e7dae5dae7d772984eacd6d # v6
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7
         if: github.event_name == 'pull_request'
         with:
           configuration-path: .github/labeller.yml
