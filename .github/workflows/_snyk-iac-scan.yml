@@ -11,17 +11,8 @@ on:
         required: true
 
 permissions:
-  actions: none
-  checks: none
-  contents: write
-  deployments: none
   id-token: write
-  issues: none
-  packages: none
-  pull-requests: read
-  repository-projects: none
   security-events: write
-  statuses: none
 
 jobs:
   snyk_iac_scan:
@@ -39,6 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+            persist-credentials: false
 
       - name: Configure OIDC AWS Credentials Pull
         uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6

@@ -9,18 +9,7 @@ on:
       - main
   merge_group:
 
-permissions:
-  id-token: write
-  contents: write
-  security-events: write
-  pull-requests: read
-  actions: none
-  checks: none
-  deployments: none
-  issues: none
-  packages: none
-  repository-projects: none
-  statuses: none
+permissions: {}
 
 defaults:
   run:
@@ -30,6 +19,8 @@ jobs:
   workflow_variables:
     runs-on: ubuntu-latest
     name: output workflow variables
+    permissions:
+        contents: write
     outputs:
       parsed_branch: ${{ steps.variables.outputs.branch_formatted }}
       build_identifier: ${{ steps.variables.outputs.build_identifier }}
@@ -43,7 +34,9 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
+
       - name: extract variables for pr workflow
         id: variables
         env:
@@ -112,12 +105,15 @@ jobs:
 
   unit_test_frontend:
     name: Unit tests on Frontend app
-    uses: ./.github/workflows/_tests-frontend.yml
+    uses: $/.github/workflows/_tests-frontend.yml
     needs: [workflow_variables]
 
   build_scan_push_containers:
     name: Docker Build, Scan and Push
-    uses: ./.github/workflows/_build-push.yml
+    uses: $/.github/workflows/_build-push.yml
+    permissions:
+        id-token: write
+        security-events: write
     needs: [workflow_variables]
     with:
       tag: ${{ needs.workflow_variables.outputs.version_tag }}
@@ -127,20 +123,25 @@ jobs:
 
   iac_scan:
     name: Scan Infrastructure as Code
-    uses: ./.github/workflows/_snyk-iac-scan.yml
+    uses: $/.github/workflows/_snyk-iac-scan.yml
+    permissions:
+        id-token: write
+        security-events: write
     needs: [workflow_variables]
     secrets:
       snyk_token: ${{ secrets.SNYK_OPG_ORG_TOKEN }}
 
   deploy_to_branch_environment:
     name: Deploy to Branch Environment
+    uses: $/.github/workflows/_deploy-infrastructure.yml
+    permissions:
+        id-token: write
     needs: [
       workflow_variables,
       build_scan_push_containers,
       unit_test_frontend,
       iac_scan
     ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: ${{ needs.workflow_variables.outputs.build_identifier }}
       account_name: ${{ needs.workflow_variables.outputs.account_name }}
@@ -154,11 +155,13 @@ jobs:
   plan_development_account:
     if: github.event_name == 'merge_group'
     name: Plan against development account
+    uses: $/.github/workflows/_deploy-infrastructure.yml
+    permissions:
+        id-token: write
     needs: [
       workflow_variables,
       build_scan_push_containers,
     ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: development
       account_name: development
@@ -170,7 +173,9 @@ jobs:
 
   behat_branch_environment:
     name: Branch Environment Behat
-    uses: ./.github/workflows/_tests-behat.yml
+    uses: $/.github/workflows/_tests-behat.yml
+    permissions:
+        id-token: write
     needs: [workflow_variables,deploy_to_branch_environment]
     with:
       workspace_name: ${{ needs.workflow_variables.outputs.build_identifier }}
@@ -185,8 +190,10 @@ jobs:
   create_tag_release:
     if: github.event_name == 'merge_group'
     name: Create release tag from releasable
+    uses: $/.github/workflows/_tag-release.yml
+    permissions:
+        id-token: write
     needs: [workflow_variables,behat_branch_environment]
-    uses: ./.github/workflows/_tag-release.yml
     with:
       current_tag: ${{ needs.workflow_variables.outputs.version_tag }}
       release_tag: releasable
