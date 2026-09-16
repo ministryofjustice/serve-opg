@@ -193,9 +193,9 @@ class OrderController extends AbstractController
 
         if (!$order->isOrderValid()) {
             $flashMessage = <<<MESSAGE
-The order was uploaded successfully.  We could not get all the information we need from the document.
-Please enter some details below about the order
-MESSAGE;
+                The order was uploaded successfully.  We could not get all the information we need from the document.
+                Please enter some details below about the order
+                MESSAGE;
 
             $this->addFlash('success', $flashMessage);
             $partial = true;

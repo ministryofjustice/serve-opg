@@ -14,18 +14,17 @@ trait FormTrait
     {
         $this->assertResponseStatus(200);
         // added second css for new govuk error groups (see macro: errorSummary)
-        $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error') ||
-                     $this->getSession()->getPage()->has('css', '.govuk-error-summary');
+        $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error')
+                     || $this->getSession()->getPage()->has('css', '.govuk-error-summary');
 
-        if ($shouldBe == 'valid' && $hasErrors) {
+        if ('valid' == $shouldBe && $hasErrors) {
             throw new \RuntimeException('Errors found in the form. Zero expected');
         }
 
-        if ($shouldBe == 'invalid' && !$hasErrors) {
+        if ('invalid' == $shouldBe && !$hasErrors) {
             throw new \RuntimeException('No errors found in form. At least one expected');
         }
     }
-
 
     /**
      * @return array of IDs of input/select/textarea elements inside a  .form-group.form-group-error CSS class
@@ -63,10 +62,10 @@ trait FormTrait
         if ($untriggeredField || $unexpectedFields) {
             $message = '';
             if ($untriggeredField) {
-                $message .= " - Form fields not throwing error as expected: \n      " . implode(', ', $untriggeredField) . "\n";
+                $message .= " - Form fields not throwing error as expected: \n      ".implode(', ', $untriggeredField)."\n";
             }
             if ($unexpectedFields) {
-                $message .= " - Form fields unexpectedly throwing errors: \n      " . implode(', ', $unexpectedFields) . "\n";
+                $message .= " - Form fields unexpectedly throwing errors: \n      ".implode(', ', $unexpectedFields)."\n";
             }
 
             throw new \RuntimeException($message);
@@ -86,7 +85,8 @@ trait FormTrait
     /**
      * @When I delete the user :name
      */
-    public function deleteUser($name): void {
+    public function deleteUser($name): void
+    {
         $userLink = $this->getSession()->getPage()->findLink($name);
         $deleteLink = $userLink->find('xpath', '../ancestor::tr//a[normalize-space(text())="Delete"]');
         $deleteLink->click();

@@ -40,9 +40,9 @@ class DocumentController extends AbstractController
 
     private TranslatorInterface $translator;
 
-    const SUCCESS = 1;
-    const FAIL = 0;
-    const ERROR = 2;
+    public const SUCCESS = 1;
+    public const FAIL = 0;
+    public const ERROR = 2;
 
     /**
      * DocumentController constructor.
@@ -54,9 +54,8 @@ class DocumentController extends AbstractController
         FileUploader $fileUploader,
         FileCheckerFactory $fileCheckerFactory,
         LoggerInterface $logger,
-        TranslatorInterface $translator
-    )
-    {
+        TranslatorInterface $translator,
+    ) {
         $this->em = $em;
         $this->orderService = $orderService;
         $this->documentService = $documentService;
@@ -66,12 +65,12 @@ class DocumentController extends AbstractController
         $this->translator = $translator;
     }
 
-    private function processDocument(Order $order, Document $document, UploadedFile $file, $requestId): array {
-
-        $response = array(
+    private function processDocument(Order $order, Document $document, UploadedFile $file, $requestId): array
+    {
+        $response = [
             'response' => self::FAIL,
             'message' => '',
-        );
+        ];
 
         try {
             $fileObject = $this->fileCheckerFactory->factory($file);
@@ -90,13 +89,12 @@ class DocumentController extends AbstractController
                 $this->em->persist($document);
                 $this->em->flush();
 
-                $response["response"] = self::SUCCESS;
-                $response["id"] = $document->getId();
-                $response["message"] = 'File uploaded';
+                $response['response'] = self::SUCCESS;
+                $response['id'] = $document->getId();
+                $response['message'] = 'File uploaded';
             } else {
-                $response["message"] = 'File could not be uploaded';
+                $response['message'] = 'File could not be uploaded';
             }
-
         } catch (\Exception $e) {
             $errorToErrorTranslationKey = [
                 InvalidFileTypeException::class => 'notSupported',
@@ -113,21 +111,20 @@ class DocumentController extends AbstractController
 
             $this->logger->error($e->getMessage());
 
-            $response["response"] = self::ERROR;
-            $response["message"] = $message;
+            $response['response'] = self::ERROR;
+            $response['message'] = $message;
         }
 
         return $response;
     }
 
-    private function removeDocument($id): int {
-
+    private function removeDocument($id): int
+    {
         $response = self::FAIL;
 
         try {
             $this->documentService->deleteDocumentById($id);
             $response = self::SUCCESS;
-
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
@@ -146,19 +143,18 @@ class DocumentController extends AbstractController
 
         $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
-
-        if($processedDocument["response"] === self::SUCCESS) {
+        if (self::SUCCESS === $processedDocument['response']) {
             return new JsonResponse([
                 'success' => true,
-                'id' => $processedDocument["id"],
+                'id' => $processedDocument['id'],
                 'orderId' => $orderId,
-                'readyToServe' => $order->readyToServe()
+                'readyToServe' => $order->readyToServe(),
             ]);
         }
 
-        if($processedDocument["response"] === self::FAIL || $processedDocument["response"] === self::ERROR) {
+        if (self::FAIL === $processedDocument['response'] || self::ERROR === $processedDocument['response']) {
             return new JsonResponse([
-                'error' => $processedDocument["message"]
+                'error' => $processedDocument['message'],
             ], 422);
         }
     }
@@ -176,32 +172,32 @@ class DocumentController extends AbstractController
             $uploadedFile = $document->getFile();
             $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
-            if($processedDocument["response"] === self::SUCCESS) {
-                $request->getSession()->getFlashBag()->add('success', $processedDocument["message"]);
+            if (self::SUCCESS === $processedDocument['response']) {
+                $request->getSession()->getFlashBag()->add('success', $processedDocument['message']);
+
                 return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), '_fragment' => 'documents']);
             }
 
-            if($processedDocument["response"] === self::FAIL) {
-                $request->getSession()->getFlashBag()->add('notification', $processedDocument["message"]);
+            if (self::FAIL === $processedDocument['response']) {
+                $request->getSession()->getFlashBag()->add('notification', $processedDocument['message']);
             }
 
-            if($processedDocument["response"] === self::ERROR) {
-                $form->get('file')->addError(new FormError($processedDocument["message"]));
+            if (self::ERROR === $processedDocument['response']) {
+                $form->get('file')->addError(new FormError($processedDocument['message']));
             }
-
         }
 
         return $this->render('Document/add.html.twig', [
             'order' => $order,
             'docType' => $docType,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route(path: '/order/{orderId}/document/{id}/remove', name: 'document-remove')]
     public function removeAction(Request $request, $orderId, $id): RedirectResponse
     {
-        if ($this->removeDocument($id) === self::FAIL) {
+        if (self::FAIL === $this->removeDocument($id)) {
             $this->addFlash('error', 'Document could not be removed.');
         }
 
@@ -223,7 +219,7 @@ class DocumentController extends AbstractController
         return new JsonResponse([
             'success' => $documentRemoved,
             'readyToServe' => $order->readyToServe(),
-            'error' => $error
+            'error' => $error,
         ]);
     }
 }

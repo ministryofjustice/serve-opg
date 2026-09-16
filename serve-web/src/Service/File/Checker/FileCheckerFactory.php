@@ -3,16 +3,13 @@
 namespace App\Service\File\Checker;
 
 use App\Service\File\Checker\Exception\InvalidFileTypeException;
-use App\Service\File\Checker\Exception\RiskyFileException;
 use App\Service\File\Types\Doc;
 use App\Service\File\Types\Jpg;
 use App\Service\File\Types\Pdf;
 use App\Service\File\Types\Png;
 use App\Service\File\Types\Tif;
 use App\Service\File\Types\UploadableFile;
-use App\Service\File\Types\UploadableFileInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileCheckerFactory
@@ -35,7 +32,7 @@ class FileCheckerFactory
         Jpg $jpg,
         Tif $tif,
         Doc $doc,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         $this->pdf = $pdf;
         $this->png = $png;
@@ -46,25 +43,25 @@ class FileCheckerFactory
     }
 
     /**
-     * Sets the uploaded file to the file Object created based on mime type
+     * Sets the uploaded file to the file Object created based on mime type.
      */
     public function factory(UploadedFile $uploadedFile): UploadableFile
     {
-        if ($uploadedFile->isExecutable() ||
-            preg_match('/([^\.])+(\.exe|\.bin|\.bat|\.js|\.zip|\.php)/i', $uploadedFile->getClientOriginalName())) {
-            throw new InvalidFileTypeException( );
+        if ($uploadedFile->isExecutable()
+            || preg_match('/([^\.])+(\.exe|\.bin|\.bat|\.js|\.zip|\.php)/i', $uploadedFile->getClientOriginalName())) {
+            throw new InvalidFileTypeException();
         }
         $mimeType = $uploadedFile->getMimeType();
         switch (true) {
-            case ($mimeType == 'application/pdf'):
+            case 'application/pdf' == $mimeType:
                 return $this->pdf->setUploadedFile($uploadedFile);
-            case ($mimeType == 'image/png'):
-                return  $this->png->setUploadedFile($uploadedFile);
-            case ($mimeType == 'image/jpeg'):
+            case 'image/png' == $mimeType:
+                return $this->png->setUploadedFile($uploadedFile);
+            case 'image/jpeg' == $mimeType:
                 return $this->jpg->setUploadedFile($uploadedFile);
-            case ($mimeType == 'image/tiff'):
+            case 'image/tiff' == $mimeType:
                 return $this->tif->setUploadedFile($uploadedFile);
-            case ($this->isWordDoc($uploadedFile)):
+            case $this->isWordDoc($uploadedFile):
                 return $this->doc->setUploadedFile($uploadedFile);
             default:
                 throw new InvalidFileTypeException();
@@ -81,11 +78,11 @@ class FileCheckerFactory
 
         if (
             // Old word docs
-            ('application/msword' == $mimeType && ('doc' == $uploadedFile->getExtension())) ||
+            ('application/msword' == $mimeType && ('doc' == $uploadedFile->getExtension()))
             // New word documents
-            (
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document' == $mimeType &&
-                ('docx' == $uploadedFile->getClientOriginalExtension() && ('' == $uploadedFile->getExtension()))
+            || (
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document' == $mimeType
+                && ('docx' == $uploadedFile->getClientOriginalExtension() && ('' == $uploadedFile->getExtension()))
             )
         ) {
             return true;

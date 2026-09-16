@@ -42,7 +42,7 @@ trait RegionLinksTrait
     {
         $regionCss = self::behatElementToCssSelector($element, $type);
         $found = count($this->getSession()->getPage()->findAll('css', $regionCss));
-        if ($found !== 1) {
+        if (1 !== $found) {
             throw new \RuntimeException("One $regionCss class expected, $found found");
         }
     }
@@ -61,7 +61,6 @@ trait RegionLinksTrait
         }
     }
 
-
     /**
      * @Then I should see :text in the :region region
      */
@@ -70,7 +69,7 @@ trait RegionLinksTrait
         // assert only one region is present
         $regionCss = self::behatElementToCssSelector($region, 'region');
         $found = count($this->getSession()->getPage()->findAll('css', $regionCss));
-        if ($found !== 1) {
+        if (1 !== $found) {
             throw new \RuntimeException("Can't assert text existing in region $region, $found found");
         }
 
@@ -92,7 +91,7 @@ trait RegionLinksTrait
      */
     public function iShouldSeeInSection(string $text, string $section): void
     {
-        $this->assertSession()->elementTextContains('css', '#' . $section . '-section', $text);
+        $this->assertSession()->elementTextContains('css', '#'.$section.'-section', $text);
     }
 
     /**
@@ -102,7 +101,7 @@ trait RegionLinksTrait
     {
         $this->assertResponseStatus(200);
 
-        $this->assertSession()->elementTextNotContains('css', '#' . $section . '-section', $text);
+        $this->assertSession()->elementTextNotContains('css', '#'.$section.'-section', $text);
     }
 
     /**
@@ -110,7 +109,7 @@ trait RegionLinksTrait
      */
     public function iShouldSeeInTheContainer(string $text, string $container): void
     {
-        $this->assertSession()->elementTextContains('css', '#' . $container . ', .' . $container, $text);
+        $this->assertSession()->elementTextContains('css', '#'.$container.', .'.$container, $text);
     }
 
     /**
@@ -118,8 +117,8 @@ trait RegionLinksTrait
      */
     public function theElementShouldBeEmpty(string $selector): void
     {
-        $this->assertSession()->elementExists('css', '#' . $selector);
-        if (!empty($this->getSession()->getPage()->find('css', '#' . $selector)->getText())) {
+        $this->assertSession()->elementExists('css', '#'.$selector);
+        if (!empty($this->getSession()->getPage()->find('css', '#'.$selector)->getText())) {
             throw new \RuntimeException('Element Not Empty');
         }
     }
@@ -136,7 +135,7 @@ trait RegionLinksTrait
 
     public static function behatElementToCssSelector(string $element, string $type): string
     {
-        return '.behat-' . $type . '-' . preg_replace('/\s+/', '-', $element);
+        return '.behat-'.$type.'-'.preg_replace('/\s+/', '-', $element);
     }
 
     /**
@@ -146,22 +145,21 @@ trait RegionLinksTrait
     {
         $driver = $this->getSession()->getDriver();
 
-        if (get_class($driver) != 'Behat\Mink\Driver\GoutteDriver') {
+        if ('Behat\Mink\Driver\GoutteDriver' != get_class($driver)) {
             $elementsFound = $this->getSession()->getPage()->findAll('css', '#global-cookie-message');
-            if (count($elementsFound) === 0) {
+            if (0 === count($elementsFound)) {
                 throw new \RuntimeException('Cookie banner not found');
             }
 
             foreach ($elementsFound as $node) {
                 // Note: getText() will return an empty string when using Selenium2D. This
                 // is ok since it will cause a failed step.
-                if ($node->getText() != '' && $node->isVisible()) {
+                if ('' != $node->getText() && $node->isVisible()) {
                     return;
                 }
             }
         }
     }
-
 
     /**
      * @Then I should see :text in the page header
@@ -171,7 +169,6 @@ trait RegionLinksTrait
         $this->assertSession()->elementTextContains('css', '.page-header', $text);
     }
 
-
     /**
      * Click on element with attribute [behat-link=:link].
      *
@@ -180,7 +177,7 @@ trait RegionLinksTrait
     public function clickOnBehatLink($link): void
     {
         // if multiple links are specified (comma-separated), click on all of them
-        if (strpos($link, ',') !== false) {
+        if (false !== strpos($link, ',')) {
             foreach (explode(',', $link) as $singleLink) {
                 $this->clickOnBehatLink(trim($singleLink));
             }
@@ -196,7 +193,7 @@ trait RegionLinksTrait
         if (count($linksElementsFound) > 1) {
             throw new \RuntimeException("Found more than one $linkSelector element in the page ($count). Interrupted");
         }
-        if (count($linksElementsFound) === 0) {
+        if (0 === count($linksElementsFound)) {
             throw new \RuntimeException("$linkSelector not found in page");
         }
 
@@ -218,7 +215,7 @@ trait RegionLinksTrait
         if (count($linksElementsFound) > 1) {
             throw new \RuntimeException("Found more than a $linkSelector element inside $regionSelector . Interrupted");
         }
-        if (count($linksElementsFound) === 0) {
+        if (0 === count($linksElementsFound)) {
             throw new \RuntimeException("Element $linkSelector not found inside $regionSelector . Interrupted");
         }
 
@@ -229,12 +226,12 @@ trait RegionLinksTrait
     private function findRegion(string $region)
     {
         // find region
-        $regionSelector = '#' . $region . ', ' . self::behatElementToCssSelector($region, 'region');
+        $regionSelector = '#'.$region.', '.self::behatElementToCssSelector($region, 'region');
         $regionsFound = $this->getSession()->getPage()->findAll('css', $regionSelector);
         if (count($regionsFound) > 1) {
             throw new \RuntimeException("Found more than one $regionSelector");
         }
-        if (count($regionsFound) === 0) {
+        if (0 === count($regionsFound)) {
             throw new \RuntimeException("Region $regionSelector not found.");
         }
 

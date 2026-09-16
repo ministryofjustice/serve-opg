@@ -4,13 +4,10 @@ namespace App\Service\File\Checker;
 
 use App\Service\File\Checker\Exception\RiskyFileException;
 use App\Service\File\Types\UploadableFileInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class AbstractFileChecker
- * A generic place to hold common methods for checking files
- *
- * @package App\Service\File\Checker
+ * A generic place to hold common methods for checking files.
  */
 class AbstractFileChecker
 {
@@ -23,14 +20,14 @@ class AbstractFileChecker
         if (!self::hasValidFileExtension($file)) {
             $extension = strtolower($file->getUploadedFile()->getClientOriginalExtension());
 
-            throw new RiskyFileException('Invalid file extension: ' . $extension);
+            throw new RiskyFileException('Invalid file extension: '.$extension);
         }
 
         return $file;
     }
 
     /**
-     * Has the file got a valid extension
+     * Has the file got a valid extension.
      */
     protected static function hasValidFileExtension(UploadableFileInterface $file): bool
     {
@@ -44,7 +41,7 @@ class AbstractFileChecker
     }
 
     /**
-     * List of accepted file extensions
+     * List of accepted file extensions.
      *
      * @todo generate list from config / env variables
      */

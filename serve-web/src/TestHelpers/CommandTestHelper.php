@@ -1,8 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace App\TestHelpers;
-
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -18,7 +18,7 @@ class CommandTestHelper extends WebTestCase
         // Answer yes to migration - --no-interaction doesn't work for CommandTester
         $commandTester->setInputs(['y']);
         $commandTester->execute([
-            'command'  => $command->getName(),
+            'command' => $command->getName(),
             '--delete' => ' ',
             'version' => $version,
         ]);
@@ -32,7 +32,7 @@ class CommandTestHelper extends WebTestCase
         // Answer yes to migration - --no-interaction doesn't work for CommandTester
         $commandTester->setInputs(['y']);
         $commandTester->execute([
-            'command'  => $command->getName(),
+            'command' => $command->getName(),
             'version' => $version,
             '--up' => '',
         ]);
@@ -46,7 +46,7 @@ class CommandTestHelper extends WebTestCase
         // Answer yes to migration - --no-interaction doesn't work for CommandTester
         $commandTester->setInputs(['y']);
         $commandTester->execute([
-            'command'  => $command->getName(),
+            'command' => $command->getName(),
         ]);
     }
 
@@ -55,6 +55,7 @@ class CommandTestHelper extends WebTestCase
         $kernel = static::createKernel();
         $application = new Application($kernel);
         $application->setAutoExit(false);
+
         return $application;
     }
 }

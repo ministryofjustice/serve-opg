@@ -10,14 +10,12 @@ trait NotifyTrait
     public function iResetTheEmailLog(): void
     {
         $stream = stream_context_create(['http' => ['method' => 'DELETE']]);
-        file_get_contents($this->getNotifyMockBaseUrl() . '/mock-data', false, $stream);
+        file_get_contents($this->getNotifyMockBaseUrl().'/mock-data', false, $stream);
 
         if (count($this->getNotifyMockSentMails()) > 0) {
-            throw new \RuntimeException("error resetting email");
+            throw new \RuntimeException('error resetting email');
         }
-
     }
-
 
     /**
      * @Then there should be no email sent to :to
@@ -25,13 +23,12 @@ trait NotifyTrait
     public function assertNoEmailShouldHaveBeenSent(string $to): void
     {
         $messages = $this->getNotifyMockSentMails();
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             if ($message['email_address'] == $to) {
                 throw new \RuntimeException("Found at least one mail sent to $to");
             }
         }
     }
-
 
     /**
      * @When I click on the link in the email sent to :to
@@ -39,9 +36,10 @@ trait NotifyTrait
     public function IclickOnLinkInEmaiSentTo(string $to): void
     {
         $messages = $this->getNotifyMockSentMails();
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             if ($message['email_address'] == $to) {
                 $this->visit($message['personalisation']['activationLink']);
+
                 return;
             }
         }

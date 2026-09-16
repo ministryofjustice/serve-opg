@@ -37,7 +37,7 @@ class HealthController extends AbstractController
             $dbAvailability,
         ];
 
-        list($healthy, $services, $errors) = $this->servicesHealth($services);
+        [$healthy, $services, $errors] = $this->servicesHealth($services);
 
         $response = $this->render('Health/availability.html.twig', [
             'services' => $services,
@@ -60,7 +60,7 @@ class HealthController extends AbstractController
             $notifyAvailability,
         ];
 
-        list($healthy, $services, $errors) = $this->servicesHealth($services);
+        [$healthy, $services, $errors] = $this->servicesHealth($services);
 
         $response = $this->render('Health/availability.html.twig', [
             'services' => $services,

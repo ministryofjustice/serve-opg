@@ -4,10 +4,10 @@ namespace App\Form;
 
 use App\Entity\Document;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class DocumentForm extends AbstractType
 {
@@ -17,15 +17,15 @@ class DocumentForm extends AbstractType
             ->add('file', FileType::class
             );
         $builder->add('submit', SubmitType::class, [
-                'label' => 'common.upload.label'
-            ]);
+            'label' => 'common.upload.label',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Document::class,
-            'translation_domain' => 'forms'
-        ));
+            'translation_domain' => 'forms',
+        ]);
     }
 }

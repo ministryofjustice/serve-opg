@@ -1,13 +1,10 @@
 <?php
+
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 #[ORM\Table(name: 'client')]
 #[ORM\Entity(repositoryClass: 'App\Repository\ClientRepository')]
@@ -25,12 +22,12 @@ class Client
     private string $clientName;
 
     #[ORM\Column(name: 'created_at', type: 'datetime')]
-    private DateTime $createdAt;
+    private \DateTime $createdAt;
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\Order', mappedBy: 'client', cascade: ['persist'])]
     private Collection $orders;
 
-    public function __construct(string $caseNumber, string $clientName, DateTime $createdAt)
+    public function __construct(string $caseNumber, string $clientName, \DateTime $createdAt)
     {
         $this->caseNumber = $caseNumber;
         $this->clientName = $clientName;
@@ -58,7 +55,7 @@ class Client
         return $this->clientName;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }

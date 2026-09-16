@@ -119,7 +119,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $waits = [];
         foreach ($this->rules as $rule) {
             // fetch all the rules and check if for any of those, the user has to wait
-            list($maxAttempts, $timeRange, $waitFor) = $rule;
+            [$maxAttempts, $timeRange, $waitFor] = $rule;
 
             $waitFor = $this->bruteForceChecker->hasToWait(
                 $this->storage->getAttempts($username),

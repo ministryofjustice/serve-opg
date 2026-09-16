@@ -15,10 +15,10 @@ class OrderPf extends Order
     public function getAcceptedDocumentTypes(): array
     {
         $requiredDocs = [
-            Document::TYPE_COURT_ORDER => true
+            Document::TYPE_COURT_ORDER => true,
         ];
 
-        if ($this->getSubType() !== order::SUBTYPE_INTERIM_ORDER) {
+        if (order::SUBTYPE_INTERIM_ORDER !== $this->getSubType()) {
             $requiredDocs[Document::TYPE_COP1A] = true;
             $requiredDocs[Document::TYPE_COP3] = true;
 
@@ -33,8 +33,8 @@ class OrderPf extends Order
 
     public function isOrderValid(): bool
     {
-        return !empty($this->getSubType()) &&
-            !empty($this->getAppointmentType()) &&
-            !empty($this->getHasAssetsAboveThreshold());
+        return !empty($this->getSubType())
+            && !empty($this->getAppointmentType())
+            && !empty($this->getHasAssetsAboveThreshold());
     }
 }

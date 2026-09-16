@@ -22,12 +22,12 @@ class UserForm extends AbstractType
             ->add('firstName', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'user.firstName.notBlank']),
-                ]
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'user.lastName.notBlank']),
-                ]
+                ],
             ])
             ->add('phoneNumber', TextType::class, [
                 'required' => false,
@@ -36,8 +36,8 @@ class UserForm extends AbstractType
                 'mapped' => false,
                 'choices' => [
                     'Case manager' => 'ROLE_USER',
-                    'Admin' => 'ROLE_ADMIN'
-                ]
+                    'Admin' => 'ROLE_ADMIN',
+                ],
             ])
             ->add('submit', SubmitType::class);
 
@@ -56,7 +56,7 @@ class UserForm extends AbstractType
 
             $roleName = $form->get('roleName')->getData();
 
-            if ($roleName === 'ROLE_ADMIN') {
+            if ('ROLE_ADMIN' === $roleName) {
                 $user->setRoles(['ROLE_ADMIN']);
             } else {
                 $user->setRoles([]);
@@ -66,9 +66,9 @@ class UserForm extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => User::class,
-            'translation_domain' => 'forms'
-        ));
+            'translation_domain' => 'forms',
+        ]);
     }
 }
