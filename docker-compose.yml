@@ -184,7 +184,7 @@ services:
       ENVIRONMENT_NAME: local
 
   qa:
-    image: jakzal/phpqa:alpine@sha256:aa5b47171c146a8b4071a8ca39d3939de428b6661795712fd928cabf105ce002
+    image: jakzal/phpqa:1.125-php8.4-alpine@sha256:39066b5a56cd67cbcd6b0047e767af4595cd4c62253761b3e04c3ba7e2bede63
     volumes:
       - ./serve-web:/var/www:ro
     working_dir: /var/www
