@@ -59,7 +59,7 @@ class SpreadsheetService
         foreach ($rows as $row) {
             $this->importSingleRow($row);
 
-            if (0 === $count % 25) {
+            if ($count % 25 === 0) {
                 $this->em->clear();
             }
 
@@ -132,7 +132,7 @@ class SpreadsheetService
                 if (count($orderIds) >= 1) {
                     $this->buildRemovalProcessedArrays($client, $orderIds);
                 }
-            } elseif (1 === count($orders)) {
+            } elseif (count($orders) === 1) {
                 /** @var Order $order */
                 $order = $orders[0];
                 if ((int) $order->getOrderNumber() !== $orderNumber) {
@@ -172,7 +172,7 @@ class SpreadsheetService
 
         $case = strtoupper($row['Case']);
         $clientName = $row['Forename'].' '.$row['Surname']; // TODO different fields ?
-        $orderType = 2 == $row['Ord Type'] ? OrderHw::class : OrderPf::class;
+        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);
@@ -198,7 +198,7 @@ class SpreadsheetService
 
                 $header_values = $rows = [];
                 foreach ($xlsx->rows() as $k => $r) {
-                    if (0 === $k) {
+                    if ($k === 0) {
                         $header_values = $r;
                         continue;
                     }

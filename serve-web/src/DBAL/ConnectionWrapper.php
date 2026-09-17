@@ -38,7 +38,7 @@ class ConnectionWrapper extends Connection
 
     public function connect(): DriverConnection
     {
-        if (null !== $this->_conn) {
+        if ($this->_conn !== null) {
             return $this->_conn;
         }
 
@@ -55,7 +55,7 @@ class ConnectionWrapper extends Connection
             }
         }
 
-        if (false === $this->autoCommit) {
+        if ($this->autoCommit === false) {
             $this->beginTransaction();
         }
 

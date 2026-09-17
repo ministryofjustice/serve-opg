@@ -110,7 +110,7 @@ class UploadableFile implements UploadableFileInterface
         return true;
         $scanResult = $this->getScanResult();
 
-        if (isset($scanResult['file_scanner_result']) && strtoupper('PASS' == $scanResult['file_scanner_result'])) {
+        if (isset($scanResult['file_scanner_result']) && strtoupper($scanResult['file_scanner_result'] == 'PASS')) {
             return true;
         }
 

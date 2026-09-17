@@ -17,11 +17,11 @@ trait FormTrait
         $hasErrors = $this->getSession()->getPage()->has('css', '.form-group.form-group-error')
                      || $this->getSession()->getPage()->has('css', '.govuk-error-summary');
 
-        if ('valid' == $shouldBe && $hasErrors) {
+        if ($shouldBe == 'valid' && $hasErrors) {
             throw new \RuntimeException('Errors found in the form. Zero expected');
         }
 
-        if ('invalid' == $shouldBe && !$hasErrors) {
+        if ($shouldBe == 'invalid' && !$hasErrors) {
             throw new \RuntimeException('No errors found in form. At least one expected');
         }
     }

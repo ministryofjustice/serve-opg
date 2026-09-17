@@ -2,18 +2,15 @@
 
 namespace tests\Service;
 
+use App\Service\AddressLookup\OrdnanceSurvey;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
 
-use App\Service\AddressLookup\OrdnanceSurvey;
-
 class OrdnanceSurveyServiceTest extends MockeryTestCase
 {
-
     /**
      * @var MockInterface|Client
      */
@@ -27,7 +24,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
 
     protected function setUp(): void
     {
-        $this->httpClient = Mockery::mock(Client::class);
+        $this->httpClient = \Mockery::mock(Client::class);
         $this->httpClient->allows()->getConfig('base_uri');
         $this->httpClient->allows()->getConfig('apiKey');
 
@@ -36,7 +33,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->bodyValid = ['results' => []];
         $this->bodyInvalid = '';
     }
-    //------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------
 
     public function testHttpLookupUrl()
     {
@@ -46,7 +43,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->httpClient->shouldReceive('send')
             ->withArgs(function ($arg) use ($postcode) {
                 // It should be an instance of Request...
-                if (!($arg instanceof Request)) {
+                if (!$arg instanceof Request) {
                     return false;
                 }
                 // With the postcode in the URL query.
@@ -55,6 +52,7 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
                 if (strpos($query, "postcode={$postcode}") === false) {
                     return false;
                 }
+
                 return true;
             })
             ->once()
@@ -98,5 +96,4 @@ class OrdnanceSurveyServiceTest extends MockeryTestCase
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
-
 }

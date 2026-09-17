@@ -109,13 +109,13 @@ class UserController extends AbstractController
 
         $user = $this->em->getRepository(User::class)->find($id);
 
-        if (null === $user) {
+        if ($user === null) {
             $this->addFlash('error', 'The user does not exist');
 
             return $this->redirectToRoute('view-users');
         }
 
-        if ($user->getActivationToken() && null == $user->getLastLoginAt()) {
+        if ($user->getActivationToken() && $user->getLastLoginAt() == null) {
             $activationLink = $this->generateUrl('resend-activation-user', ['id' => $user->getId()]);
 
             $flashMessage = $this->renderView(
@@ -138,7 +138,7 @@ class UserController extends AbstractController
 
         $user = $this->em->getRepository(User::class)->find($id);
 
-        if (null === $user) {
+        if ($user === null) {
             $this->addFlash('error', 'The user does not exist');
 
             return $this->redirectToRoute('view-users');
@@ -197,7 +197,7 @@ class UserController extends AbstractController
 
         $user = $this->em->getRepository(User::class)->find($id);
 
-        if (null === $user) {
+        if ($user === null) {
             $this->addFlash('error', 'The user does not exist');
 
             return $this->redirectToRoute('view-users');
@@ -246,7 +246,7 @@ class UserController extends AbstractController
 
         $user = $this->em->getRepository(User::class)->find($id);
 
-        if (null === $user) {
+        if ($user === null) {
             $this->addFlash('error', 'The user does not exist');
 
             return $this->redirect($originUrl);

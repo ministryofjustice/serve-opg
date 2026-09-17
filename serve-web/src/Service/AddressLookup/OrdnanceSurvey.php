@@ -46,11 +46,11 @@ class OrdnanceSurvey
         $request = new Request('GET', $url);
         $response = $this->httpClient->send($request);
 
-        if (200 != $response->getStatusCode()) {
+        if ($response->getStatusCode() != 200) {
             throw new \RuntimeException('Error retrieving address details: bad status code');
         }
         $body = json_decode(strval($response->getBody()), true);
-        if (isset($body['header']['totalresults']) && 0 === $body['header']['totalresults']) {
+        if (isset($body['header']['totalresults']) && $body['header']['totalresults'] === 0) {
             return [];
         }
         if (!isset($body['results']) || !is_array($body['results'])) {

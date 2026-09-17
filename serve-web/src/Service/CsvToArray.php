@@ -76,7 +76,7 @@ class CsvToArray
             $rowArray = [];
             foreach ($this->expectedColumns as $expectedColumn) {
                 $index = array_search($expectedColumn, $header);
-                if (false !== $index) {
+                if ($index !== false) {
                     if (!array_key_exists($index, $row)) {
                         throw new \RuntimeException("Can't find $expectedColumn column in line $rowNumber");
                     }

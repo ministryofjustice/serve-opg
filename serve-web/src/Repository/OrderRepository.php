@@ -47,9 +47,9 @@ class OrderRepository extends EntityRepository
 
     private function applyFilters(QueryBuilder $qb, array $filters): void
     {
-        if ('pending' == $filters['type']) {
+        if ($filters['type'] == 'pending') {
             $qb->where('o.servedAt IS NULL');
-        } elseif ('served' == $filters['type']) {
+        } elseif ($filters['type'] == 'served') {
             $qb->where('o.servedAt IS NOT NULL');
         }
 
@@ -62,7 +62,7 @@ class OrderRepository extends EntityRepository
             array_key_exists('startDate', $filters)
             && array_key_exists('endDate', $filters)
         ) {
-            if ('served' == $filters['type']) {
+            if ($filters['type'] == 'served') {
                 $qb->andWhere('o.servedAt >= :start AND o.servedAt <= :end')
                     ->setParameter('start', $filters['startDate'])
                     ->setParameter('end', $filters['endDate']);

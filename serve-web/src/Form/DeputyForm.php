@@ -85,7 +85,7 @@ class DeputyForm extends AbstractType
             ])
             ->add('saveAndContinue', SubmitType::class);
 
-        if ('LAY' === $deputyTypeValue) {
+        if ($deputyTypeValue === 'LAY') {
             $builder->add('dateOfBirth', BirthdayType::class, [
                 'label' => 'deputy.dateOfBirth.label',
                 'required' => false,

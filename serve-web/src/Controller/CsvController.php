@@ -75,7 +75,7 @@ class CsvController extends AbstractController
                     }
 
                     $countOfAllOrders = count($this->orderService->findOrdersByClient($client));
-                    if (0 === $countOfAllOrders) {
+                    if ($countOfAllOrders === 0) {
                         $this->clientService->deletionByClientId($processedResults['clientId']);
                     }
                 }

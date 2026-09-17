@@ -89,7 +89,7 @@ class ClamAVChecker implements FileCheckerInterface
             while ((!array_key_exists('file_scanner_result', $statusResponse)) && ($count < $maxRetries)) {
                 $statusResponse = $this->makeStatusRequest($result['location']);
 
-                if (false === $statusResponse) {
+                if ($statusResponse === false) {
                     $this->log(Logger::CRITICAL, 'Scanner response could not be decoded');
                     throw new \RuntimeException('Unable to contact file scanner');
                 }

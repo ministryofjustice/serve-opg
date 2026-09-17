@@ -18,7 +18,7 @@ class OrderPf extends Order
             Document::TYPE_COURT_ORDER => true,
         ];
 
-        if (order::SUBTYPE_INTERIM_ORDER !== $this->getSubType()) {
+        if ($this->getSubType() !== order::SUBTYPE_INTERIM_ORDER) {
             $requiredDocs[Document::TYPE_COP1A] = true;
             $requiredDocs[Document::TYPE_COP3] = true;
 

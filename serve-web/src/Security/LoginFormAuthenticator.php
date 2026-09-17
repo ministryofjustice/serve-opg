@@ -96,7 +96,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         $waitFor = $this->usernameLockedForSeconds($email);
-        if (false !== $waitFor) {
+        if ($waitFor !== false) {
             throw new BruteForceAttackDetectedException();
         }
 

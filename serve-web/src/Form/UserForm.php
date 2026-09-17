@@ -56,7 +56,7 @@ class UserForm extends AbstractType
 
             $roleName = $form->get('roleName')->getData();
 
-            if ('ROLE_ADMIN' === $roleName) {
+            if ($roleName === 'ROLE_ADMIN') {
                 $user->setRoles(['ROLE_ADMIN']);
             } else {
                 $user->setRoles([]);

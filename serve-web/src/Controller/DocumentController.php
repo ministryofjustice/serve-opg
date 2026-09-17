@@ -143,7 +143,7 @@ class DocumentController extends AbstractController
 
         $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
-        if (self::SUCCESS === $processedDocument['response']) {
+        if ($processedDocument['response'] === self::SUCCESS) {
             return new JsonResponse([
                 'success' => true,
                 'id' => $processedDocument['id'],
@@ -152,7 +152,7 @@ class DocumentController extends AbstractController
             ]);
         }
 
-        if (self::FAIL === $processedDocument['response'] || self::ERROR === $processedDocument['response']) {
+        if ($processedDocument['response'] === self::FAIL || $processedDocument['response'] === self::ERROR) {
             return new JsonResponse([
                 'error' => $processedDocument['message'],
             ], 422);
@@ -172,17 +172,17 @@ class DocumentController extends AbstractController
             $uploadedFile = $document->getFile();
             $processedDocument = $this->processDocument($order, $document, $uploadedFile, $request->headers->get('x-request-id'));
 
-            if (self::SUCCESS === $processedDocument['response']) {
+            if ($processedDocument['response'] === self::SUCCESS) {
                 $request->getSession()->getFlashBag()->add('success', $processedDocument['message']);
 
                 return $this->redirectToRoute('order-summary', ['orderId' => $order->getId(), '_fragment' => 'documents']);
             }
 
-            if (self::FAIL === $processedDocument['response']) {
+            if ($processedDocument['response'] === self::FAIL) {
                 $request->getSession()->getFlashBag()->add('notification', $processedDocument['message']);
             }
 
-            if (self::ERROR === $processedDocument['response']) {
+            if ($processedDocument['response'] === self::ERROR) {
                 $form->get('file')->addError(new FormError($processedDocument['message']));
             }
         }
@@ -197,7 +197,7 @@ class DocumentController extends AbstractController
     #[Route(path: '/order/{orderId}/document/{id}/remove', name: 'document-remove')]
     public function removeAction(Request $request, $orderId, $id): RedirectResponse
     {
-        if (self::FAIL === $this->removeDocument($id)) {
+        if ($this->removeDocument($id) === self::FAIL) {
             $this->addFlash('error', 'Document could not be removed.');
         }
 

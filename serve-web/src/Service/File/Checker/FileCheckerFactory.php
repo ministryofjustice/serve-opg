@@ -53,13 +53,13 @@ class FileCheckerFactory
         }
         $mimeType = $uploadedFile->getMimeType();
         switch (true) {
-            case 'application/pdf' == $mimeType:
+            case $mimeType == 'application/pdf':
                 return $this->pdf->setUploadedFile($uploadedFile);
-            case 'image/png' == $mimeType:
+            case $mimeType == 'image/png':
                 return $this->png->setUploadedFile($uploadedFile);
-            case 'image/jpeg' == $mimeType:
+            case $mimeType == 'image/jpeg':
                 return $this->jpg->setUploadedFile($uploadedFile);
-            case 'image/tiff' == $mimeType:
+            case $mimeType == 'image/tiff':
                 return $this->tif->setUploadedFile($uploadedFile);
             case $this->isWordDoc($uploadedFile):
                 return $this->doc->setUploadedFile($uploadedFile);
@@ -78,11 +78,11 @@ class FileCheckerFactory
 
         if (
             // Old word docs
-            ('application/msword' == $mimeType && ('doc' == $uploadedFile->getExtension()))
+            ($mimeType == 'application/msword' && ($uploadedFile->getExtension() == 'doc'))
             // New word documents
             || (
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document' == $mimeType
-                && ('docx' == $uploadedFile->getClientOriginalExtension() && ('' == $uploadedFile->getExtension()))
+                $mimeType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                && ($uploadedFile->getClientOriginalExtension() == 'docx' && ($uploadedFile->getExtension() == ''))
             )
         ) {
             return true;

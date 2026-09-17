@@ -44,7 +44,7 @@ class SuccessfulAuthenticationListener implements EventSubscriberInterface
         /** @var ?User $user */
         $user = $event->getAuthenticationToken()->getUser();
 
-        if (User::class === get_class($user)) {
+        if (get_class($user) === User::class) {
             $user->setLastLoginAt(new \DateTime());
 
             $this->entityManager->persist($user);

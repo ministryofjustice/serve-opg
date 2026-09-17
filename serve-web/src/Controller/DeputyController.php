@@ -49,7 +49,7 @@ class DeputyController extends AbstractController
             $this->em->persist($deputy);
             $this->em->flush();
 
-            if ('saveAndAddAnother' == $buttonClicked->getName()) {
+            if ($buttonClicked->getName() == 'saveAndAddAnother') {
                 return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
             }
 
@@ -110,7 +110,7 @@ class DeputyController extends AbstractController
 
         $deputy = $order->getDeputyById($deputyId);
 
-        if (null === $deputy) {
+        if ($deputy === null) {
             $this->addFlash('error', 'Deputy has already been removed');
 
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);

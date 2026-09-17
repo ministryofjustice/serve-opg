@@ -106,7 +106,7 @@ class HealthController extends AbstractController
 
             if (!$service->isHealthy()) {
                 $logResponses = true;
-                if ('Sirius' != $service->getName()) {
+                if ($service->getName() != 'Sirius') {
                     $healthy = false;
                 }
                 $errors[] = $service->getErrors();

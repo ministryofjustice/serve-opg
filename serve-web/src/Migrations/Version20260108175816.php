@@ -38,7 +38,7 @@ final class Version20260108175816 extends AbstractMigration
                 $unserializedData = @unserialize($row['roles']);
             }
 
-            if (false !== $unserializedData) {
+            if ($unserializedData !== false) {
                 $jsonData = json_encode($unserializedData);
                 $this->connection->executeStatement(
                     'UPDATE dc_user SET roles_json = ? WHERE id = ?',

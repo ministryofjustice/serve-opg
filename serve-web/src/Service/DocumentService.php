@@ -132,7 +132,7 @@ class DocumentService
                 $errorToErrorTranslationKey[get_class($e)] : 'generic';
 
             $message = $this->translator->trans("document.file.errors.{$errorKey}", [
-                '%techDetails%' => 'dev' === $this->appEnv ? $e->getMessage() : $requestId,
+                '%techDetails%' => $this->appEnv === 'dev' ? $e->getMessage() : $requestId,
             ], 'validators');
 
             $this->logger->error($e->getMessage().$file->getClientMimeType());

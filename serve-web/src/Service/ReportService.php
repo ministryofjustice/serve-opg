@@ -154,7 +154,7 @@ class ReportService
         $formattedStartDate = $startDate->format('Y-m-d');
 
         $typeFilter = 'served';
-        if ('pending' == $type) {
+        if ($type == 'pending') {
             $typeFilter = 'pending';
         }
 
@@ -178,7 +178,7 @@ class ReportService
         $ordersCsv = [];
 
         foreach ($orders as $order) {
-            if (null === $order->getServedAt()) {
+            if ($order->getServedAt() === null) {
                 $ordersCsv[] = ['DateCreated' => $order->getCreatedAt()->format('Y-m-d'),
                     'DateServed' => 'Null',
                     'CaseNumber' => $order->getClient()->getCaseNumber(),

@@ -11,7 +11,7 @@ class PasswordProvider
     public function __construct(
         private readonly string $environmentName,
     ) {
-        if ('local' === $this->environmentName) {
+        if ($this->environmentName === 'local') {
             $endpoint = 'http://localstack:4566';
             $this->secrets = new SecretsManagerClient([
                 'region' => 'eu-west-1',
