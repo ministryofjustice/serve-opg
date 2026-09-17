@@ -13,9 +13,15 @@ class NotifyClientMock extends Client
     public static bool $failNext = false;
 
     /**
+     * @param string $emailAddress
+     * @param string $templateId
+     * @param string $reference
+     * @param null   $emailReplyToId
+     * @param null   $oneClickUnsubscribeURL
+     *
      * @throws InvalidArgumentException
      */
-    public function sendEmail($emailAddress, $templateId, array $personalisation = [], $reference = '', $emailReplyToId = null, $oneClickUnsubscribeURL = null): array
+    public function sendEmail($emailAddress, $templateId, array $personalisation = [], $reference = '', $emailReplyToId = null, $oneClickUnsubscribeURL = null, ?array $sanitiseContentFor = null): array
     {
         if (self::$failNext) {
             self::$failNext = false;
