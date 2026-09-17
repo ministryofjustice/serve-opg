@@ -1,8 +1,6 @@
 name: '[Workflow] Destroy ephemeral environment'
 
-permissions:
-    id-token: write
-    pull-requests: write
+permissions: {}
 
 defaults:
     run:

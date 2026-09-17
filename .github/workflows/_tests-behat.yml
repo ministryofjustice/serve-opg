@@ -95,9 +95,10 @@ jobs:
           BEHAT_PARAMS: '{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "https://${{ inputs.base_url }}"}}}'
           SIRIUS_S3_BUCKET_NAME: ${{ inputs.sirius_api_bucket }}
           ENVIRONMENT_NAME: development
+          SUITE: ${{ inputs.suite }}
         run: |
           docker compose run --rm --entrypoint="composer install --prefer-dist --no-interaction --no-scripts --optimize-autoloader" behat
-          docker compose run --rm --env APP_VERSION --env BEHAT_PARAMS --env ENVIRONMENT_NAME --env SIRIUS_S3_BUCKET_NAME behat ${{ inputs.suite }}
+          docker compose run --rm --env APP_VERSION --env BEHAT_PARAMS --env ENVIRONMENT_NAME --env SIRIUS_S3_BUCKET_NAME behat ${SUITE}
         working-directory: ./serve-web
 
       - name: Archive Test Output
