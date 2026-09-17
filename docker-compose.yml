@@ -188,3 +188,9 @@ services:
     volumes:
       - ./serve-web:/var/www:ro
     working_dir: /var/www
+
+  audit-ga:
+    build:
+      context: ./scripts/github_actions_audit
+    volumes:
+      - ./.github:/github:ro

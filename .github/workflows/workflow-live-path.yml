@@ -5,18 +5,7 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write
-  contents: write
-  security-events: write
-  pull-requests: read
-  actions: none
-  checks: none
-  deployments: none
-  issues: none
-  packages: none
-  repository-projects: none
-  statuses: none
+permissions: {}
 
 defaults:
   run:
@@ -26,12 +15,15 @@ jobs:
   workflow_variables:
     runs-on: ubuntu-latest
     name: output workflow variables
+    permissions:
+        contents: write
     outputs:
       build_identifier: "main"
       version_tag: ${{ steps.semver_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Get Default Bump
@@ -50,6 +42,8 @@ jobs:
           default_bump: ${{ steps.semver_bump.outputs.default_bump }}
 
       - name: Generate build output using Markdown
+        env:
+          TAG: ${{ steps.semver_tag.outputs.tag }}
         run: |
           {
           echo "### Build Variables"
@@ -62,22 +56,25 @@ jobs:
           echo "### Environment Details"
           echo ""
           echo "- Service Frontend URL: https://serve.opg.service.justice.gov.uk"
-          echo "- Tag Used: ${{ steps.semver_tag.outputs.tag }}"
+          echo "- Tag Used: ${TAG}"
           } >> "$GITHUB_STEP_SUMMARY"
 
   create_tag_release:
     name: Create release tag from releasable
     needs: [workflow_variables]
-    uses: ./.github/workflows/_tag-release.yml
+    permissions:
+        id-token: write
+    uses: $/.github/workflows/_tag-release.yml
     with:
       current_tag: releasable
       release_tag: ${{ needs.workflow_variables.outputs.version_tag }}
-    secrets: inherit
 
   deploy_to_development_account:
     name: Deploy to Development Account
+    uses: $/.github/workflows/_deploy-infrastructure.yml
+    permissions:
+        id-token: write
     needs: [workflow_variables]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: development
       account_name: development
@@ -85,15 +82,18 @@ jobs:
       terraform_path: account
       apply: true
       path_to_live: true
-    secrets: inherit
+    secrets:
+      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
   deploy_to_preproduction_account:
     name: Deploy to Preproduction Account
+    uses: $/.github/workflows/_deploy-infrastructure.yml
+    permissions:
+        id-token: write
     needs: [
       workflow_variables,
       deploy_to_development_account
     ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: preproduction
       account_name: preproduction
@@ -101,16 +101,19 @@ jobs:
       terraform_path: account
       apply: true
       path_to_live: true
-    secrets: inherit
+    secrets:
+      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
   deploy_to_production_account:
     name: Deploy to Production Account
+    uses: $/.github/workflows/_deploy-infrastructure.yml
+    permissions:
+        id-token: write
     needs: [
       workflow_variables,
       create_tag_release,
       deploy_to_preproduction_account
     ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
       account_name: production
@@ -118,16 +121,19 @@ jobs:
       terraform_path: account
       apply: true
       path_to_live: true
-    secrets: inherit
+    secrets:
+      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
   deploy_to_production_environment:
     name: Deploy to Production Environment
+    uses: $/.github/workflows/_deploy-infrastructure.yml
+    permissions:
+        id-token: write
     needs: [
       workflow_variables,
       create_tag_release,
       deploy_to_production_account
     ]
-    uses: ./.github/workflows/_deploy-infrastructure.yml
     with:
       workspace: production
       account_name: production
@@ -135,16 +141,19 @@ jobs:
       terraform_path: environment
       apply: true
       path_to_live: true
-    secrets: inherit
+    secrets:
+      ssh_private_key_allow_list_repository: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
   behat_prod:
     name: Production Smoke Tests
+    uses: $/.github/workflows/_tests-behat.yml
+    permissions:
+        id-token: write
     needs: [
       workflow_variables,
       create_tag_release,
       deploy_to_production_environment
     ]
-    uses: ./.github/workflows/_tests-behat.yml
     with:
       workspace_name: production
       version_tag: ${{ needs.workflow_variables.outputs.version_tag }}
@@ -154,11 +163,12 @@ jobs:
       account_name: production
       account_id: ${{ vars.PRODUCTION_ACCOUNT }}
       vpc_scope: serveopg
-    secrets: inherit
 
   slack_notify_success:
     name: Notify Slack of success
-    uses: ./.github/workflows/_notify-slack.yml
+    uses: $/.github/workflows/_notify-slack.yml
+    permissions:
+        id-token: write
     if: ${{ success() }}
     needs:
       - workflow_variables
@@ -174,7 +184,9 @@ jobs:
 
   slack_notify_failure:
     name: Notify Slack of failure
-    uses: ./.github/workflows/_notify-slack.yml
+    uses: $/.github/workflows/_notify-slack.yml
+    permissions:
+        id-token: write
     if: ${{ failure() }}
     needs:
       - workflow_variables
