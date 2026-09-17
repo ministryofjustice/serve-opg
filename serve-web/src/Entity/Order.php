@@ -132,7 +132,7 @@ abstract class Order
         }
 
         foreach ($this->getAcceptedDocumentTypes() as $type => $required) {
-            if ($required && 0 === count($this->getDocumentsByType($type))) {
+            if ($required && count($this->getDocumentsByType($type)) === 0) {
                 return false;
             }
         }

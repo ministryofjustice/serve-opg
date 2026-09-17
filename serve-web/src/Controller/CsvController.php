@@ -18,7 +18,8 @@ class CsvController extends AbstractController
         private readonly SpreadsheetService $spreadsheetService,
         private readonly OrderService $orderService,
         private readonly ClientService $clientService,
-    ) {}
+    ) {
+    }
 
     #[Route(path: '/upload-csv', name: 'upload-csv')]
     public function uploadAction(Request $request): RedirectResponse|Response
@@ -35,7 +36,7 @@ class CsvController extends AbstractController
         }
 
         return $this->render('Csv/upload-cases.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -46,7 +47,7 @@ class CsvController extends AbstractController
         $form->handleRequest($request);
 
         $displayItems = [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ];
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -65,7 +66,7 @@ class CsvController extends AbstractController
                     ++$ordersRemoved;
                     $displayResults['ordersRemoved'][] = [
                         'caseNumber' => $processedResults['caseNumber'],
-                        'ordersRemovedCount' => $ordersRemoved
+                        'ordersRemovedCount' => $ordersRemoved,
                     ];
 
                     $client = $this->clientService->findClientByCaseNumber($processedResults['caseNumber']);

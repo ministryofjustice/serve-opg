@@ -13,18 +13,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class SpreadsheetService
 {
-    /** @var array<int, array<string,int>> $removeCases */
+    /** @var array<int, array<string,int>> */
     private array $removeCases = [];
 
-    /** @var array<int, array<string, mixed>> $removeCases */
+    /** @var array<int, array<string, mixed>> */
     private array $skippedCases = [];
 
     public function __construct(
-       private readonly ClientService $clientService,
-       private readonly OrderService $orderService,
-       private readonly EntityManagerInterface $em,
-       private readonly LoggerInterface $logger
-    ) {}
+        private readonly ClientService $clientService,
+        private readonly OrderService $orderService,
+        private readonly EntityManagerInterface $em,
+        private readonly LoggerInterface $logger,
+    ) {
+    }
 
     /**
      * file with keys:
@@ -58,7 +59,7 @@ class SpreadsheetService
         foreach ($rows as $row) {
             $this->importSingleRow($row);
 
-            if (0 === $count % 25) {
+            if ($count % 25 === 0) {
                 $this->em->clear();
             }
 
@@ -94,7 +95,7 @@ class SpreadsheetService
                 continue;
             }
 
-            if($lastCaseNumber !== $caseNumber || $lastOrderNumber !== $orderNumber) {
+            if ($lastCaseNumber !== $caseNumber || $lastOrderNumber !== $orderNumber) {
                 // reset order ids for new case number/order number
                 $orderIds = [];
             }
@@ -112,7 +113,7 @@ class SpreadsheetService
             $orders = $this->orderService->findPendingOrdersByClient($client);
 
             if (count($orders) >= 2) {
-                for ($i = 0; $i < count($orders); $i++) {
+                for ($i = 0; $i < count($orders); ++$i) {
                     /** @var Order $order */
                     $order = $orders[$i];
                     if ((int) $order->getOrderNumber() !== $orderNumber) {
@@ -171,7 +172,7 @@ class SpreadsheetService
 
         $case = strtoupper($row['Case']);
         $clientName = $row['Forename'].' '.$row['Surname']; // TODO different fields ?
-        $orderType = 2 == $row['Ord Type'] ? OrderHw::class : OrderPf::class;
+        $orderType = $row['Ord Type'] == 2 ? OrderHw::class : OrderPf::class;
 
         // client
         $client = $this->clientService->upsert($case, $clientName);
@@ -189,6 +190,7 @@ class SpreadsheetService
         switch ($fileType) {
             case 'text/csv':
                 $csvToArray = new CsvToArray($path, $csvColumns, true);
+
                 return $csvToArray->getData();
 
             case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
@@ -196,7 +198,7 @@ class SpreadsheetService
 
                 $header_values = $rows = [];
                 foreach ($xlsx->rows() as $k => $r) {
-                    if (0 === $k) {
+                    if ($k === 0) {
                         $header_values = $r;
                         continue;
                     }
@@ -205,10 +207,12 @@ class SpreadsheetService
 
                 if (!$xlsx->success()) {
                     $this->logger->error('Error parsing XLSX file: '.$xlsx->error());
+
                     return null;
-                } else {
-                    return $rows;
                 }
+
+                return $rows;
+
             default:
                 $this->logger->error(sprintf('Unsupported file type %s. Did not match CSV or XLXS', $fileType));
 

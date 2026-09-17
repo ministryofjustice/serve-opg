@@ -16,8 +16,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class OrderService
 {
     public const APPOINTMENT_TYPE_SUB_TYPE_REGEX = <<<REGEX
-/ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)\s*(?:DEPUTIES|DEPUTY)/m
-REGEX;
+        /ORDER\s*APPOINTING\s*(?:A|AN|)\s*(NEW|INTERIM|)\s*(?:JOINT\s*AND\s*|)(SEVERAL|JOINT|)\s*(?:DEPUTIES|DEPUTY)/m
+        REGEX;
 
     public const CASE_NUMBER_REGEX = '/No\. ([A-Z0-9]*)/m';
     public const BOND_REGEX = '/sum of (.*) in/';
@@ -67,7 +67,7 @@ REGEX;
 
     public function getOrderByIdIfNotServed(int $orderId): Order
     {
-        /** @var $order Order */
+        /** @var Order $order */
         $order = $this->orderRepository->find($orderId);
 
         if (!$order) {

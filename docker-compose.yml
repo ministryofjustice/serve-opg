@@ -1,17 +1,4 @@
 services:
-  aws:
-    image: infrastructureascode/aws-cli@sha256:891db48126b0f044f06263521acbd611dfa31aa9e549fed23b0b3ef890082b36
-    environment:
-      - AWS_ACCESS_KEY_ID=foo
-      - AWS_SECRET_ACCESS_KEY=bar
-    entrypoint:
-      - aws
-    working_dir: /var/www
-    volumes:
-      - ./serve-web:/var/www
-    depends_on:
-      - localstack
-
   loadbalancer:
     image: jwilder/nginx-proxy:1.11-alpine@sha256:99376e95c8754547213d411222a2c4dca046d974e753ae2a1c9aef09b2c03364
     ports:

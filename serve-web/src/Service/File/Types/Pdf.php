@@ -13,7 +13,7 @@ class Pdf extends UploadableFile
     public function __construct(
         ClamAVChecker $virusChecker,
         PdfChecker $fileChecker,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         parent::__construct($logger);
         $this->setFileCheckers([$virusChecker, $fileChecker]);

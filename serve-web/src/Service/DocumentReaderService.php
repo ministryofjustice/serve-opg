@@ -7,7 +7,7 @@ use LukeMadhanga\DocumentParser;
 class DocumentReaderService
 {
     /**
-     * Get text from word document - supports .doc and .docx
+     * Get text from word document - supports .doc and .docx.
      */
     public function readWordDoc(string $fileLocation): string
     {

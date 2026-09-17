@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
@@ -37,7 +39,7 @@ class DocumentTest extends TestCase
             'tiff' => ['/tests/TestData/test.tiff', 'test.tiff', 'image/tiff', false],
             'pdf' => ['/tests/TestData/test.jpg', 'test.jpg', 'aplication/pdf', false],
             'word' => ['/tests/TestData/test.jpeg', 'test.jpeg', 'application/msword', true],
-            'open-word' => ['/tests/TestData/test.pdf', 'test.pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', true]
+            'open-word' => ['/tests/TestData/test.pdf', 'test.pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', true],
         ];
     }
 

@@ -4,16 +4,12 @@ namespace App\Form;
 
 use App\Entity\Order;
 use App\Entity\OrderPf;
-use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class OrderForm extends AbstractType
 {
@@ -29,7 +25,7 @@ class OrderForm extends AbstractType
                         'common.choices.pleaseSelect' => '',
                         'common.choices.yes' => Order::HAS_ASSETS_ABOVE_THRESHOLD_YES,
                         'common.choices.no' => Order::HAS_ASSETS_ABOVE_THRESHOLD_NO,
-                    ]
+                    ],
                 ]);
         }
         $builder->add('subType', ChoiceType::class, [
@@ -40,8 +36,8 @@ class OrderForm extends AbstractType
                 'common.choices.pleaseSelect' => '',
                 'order.subType.choices.NEW_APPLICATION' => Order::SUBTYPE_NEW,
                 'order.subType.choices.REPLACEMENT_OF_DISCHARGED_DEPUTY' => Order::SUBTYPE_REPLACEMENT,
-                'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER
-            ]
+                'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER,
+            ],
         ])
             ->add('appointmentType', ChoiceType::class, [
                 'translation_domain' => 'forms',
@@ -52,14 +48,14 @@ class OrderForm extends AbstractType
                     'order.appointmentType.choices.SOLE' => Order::APPOINTMENT_TYPE_SOLE,
                     'order.appointmentType.choices.JOINT' => Order::APPOINTMENT_TYPE_JOINT,
                     'order.appointmentType.choices.JOINT_AND_SEVERAL' => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
-                ]
+                ],
             ])
             ->add('submit', SubmitType::class, ['translation_domain' => 'forms', 'label' => 'common.submit.label']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Order::class,
             'show_assets_question' => true,
             'validation_groups' => function (FormInterface $form): array {
@@ -69,9 +65,9 @@ class OrderForm extends AbstractType
                 return array_filter([
                     $order instanceof OrderPf ? 'order-has-assets' : null,
                     'order-subtype',
-                    'appointment-type'
+                    'appointment-type',
                 ]);
-            }
-        ));
+            },
+        ]);
     }
 }

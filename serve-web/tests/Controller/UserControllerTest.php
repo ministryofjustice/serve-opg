@@ -130,7 +130,7 @@ class UserControllerTest extends ApiWebTestCase
             $client = $this->getService('test.client');
             $client->setServerParameters($test['creds']);
 
-            if (Response::HTTP_FORBIDDEN == $test['expectedResponse']) {
+            if ($test['expectedResponse'] == Response::HTTP_FORBIDDEN) {
                 $client->catchExceptions(false);
                 $this->expectException(AccessDeniedException::class);
             }

@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ConfirmOrderDetailsForm  extends AbstractType
+class ConfirmOrderDetailsForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -27,7 +27,7 @@ class ConfirmOrderDetailsForm  extends AbstractType
                         'common.choices.pleaseSelect' => '',
                         'common.choices.yes' => Order::HAS_ASSETS_ABOVE_THRESHOLD_YES,
                         'common.choices.no' => Order::HAS_ASSETS_ABOVE_THRESHOLD_NO,
-                    ]
+                    ],
                 ]);
         }
 
@@ -40,8 +40,8 @@ class ConfirmOrderDetailsForm  extends AbstractType
                     'common.choices.pleaseSelect' => '',
                     'order.subType.choices.NEW_APPLICATION' => Order::SUBTYPE_NEW,
                     'order.subType.choices.REPLACEMENT_OF_DISCHARGED_DEPUTY' => Order::SUBTYPE_REPLACEMENT,
-                    'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER
-                ]
+                    'order.subType.choices.INTERIM_ORDER' => Order::SUBTYPE_INTERIM_ORDER,
+                ],
             ]);
         }
 
@@ -55,7 +55,7 @@ class ConfirmOrderDetailsForm  extends AbstractType
                     'order.appointmentType.choices.SOLE' => Order::APPOINTMENT_TYPE_SOLE,
                     'order.appointmentType.choices.JOINT' => Order::APPOINTMENT_TYPE_JOINT,
                     'order.appointmentType.choices.JOINT_AND_SEVERAL' => Order::APPOINTMENT_TYPE_JOINT_AND_SEVERAL,
-                ]
+                ],
             ]);
         }
         $builder->add('submit', SubmitType::class, ['translation_domain' => 'forms', 'label' => 'common.submit.label']);
@@ -73,13 +73,13 @@ class ConfirmOrderDetailsForm  extends AbstractType
                     return array_filter([
                         $order instanceof OrderPf ? 'order-has-assets' : null,
                         'order-subtype',
-                        'appointment-type'
+                        'appointment-type',
                     ]);
-                }
+                },
             ]
         )
         ->setRequired(
-            ['show_assets_question', 'show_subType_question' , 'show_appointmentType_question']
+            ['show_assets_question', 'show_subType_question', 'show_appointmentType_question']
         );
     }
 }

@@ -77,7 +77,7 @@ class S3Storage implements StorageInterface
 
             return $result['Body'];
         } catch (S3Exception $e) {
-            if ('NoSuchKey' === $e->getAwsErrorCode()) {
+            if ($e->getAwsErrorCode() === 'NoSuchKey') {
                 throw new FileNotFoundException("Cannot find file with reference $key");
             }
             throw $e;
@@ -149,7 +149,7 @@ class S3Storage implements StorageInterface
             'fulfilled' => function (
                 ResultInterface $result,
                 $iterKey,
-                PromiseInterface $aggregatePromise
+                PromiseInterface $aggregatePromise,
             ) use ($logger, $documentsIterator): void {
                 // update current document being processed with new location
                 $documentsIterator[$iterKey]->setRemoteStorageReference($result->get('@metadata')['effectiveUri']);
@@ -159,7 +159,7 @@ class S3Storage implements StorageInterface
             'rejected' => function (
                 AwsException $reason,
                 $iterKey,
-                PromiseInterface $aggregatePromise
+                PromiseInterface $aggregatePromise,
             ) use ($logger): void {
                 $logger->error("Failed to send {$iterKey}: {$reason}\n");
             },

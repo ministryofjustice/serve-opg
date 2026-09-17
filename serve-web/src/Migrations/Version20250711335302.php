@@ -21,26 +21,26 @@ final class Version20250710153000 extends AbstractMigration
         $username = "readonly-db-iam-$env";
 
         $this->addSql(<<<SQL
-DO
-\$\$
-BEGIN
+            DO
+            \$\$
+            BEGIN
 
-  IF NOT EXISTS (SELECT * FROM pg_user WHERE usename = '$username') THEN
-     CREATE USER "$username" WITH LOGIN;
-  END IF;
+              IF NOT EXISTS (SELECT * FROM pg_user WHERE usename = '$username') THEN
+                 CREATE USER "$username" WITH LOGIN;
+              END IF;
 
-  IF EXISTS (SELECT * FROM pg_roles WHERE rolname = 'rds_iam') THEN
-     GRANT rds_iam TO "$username";
-  END IF;
+              IF EXISTS (SELECT * FROM pg_roles WHERE rolname = 'rds_iam') THEN
+                 GRANT rds_iam TO "$username";
+              END IF;
 
-  IF EXISTS (SELECT * FROM pg_roles WHERE rolname = 'pg_read_all_data') THEN
-     GRANT pg_read_all_data TO "$username";
-  END IF;
+              IF EXISTS (SELECT * FROM pg_roles WHERE rolname = 'pg_read_all_data') THEN
+                 GRANT pg_read_all_data TO "$username";
+              END IF;
 
-  ALTER USER "$username" SET log_statement = 'all';
+              ALTER USER "$username" SET log_statement = 'all';
 
-END
-\$\$;
-SQL);
+            END
+            \$\$;
+            SQL);
     }
 }

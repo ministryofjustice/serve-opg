@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,15 +12,15 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 #[ORM\Entity]
 class Document
 {
-    const TYPE_COP1A = 'COP1A'; // required by PF
-    const TYPE_COP3 = 'COP3'; // required by PF and HW
-    const TYPE_COP4 = 'COP4'; // required by PF and HW
-    const TYPE_COURT_ORDER = 'COURT_ORDER'; //required by PF and HW
-    const TYPE_ADDITIONAL = 'OTHER'; // not required
+    public const TYPE_COP1A = 'COP1A'; // required by PF
+    public const TYPE_COP3 = 'COP3'; // required by PF and HW
+    public const TYPE_COP4 = 'COP4'; // required by PF and HW
+    public const TYPE_COURT_ORDER = 'COURT_ORDER'; // required by PF and HW
+    public const TYPE_ADDITIONAL = 'OTHER'; // not required
 
-    const FILE_NAME_MAX_LENGTH = 255;
-    const MAX_UPLOAD_PER_ORDER = 100;
-    const MAX_UPLOAD_FILE_SIZE = '20M';
+    public const FILE_NAME_MAX_LENGTH = 255;
+    public const MAX_UPLOAD_PER_ORDER = 100;
+    public const MAX_UPLOAD_FILE_SIZE = '20M';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -54,7 +53,7 @@ class Document
 
     public function isValidForOrder(ExecutionContextInterface $context): void
     {
-        if (!($this->getFile() instanceof UploadedFile)) {
+        if (!$this->getFile() instanceof UploadedFile) {
             return;
         }
 
@@ -67,18 +66,20 @@ class Document
 
         if (strlen($fileOriginalName) > self::FILE_NAME_MAX_LENGTH) {
             $context->buildViolation('document.file.errors.maxMessage')->atPath('file')->addViolation();
+
             return;
         }
 
         if (in_array($fileOriginalName, $fileNames)) {
             $context->buildViolation('document.file.errors.alreadyPresent')->atPath('file')->addViolation();
+
             return;
         }
 
-//        if (count($this->getReport()->getDocuments()) >= self::MAX_UPLOAD_PER_ORDER) {
-//            $context->buildViolation('document.file.errors.maxDocumentsPerReport')->atPath('file')->addViolation();
-//            return;
-//        }
+        //        if (count($this->getReport()->getDocuments()) >= self::MAX_UPLOAD_PER_ORDER) {
+        //            $context->buildViolation('document.file.errors.maxDocumentsPerReport')->atPath('file')->addViolation();
+        //            return;
+        //        }
     }
 
     public function getId(): ?int
@@ -89,6 +90,7 @@ class Document
     public function setId(?int $id): Document
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -100,6 +102,7 @@ class Document
     public function setOrder(?Order $order): Document
     {
         $this->order = $order;
+
         return $this;
     }
 
@@ -111,6 +114,7 @@ class Document
     public function setType(?string $type): Document
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -160,7 +164,7 @@ class Document
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
-        $metadata->addPropertyConstraint('file', new Assert\File(array(
+        $metadata->addPropertyConstraint('file', new Assert\File([
             'maxSize' => self::MAX_UPLOAD_FILE_SIZE,
             'mimeTypes' => [
                 'application/pdf',
@@ -169,16 +173,17 @@ class Document
                 'image/jpeg',
                 'image/tiff',
                 'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             ],
             'mimeTypesMessage' => 'document.file.errors.mimeTypesMessage',
-            'maxSizeMessage' => 'document.file.errors.maxSizeMessage'
-        )));
+            'maxSizeMessage' => 'document.file.errors.maxSizeMessage',
+        ]));
     }
 
     public function isWordDocument(): bool
     {
-        $wordMimeTypes = ['application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        $wordMimeTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
         return in_array($this->getMimeType(), $wordMimeTypes);
     }
 

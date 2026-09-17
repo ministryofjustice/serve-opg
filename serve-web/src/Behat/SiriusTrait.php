@@ -9,13 +9,13 @@ trait SiriusTrait
      */
     public function theDocumentsForOrderShouldBeTransferred(string $orderIdentifier): void
     {
-        $documentsList = explode("|", $this->getDocumentsList($orderIdentifier));
+        $documentsList = explode('|', $this->getDocumentsList($orderIdentifier));
 
         $needle = getenv('SIRIUS_S3_BUCKET_NAME');
 
         foreach ($documentsList as $docLocation) {
             if (!strpos($docLocation, $needle)) {
-                throw new \RuntimeException('Document location ' . $docLocation   . ' does not contain ' . $needle);
+                throw new \RuntimeException('Document location '.$docLocation.' does not contain '.$needle);
             }
         }
     }

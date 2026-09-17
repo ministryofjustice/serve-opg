@@ -61,7 +61,6 @@ trait RegionLinksTrait
         }
     }
 
-
     /**
      * @Then I should see :text in the :region region
      */
@@ -92,7 +91,7 @@ trait RegionLinksTrait
      */
     public function iShouldSeeInSection(string $text, string $section): void
     {
-        $this->assertSession()->elementTextContains('css', '#' . $section . '-section', $text);
+        $this->assertSession()->elementTextContains('css', '#'.$section.'-section', $text);
     }
 
     /**
@@ -102,7 +101,7 @@ trait RegionLinksTrait
     {
         $this->assertResponseStatus(200);
 
-        $this->assertSession()->elementTextNotContains('css', '#' . $section . '-section', $text);
+        $this->assertSession()->elementTextNotContains('css', '#'.$section.'-section', $text);
     }
 
     /**
@@ -110,7 +109,7 @@ trait RegionLinksTrait
      */
     public function iShouldSeeInTheContainer(string $text, string $container): void
     {
-        $this->assertSession()->elementTextContains('css', '#' . $container . ', .' . $container, $text);
+        $this->assertSession()->elementTextContains('css', '#'.$container.', .'.$container, $text);
     }
 
     /**
@@ -118,8 +117,8 @@ trait RegionLinksTrait
      */
     public function theElementShouldBeEmpty(string $selector): void
     {
-        $this->assertSession()->elementExists('css', '#' . $selector);
-        if (!empty($this->getSession()->getPage()->find('css', '#' . $selector)->getText())) {
+        $this->assertSession()->elementExists('css', '#'.$selector);
+        if (!empty($this->getSession()->getPage()->find('css', '#'.$selector)->getText())) {
             throw new \RuntimeException('Element Not Empty');
         }
     }
@@ -136,7 +135,7 @@ trait RegionLinksTrait
 
     public static function behatElementToCssSelector(string $element, string $type): string
     {
-        return '.behat-' . $type . '-' . preg_replace('/\s+/', '-', $element);
+        return '.behat-'.$type.'-'.preg_replace('/\s+/', '-', $element);
     }
 
     /**
@@ -162,7 +161,6 @@ trait RegionLinksTrait
         }
     }
 
-
     /**
      * @Then I should see :text in the page header
      */
@@ -170,7 +168,6 @@ trait RegionLinksTrait
     {
         $this->assertSession()->elementTextContains('css', '.page-header', $text);
     }
-
 
     /**
      * Click on element with attribute [behat-link=:link].
@@ -229,7 +226,7 @@ trait RegionLinksTrait
     private function findRegion(string $region)
     {
         // find region
-        $regionSelector = '#' . $region . ', ' . self::behatElementToCssSelector($region, 'region');
+        $regionSelector = '#'.$region.', '.self::behatElementToCssSelector($region, 'region');
         $regionsFound = $this->getSession()->getPage()->findAll('css', $regionSelector);
         if (count($regionsFound) > 1) {
             throw new \RuntimeException("Found more than one $regionSelector");
