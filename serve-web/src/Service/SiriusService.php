@@ -14,11 +14,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class SiriusService
@@ -49,7 +51,7 @@ class SiriusService
         $apiResponse = [];
         try {
             // init cookie jar to pass session token between requests
-            $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
+            $this->cookieJar = new CookieJar();
 
             // send DC docs to Sirius
             $documents = $order->getDocuments();
@@ -177,7 +179,7 @@ class SiriusService
      *
      * @param string $payload NOT JSON encoded. Client does this with 'json' parameter.
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return mixed|ResponseInterface
      */
     private function sendOrderToSirius($payload, string $csrfToken)
     {

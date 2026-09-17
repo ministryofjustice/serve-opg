@@ -173,5 +173,5 @@ services:
   qa:
     image: jakzal/phpqa:alpine@sha256:aa5b47171c146a8b4071a8ca39d3939de428b6661795712fd928cabf105ce002
     volumes:
-      - ./serve-web:/var/www:ro
+      - .:/var/www
     working_dir: /var/www

@@ -120,7 +120,8 @@ class OrderController extends AbstractController
             try {
                 $this->orderService->serve($order);
                 $client = $order->getClient();
-                $request->getSession()->getFlashBag()->add('success',
+                $request->getSession()->getFlashBag()->add(
+                    'success',
                     [
                         'title' => 'order.served.title',
                         'clientName' => $client->getClientName(),
@@ -133,11 +134,13 @@ class OrderController extends AbstractController
                 if ($this->getParameter('kernel.debug')) {
                     $message .= '.Details (only on dev mode): '.$e;
                 }
-                $request->getSession()->getFlashBag()->add('error',
+                $request->getSession()->getFlashBag()->add(
+                    'error',
                     [
                         'body' => $message,
                         'orderType' => $order->getType().'-error',
-                    ]);
+                    ]
+                );
             }
 
             return $this->redirectToRoute('case-list');
