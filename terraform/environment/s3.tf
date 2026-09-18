@@ -4,7 +4,10 @@ locals {
   s3_allowed_principal_arns = [
     "arn:aws:iam::${local.account.account_id}:role/serve-opg-ci-boundary",
     "arn:aws:iam::${local.account.account_id}:role/operator",
-    "arn:aws:iam::${local.account.account_id}:role/breakglass"
+    "arn:aws:iam::${local.account.account_id}:role/breakglass",
+    "arn:aws:iam::${local.account.account_id}:role/frontend-${local.environment}",
+    "arn:aws:iam::${local.account.account_id}:role/orchestration-${local.environment}",
+    "arn:aws:iam::${local.account.account_id}:role/aws-service-role/*"
   ]
 }
 
