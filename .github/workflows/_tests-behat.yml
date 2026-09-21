@@ -44,19 +44,15 @@ jobs:
         with:
             persist-credentials: false
 
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          python-version: "3.14.1"
+          version: "0.12.10"
+          enable-cache: true
 
-      - name: SLSA
-        uses: ministryofjustice/devsecops-actions/sca/slsa@4cd163be7859cd130800d6719d925318826038ea
-        with:
-          requirements-file: ./serve-web/requirements.txt
-
-      - name: Install Python packages
-        run: |
-          pip3 install -r scripts/ci_ingress/requirements.txt
+      - name: Install dependencies
+        working-directory: scripts/ci_ingress
+        run: uv sync --locked
 
       - name: Create Failure Folder
         run: |
@@ -76,19 +72,21 @@ jobs:
           role-session-name: identity-oidc-serve
 
       - name: Get Behat password
+        working-directory: scripts/ci_ingress
         env:
           ACCOUNT_ID: ${{ inputs.account_id }}
         run: |
-          BEHAT_PASSWORD="$(python scripts/ci_ingress/get_behat_secret.py)"
+          BEHAT_PASSWORD="$(uv run python get_behat_secret.py)"
           echo "::add-mask::$BEHAT_PASSWORD"
           echo "BEHAT_PASSWORD=$BEHAT_PASSWORD" >> "$GITHUB_ENV"
 
       - name: Allow CI ingress
         env:
           VPC_SCOPE: ${{ inputs.vpc_scope }}
+        working-directory: scripts/ci_ingress
         run: |
           echo "$TF_WORKSPACE"
-          python scripts/ci_ingress/ci_ingress.py cluster_config.json --add --vpc-scope ${VPC_SCOPE}
+          uv run python ci_ingress.py ../../cluster_config.json --add --vpc-scope ${VPC_SCOPE}
 
       - name: Run Behat
         env:
@@ -110,8 +108,9 @@ jobs:
 
       - name: Remove CI ingress
         if: ${{ always() }}
+        working-directory: scripts/ci_ingress
         env:
           VPC_SCOPE: ${{ inputs.vpc_scope }}
         run: |
           echo "$TF_WORKSPACE"
-          python scripts/ci_ingress/ci_ingress.py cluster_config.json --vpc-scope ${VPC_SCOPE}
+          uv run python ci_ingress.py ../../cluster_config.json --vpc-scope ${VPC_SCOPE}
