@@ -11,6 +11,7 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_response_time" {
   evaluation_periods  = 3
   namespace           = "AWS/ApplicationELB"
   alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
+  ok_actions          = [data.aws_sns_topic.slack_notification.arn]
 
   dimensions = {
     LoadBalancer = aws_lb.frontend_lb.arn_suffix
@@ -30,6 +31,7 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
   evaluation_periods  = 1
   namespace           = "AWS/ApplicationELB"
   alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
+  ok_actions          = [data.aws_sns_topic.slack_notification.arn]
 
   dimensions = {
     LoadBalancer = aws_lb.frontend_lb.arn_suffix
@@ -39,7 +41,7 @@ resource "aws_cloudwatch_metric_alarm" "loadbalancer_app_errors" {
   treat_missing_data = "notBreaching"
 }
 
-#===== Healthcheck Alarms =====
+# ===== Healthcheck Alarms =====
 resource "aws_route53_health_check" "availability_frontend" {
   fqdn              = aws_route53_record.serve.fqdn
   resource_path     = "/health-check"
@@ -65,6 +67,7 @@ resource "aws_cloudwatch_metric_alarm" "availability_frontend" {
   evaluation_periods  = 5
   namespace           = "AWS/Route53"
   alarm_actions       = [data.aws_sns_topic.slack_notification_global.arn]
+  ok_actions          = [data.aws_sns_topic.slack_notification_global.arn]
   tags                = local.default_tags
 
   dimensions = {
@@ -97,6 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "availability_service" {
   evaluation_periods  = 5
   namespace           = "AWS/Route53"
   alarm_actions       = [data.aws_sns_topic.slack_notification_global.arn]
+  ok_actions          = [data.aws_sns_topic.slack_notification_global.arn]
   tags                = local.default_tags
 
   dimensions = {
@@ -173,6 +177,7 @@ resource "aws_cloudwatch_metric_alarm" "sirius_login_errors" {
   period              = 60
   namespace           = aws_cloudwatch_log_metric_filter.sirius_login_errors.metric_transformation[0].namespace
   alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
+  ok_actions          = [data.aws_sns_topic.slack_notification.arn]
   tags                = local.default_tags
 }
 
@@ -201,5 +206,6 @@ resource "aws_cloudwatch_metric_alarm" "sirius_unavailable_errors" {
   period              = 60
   namespace           = aws_cloudwatch_log_metric_filter.sirius_unavailable_errors.metric_transformation[0].namespace
   alarm_actions       = [data.aws_sns_topic.slack_notification.arn]
+  ok_actions          = [data.aws_sns_topic.slack_notification.arn]
   tags                = local.default_tags
 }
