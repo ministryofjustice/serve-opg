@@ -42,7 +42,7 @@ resource "aws_sns_topic_subscription" "pagerduty_notifications_global" {
 resource "aws_sns_topic_subscription" "pagerduty_guardduty_findings" {
   count = local.pagerduty_is_enabled ? 1 : 0
 
-  topic_arn              = data.aws_sns_topic.guardduty_findings.arn
+  topic_arn              = data.aws_sns_topic.guardduty_findings[0].arn
   protocol               = "https"
   endpoint               = local.pagerduty_endpoint
   endpoint_auto_confirms = true
