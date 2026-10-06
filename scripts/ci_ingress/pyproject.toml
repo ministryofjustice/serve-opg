@@ -3,7 +3,7 @@ name = "ci-ingress"
 version = "0.0.0"
 requires-python = "==3.14.7"
 dependencies = [
-    "boto3==1.43.98",
+    "boto3==1.43.99",
 ]
 [tool.uv]
 package = false
