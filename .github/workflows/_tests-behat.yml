@@ -47,7 +47,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          version: "0.12.10"
+          version: "0.12.11"
           enable-cache: true
 
       - name: Install dependencies
@@ -64,7 +64,7 @@ jobs:
           name: cluster_config_${{ inputs.workspace_name }}
 
       - name: Configure OIDC AWS Credentials to get password
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           aws-region: eu-west-1
           role-to-assume: "arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-${{ inputs.account_name }}"
