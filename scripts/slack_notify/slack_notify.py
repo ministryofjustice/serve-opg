@@ -80,7 +80,8 @@ REASONS_FOR_CRITICAL_ALARM = [
     "production-response-time",
     "sirius-unavailable",
     "sirius-login",
-    "availability"
+    "availability",
+    "guardduty-findings",
 ]
 
 def handler(event, context):
@@ -121,6 +122,11 @@ def handler(event, context):
 
                 if "AlarmName" in parsed:
                     alarm_name = parsed.get("AlarmName", "")
+                    alarm_state = parsed.get("NewStateValue", "")
+
+                    if alarm_state != "ALARM":
+                        print(f"Ignoring {alarm_state} Slack notification for {alarm_name}")
+                        return {"status": 200}
 
                     if "breakglass" in alarm_name:
                         event_type = "breakglass"

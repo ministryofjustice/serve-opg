@@ -2,11 +2,10 @@
 
 namespace App\Service\AddressLookup;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\ClientInterface;
 
 class OrdnanceSurvey
 {
@@ -32,6 +31,7 @@ class OrdnanceSurvey
             $address['description'] = $this->getDescription($address);
             $addresses[] = $address;
         }
+
         return $addresses;
     }
 
@@ -41,8 +41,8 @@ class OrdnanceSurvey
     private function getPostcodeData(?string $postcode): array
     {
         $url = new Uri();
-        $url = URI::withQueryValue($url, 'key', $this->apiKey);
-        $url = URI::withQueryValue($url, 'postcode', $postcode);
+        $url = Uri::withQueryValue($url, 'key', $this->apiKey);
+        $url = Uri::withQueryValue($url, 'postcode', $postcode);
         $request = new Request('GET', $url);
         $response = $this->httpClient->send($request);
 
@@ -56,6 +56,7 @@ class OrdnanceSurvey
         if (!isset($body['results']) || !is_array($body['results'])) {
             throw new \RuntimeException('Error retrieving address details: invalid JSON');
         }
+
         return $body['results'];
     }
 
@@ -66,26 +67,25 @@ class OrdnanceSurvey
      *      'addressLine2' => string
      *      'addressTown' => string
      *      'addressPostcode' => string
-     *  ]
+     *  ].
      */
     private function getAddressLines(array $address): array
     {
         $result = [];
         $building = '';
 
-        if(!empty($address['BUILDING_NUMBER'])){
+        if (!empty($address['BUILDING_NUMBER'])) {
             $building = $address['BUILDING_NUMBER'];
-        }
-        elseif(!empty($address['BUILDING_NAME'])){
+        } elseif (!empty($address['BUILDING_NAME'])) {
             $building = $address['BUILDING_NAME'];
         }
 
-        $buildingAddress = $building . ' ' . $address['THOROUGHFARE_NAME'];
+        $buildingAddress = $building.' '.$address['THOROUGHFARE_NAME'];
 
         $result['addressLine1'] = $buildingAddress;
         $result['addressLine2'] = '';
 
-        if(!empty($address['ORGANISATION_NAME'])){
+        if (!empty($address['ORGANISATION_NAME'])) {
             $result['addressLine1'] = $address['ORGANISATION_NAME'];
             $result['addressLine2'] = $buildingAddress;
         }
@@ -97,13 +97,13 @@ class OrdnanceSurvey
     }
 
     /**
-     * Get a single line address description (without postcode)
+     * Get a single line address description (without postcode).
      */
     private function getDescription(array $address): string
     {
         unset($address['postcode']);
         $address = array_filter($address);
+
         return trim(implode(', ', $address));
     }
-
 }

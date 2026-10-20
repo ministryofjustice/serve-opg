@@ -5,7 +5,7 @@ namespace App\Common;
 use Aws\DynamoDb\DynamoDbClient;
 
 /**
- * Creates a dynamodb hash table, given the tableName and the key to use as Id
+ * Creates a dynamodb hash table, given the tableName and the key to use as Id.
  */
 class DynamoDbTableCreator
 {
@@ -33,9 +33,9 @@ class DynamoDbTableCreator
     public function createHashTableIfNotExisting(): void
     {
         // enable the following to delete the table, for testing purposes only
-        //$this->client->deleteTable(['TableName' => $tableName]);
+        // $this->client->deleteTable(['TableName' => $tableName]);
 
-        if (true === self::$tableCreated) {
+        if (self::$tableCreated === true) {
             return;
         }
 
@@ -46,19 +46,19 @@ class DynamoDbTableCreator
                 'KeySchema' => [
                     [
                         'AttributeName' => $this->keyAttrName,
-                        'KeyType' => 'HASH',  //Partition key
-                    ]
+                        'KeyType' => 'HASH',  // Partition key
+                    ],
                 ],
                 'AttributeDefinitions' => [
                     [
                         'AttributeName' => $this->keyAttrName,
-                        'AttributeType' => 'S'
-                    ]
+                        'AttributeType' => 'S',
+                    ],
                 ],
                 'ProvisionedThroughput' => [
                     'ReadCapacityUnits' => 10,
-                    'WriteCapacityUnits' => 10
-                ]
+                    'WriteCapacityUnits' => 10,
+                ],
             ];
             $this->client->createTable($params);
         }

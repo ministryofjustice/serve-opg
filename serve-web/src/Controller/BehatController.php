@@ -160,11 +160,11 @@ class BehatController extends AbstractController
 
     private function getOrderFromIdentifier(string $orderIdentifier)
     {
-        list($caseNumber, $orderType) = explode('-', $orderIdentifier);
+        [$caseNumber, $orderType] = explode('-', $orderIdentifier);
 
         $client = $this->em->getRepository(Client::class)->findOneBy(['caseNumber' => self::BEHAT_CASE_NUMBER]);
 
-        $repo = 'PF' == $orderType ? OrderPf::class : OrderHw::class;
+        $repo = $orderType == 'PF' ? OrderPf::class : OrderHw::class;
 
         return $this->em->getRepository($repo)->findOneBy(['client' => $client->getId()]);
     }

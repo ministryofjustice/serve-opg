@@ -28,7 +28,7 @@ class ClamAVChecker implements FileCheckerInterface
     }
 
     /**
-     * Checks file for viruses using ClamAv
+     * Checks file for viruses using ClamAv.
      *
      * @throws RuntimeException in case the result is not PASS
      */
@@ -38,34 +38,34 @@ class ClamAVChecker implements FileCheckerInterface
         /**** TO DO 2024 *****/
         /**** This looks to be work in progress 2018 *****/
         /**** Made the return type correct and commented out pending work *****/
-//        // POST body to clamAV
-//        $response = $this->getScanResults($file);
-//
-//        $file->setScanResult($response);
-//
-//        $isResultPass = strtoupper(trim($response['file_scanner_result'])) === 'PASS';
-//
-//        // log results
-//        $level = $isResultPass ? Logger::INFO : Logger::ERROR;
-//        $this->log($level, 'File scan result', $file->getUploadedFile(), $response);
-//
-//        if ($file instanceof Pdf && !$isResultPass) { // @shaun STILL NEEDED ? wouldn't this case go in the next "switch"
-//            throw new RiskyFileException('PDF file scan failed');
-//        }
-//
-//        if ($isResultPass) {
-//            return $file;
-//        }
-//
-//        switch (strtoupper(trim($response['file_scanner_code']))) {
-//            case 'AV_FAIL':
-//                throw new VirusFoundException();
-//            case 'PDF_INVALID_FILE':
-//            case 'PDF_BAD_KEYWORD':
-//                throw new RiskyFileException();
-//        }
-//
-//        throw new RuntimeException('Files scanner FAIL. Unrecognised code. Full response: ' . print_r($response));
+        //        // POST body to clamAV
+        //        $response = $this->getScanResults($file);
+        //
+        //        $file->setScanResult($response);
+        //
+        //        $isResultPass = strtoupper(trim($response['file_scanner_result'])) === 'PASS';
+        //
+        //        // log results
+        //        $level = $isResultPass ? Logger::INFO : Logger::ERROR;
+        //        $this->log($level, 'File scan result', $file->getUploadedFile(), $response);
+        //
+        //        if ($file instanceof Pdf && !$isResultPass) { // @shaun STILL NEEDED ? wouldn't this case go in the next "switch"
+        //            throw new RiskyFileException('PDF file scan failed');
+        //        }
+        //
+        //        if ($isResultPass) {
+        //            return $file;
+        //        }
+        //
+        //        switch (strtoupper(trim($response['file_scanner_code']))) {
+        //            case 'AV_FAIL':
+        //                throw new VirusFoundException();
+        //            case 'PDF_INVALID_FILE':
+        //            case 'PDF_BAD_KEYWORD':
+        //                throw new RiskyFileException();
+        //        }
+        //
+        //        throw new RuntimeException('Files scanner FAIL. Unrecognised code. Full response: ' . print_r($response));
     }
 
     /**
@@ -85,7 +85,7 @@ class ClamAVChecker implements FileCheckerInterface
             $count = 0;
             $statusResponse = [];
 
-            //TODO use $statusResponse['celery_task_state'] == 'SUCCESS' to verify
+            // TODO use $statusResponse['celery_task_state'] == 'SUCCESS' to verify
             while ((!array_key_exists('file_scanner_result', $statusResponse)) && ($count < $maxRetries)) {
                 $statusResponse = $this->makeStatusRequest($result['location']);
 
@@ -96,23 +96,23 @@ class ClamAVChecker implements FileCheckerInterface
 
                 sleep(1);
 
-                $count++;
+                ++$count;
             }
 
             if (!array_key_exists('file_scanner_result', $statusResponse)) {
-                $this->log(Logger::ERROR, 'Maximum attempts at contacting clamAV for status. Unable to retrieve complete scan result ' . $statusResponse);
+                $this->log(Logger::ERROR, 'Maximum attempts at contacting clamAV for status. Unable to retrieve complete scan result '.$statusResponse);
             }
 
             return $statusResponse;
         } catch (\Exception $e) {
-            $this->log(Logger::CRITICAL, 'Scanner exception: ' . $e->getCode() . ' - ' . $e->getMessage());
+            $this->log(Logger::CRITICAL, 'Scanner exception: '.$e->getCode().' - '.$e->getMessage());
 
             throw new \RuntimeException($e);
         }
     }
 
     /**
-     * Send file to File Scanner
+     * Send file to File Scanner.
      */
     private function makeScannerRequest(UploadableFileInterface $file): array
     {
@@ -120,11 +120,11 @@ class ClamAVChecker implements FileCheckerInterface
 
         $response = $this->client->request('POST', $file->getScannerEndpoint(), [
             'multipart' => [
-               [
-                   'name'=> 'file',
-                   'contents' => fopen($fullFilePath, 'r'),
-               ]
-            ]
+                [
+                    'name' => 'file',
+                    'contents' => fopen($fullFilePath, 'r'),
+                ],
+            ],
         ]);
 
         if (!$response instanceof GuzzlePsr7Response) {
@@ -136,16 +136,16 @@ class ClamAVChecker implements FileCheckerInterface
     }
 
     /**
-     * Query status of file scan using location returned by AV scanner
+     * Query status of file scan using location returned by AV scanner.
      */
     private function makeStatusRequest(string $location): array
     {
-        $this->log(Logger::DEBUG, 'Quering scan status for location: ' . $location);
+        $this->log(Logger::DEBUG, 'Quering scan status for location: '.$location);
 
         $response = $this->client->get($location);
         $result = json_decode($response->getBody()->getContents(), true);
 
-        $this->log(Logger::DEBUG, 'Scan status result for location: ' . $location . ': ');
+        $this->log(Logger::DEBUG, 'Scan status result for location: '.$location.': ');
 
         return $result;
     }
@@ -155,14 +155,14 @@ class ClamAVChecker implements FileCheckerInterface
         $extra = ['service' => 'clam_av_checker'];
 
         if ($file) {
-            $extra['fileName']  = $file->getClientOriginalName();
+            $extra['fileName'] = $file->getClientOriginalName();
         }
 
         if ($response) {
             $extra += [
-            'file_scanner_code' => $response['file_scanner_code'],
-            'file_scanner_result' => $response['file_scanner_result'], //could be omitted
-            'file_scanner_message' => $response['file_scanner_message']
+                'file_scanner_code' => $response['file_scanner_code'],
+                'file_scanner_result' => $response['file_scanner_result'], // could be omitted
+                'file_scanner_message' => $response['file_scanner_message'],
             ];
         }
 

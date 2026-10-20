@@ -2,9 +2,7 @@
 
 namespace App\Service\File\Types;
 
-use App\Service\File\Checker\ClamAVChecker;
 use App\Service\File\Checker\FileCheckerInterface;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -42,10 +40,11 @@ class UploadableFile implements UploadableFileInterface
     public function setFileCheckers(array $fileCheckers): static
     {
         $this->fileCheckers = $fileCheckers;
+
         return $this;
     }
 
-    public function getLogger(): loggerInterface
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -53,6 +52,7 @@ class UploadableFile implements UploadableFileInterface
     public function setLogger(LoggerInterface $logger): static
     {
         $this->logger = $logger;
+
         return $this;
     }
 
@@ -64,13 +64,14 @@ class UploadableFile implements UploadableFileInterface
     public function setUploadedFile(UploadedFile $uploadedFile): static
     {
         $this->uploadedFile = $uploadedFile;
+
         return $this;
     }
 
     /**
-     * Checks a file by calling configured file checkers for that file type
+     * Checks a file by calling configured file checkers for that file type.
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function checkFile(): void
     {
@@ -78,9 +79,9 @@ class UploadableFile implements UploadableFileInterface
     }
 
     /**
-     * Checks a file by calling configured file checkers for that file type
+     * Checks a file by calling configured file checkers for that file type.
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function callFileCheckers(): void
     {
@@ -98,6 +99,7 @@ class UploadableFile implements UploadableFileInterface
     public function setScanResult(array $scanResult): static
     {
         $this->scanResult = $scanResult;
+
         return $this;
     }
 

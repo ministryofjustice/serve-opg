@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 class ClientService
 {
     private readonly ClientRepository|EntityRepository $clientRepository;
+
     public function __construct(
         private readonly EntityManager $em,
         private readonly LoggerInterface $logger,

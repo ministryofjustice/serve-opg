@@ -6,7 +6,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 /**
- * Twig filters for assets
+ * Twig filters for assets.
  *
  * e.g.
  * {{ 'images/file.png' | assetUrl }}

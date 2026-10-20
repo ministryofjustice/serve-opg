@@ -126,3 +126,42 @@ resource "aws_lambda_permission" "custom_cloudwatch_alarms_allow" {
     ]
   }
 }
+
+locals {
+  guardduty_findings_enabled = local.account.name == "production"
+}
+
+data "aws_sns_topic" "guardduty_findings" {
+  count = local.guardduty_findings_enabled ? 1 : 0
+
+  name = "guardduty-findings"
+}
+
+resource "aws_lambda_permission" "guardduty_findings_allow" {
+  count = local.guardduty_findings_enabled ? 1 : 0
+
+  statement_id   = "AllowExecutionFromGuardDutyFindingsSNS"
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.serve_opg_notify_slack.function_name
+  principal      = "sns.amazonaws.com"
+  source_arn     = data.aws_sns_topic.guardduty_findings[0].arn
+  source_account = data.aws_caller_identity.current.account_id
+
+  lifecycle {
+    replace_triggered_by = [
+      aws_lambda_function.serve_opg_notify_slack
+    ]
+  }
+}
+
+resource "aws_sns_topic_subscription" "guardduty_findings_lambda" {
+  count = local.guardduty_findings_enabled ? 1 : 0
+
+  topic_arn = data.aws_sns_topic.guardduty_findings[0].arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.serve_opg_notify_slack.arn
+
+  depends_on = [
+    aws_lambda_permission.guardduty_findings_allow
+  ]
+}

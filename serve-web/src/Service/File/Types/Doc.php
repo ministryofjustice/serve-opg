@@ -13,7 +13,7 @@ class Doc extends UploadableFile
     public function __construct(
         ClamAVChecker $virusChecker,
         DocChecker $fileChecker,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         parent::__construct($logger);
         $this->setFileCheckers([$virusChecker, $fileChecker]);

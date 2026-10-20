@@ -1,7 +1,8 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DataFixtures;
-
 
 use App\TestHelpers\FixtureTestHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -22,7 +23,7 @@ class BehatFixtures extends Fixture implements FixtureGroupInterface
 
     /**
      * This method must return an array of groups
-     * on which the implementing class belongs to
+     * on which the implementing class belongs to.
      *
      * @return string[]
      */

@@ -52,7 +52,7 @@ class OrderController extends AbstractController
             OrderForm::class,
             $order,
             [
-                'show_assets_question' => Order::TYPE_PF == $order->getType(),
+                'show_assets_question' => $order->getType() == Order::TYPE_PF,
             ]
         );
 
@@ -63,10 +63,10 @@ class OrderController extends AbstractController
             $this->em->flush();
 
             // Remove documents previously added that aren't applicable to SUBTYPE_INTERIM_ORDER
-            if (Order::SUBTYPE_INTERIM_ORDER === $order->getSubType()) {
+            if ($order->getSubType() === Order::SUBTYPE_INTERIM_ORDER) {
                 foreach ($order->getDocuments() as $document) {
                     $documentType = $document->getType();
-                    if (Document::TYPE_COURT_ORDER !== $documentType && Document::TYPE_ADDITIONAL !== $documentType) {
+                    if ($documentType !== Document::TYPE_COURT_ORDER && $documentType !== Document::TYPE_ADDITIONAL) {
                         try {
                             $this->documentService->deleteDocumentById($document->getId());
                         } catch (\Exception $e) {
@@ -120,7 +120,8 @@ class OrderController extends AbstractController
             try {
                 $this->orderService->serve($order);
                 $client = $order->getClient();
-                $request->getSession()->getFlashBag()->add('success',
+                $request->getSession()->getFlashBag()->add(
+                    'success',
                     [
                         'title' => 'order.served.title',
                         'clientName' => $client->getClientName(),
@@ -133,11 +134,13 @@ class OrderController extends AbstractController
                 if ($this->getParameter('kernel.debug')) {
                     $message .= '.Details (only on dev mode): '.$e;
                 }
-                $request->getSession()->getFlashBag()->add('error',
+                $request->getSession()->getFlashBag()->add(
+                    'error',
                     [
                         'body' => $message,
                         'orderType' => $order->getType().'-error',
-                    ]);
+                    ]
+                );
             }
 
             return $this->redirectToRoute('case-list');
@@ -193,9 +196,9 @@ class OrderController extends AbstractController
 
         if (!$order->isOrderValid()) {
             $flashMessage = <<<MESSAGE
-The order was uploaded successfully.  We could not get all the information we need from the document.
-Please enter some details below about the order
-MESSAGE;
+                The order was uploaded successfully.  We could not get all the information we need from the document.
+                Please enter some details below about the order
+                MESSAGE;
 
             $this->addFlash('success', $flashMessage);
             $partial = true;
@@ -226,9 +229,9 @@ MESSAGE;
             ConfirmOrderDetailsForm::class,
             $order,
             [
-                'show_assets_question' => Order::TYPE_PF == $order->getType() && null === $order->getHasAssetsAboveThreshold(),
-                'show_subType_question' => null === $order->getSubType(),
-                'show_appointmentType_question' => null === $order->getAppointmentType(),
+                'show_assets_question' => $order->getType() == Order::TYPE_PF && $order->getHasAssetsAboveThreshold() === null,
+                'show_subType_question' => $order->getSubType() === null,
+                'show_appointmentType_question' => $order->getAppointmentType() === null,
             ]
         );
 

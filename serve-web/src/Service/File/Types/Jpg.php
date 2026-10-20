@@ -13,7 +13,7 @@ class Jpg extends UploadableFile
     public function __construct(
         ClamAVChecker $virusChecker,
         JpgChecker $fileChecker,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         parent::__construct($logger);
         $this->setFileCheckers([$virusChecker, $fileChecker]);

@@ -10,6 +10,7 @@ variable "accounts" {
       account_name              = string
       behat_controller          = number
       sirius_api                = string
+      resource_alarms_active    = bool
       sirius_bucket             = string
       is_production             = string
       fixtures_enabled          = string

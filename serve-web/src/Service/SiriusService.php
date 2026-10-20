@@ -14,11 +14,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class SiriusService
@@ -49,7 +51,7 @@ class SiriusService
         $apiResponse = [];
         try {
             // init cookie jar to pass session token between requests
-            $this->cookieJar = new \GuzzleHttp\Cookie\CookieJar();
+            $this->cookieJar = new CookieJar();
 
             // send DC docs to Sirius
             $documents = $order->getDocuments();
@@ -61,7 +63,7 @@ class SiriusService
             // Begin API call to Sirius
             $apiResponse = $this->login();
 
-            if (200 == $apiResponse->getStatusCode()) {
+            if ($apiResponse->getStatusCode() == 200) {
                 // generate JSON payload of order
                 $this->logger->info('Logged into sirius correctly');
                 $payload = $this->generateOrderPayload($order);
@@ -84,7 +86,7 @@ class SiriusService
                         $order->setApiResponse((array) Psr7\Message::toString($apiResponse));
                     }
 
-                    if (200 !== $apiResponse->getStatusCode()) {
+                    if ($apiResponse->getStatusCode() !== 200) {
                         $this->logger->error(Psr7\Message::toString($apiResponse));
                     }
                 }
@@ -110,7 +112,7 @@ class SiriusService
         try {
             $this->logout();
         } catch (RequestException $e) {
-            if (401 != $e->getCode()) {
+            if ($e->getCode() != 401) {
                 $this->logger->error('RequestException: Reponse <- '.Psr7\Message::toString($e->getResponse()));
                 throw $e;
             }
@@ -177,7 +179,7 @@ class SiriusService
      *
      * @param string $payload NOT JSON encoded. Client does this with 'json' parameter.
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return mixed|ResponseInterface
      */
     private function sendOrderToSirius($payload, string $csrfToken)
     {
@@ -348,7 +350,7 @@ class SiriusService
         }
 
         $checkbit = (11 - ($sum % 11)) % 11;
-        if (10 === $checkbit) {
+        if ($checkbit === 10) {
             $checkbit = 'T';
         }
 
@@ -357,11 +359,11 @@ class SiriusService
 
     private function translateHasAssetsAboveThreshold(?string $hasAssetsAboveThreshold): ?string
     {
-        if (Order::HAS_ASSETS_ABOVE_THRESHOLD_NA === $hasAssetsAboveThreshold || null === $hasAssetsAboveThreshold) {
+        if ($hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_NA || $hasAssetsAboveThreshold === null) {
             return $hasAssetsAboveThreshold;
         }
 
-        return Order::HAS_ASSETS_ABOVE_THRESHOLD_YES === $hasAssetsAboveThreshold ?
+        return $hasAssetsAboveThreshold === Order::HAS_ASSETS_ABOVE_THRESHOLD_YES ?
             self::HAS_ASSETS_ABOVE_THRESHOLD_YES_SIRIUS : self::HAS_ASSETS_ABOVE_THRESHOLD_NO_SIRIUS;
     }
 

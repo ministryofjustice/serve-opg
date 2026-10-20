@@ -7,7 +7,7 @@ use App\Service\File\Types\UploadableFileInterface;
 class TifChecker extends AbstractFileChecker implements FileCheckerInterface
 {
     /**
-     * Any other specific checks for a file type can go here
+     * Any other specific checks for a file type can go here.
      */
     public function checkFile(UploadableFileInterface $file): UploadableFileInterface
     {

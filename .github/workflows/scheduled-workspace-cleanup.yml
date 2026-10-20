@@ -5,28 +5,21 @@ on:
         # 10pm every day except Sundays
         - cron: '0 22 * * 0-6'
 
-permissions:
-    id-token: write
-    contents: read
-    security-events: none
-    pull-requests: none
-    actions: none
-    checks: none
-    deployments: none
-    issues: none
-    packages: none
-    repository-projects: none
-    statuses: none
+permissions: {}
 
 jobs:
     terraform_environment_cleanup:
         runs-on: ubuntu-latest
+        permissions:
+            id-token: write
         steps:
             - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+              with:
+                  persist-credentials: false
 
             - id: terraform_version
               name: get terraform version
-              uses: ministryofjustice/opg-github-actions/actions/terraform-version@77bb12e7fec3bcee9a6a35cb21361195e027a12a # v4.9.0
+              uses: ministryofjustice/opg-github-actions/actions/terraform-version@939ca6ddfc2bafefa48b0730ea0268bd75a25876 # v4.9.1
               with:
                   terraform_directory: terraform/environment
 
@@ -35,12 +28,12 @@ jobs:
                   terraform_version: ${{ steps.terraform_version.outputs.version }}
                   terraform_wrapper: false
 
-            - uses: ministryofjustice/opg-github-actions/actions/github-deploy-key@722a5f955424aaba01e9ca43d68390cd4048d6e1 # v4.10.2
+            - uses: ministryofjustice/opg-github-actions/actions/github-deploy-key@ae37b9b322286123971417e82b665e56e9d6aa3f # v4.10.3
               with:
                   deploy_key: ${{ secrets.SSH_PRIVATE_KEY_ALLOW_LIST_REPOSITORY }}
 
             - name: Configure Terraform OIDC AWS Credentials
-              uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6
+              uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
               with:
                   aws-region: eu-west-1
                   role-to-assume: 'arn:aws:iam::${{ vars.IDENTITY_ACCOUNT }}:role/oidc-serve-development'
@@ -59,9 +52,11 @@ jobs:
 
             - name: clean up ephemeral environments
               working-directory: terraform/environment
+              env:
+                DEVELOPMENT: ${{ vars.DEVELOPMENT_ACCOUNT }}
               run: |
                   unset TF_WORKSPACE
-                  ../../scripts/cleanup/workspace_cleanup.sh "$(terraform-workspace-manager -protected-workspaces=true -aws-account-id=${{ vars.DEVELOPMENT_ACCOUNT }} -aws-iam-role=serve-opg-ci-boundary)"
+                  ../../scripts/cleanup/workspace_cleanup.sh "$(terraform-workspace-manager -protected-workspaces=true -aws-account-id=${DEVELOPMENT} -aws-iam-role=serve-opg-ci-boundary)"
 
             - name: install python
               uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -69,15 +64,18 @@ jobs:
                   python-version: '3.14'
                   cache: 'pip'
 
-            - name: SLSA
-              uses: ministryofjustice/devsecops-actions/sca/slsa@4cd163be7859cd130800d6719d925318826038ea
+            - name: Install uv
+              uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
               with:
-                  requirements-file: ./scripts/cleanup/requirements.txt
+                version: "0.12.11"
+                enable-cache: true
+
+            - name: Install dependencies
+              working-directory: scripts/cleanup
+              run: uv sync --locked
 
             - name: clean up old task definitions
               env:
                   REGION: eu-west-1
-              run: |
-                  pip install -r requirements.txt
-                  python cleanup_task_definitions.py
+              run: python cleanup_task_definitions.py
               working-directory: scripts/cleanup

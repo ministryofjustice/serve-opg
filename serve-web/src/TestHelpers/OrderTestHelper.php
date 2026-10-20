@@ -31,9 +31,9 @@ class OrderTestHelper
             $orderNumber = time().random_int(10000000, 1000000000).self::$orderCounter;
         }
 
-        if ('HW' === $orderType) {
+        if ($orderType === 'HW') {
             $order = new OrderHw($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
-        } elseif ('PF' === $orderType) {
+        } elseif ($orderType === 'PF') {
             $order = new OrderPf($client, $orderMadeDate, $orderIssuedDate, $orderNumber, $createdAt);
         } else {
             throw new \Exception('$orderType should be either HW or PF');
@@ -60,7 +60,7 @@ class OrderTestHelper
             $order = self::generateOrder('2019-01-01', $dateString, (string) $i, 'HW');
 
             if ($setAsServed) {
-                $order->setServedAt((new \DateTime())->modify('-1 week')->setTime(0, 0, 0));
+                $order->setServedAt(new \DateTime()->modify('-1 week')->setTime(0, 0, 0));
             }
 
             $orders[] = $order;

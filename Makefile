@@ -68,3 +68,7 @@ behat-tests: ##@testing Requires the app to be built and up before running
 
 reset-fixtures: ##@application Reset the fixture data for the app
 	docker compose exec app php bin/console doctrine:fixtures:load --purge-with-truncate -n
+
+audit-ga: ##@github_actions Audit github actions
+	docker compose -f docker-compose.yml build audit-ga
+	docker compose -f docker-compose.yml up audit-ga

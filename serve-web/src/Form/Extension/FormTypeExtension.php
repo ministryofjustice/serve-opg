@@ -18,10 +18,10 @@ class FormTypeExtension extends AbstractTypeExtension
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'hint' => null,
             'hintList' => null,
-        ));
+        ]);
     }
 
     /**

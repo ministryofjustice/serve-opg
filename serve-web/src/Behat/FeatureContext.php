@@ -97,11 +97,11 @@ class FeatureContext extends MinkContext implements Context
     {
         $this->assertResponseStatus(200);
 
-        if ('servable' == $shouldBe) {
+        if ($shouldBe == 'servable') {
             $this->assertSession()->elementExists('css', '#serve_order_button');
         }
 
-        if ('unservable' == $shouldBe) {
+        if ($shouldBe == 'unservable') {
             $this->assertSession()->elementNotExists('css', '#serve_order_button');
         }
     }

@@ -27,13 +27,13 @@ class ReportService
     public function generateLast4WeeksCsv(): File
     {
         $endDate = new \DateTime('now');
-        $startDate = (new \DateTime('now'))->modify('-4 weeks');
+        $startDate = new \DateTime('now')->modify('-4 weeks');
 
         $orders = $this->getFilteredOrders('served-last-4-weeks', $startDate, $endDate);
 
         $headers = ['DateIssued', 'DateMade', 'DateServed', 'CaseNumber', 'AppointmentType', 'OrderType'];
 
-        $today = (new \DateTime('now'))->format('Y-m-d');
+        $today = new \DateTime('now')->format('Y-m-d');
         $file = fopen("/tmp/orders-served-$today.csv", 'w');
 
         fputcsv($file, $headers, escape: '');
@@ -60,13 +60,13 @@ class ReportService
     public function generateOrdersNotServedCsv(): File
     {
         $startDate = new \DateTime('2001-01-01 00:00:00');
-        $endDate = (new \DateTime('now'))->modify('+1 days');
+        $endDate = new \DateTime('now')->modify('+1 days');
 
         $orders = $this->getFilteredOrders('pending', $startDate, $endDate, asArray: false);
 
         $headers = ['CaseNumber', 'OrderType', 'OrderNumber', 'ClientName', 'OrderMadeDate', 'OrderIssueDate', 'Status'];
 
-        $today = (new \DateTime('now'))->format('Y-m-d');
+        $today = new \DateTime('now')->format('Y-m-d');
         $file = fopen("/tmp/all-orders-not-served-$today.csv", 'w');
 
         fputcsv($file, $headers, escape: '');
@@ -95,8 +95,8 @@ class ReportService
     public function generateAllServedOrdersCsv(): File
     {
         $startDate = new \DateTime('2001-01-01 00:00:00');
-        $endDate = (new \DateTime('now'))->modify('+1 days');
-        $today = (new \DateTime('now'))->format('Y-m-d');
+        $endDate = new \DateTime('now')->modify('+1 days');
+        $today = new \DateTime('now')->format('Y-m-d');
 
         $file = fopen("/tmp/all-served-orders-$today.csv", 'w');
 
@@ -154,7 +154,7 @@ class ReportService
         $formattedStartDate = $startDate->format('Y-m-d');
 
         $typeFilter = 'served';
-        if ('pending' == $type) {
+        if ($type == 'pending') {
             $typeFilter = 'pending';
         }
 
@@ -178,7 +178,7 @@ class ReportService
         $ordersCsv = [];
 
         foreach ($orders as $order) {
-            if (null === $order->getServedAt()) {
+            if ($order->getServedAt() === null) {
                 $ordersCsv[] = ['DateCreated' => $order->getCreatedAt()->format('Y-m-d'),
                     'DateServed' => 'Null',
                     'CaseNumber' => $order->getClient()->getCaseNumber(),

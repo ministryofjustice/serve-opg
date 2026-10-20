@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials for Slack notify
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::${{ vars.DEVELOPMENT_ACCOUNT }}:role/serve-gh-actions-slack-notifier
@@ -45,22 +45,32 @@ jobs:
           role-duration-seconds: 900
 
       - name: Create SNS message payload
+        env:
+          type: ${{ inputs.type }},
+          status: ${{ inputs.status }},
+          branch: ${{ inputs.branch }},
+          workflow: ${{ inputs.workflow }},
+          user: ${{ inputs.user }},
+          gh_url: ${{ inputs.gh_url }},
+          commit_message: ${{ inputs.commit_message }}
         run: |
           cat > payload.json <<'EOF'
           {
-            "type": "${{ inputs.type }}",
-            "status": "${{ inputs.status }}",
-            "branch": "${{ inputs.branch }}",
-            "workflow": "${{ inputs.workflow }}",
-            "user": "${{ inputs.user }}",
-            "gh_url": "${{ inputs.gh_url }}",
-            "commit_message": "${{ inputs.commit_message }}"
+            "type": "${type}",
+            "status": "${status}",
+            "branch": "${branch}",
+            "workflow": "${workflow}",
+            "user": "${user}",
+            "gh_url": "${gh_url}",
+            "commit_message": "${commit_message}"
           }
           EOF
 
       - name: Publish to SNS topic
+        env:
+          DEVELOPMENT: ${{ vars.DEVELOPMENT_ACCOUNT }}
         run: |
           aws sns publish \
             --region eu-west-1 \
-            --topic-arn arn:aws:sns:eu-west-1:${{ vars.DEVELOPMENT_ACCOUNT }}:serve-slack-notifications \
+            --topic-arn arn:aws:sns:eu-west-1:${DEVELOPMENT}:serve-slack-notifications \
             --message file://payload.json

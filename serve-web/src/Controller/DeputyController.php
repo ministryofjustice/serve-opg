@@ -49,7 +49,7 @@ class DeputyController extends AbstractController
             $this->em->persist($deputy);
             $this->em->flush();
 
-            if ('saveAndAddAnother' == $buttonClicked->getName()) {
+            if ($buttonClicked->getName() == 'saveAndAddAnother') {
                 return $this->redirectToRoute('deputy-add', ['orderId' => $order->getId()]);
             }
 
@@ -60,7 +60,7 @@ class DeputyController extends AbstractController
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView(),
-            'deputyType' => $deputyType
+            'deputyType' => $deputyType,
         ]);
     }
 
@@ -99,7 +99,7 @@ class DeputyController extends AbstractController
             'client' => $order->getClient(),
             'order' => $order,
             'form' => $form->createView(),
-            'deputyType' => $deputy->getDeputyType()
+            'deputyType' => $deputy->getDeputyType(),
         ]);
     }
 
@@ -112,6 +112,7 @@ class DeputyController extends AbstractController
 
         if ($deputy === null) {
             $this->addFlash('error', 'Deputy has already been removed');
+
             return $this->redirectToRoute('order-summary', ['orderId' => $order->getId()]);
         }
 
@@ -128,7 +129,7 @@ class DeputyController extends AbstractController
         return $this->render('Common/confirm.html.twig', [
             'client' => $order->getClient(),
             'order' => $order,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 }

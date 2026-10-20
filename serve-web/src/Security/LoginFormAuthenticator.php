@@ -96,7 +96,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         $waitFor = $this->usernameLockedForSeconds($email);
-        if (false !== $waitFor) {
+        if ($waitFor !== false) {
             throw new BruteForceAttackDetectedException();
         }
 
@@ -119,7 +119,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $waits = [];
         foreach ($this->rules as $rule) {
             // fetch all the rules and check if for any of those, the user has to wait
-            list($maxAttempts, $timeRange, $waitFor) = $rule;
+            [$maxAttempts, $timeRange, $waitFor] = $rule;
 
             $waitFor = $this->bruteForceChecker->hasToWait(
                 $this->storage->getAttempts($username),

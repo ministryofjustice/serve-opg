@@ -1,8 +1,9 @@
 variable "accounts" {
   type = map(
     object({
-      name       = string,
-      account_id = string,
+      name              = string,
+      account_id        = string,
+      pagerduty_enabled = bool,
       dns_firewall = object({
         enabled         = bool
         domains_allowed = list(string)
