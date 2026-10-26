@@ -33,7 +33,7 @@ RUN apk update && apk upgrade
 
 #COMPOSER
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --version=2.8.9
+RUN php composer-setup.php --version=2.10.3
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
