@@ -27,7 +27,7 @@ locals {
       healthCheck = {
         command = [
           "CMD-SHELL",
-          "curl -f http://localhost:8080/health-check || exit 1"
+          "wget -q --spider http://localhost:8080/health-check || exit 1"
         ],
         interval = 30,
         timeout  = 10,
