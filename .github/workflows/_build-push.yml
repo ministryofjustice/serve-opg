@@ -68,7 +68,7 @@ jobs:
 
       - name: Run Snyk Scan
         id: snyk_scan
-        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@bec642d35dd1f72cd2986722b243be50aaf4bf8c # v4.10.1
+        uses: ministryofjustice/opg-github-actions/actions/snyk-scan@12bdbe54f92af873347bc0cd6f4e7769265c1a90 # v4.10.5
         with:
           SNYK_TEST_IMAGE: ${{ vars.MANAGEMENT_ACCOUNT }}.dkr.ecr.eu-west-1.amazonaws.com/serve-opg/${{ matrix.svc_name }}:latest
           SNYK_TOKEN: ${{ secrets.snyk_token }}
