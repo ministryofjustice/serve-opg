@@ -49,7 +49,7 @@ jobs:
 
       - name: Snyk IaC ${{ matrix.name }}
         id: snyk_iac
-        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@bec642d35dd1f72cd2986722b243be50aaf4bf8c # v4.10.1
+        uses: ministryofjustice/opg-github-actions/actions/snyk-iac@722a5f955424aaba01e9ca43d68390cd4048d6e1 # v4.10.2
         with:
           iac_test_directory: "${{ matrix.terraform_configuration_path }}"
           SNYK_TOKEN: ${{ secrets.snyk_token }}
@@ -57,7 +57,7 @@ jobs:
           snyk_policy_path: "${{ matrix.terraform_configuration_path }}.snyk"
 
       - name: Upload Snyk IaC results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
+        uses: github/codeql-action/upload-sarif@87557b9c84dde89fdd9b10e88954ac2f4248e463 # v4.36.1
         if: always()
         with:
           category: "IaC-${{matrix.name}}"
