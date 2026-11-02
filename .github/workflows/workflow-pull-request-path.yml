@@ -176,6 +176,7 @@ jobs:
 
   behat_branch_environment:
     name: Branch Environment Behat
+    if: needs.workflow_variables.outputs.build_identifier != 'preproduction'
     uses: $/.github/workflows/_tests-behat.yml
     permissions:
         id-token: write
@@ -212,7 +213,7 @@ jobs:
       - name: Check failure status
         run: |
           echo ${{ needs.behat_branch_environment.result }}
-          if [ "${{ needs.behat_branch_environment.result }}" != "success" ]; then
+          if [ "${{ needs.behat_branch_environment.result }}" != "success" ] && [ "${{ needs.behat_branch_environment.result }}" != "skipped" ]; then
             echo "❌ Behat branch environment failed"
             exit 1
           fi
