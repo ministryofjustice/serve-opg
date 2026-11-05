@@ -91,7 +91,7 @@ services:
 
   # TODO - Work out why upgrades to prism break behat
   sirius-api:
-    image: stoplight/prism:4.4.3@sha256:5f590fcfe55e0c4a97287465cbf84b31712ad439358d35b5b92b303fbe06e7a8
+    image: stoplight/prism:4.5.0@sha256:d2b7e671674ff050f41c6edb00b46b33eb6384e534dc24245f388d38f81a702b
     ports:
       - 4010:4010
     volumes:
@@ -139,7 +139,7 @@ services:
     restart: always
 
   npm:
-    image: node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
+    image: node:26.13.0-alpine3.24@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94
     environment:
       PATH: /node_modules/.bin:$PATH
     working_dir: /var/www

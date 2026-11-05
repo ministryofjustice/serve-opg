@@ -1,4 +1,4 @@
-FROM php:8.4.27-fpm-alpine3.24@sha256:8ce34c869fae0f8da2c82d8aeda222f0782e8e5ae2b370fb43cbad84e9e2ea55
+FROM php:8.5.7-fpm-alpine3.24@sha256:fd9669cdc9caa2bc4857a2c9f6b5e86c47a7f85043a6717c29901ca4a8b1cd4e
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
