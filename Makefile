@@ -72,3 +72,13 @@ reset-fixtures: ##@application Reset the fixture data for the app
 audit-ga: ##@github_actions Audit github actions
 	docker compose -f docker-compose.yml build audit-ga
 	docker compose -f docker-compose.yml up audit-ga
+
+orchestration-apk-upgrade: ##@apk_upgrades Upgrade pinned api apk versions
+	docker compose build --no-cache orchestration-apk-upgrade
+	docker compose up orchestration-apk-upgrade
+	docker cp opg-serve-orchestration-apk-upgrade:/var/www/Dockerfile ./orchestration/Dockerfile
+
+serve-apk-upgrade: ##@apk_upgrades Upgrade pinned api apk versions
+	docker compose build --no-cache serve-apk-upgrade
+	docker compose up serve-apk-upgrade
+	docker cp opg-serve-app-apk-upgrade:/var/www/Dockerfile ./serve-web/docker/app/Dockerfile

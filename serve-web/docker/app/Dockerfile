@@ -1,4 +1,17 @@
-FROM php:8.4.27-fpm-alpine3.24@sha256:8ce34c869fae0f8da2c82d8aeda222f0782e8e5ae2b370fb43cbad84e9e2ea55
+FROM php:8.4.27-fpm-alpine3.24@sha256:8ce34c869fae0f8da2c82d8aeda222f0782e8e5ae2b370fb43cbad84e9e2ea55 AS php-base
+
+##############################
+# Stage X: Upgrade pinned apk packages (used only as target for pinned upgrades)
+##############################
+FROM php-base AS upgrade-pinned-apk-packages
+WORKDIR /var/www
+USER root
+COPY serve-web/docker/app/Dockerfile .
+COPY scripts/upgrade_apk/check-apk-ver.sh .
+
+CMD sh -c "./check-apk-ver.sh"
+
+FROM php-base AS application
 
 ENV PHP_EXT_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20190902
 
@@ -41,13 +54,16 @@ WORKDIR /var/www
 
 RUN mkdir -p tmp/screenshots
 
-COPY . /var/www
+COPY serve-web/ /var/www/
 
-COPY docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
-COPY docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY docker/app/health-check.sh /usr/local/bin/health-check.sh
+COPY serve-web/docker/app/serve-opg.ini /usr/local/etc/php/conf.d/
+COPY serve-web/docker/app/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY serve-web/docker/app/health-check.sh /usr/local/bin/health-check.sh
 RUN chmod +x /usr/local/bin/health-check.sh
-RUN mkdir certs && chmod 755 certs && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
+
+RUN mkdir -p certs \
+ && chmod 755 certs \
+ && wget -O certs/eu-west-1-bundle.pem https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
 
 RUN mkdir -p var /tmp/app-logs && chown -R www-data:www-data var /tmp/app-logs
 
