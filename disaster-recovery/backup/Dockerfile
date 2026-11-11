@@ -1,12 +1,6 @@
-FROM python:3.14.8-alpine3.24@sha256:f6a589d43c42b9e7f7dc67a12d37132491f362859a5d750607710cc56da3bc72
+FROM python:3.14.10-alpine3.24@sha256:eb2c62658b8d51bff0acc408504b76521d02030de56a8a3c1e830083e89b89d2
 
-RUN apk update && apk upgrade
-RUN pip install --no-cache-dir --upgrade pip
-
-# TODO Remove this once alpine upgrade available as it patches a vulnerability
-RUN apk update && apk add --upgrade "zlib==1.3.2-r1"
-
-COPY --from=ghcr.io/astral-sh/uv@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv@sha256:32a7bb39b496babbd997b0a39a4d66c126bdaf5661b302bf6f06abda8deca6ff /uv /uvx /bin/
 COPY uv.lock .
 COPY pyproject.toml .
 RUN uv export --locked -o requirements.txt \
