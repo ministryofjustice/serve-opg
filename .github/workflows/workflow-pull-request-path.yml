@@ -110,6 +110,9 @@ jobs:
     name: Unit tests on Frontend app
     uses: $/.github/workflows/_tests-frontend.yml
     needs: [workflow_variables]
+    permissions:
+      contents: read
+      id-token: write
 
   build_scan_push_containers:
     name: Docker Build, Scan and Push
