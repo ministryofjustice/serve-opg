@@ -97,10 +97,10 @@ resource "aws_cloudwatch_metric_alarm" "aurora_high_acu" {
 }
 
 locals {
-    aurora_unusual_read_throughput_minimum  = 3000000
-    aurora_unusual_network_transmit_minimum = 1000000
-    aurora_unusual_read_iops_minimum        = 500
-    aurora_anomaly_detection_band_width     = 12
+  aurora_unusual_read_throughput_minimum  = 3000000
+  aurora_unusual_network_transmit_minimum = 1000000
+  aurora_unusual_read_iops_minimum        = 500
+  aurora_anomaly_detection_band_width     = 12
 }
 
 resource "aws_cloudwatch_metric_alarm" "aurora_unusual_throughput" {
