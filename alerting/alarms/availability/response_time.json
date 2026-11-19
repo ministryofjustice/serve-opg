@@ -7,6 +7,14 @@
     "Check ECS service health, application logs and recent deployments.",
     "Test Serve itself to see if the service is degraded or experiencing issues, if its substantiated an incident should be raised."
   ],
+  "logs": {
+    "log_group": "{environment}",
+    "query": [
+      "fields @timestamp, @message, @logStream",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
   "confluence_link": "",
   "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
 }

@@ -8,6 +8,15 @@
     "Check for any recent changes that might have affected Sirius authentication.",
     "If the issue persists and affects production users, raise an incident and escalate."
   ],
+  "logs": {
+    "log_group": "{environment}",
+    "query": [
+      "fields @timestamp, @message, @logStream",
+      "| filter @message like /ERROR/ and @message like /publicapi/ and @message like /Request ->/",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
   "confluence_link": "",
   "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
 }

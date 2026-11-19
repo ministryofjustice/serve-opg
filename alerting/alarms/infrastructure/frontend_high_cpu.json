@@ -7,6 +7,14 @@
     "Review recent deployments, application logs and request volume. Anything that could explain the high CPU usage?",
     "If the service is degraded or unresponsive, then an incident will most likely need to be raised."
   ],
+  "logs": {
+    "log_group": "{environment}",
+    "query": [
+      "fields @timestamp, @message, @logStream",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
   "confluence_link": "",
   "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_resource_alarms.tf"
 }

@@ -7,6 +7,14 @@
     "Check the frontend load balancer, and the ECS services health. Are the containers healthy? Could it be a network or connectivity issue?",
     "If production users cannot access the frontend, raise an incident immediately and escalate."
   ],
+  "logs": {
+    "log_group": "{environment}",
+    "query": [
+      "fields @timestamp, @message, @logStream",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
   "confluence_link": "",
   "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
 }
