@@ -1,0 +1,12 @@
+{
+  "name": "5xx-errors",
+  "title": "Serve is returning HTTP 5xx errors",
+  "description": "The load balancer recorded more than one target HTTP 5xx response in a minute.",
+  "investigation_steps": [
+    "Check the load balancer metrics and see what is causing the HTTP 5xx errors.",
+    "Review application logs and recent deployments for errors, are the errors ongoing or one-time failures?",
+    "Check the service itself, is it experiencing issues or degraded performance? If the issue is affecting users, and incident will most likely need to be raised."
+  ],
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
+}

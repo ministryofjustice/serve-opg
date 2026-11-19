@@ -1,0 +1,12 @@
+{
+  "name": "response-time",
+  "title": "Serve has high response times",
+  "description": "The load balancer recorded an average target response time of at least five seconds for 15 minutes.",
+  "investigation_steps": [
+    "Check the load balancer response time metrics and identify what is causing the high response times.",
+    "Check ECS service health, application logs and recent deployments.",
+    "Test Serve itself to see if the service is degraded or experiencing issues, if its substantiated an incident should be raised."
+  ],
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
+}

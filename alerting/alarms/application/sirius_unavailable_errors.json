@@ -1,0 +1,12 @@
+{
+  "name": "serve-sirius-unavailable-errors",
+  "title": "Serve cannot contact Sirius",
+  "description": "At least one Sirius unavailable error was recorded in the last minute.",
+  "investigation_steps": [
+    "Check the Serve application logs for Sirius connection errors, is this an ongoing issue or a one time failure?",
+    "Check Sirius availability and the network path from Serve. Is Sirius reachable from the Serve environment? Is Sirius itself experiencing issues?",
+    "If the issue persists and affects production users, raise with the Sirius team where an incident will most likely need to be raised."
+  ],
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "unusual-read-iops",
+  "title": "A Serve Aurora instance has unusual read IOPS",
+  "description": "Read IOPS exceeded its anomaly band and configured minimum for 10 minutes. This may indicate a possible Data exfiltration or unusual unauthorised data transfer.",
+  "environment_position": 1,
+  "investigation_steps": [
+    "Check the affected database instance and the read IOPS metrics. Is this activity expected or does it indicate unusual behaviour?",
+    "Check for expected batch jobs or other approved activity during the alarm period. Could this explain the unusual read IOPS?",
+    "If the elevated read IOPS activity is unexplained and suggests unauthorised data access or transfer, escalate and it should be treated as a potential security incident."
+  ],
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_resource_alarms.tf"
+}

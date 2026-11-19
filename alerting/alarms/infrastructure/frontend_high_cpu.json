@@ -1,0 +1,12 @@
+{
+  "name": "frontend-high-cpu",
+  "title": "Serve frontend ECS tasks have sustained high CPU usage",
+  "description": "Frontend ECS CPU utilisation has remained at or above 85% for 45 minutes.",
+  "investigation_steps": [
+    "Check CPU utilisation and running task counts for the frontend ECS service. Is the service healthy and able to handle the current load? Test it in browser or via API requests.",
+    "Review recent deployments, application logs and request volume. Anything that could explain the high CPU usage?",
+    "If the service is degraded or unresponsive, then an incident will most likely need to be raised."
+  ],
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_resource_alarms.tf"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "sirius-login-errors",
+  "title": "Serve cannot log in to Sirius",
+  "description": "At least one Sirius login error was recorded in the last minute.",
+  "investigation_steps": [
+    "Check the Serve application logs for the Sirius login error.",
+    "Identify the root cause of the login error, and see if more errors are occurring.",
+    "Check for any recent changes that might have affected Sirius authentication.",
+    "If the issue persists and affects production users, raise an incident and escalate."
+  ],
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
+}
