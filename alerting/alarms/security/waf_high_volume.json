@@ -1,0 +1,22 @@
+{
+  "name": "waf-high-block-volume",
+  "title": "AWS WAF is blocking an unusually high volume of Serve requests",
+  "description": "AWS WAF blocked at least 100 requests within a 5 minute period. This may indicate malicious activity, bot traffic, a ddos attempt, or a serious WAF misconfiguration.",
+  "investigation_steps": [
+    "Review the WAF logs for the source IPs, countries, request paths and terminating rules responsible for the blocked requests. Are we blocking normal traffic by mistake?",
+    "Check whether the traffic comes from one source or is distributed, and whether the requests look like bots, vulnerability scans or legitimate users. If we are blocking legitimate traffic, this needs to be escalated ASAP.",
+    "Check Serve load balancer and service health in ECS, check any recent deployments or configuration changes that might have affected traffic routing.",
+    "If legitimate traffic is being blocked or Serve is affected, raise an incident and escalate."
+  ],
+  "logs": {
+    "log_group": "aws-waf-logs-{environment}",
+    "query": [
+      "fields @timestamp, action, terminatingRuleId, httpRequest.clientIp, httpRequest.country, httpRequest.httpMethod, httpRequest.uri",
+      "| filter action = \"BLOCK\"",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/account/cloudwatch_alarms_waf.tf"
+}
