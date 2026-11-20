@@ -1,4 +1,4 @@
-FROM php:8.4.27-fpm-alpine3.24@sha256:8ce34c869fae0f8da2c82d8aeda222f0782e8e5ae2b370fb43cbad84e9e2ea55 AS php-base
+FROM php:8.4.28-fpm-alpine3.24@sha256:1c3d5f8dd7f56ae38dfaf33934c7d5f326d5291b611df1e3ea18a332d8ef9407 AS php-base
 
 # TODO Remove temporary workaround until Alpine ships the patched package
 RUN apk update && apk add --upgrade "zlib=1.4-r0"
