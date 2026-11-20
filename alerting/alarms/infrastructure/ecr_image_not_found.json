@@ -1,0 +1,24 @@
+{
+  "name": "ecr-image-not-found",
+  "title": "A Serve deployment could not find its ECR image",
+  "description": "A Serve deployment or redeployment attempted to pull an image tag that does not exist. WARNING: This will cause service disruption if not resolved promptly!!",
+  "environment_position": 1,
+  "investigation_steps": [
+    "Check the deployment task and identify the requested ECR image tag.",
+    "Check whether the image was built and pushed to the repository. If its not there, build and push the image with the correct tag via the pipeline. Further investigate why the image was missing.",
+    "This needs to be resolved promptly to avoid the service being disrupted, as the deployment will fail without the required image."
+  ],
+  "logs": {
+    "log_group": "cloudtrail",
+    "query": [
+      "fields @timestamp, eventSource, eventName, errorCode, requestParameters.repositoryName, requestParameters.imageIds, responseElements.failures, userIdentity.arn, sourceIPAddress",
+      "| filter eventSource = \"ecr.amazonaws.com\"",
+      "| filter eventName = \"BatchGetImage\"",
+      "| filter responseElements.failures like \"ImageNotFound\"",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/account/ecr_image_not_found_alarm.tf"
+}

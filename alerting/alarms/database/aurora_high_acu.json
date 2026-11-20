@@ -1,0 +1,21 @@
+{
+  "name": "high-acu",
+  "title": "A Serve Aurora instance has sustained high ACU usage",
+  "description": "An Aurora instance has had average ACU utilisation at or above 85% for 45 minutes.",
+  "environment_position": 1,
+  "investigation_steps": [
+    "Check the affected database instance and its ACU metrics. Could the high ACU usage be related to recent deployments or expected load?",
+    "Review database connections, query activity and Performance Insights. Is this indicative of a query or connection issue causing the high ACU usage?",
+    "Is this causing production service degradation or unavailability? If so, an incident will most likely need to be raised."
+  ],
+  "logs": {
+    "log_group": "/aws/rds/cluster/serve-{environment}/postgresql",
+    "query": [
+      "fields @timestamp, @message, @logStream",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_resource_alarms.tf"
+}
