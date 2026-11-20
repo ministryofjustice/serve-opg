@@ -209,3 +209,40 @@ resource "aws_cloudwatch_metric_alarm" "sirius_unavailable_errors" {
   ok_actions          = [data.aws_sns_topic.slack_notification.arn]
   tags                = local.default_tags
 }
+
+# Pingdom health checks
+resource "aws_cloudwatch_log_metric_filter" "pingdom_health_checks" {
+  name           = "PingdomHealthChecks.${local.environment}"
+  log_group_name = aws_cloudwatch_log_group.serve.name
+
+  pattern = "{ ($.service_name = \"opg-serve-web\") && ($.status = 200) && ($.request_uri = \"/health-check/pingdom\") }"
+
+  metric_transformation {
+    name          = "PingdomHealthChecks.${local.environment}"
+    namespace     = "Serve/Availability"
+    value         = "1"
+    default_value = "0"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "pingdom_health_checks_missing" {
+  alarm_name        = "${local.environment}-external-service-pings-failed"
+  alarm_description = "No successful Pingdom health checks received within the last 5 minutes."
+
+  namespace   = aws_cloudwatch_log_metric_filter.pingdom_health_checks.metric_transformation[0].namespace
+  metric_name = aws_cloudwatch_log_metric_filter.pingdom_health_checks.metric_transformation[0].name
+
+  statistic           = "Sum"
+  period              = 300
+  threshold           = 1
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  treat_missing_data  = "breaching"
+
+  alarm_actions   = [data.aws_sns_topic.slack_notification.arn]
+  ok_actions      = local.environment == "production" ? [data.aws_sns_topic.slack_notification.arn] : []
+  actions_enabled = local.environment == "production"
+
+  tags = local.default_tags
+}

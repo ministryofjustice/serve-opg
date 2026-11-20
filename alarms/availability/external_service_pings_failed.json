@@ -1,0 +1,21 @@
+{
+  "name": "external-service-pings-failed",
+  "title": "Serve has not received a Pingdom health check",
+  "description": "No successful request to /health-check/pingdom was recorded in the last 5 minutes. Serve may be unavailable.",
+  "investigation_steps": [
+    "Open the Serve public URL and check that /health-check/pingdom responds with HTTP 200. See if the service can be reached and is functioning correctly.",
+    "Check the production frontend ECS service and task health, then inspect the Serve logs for any errors that may indicate why the health check failed.",
+    "If production users cannot use Serve, raise an incident and escalate."
+  ],
+  "logs": {
+    "log_group": "{environment}",
+    "query": [
+      "fields @timestamp, service_name, request_uri, status, @message",
+      "| filter request_uri = \"/health-check/pingdom\"",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
+}

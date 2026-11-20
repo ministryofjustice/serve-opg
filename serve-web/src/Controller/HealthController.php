@@ -49,6 +49,31 @@ class HealthController extends AbstractController
 
         return $response;
     }
+    
+    #[Route(path: '/pingdom', name: 'health-check-pingdom', methods: ['GET'])]
+    public function pingdomHealthAction(
+        DatabaseAvailability $dbAvailability,
+        NotifyAvailability $notifyAvailability,
+        SiriusApiAvailability $siriusAvailability,
+    ): Response {
+        $services = [
+            $dbAvailability,
+            $siriusAvailability,
+            $notifyAvailability,
+        ];
+
+        [$healthy, , , $time] = $this->servicesHealth($services);
+
+        $response = $this->render('Health/pingdom.xml.twig', [
+            'status' => $healthy ? 'OK' : 'ERRORS: ',
+            'time' => $time * 1000,
+        ]);
+
+        $response->setStatusCode($healthy ? 200 : 500);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
 
     #[Route(path: '/dependencies', methods: ['GET'])]
     public function dependencyHealthAction(
