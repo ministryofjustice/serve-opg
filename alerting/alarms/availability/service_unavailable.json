@@ -1,0 +1,20 @@
+{
+  "name": "availability-service",
+  "title": "The Serve service health check is failing",
+  "description": "The external service health check reported the service as unhealthy for five minutes.",
+  "investigation_steps": [
+    "Check whether the service health-check endpoint responds. Can you connect to it in browser or using curl?",
+    "Check the Serve ECS service, and application logs. Could the issue be related to recent deployments? If the Containers are healthy, could it be a network or connectivity issue?",
+    "If production users cannot use the service, raise an incident immediately and escalate."
+  ],
+  "logs": {
+    "log_group": "{environment}",
+    "query": [
+      "fields @timestamp, @message, @logStream",
+      "| sort @timestamp desc",
+      "| limit 100"
+    ]
+  },
+  "confluence_link": "",
+  "terraform_link": "https://github.com/ministryofjustice/serve-opg/blob/main/terraform/environment/cloudwatch_alarms.tf"
+}

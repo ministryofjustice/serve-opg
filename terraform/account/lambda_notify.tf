@@ -7,6 +7,7 @@ resource "aws_lambda_function" "serve_opg_notify_slack" {
 
   filename         = data.archive_file.slack_notify.output_path
   source_code_hash = data.archive_file.slack_notify.output_base64sha256
+  layers           = [aws_lambda_layer_version.serve_alerting.arn]
 
   tracing_config {
     mode = "Active"
@@ -17,6 +18,19 @@ data "archive_file" "slack_notify" {
   type        = "zip"
   source_file = "${path.module}/../../scripts/slack_notify/slack_notify.py"
   output_path = "${path.module}/../../scripts/slack_notify/slack_notify.zip"
+}
+
+data "archive_file" "serve_alerting" {
+  type        = "zip"
+  source_dir  = "${path.module}/../../alerting"
+  output_path = "${path.module}/../../scripts/slack_notify/alerting.zip"
+}
+
+resource "aws_lambda_layer_version" "serve_alerting" {
+  layer_name          = "serve-opg-alerting"
+  filename            = data.archive_file.serve_alerting.output_path
+  source_code_hash    = data.archive_file.serve_alerting.output_base64sha256
+  compatible_runtimes = ["python3.12"]
 }
 
 resource "aws_cloudwatch_log_group" "serve_opg_notify_slack" {
