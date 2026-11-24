@@ -22,6 +22,7 @@ localstack-data
 **/.terraform
 **/terraform.output.json
 terraform/**/builds
+**/alerting.zip
 
 ###> symfony/phpunit-bridge ###
 .phpunit
