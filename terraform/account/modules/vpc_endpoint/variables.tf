@@ -28,3 +28,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "policy" {
+  description = "VPC endpoint policy json"
+  type        = string
+  default     = ""
+}
