@@ -48,3 +48,22 @@ resource "aws_sns_topic_subscription" "pagerduty_guardduty_findings" {
   endpoint_auto_confirms = true
   raw_message_delivery   = false
 }
+
+resource "aws_sns_topic_subscription" "pagerduty_cis_alerts" {
+  count = local.pagerduty_is_enabled ? 1 : 0
+
+  topic_arn              = data.aws_sns_topic.cis_aws_foundations_standard[0].arn
+  protocol               = "https"
+  endpoint               = local.pagerduty_endpoint
+  endpoint_auto_confirms = true
+  raw_message_delivery   = false
+  filter_policy = jsonencode({
+    AlarmName = [{
+      "anything-but" = [
+        "CIS-3.1-UnauthorizedAPICalls",
+        "CIS-3.1-UnauthorisedAPICalls"
+      ]
+    }]
+  })
+  filter_policy_scope = "MessageBody"
+}
