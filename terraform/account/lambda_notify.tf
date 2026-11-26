@@ -90,10 +90,13 @@ data "aws_iam_policy_document" "serve_opg_notify_lambda" {
       "SNS:Subscribe",
       "SNS:Receive",
     ]
-    resources = [
-      aws_sns_topic.serve_slack_notifications.arn,
-      aws_sns_topic.serve_slack_notifications_global.arn
-    ]
+    resources = concat(
+      [
+        aws_sns_topic.serve_slack_notifications.arn,
+        aws_sns_topic.serve_slack_notifications_global.arn
+      ],
+      local.account.name == "production" ? [data.aws_sns_topic.cis_aws_foundations_standard[0].arn] : []
+    )
   }
 
   statement {

@@ -165,3 +165,35 @@ resource "aws_sns_topic_subscription" "guardduty_findings_lambda" {
     aws_lambda_permission.guardduty_findings_allow
   ]
 }
+
+data "aws_sns_topic" "cis_aws_foundations_standard" {
+  count = local.account.name == "production" ? 1 : 0
+  name  = "cis_aws_foundations_standard"
+}
+
+resource "aws_lambda_permission" "cis_aws_foundations_standard_allow" {
+  count         = local.account.name == "production" ? 1 : 0
+  statement_id  = "AllowCisFoundationsSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.serve_opg_notify_slack.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = data.aws_sns_topic.cis_aws_foundations_standard[0].arn
+}
+
+resource "aws_sns_topic_subscription" "cis_aws_foundations_standard_lambda" {
+  count     = local.account.name == "production" ? 1 : 0
+  topic_arn = data.aws_sns_topic.cis_aws_foundations_standard[0].arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.serve_opg_notify_slack.arn
+
+  depends_on = [aws_lambda_permission.cis_aws_foundations_standard_allow]
+  filter_policy = jsonencode({
+    AlarmName = [{
+      "anything-but" = [
+        "CIS-3.1-UnauthorizedAPICalls",
+        "CIS-3.1-UnauthorisedAPICalls"
+      ]
+    }]
+  })
+  filter_policy_scope = "MessageBody"
+}

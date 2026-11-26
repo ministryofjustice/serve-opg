@@ -183,7 +183,7 @@ data "aws_iam_policy_document" "events_task_runner_policy" {
   }
   statement {
     effect    = "Allow"
-    resources = [module.disaster_recovery_backup[0].task_definition_arn]
+    resources = ["${module.disaster_recovery_backup[0].task_definition_arn_without_revision}:*"]
     actions   = ["ecs:RunTask"]
   }
 }
