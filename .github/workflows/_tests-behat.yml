@@ -96,7 +96,7 @@ jobs:
           SUITE: ${{ inputs.suite }}
         run: |
           docker compose run --rm --entrypoint="composer install --prefer-dist --no-interaction --no-scripts --optimize-autoloader" behat
-          docker compose run --rm --env APP_VERSION --env BEHAT_PARAMS --env ENVIRONMENT_NAME --env SIRIUS_S3_BUCKET_NAME behat ${SUITE}
+          docker compose run --rm -v /tmp/behat:/tmp/behat --env APP_VERSION --env BEHAT_PARAMS --env ENVIRONMENT_NAME --env SIRIUS_S3_BUCKET_NAME behat ${SUITE}
         working-directory: ./serve-web
 
       - name: Archive Test Output

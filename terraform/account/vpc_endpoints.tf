@@ -321,10 +321,16 @@ data "aws_iam_policy_document" "dynamodb_endpoint" {
     effect = "Allow"
 
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+      type        = "*"
+      identifiers = ["*"]
     }
 
+    condition {
+      test     = "ArnLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/frontend-*"]
+    }
+    
     actions = [
       "dynamodb:GetItem",
       "dynamodb:PutItem",
