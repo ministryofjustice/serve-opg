@@ -61,8 +61,7 @@ The main app is two sub-containers, an nginx web server and a PHPFPM application
 
 ## C4 Diagram (containers):
 
-<img src="https://raw.githubusercontent.com/ministryofjustice/serve-opg/refs/heads/main/docs/architecture/architecture-design.svg">
-
+<img src="https://raw.githubusercontent.com/ministryofjustice/serve-opg/refs/heads/main/docs/architecture/serve-production-architecture.svg">
 
 ## Incident Response Plans (Call Tree, Including Roles and Responsibilities)
 

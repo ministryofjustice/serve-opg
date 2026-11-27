@@ -1,0 +1,95 @@
+flowchart LR
+  user["Court of Protection Staff - Submit New Deputy Orders to OPG"]
+  url["Production URL: https://serve.opg.service.justice.gov.uk"]
+  dns["Route 53 DNS"]
+
+  subgraph production["Serve Production AWS Account (eu-west-1)"]
+    direction LR
+
+    waf["AWS WAF Web ACL"]
+    alb["Application Load Balancer - HTTPS 443"]
+    target["Target Group - HTTP 8080"]
+
+    subgraph ecs["ECS (Amazon Elastic Container Service)"]
+      direction LR
+      web["web Container - NGINX :8080"]
+      app["app Container - PHP-FPM / Symfony :9000"]
+      web -->|"FastCGI :9000"| app
+    end
+
+    aurora[("Aurora PostgreSQL")]
+    sessions[("Sessions - DynamoDB")]
+    documents[("Court Order Documents - S3 Bucket")]
+    accesslogs[("S3 ALB Access Logs")]
+    cloudwatch["CloudWatch Logs"]
+
+    schedule["EventBridge - Daily 01:00 UTC"]
+    backupTask["Scheduled Backup Task"]
+
+    waf -->|"Filters Requests To"| alb
+    alb --> target
+    target -->|"HTTP :8080"| web
+
+    app <-->|"Stores / Retrieves Orders, Client/Deputy Records, User Accounts, Document Metadata and Serve Status"| aurora
+    app <-->|"Stores / Retrieves Session Data"| sessions
+    app <-->|"Stores / Retrieves Court Order Files"| documents
+    web -.-> cloudwatch
+    app -.-> cloudwatch
+    aurora -.-> cloudwatch
+    alb -.-> accesslogs
+
+    schedule --> backupTask
+    aurora -->|"Snapshot Source"| backupTask
+  end
+
+  subgraph external["External Services"]
+    direction TB
+    sirius["Sirius Frontend API Proxy"]
+    siriusBucket[("Sirius Public API S3 Bucket")]
+    notify["GOV.UK Notify"]
+    osPlaces["Ordnance Survey OS Places"]
+  end
+
+  subgraph backup["Separate Backup AWS Account"]
+    direction LR
+    backupRole["Cross-Account Backup Role"]
+    snapshots[("Aurora Snapshot Copies")]
+    backupRole --> snapshots
+  end
+
+  user -->|"Signs In: Submits CSV Order Data and Court Order Documents"| url
+  url -->|"DNS Lookup"| dns
+  dns -->|"Production Traffic"| waf
+
+  app -->|"Order, Client/Deputy Data and Document References"| sirius
+  app -->|"Copies Court Order Documents"| siriusBucket
+  app -->|"Password Reset Emails"| notify
+  app <-->|"Postcode Lookup / Address Results"| osPlaces
+
+  backupTask -->|"Assumes Role"| backupRole
+
+  classDef userStyle fill:#E2E8F0,stroke:#475569,color:#0F172A,stroke-width:2px
+  classDef dnsStyle fill:#F3E8FF,stroke:#9333EA,color:#581C87,stroke-width:2px
+  classDef networkStyle fill:#DBEAFE,stroke:#2563EB,color:#1E3A8A,stroke-width:2px
+  classDef wafStyle fill:#FCE7F3,stroke:#DB2777,color:#831843,stroke-width:2px
+  classDef computeStyle fill:#DCFCE7,stroke:#16A34A,color:#14532D,stroke-width:2px
+  classDef dataStyle fill:#FEF3C7,stroke:#D97706,color:#78350F,stroke-width:2px
+  classDef logsStyle fill:#EDE9FE,stroke:#7C3AED,color:#4C1D95,stroke-width:2px
+  classDef externalStyle fill:#FCE7F3,stroke:#DB2777,color:#831843,stroke-width:2px
+  classDef backupStyle fill:#E0F2FE,stroke:#0284C7,color:#0C4A6E,stroke-width:2px
+
+  class user userStyle
+  class url dnsStyle
+  class dns dnsStyle
+  class waf wafStyle
+  class alb,target networkStyle
+  class web,app,schedule,backupTask computeStyle
+  class aurora,sessions,documents,accesslogs dataStyle
+  class cloudwatch logsStyle
+  class sirius,siriusBucket,notify,osPlaces externalStyle
+  class backupRole,snapshots backupStyle
+
+  style production fill:#F8FAFC,stroke:#64748B,stroke-width:2px
+  style ecs fill:#F0FDF4,stroke:#86EFAC,stroke-width:2px
+  style external fill:#FFF1F2,stroke:#FDA4AF,stroke-width:2px
+  style backup fill:#F0F9FF,stroke:#7DD3FC,stroke-width:2px
